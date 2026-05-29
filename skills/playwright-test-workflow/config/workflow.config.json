@@ -1,0 +1,69 @@
+{
+  "_comment": "Playwright Test Workflow config. Copy to your project root as pw-workflow.config.json and customise.",
+  "version": "1.0",
+
+  "paths": {
+    "outputDir":    "data/outputs",
+    "snapshotDir":  "data/outputs/snapshots",
+    "testsDir":     "tests",
+    "fixturesDir":  "tests/fixtures",
+    "pagesDir":     "tests/pages"
+  },
+
+  "snapshot": {
+    "waitMs":       2000,
+    "selector":     "body",
+    "viewport":     "1280x800",
+    "authFile":     ""
+  },
+
+  "scenarios": {
+    "a": {
+      "name": "Test-First Development",
+      "description": "Requirements → Manual tests → Snapshot → Automation",
+      "gates": [
+        "manual-tests-reviewed",
+        "snapshot-captured",
+        "selector-map-generated",
+        "automation-written"
+      ]
+    },
+    "b": {
+      "name": "Snapshot-First Development",
+      "description": "Snapshot → Extract structure → Generate test logic",
+      "gates": [
+        "snapshot-captured",
+        "elements-extracted",
+        "manual-tests-generated",
+        "manual-tests-reviewed",
+        "automation-written"
+      ]
+    },
+    "c": {
+      "name": "Debug & Fix",
+      "description": "Failed test → Analyze snapshot → Fix selector → Re-run",
+      "gates": [
+        "failure-captured",
+        "fresh-snapshot-taken",
+        "diagnosis-done",
+        "fix-applied",
+        "test-passing"
+      ]
+    }
+  },
+
+  "skills": {
+    "testGeneration":    "qa-test-generation",
+    "snapshotParser":    "playwright-snapshot-parser",
+    "orchestrator":      "playwright-test-workflow",
+    "bugReport":         "qa-bug-report",
+    "quickReport":       "qa-quick-report"
+  },
+
+  "naming": {
+    "testCasesFile":  "test-cases-{feature}-{date}.md",
+    "snapshotFile":   "{feature}-snapshot.txt",
+    "specFile":       "{feature}.spec.ts",
+    "debugReport":    "debug-{feature}-{date}.md"
+  }
+}

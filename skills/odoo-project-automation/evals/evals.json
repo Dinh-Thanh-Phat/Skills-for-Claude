@@ -1,0 +1,33 @@
+{
+  "skill_name": "odoo-project-automation",
+  "evals": [
+    {
+      "id": 1,
+      "name": "create-critical-bug",
+      "prompt": "I found a critical bug in Soundwise - the login button is completely unresponsive on mobile devices. It's blocking users from signing in. Please log this as a critical bug and assign it to Phuc Do with bug tag and mobile tag.",
+      "expected_output": "Task created in Soundwise project with:\n- Title: 'Login button not responding on mobile'\n- Type: bug\n- Status: Todo\n- Priority: 0 (critical)\n- Assignee: Phuc Do\n- Tags: bug, mobile\n- Auto-expanded description with Steps to Reproduce, Expected Result, Actual Result sections",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "create-enhancement-task",
+      "prompt": "Can you create a task for the TRS project? We want to add caching to our search queries to improve performance. It's not urgent but important for our next sprint. Assign it to Anh Huynh and add enhance and performance tags.",
+      "expected_output": "Task created in TRS project with:\n- Title: 'Add caching to search queries'\n- Type: enhance\n- Status: Todo\n- Assignee: Anh Huynh\n- Tags: enhance, performance\n- Auto-expanded description with Implementation Plan, Success Criteria sections",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "move-task-to-progress",
+      "prompt": "I'm starting work on the 'User profile page' task in the Olivia - CRM App project right now. Can you move it from Todo to In Progress and add a note that I'm beginning implementation?",
+      "expected_output": "Task moved in Olivia - CRM App project:\n- Task: 'User profile page' moved to 'In Progress' status\n- Note added: 'Beginning implementation'\n- Timestamp recorded",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "close-task-with-summary",
+      "prompt": "The 'Export to Excel' feature in Olivia - CRM App is now complete. I've tested it with 50+ records and performance is good. Can you mark it as Done and add a summary?",
+      "expected_output": "Task marked as Done in Olivia - CRM App project:\n- Task: 'Export to Excel' moved to Done status\n- Summary recorded with completion details\n- Status timestamp updated",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,291 @@
+---
+name: accessibility-testing
+description: Playwright + axe-core accessibility (a11y) testing against WCAG standards. Use when adding accessibility tests, checking WCAG compliance, testing screen reader compatibility, or auditing a11y regressions. Triggers on: "accessibility test", "a11y test", "axe-core", "WCAG", "screen reader", "kiểm tra accessibility", "kiểm tra trợ năng".
+triggers:
+  - "accessibility test"
+  - "a11y test"
+  - "axe-core"
+  - "WCAG"
+  - "screen reader"
+  - "aria"
+  - "kiểm tra accessibility"
+  - "kiểm tra trợ năng"
+  - "tab navigation"
+scope:
+  - qa
+  - e2e
+  - playwright
+  - accessibility
+---
+
+# Accessibility Testing Skill
+
+You are a **Senior QA Engineer** implementing automated accessibility checks to prevent WCAG violations from shipping undetected.
+
+## Core Law
+
+> **Automated a11y tools catch ~30-40% of real WCAG violations.**
+> Always combine automated scans with manual keyboard and screen reader testing.
+> Automated = fast regression net. Manual = thorough audit.
+
+---
+
+## Setup
+
+```bash
+npm install --save-dev @axe-core/playwright
+```
+
+```typescript
+// tests/accessibility/a11y.spec.ts
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+```
+
+---
+
+## Basic Pattern: Navigate → Scan → Assert
+
+```typescript
+test('A11Y-001: Login page has no critical violations', async ({ page }) => {
+  await page.goto('/login');
+  await page.waitForLoadState('networkidle');
+
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .analyze();
+
+  expect(results.violations).toEqual([]);
+});
+```
+
+---
+
+## WCAG Tag Reference
+
+| Tag | Standard | What it covers |
+|-----|---------|----------------|
+| `wcag2a` | WCAG 2.0 Level A | Minimum compliance (must have) |
+| `wcag2aa` | WCAG 2.0 Level AA | Standard compliance (legal requirement in many regions) |
+| `wcag21a` | WCAG 2.1 Level A | Mobile + cognitive |
+| `wcag21aa` | WCAG 2.1 Level AA | Mobile + cognitive standard |
+| `wcag22aa` | WCAG 2.2 Level AA | Latest standard (2023) |
+| `best-practice` | axe best practices | Beyond WCAG |
+
+**Recommended minimum for new projects:** `['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']`
+(WCAG 2.2 AA is the current legal standard in many regions as of 2025+.)
+
+---
+
+## Violation Severity Levels
+
+| Severity | Action |
+|----------|--------|
+| `critical` | Block CI — fix before merge |
+| `serious` | Block CI — fix before merge |
+| `moderate` | Warn — fix within sprint |
+| `minor` | Log — fix when time allows |
+
+```typescript
+// Fail on critical/serious only (pragmatic for legacy codebases)
+const results = await new AxeBuilder({ page })
+  .withTags(['wcag2a', 'wcag2aa'])
+  .analyze();
+
+const blocker = results.violations.filter(
+  v => v.impact === 'critical' || v.impact === 'serious'
+);
+
+expect(blocker).toEqual([]);
+```
+
+---
+
+## Useful Patterns
+
+### Exclude known unfixable issues (temporary)
+```typescript
+const results = await new AxeBuilder({ page })
+  .withTags(['wcag2a', 'wcag2aa'])
+  .exclude('#legacy-widget')     // known third-party issue
+  .exclude('.charts-container')  // charting library known gap
+  .analyze();
+```
+
+### Scan only specific section
+```typescript
+const results = await new AxeBuilder({ page })
+  .include('[data-testid="main-form"]') // only scan the form
+  .withTags(['wcag2aa'])
+  .analyze();
+```
+
+### Combine with functional test
+```typescript
+test('FORM-001: Contact form — functional + a11y', async ({ page }) => {
+  await page.goto('/contact');
+
+  // Functional assertion
+  await expect(page.locator('h1')).toHaveText('Contact Us');
+
+  // A11y scan for the form only
+  const results = await new AxeBuilder({ page })
+    .include('form')
+    .withTags(['wcag2aa'])
+    .analyze();
+
+  expect(results.violations).toEqual([]);
+});
+```
+
+---
+
+## Readable Violation Reporting
+
+```typescript
+// Helper to print clear violation info on failure
+function formatViolations(violations: any[]) {
+  return violations.map(v => ({
+    id: v.id,
+    impact: v.impact,
+    description: v.description,
+    nodes: v.nodes.map((n: any) => n.target).join(', '),
+    helpUrl: v.helpUrl,
+  }));
+}
+
+test('A11Y-002: Dashboard', async ({ page }) => {
+  await page.goto('/dashboard');
+  const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
+
+  expect(
+    formatViolations(results.violations),
+    `Found ${results.violations.length} violations`
+  ).toEqual([]);
+});
+```
+
+---
+
+## Keyboard Navigation Testing (Manual supplement)
+
+```typescript
+test('A11Y-003: Form navigable by keyboard only', async ({ page }) => {
+  await page.goto('/login');
+
+  // Start focus at page top
+  await page.keyboard.press('Tab');
+  await expect(page.locator(':focus')).toHaveAttribute('name', 'email');
+
+  await page.keyboard.press('Tab');
+  await expect(page.locator(':focus')).toHaveAttribute('name', 'password');
+
+  await page.keyboard.press('Tab');
+  await expect(page.locator(':focus')).toHaveAttribute('type', 'submit');
+
+  // Submit via keyboard
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/dashboard/);
+});
+```
+
+---
+
+## Focus Management After Dynamic Actions
+
+```typescript
+test('A11Y-004: Modal focus trap', async ({ page }) => {
+  await page.goto('/users');
+  await page.click('[data-testid="add-user-btn"]');
+
+  // Focus should move to modal
+  await expect(page.locator('[role="dialog"]')).toBeVisible();
+  await expect(page.locator('[role="dialog"] :focus')).toBeVisible();
+
+  // Escape should close and return focus to trigger
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-testid="add-user-btn"]')).toBeFocused();
+});
+```
+
+---
+
+## Common Violations and Fixes
+
+| Violation | axe Rule | Fix |
+|-----------|---------|-----|
+| Image no alt text | `image-alt` | `<img alt="description">` |
+| Form label missing | `label` | `<label for="id">` or `aria-label` |
+| Low color contrast | `color-contrast` | Fix CSS color ratio ≥ 4.5:1 |
+| Button no accessible name | `button-name` | Add text content or `aria-label` |
+| Heading level skipped | `heading-order` | Use h1→h2→h3 sequentially |
+| Link no discernible text | `link-name` | Add aria-label or text content |
+| Interactive element not focusable | `tabindex` | Remove `tabindex="-1"` or add keyboard handler |
+
+---
+
+## CI Integration
+
+```typescript
+// playwright.config.ts — add a11y project
+projects: [
+  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+  {
+    name: 'a11y',
+    testMatch: '**/accessibility/*.spec.ts',
+    use: { ...devices['Desktop Chrome'] },
+  },
+]
+```
+
+```bash
+# Run only a11y tests in CI
+npx playwright test --project=a11y
+```
+
+---
+
+## What Automated Tests CANNOT Catch (Manual required)
+
+- **Screen reader UX**: Does content make sense when read aloud?
+- **Focus order logic**: Is tab order meaningful, not just present?
+- **Color contrast for text over images**: axe can't evaluate dynamic backgrounds
+- **Cognitive accessibility**: Is the UI understandable for users with cognitive disabilities?
+- **Touch target size on mobile**: Real device testing needed (also test via `boundingBox()` ≥ 44×44)
+- **ARIA live regions**: Do they announce correctly to screen readers?
+- **`prefers-reduced-motion`**: Animations should disable — test by setting `reducedMotion: 'reduce'`
+- **`prefers-contrast`**: High-contrast mode — test by setting `forcedColors: 'active'` in context
+- **RTL / i18n**: Bidi text, mirrored layout — switch to `ar` or `he` locale and re-scan
+- **Skip-links / landmark regions**: Verify `<main>`, `<nav>`, `<aside>` exist and skip-link points to `#main`
+
+```typescript
+// Reduced motion + high contrast scan
+const ctx = await browser.newContext({
+  reducedMotion: 'reduce',
+  forcedColors: 'active',
+});
+const page = await ctx.newPage();
+await page.goto('/');
+const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
+```
+
+**Rule:** Run automated scan every PR. Run manual screen reader test every major feature release.
+
+---
+
+## Checklist — A11Y Test Review
+
+- [ ] Every page/feature has at least one a11y scan test
+- [ ] Scan includes minimum `wcag2a` + `wcag2aa` tags
+- [ ] Critical/serious violations block CI
+- [ ] Exclusions documented with `// TODO: fix by [date] - reason`
+- [ ] Keyboard navigation tested for interactive flows
+- [ ] Focus management tested for dialogs/drawers/toasts
+- [ ] Manual screen reader test planned for next major release
+
+---
+
+## Sources
+- Playwright accessibility testing: playwright.dev/docs/accessibility-testing
+- axe-core WCAG guide: qamadness.com/axe-core-playwright-accessibility-testing
+- Playwright a11y CI guide: testdino.com/blog/playwright-accessibility

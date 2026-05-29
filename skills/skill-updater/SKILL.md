@@ -1,0 +1,281 @@
+---
+name: skill-updater
+description: Khi user phản hồi xử lý sai hoặc yêu cầu tạo skill mới — tự detect skill liên quan, sửa theo feedback, hoặc tạo skill mới từ mô tả của user
+origin: PT
+---
+
+# Skill Updater — Tự Detect, Cập Nhật & Tạo Mới Skills
+
+Hai chế độ:
+- **Sửa skill cũ:** User mô tả kết quả sai → Claude tự detect skill liên quan → đề xuất sửa
+- **Tạo skill mới:** User mô tả nhu cầu mới → Claude tạo skill mới → lưu vào `~/.claude/skills/`
+
+---
+
+## Phân Biệt 2 Chế Độ
+
+| Dấu hiệu | Chế độ |
+|---|---|
+| "Lúc nãy làm sai", "phải làm khác đi", "lần sau khi X thì Y" | **Sửa skill cũ** |
+| "Tôi cần xử lý...", "có thể làm được... không", "tạo thêm skill" | **Tạo skill mới** |
+
+---
+
+## CHẾ ĐỘ 1 — Sửa Skill Cũ (Feedback)
+
+---
+
+## When to Activate
+
+- User mô tả kết quả sai: "lúc nãy nó làm A nhưng phải làm B mới đúng"
+- User chỉnh lại output: "báo giá thiếu cột VAT", "report không có ranking"
+- User nói "lần sau khi tôi nói X thì phải làm Y"
+- User nói "xử lý kiểu đó không đúng với trường hợp của tôi"
+- User nói "phải hỏi tôi thêm thông tin trước khi làm"
+- Bất kỳ feedback nào về cách Claude xử lý một task Excel/sale/vận hành
+
+---
+
+## Bước 1 — Detect Skill Liên Quan
+
+Đọc lại context conversation để xác định task vừa thực hiện là gì.
+
+Map task → skill theo bảng sau:
+
+| Nếu task liên quan đến... | Skill nghi ngờ |
+|---|---|
+| Tạo báo giá, tra giá, discount | `quote-builder` |
+| Bảng giá cũ/mới, SP thay đổi giá | `price-list-manager` |
+| Phân loại khách, VIP, churn | `customer-segmentation` |
+| Deal, pipeline, forecast | `sales-pipeline-tracker` |
+| Hoa hồng, commission, tier | `commission-calculator` |
+| Trả hàng, hoàn tiền, refund | `returns-processor` |
+| Gợi ý tái đơn, follow-up | `reorder-suggester` |
+| Lịch giao hàng, tài xế, tuyến | `delivery-scheduler` |
+| Hợp đồng, công nợ, hết hạn | `contract-tracker` |
+| Gộp đơn từ nhiều NV | `order-aggregation` |
+| Soát đơn, kiểm đơn trước duyệt | `order-verification` |
+| Đối chiếu đơn vs kho/giao hàng | `order-reconciliation` |
+| Báo cáo doanh số, pivot, report | `order-reporting` |
+| VLOOKUP, so sánh file, filter | `file-aggregation-comparison` |
+| **QA routing / entry point** | `qa-router` |
+| **QA session start / context recovery** | `qa-session-start` |
+| **QA session close / handoff** | `qa-session-close` |
+| **QA env check trước khi test** | `qa-preflight` |
+| **Viết test cases, coverage** | `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` |
+| **Debug test fail** | `qa-router` → `playwright-diagnosis-first` |
+| **Bug report + Odoo log** | `qa-bug-report` |
+
+### QA / Test Automation (folder-style)
+| Nếu task liên quan đến... | Skill nghi ngờ |
+|---|---|
+| Viết test Playwright cho web | `qa-test-generation` / `qa-test-coverage-max` / `qa-e2e-complete` |
+| Selector / locator / DOM | `dom-inspect-first` / `safe-locators` / `playwright-snapshot-parser` |
+| Test fail / flaky / debug | `playwright-diagnosis-first` / `test-debug-checklist` / `test-failure-triage` |
+| Assertion / fail-loud | `fail-loud` / `soft-assertion-ban` / `outcome-verification` |
+| Auth / login test | `auth-session-testing` / `test-auth-strategy` / `login-verification` / `otp-untestable-flows` |
+| Data cleanup / isolation | `test-data-lifecycle` / `test-isolation` / `state-ripple-verify` |
+| Upload file / ảnh trong test | `file-upload-download-testing` |
+| Mobile / Maestro / iOS / Android | `maestro-mobile` / `ios-xcrun` / `android-adb` |
+| Bug report / Odoo | `qa-bug-report` / `odoo-project-automation` |
+| Chatbot / AI test | `chatbot-tester` (orchestrator) |
+| Visual / a11y / responsive | `visual-regression-testing` / `accessibility-testing` / `responsive-viewport-testing` |
+| Anti-patterns / code review test | `playwright-test-anti-patterns` |
+| Phân loại lỗi nhanh / triage | `test-failure-triage` |
+
+Nếu không chắc, hỏi user:
+> "Vấn đề bạn gặp xảy ra khi đang làm gì — tạo báo giá, tổng hợp đơn, hay tính hoa hồng?"
+
+---
+
+## Bước 2 — Hiểu Vấn Đề Cụ Thể
+
+Phân tích feedback của user để xác định loại lỗi:
+
+| Loại feedback | Phần skill cần sửa |
+|---|---|
+| "Lần sau khi tôi nói X thì mới kích hoạt" | `When to Activate` — thêm trigger |
+| "Không xử lý được trường hợp X" | Thêm case/bước mới vào workflow |
+| "Output thiếu Y / format sai" | Sửa phần `Output` |
+| "Hỏi tôi thêm thông tin trước khi làm" | Thêm bước clarification vào đầu workflow |
+| "Đừng giả định X, hỏi tôi trước" | Thêm vào phần lưu ý hoặc bước đầu |
+| "Gặp lỗi Z chưa biết xử lý" | Thêm vào bảng `Lỗi Thường Gặp` |
+
+---
+
+## Bước 3 — Đọc Skill Hiện Tại
+
+**Hai convention lưu skill** — phải check cả 2:
+
+| Convention | Đường dẫn | Dùng cho |
+|---|---|---|
+| Single-file | `C:\Users\wi\.claude\skills\[skill-name].md` | Business / PT skills, mini-skills |
+| Folder | `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` | QA / testing skills, large skills có references/ |
+
+Thử folder trước (`[name]/SKILL.md`); nếu không có thì thử file (`[name].md`).
+Dùng Read tool để đọc toàn bộ nội dung skill được detect ở Bước 1.
+
+---
+
+## Bước 4 — Đề Xuất Thay Đổi (LUÔN HỎI TRƯỚC)
+
+Trình bày rõ trước khi sửa:
+
+```
+🔍 Tôi detect vấn đề này liên quan đến skill: [skill-name]
+
+Vấn đề: [mô tả vấn đề user gặp]
+Chỗ cần sửa: [tên phần trong skill]
+
+Thay đổi đề xuất:
+  TRƯỚC: [nội dung hiện tại]
+  SAU:   [nội dung sau khi sửa]
+
+Sửa theo feedback này không?
+```
+
+---
+
+## Bước 5 — Update File Sau Khi User Xác Nhận
+
+Sửa file ở đúng convention đã detect ở Bước 3:
+- Folder skill: `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md`
+- Single-file skill: `C:\Users\wi\.claude\skills\[skill-name].md`
+
+Cho business skills (PT), backup vào: `D:\HK8\Learning\DQ\PT\skills\[skill-name].md`
+(QA skills không cần backup — chỉ lưu ở `~/.claude/skills/`.)
+
+---
+
+## Bước 6 — Ghi Log
+
+Append vào `C:\Users\wi\.claude\skills\_update-log.md`:
+
+```markdown
+## [skill-name] — [ngày]
+- **Feedback:** [user nói gì]
+- **Sửa chỗ:** [phần đã thay đổi]
+- **Thay đổi:** [tóm tắt nội dung sửa]
+```
+
+---
+
+## Ví Dụ Thực Tế
+
+**User:** "Lúc nãy tạo báo giá xong nhưng không có dòng tổng cộng bằng chữ, lần sau phải có"
+
+→ Claude detect: task "tạo báo giá" → skill `quote-builder`  
+→ Loại lỗi: thiếu format trong Output  
+→ Đề xuất: thêm dòng "Bằng chữ: [số tiền viết bằng chữ]" vào template Output  
+→ User OK → sửa file → ghi log
+
+---
+
+**User:** "Khi tôi gộp file đơn mà có cột tên nhân viên viết hoa viết thường lẫn lộn thì bị tách ra 2 người khác nhau"
+
+→ Claude detect: "gộp file đơn" → skill `order-aggregation`  
+→ Loại lỗi: chưa có bước normalize tên trước khi gộp  
+→ Đề xuất: thêm bước dùng `fuzzy_match` normalize tên NV trước bước aggregate  
+→ User OK → sửa → ghi log
+
+---
+
+## CHẾ ĐỘ 2 — Tạo Skill Mới
+
+### Khi Nào Tạo Mới
+
+Khi user mô tả nhu cầu chưa có skill nào cover:
+- "Tôi cần xử lý bảng chấm công, tính tăng ca..."
+- "Có thể làm báo cáo công nợ theo nhà cung cấp không?"
+- "Tạo thêm skill để xử lý X"
+
+### Bước 1 — Hỏi Làm Rõ (nếu cần)
+
+Nếu mô tả còn chung chung, hỏi thêm:
+> - "Dữ liệu đầu vào là file gì? Có những cột nào?"
+> - "Output mong muốn trông như thế nào?"
+> - "Hay gặp vấn đề gì nhất khi làm thủ công?"
+
+### Bước 1b — Kiểm Tra Skill Đã Tồn Tại (LUÔN LÀM TRƯỚC KHI TẠO MỚI)
+
+So sánh mô tả của user với 14 skills hiện có:
+
+| Nếu yêu cầu liên quan đến... | Skill đã có | Hành động |
+|---|---|---|
+| Tạo báo giá, tra giá, discount | `quote-builder` | Suggest mở rộng |
+| Bảng giá, so sánh giá cũ/mới | `price-list-manager` | Suggest mở rộng |
+| Phân loại khách, VIP, churn | `customer-segmentation` | Suggest mở rộng |
+| Pipeline, deal, forecast | `sales-pipeline-tracker` | Suggest mở rộng |
+| Hoa hồng, commission, tier | `commission-calculator` | Suggest mở rộng |
+| Đơn trả, hoàn tiền, refund | `returns-processor` | Suggest mở rộng |
+| Follow-up khách, tái đơn | `reorder-suggester` | Suggest mở rộng |
+| Giao hàng, tài xế, tuyến | `delivery-scheduler` | Suggest mở rộng |
+| Hợp đồng, công nợ, quá hạn | `contract-tracker` | Suggest mở rộng |
+| Gộp file đơn nhiều nhân viên | `order-aggregation` | Suggest mở rộng |
+| Kiểm đơn, soát đơn trước duyệt | `order-verification` | Suggest mở rộng |
+| Đối chiếu đơn vs giao/thanh toán | `order-reconciliation` | Suggest mở rộng |
+| Báo cáo doanh số, pivot | `order-reporting` | Suggest mở rộng |
+| VLOOKUP, so sánh file | `file-aggregation-comparison` | Suggest mở rộng |
+
+**Nếu overlap > 50%:** Đề xuất mở rộng skill cũ:
+> "Skill [tên] đã xử lý việc này một phần. Tôi có thể thêm trường hợp [X] vào skill đó thay vì tạo skill mới — như vậy gọn hơn. Bạn có đồng ý không?"
+
+**Nếu overlap < 50% hoặc user muốn tạo mới:** Tiếp tục Bước 2.
+
+### Bước 2 — Đặt Tên Skill
+
+Tên file theo format: `[động-từ]-[danh-từ].md`  
+Ví dụ: `timesheet-processor.md`, `supplier-payable.md`, `inventory-tracker.md`
+
+### Bước 3 — Tạo File Skill
+
+Dùng cấu trúc chuẩn:
+
+```markdown
+---
+name: [skill-name]
+description: [mô tả 1 dòng]
+origin: PT
+tools: [tools MCP cần dùng]
+mcp_server: https://excel-mcp-server-dawn-star-9929.fly.dev
+---
+
+# [Tên Skill]
+
+## When to Activate
+[trigger phrases]
+
+## Bối Cảnh Thực Tế
+[vấn đề thực tế skill này giải quyết]
+
+## Workflow
+[các bước xử lý với tool params cụ thể]
+
+## Output
+[format kết quả mẫu]
+
+## Lỗi Thường Gặp
+[bảng lỗi + giải pháp]
+```
+
+### Bước 4 — Lưu Vào 2 Nơi
+
+- `C:\Users\wi\.claude\skills\[skill-name].md` — để Claude dùng ngay
+- `D:\HK8\Learning\DQ\PT\skills\[skill-name].md` — bản backup
+
+### Bước 5 — Ghi Log
+
+```markdown
+## [skill-name] — [ngày] — MỚI TẠO
+- **Yêu cầu:** [user mô tả gì]
+- **Skill:** [tên file]
+- **Tools:** [tools dùng]
+```
+
+### Ví Dụ
+
+**User:** "Tôi cần tính tăng ca cho công nhân, mỗi ngày chấm vào giờ, giờ tăng ca tính 1.5x, cuối tháng ra bảng lương"
+
+→ Claude hỏi thêm: "File chấm công có cột giờ vào/ra không? Hay chỉ có tổng giờ?"  
+→ User trả lời → Claude tạo `timesheet-processor.md`  
+→ Lưu vào cả 2 nơi → ghi log → thông báo có thể dùng ngay

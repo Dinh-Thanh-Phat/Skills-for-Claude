@@ -1,0 +1,267 @@
+﻿---
+name: auth-session-testing
+description: Playwright auth testing patterns — storageState setup project, role-based auth files, session expiry simulation, protected route redirects, OAuth/SSO flows. Use when writing tests that require login, testing auth itself, managing multiple user roles, or testing what happens when session expires. Triggers on: "auth test", "login test", "storageState", "session expiry", "protected route", "multiple roles", "OAuth", "SSO", "global setup auth", "reuse token", "storage state".
+triggers:
+  - "auth test"
+  - "login test"
+  - "storageState"
+  - "session expiry"
+  - "protected route"
+  - "multiple roles"
+  - "global setup auth"
+  - "reuse token"
+---
+
+# Auth / Session Testing
+
+## Core Decision
+
+```
+Is this a test ABOUT authentication itself?
+  YES → re-authenticate fresh every time, never cache
+  NO  → use storageState — login once in setup, reuse across tests
+```
+
+**Tests about auth** (`tests/auth/`) — login flow, logout, token expiry, wrong password, MFA
+**Feature tests** (`tests/features/`) — consume stored session, never test login flow
+
+---
+
+## Pattern 1: Setup Project (Login Once, Reuse All Tests)
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  projects: [
+    { name: 'setup', testMatch: '**/auth.setup.ts' },
+    {
+      name: 'chromium',
+      use: { storageState: '.auth/user.json' },
+      dependencies: ['setup'],
+    },
+  ],
+});
+```
+
+```typescript
+// auth.setup.ts
+import { test as setup } from '@playwright/test';
+
+setup('authenticate', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByLabel('Email').fill(process.env.TEST_EMAIL!);
+  await page.getByLabel('Password').fill(process.env.TEST_PASSWORD!);
+  await page.getByRole('button', { name: 'Login' }).click();
+
+  // ✅ CRITICAL: wait for FINAL redirect — cookies set server-side AFTER redirect
+  await page.waitForURL('/dashboard');
+
+  // Save AFTER final redirect, not before
+  await page.context().storageState({ path: '.auth/user.json' });
+});
+```
+
+## Pattern 2: Multiple Roles
+
+```typescript
+// playwright.config.ts
+projects: [
+  { name: 'setup:admin', testMatch: '**/auth.admin.setup.ts' },
+  { name: 'setup:user', testMatch: '**/auth.user.setup.ts' },
+  {
+    name: 'admin-tests',
+    use: { storageState: '.auth/admin.json' },
+    dependencies: ['setup:admin'],
+  },
+  {
+    name: 'user-tests',
+    use: { storageState: '.auth/user.json' },
+    dependencies: ['setup:user'],
+  },
+]
+```
+
+```typescript
+// Multi-role fixture for same test file
+const test = base.extend<{ adminPage: Page; userPage: Page }>({
+  adminPage: async ({ browser }, use) => {
+    const ctx = await browser.newContext({ storageState: '.auth/admin.json' });
+    await use(await ctx.newPage());
+    await ctx.close();
+  },
+  userPage: async ({ browser }, use) => {
+    const ctx = await browser.newContext({ storageState: '.auth/user.json' });
+    await use(await ctx.newPage());
+    await ctx.close();
+  },
+});
+```
+
+## Pattern 3: Session Expiry Simulation
+
+```typescript
+// Simulate logout/session expiry: clear cookies then navigate to protected route
+test('session expired → redirects to login', async ({ browser }) => {
+  const ctx = await browser.newContext({ storageState: '.auth/user.json' });
+  const page = await ctx.newPage();
+
+  // Simulate expiry by clearing session
+  await ctx.clearCookies();
+  await page.evaluate(() => localStorage.clear());
+
+  await page.goto('/dashboard');
+  await expect(page).toHaveURL(/\/login/);
+});
+```
+
+## Pattern 4: Protected Route (Unauthenticated)
+
+```typescript
+test('unauthenticated → redirects to login', async ({ browser }) => {
+  // Fresh context — NO storageState
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+
+  await page.goto('/dashboard');
+  await expect(page).toHaveURL(/\/login/);
+  await ctx.close();
+});
+```
+
+## Pattern 5a: Token Refresh Mid-Test
+
+```typescript
+// Force a refresh by setting cookie expiry to past and triggering a request
+await page.context().addCookies([{
+  name: 'access_token', value: 'expired', domain: '.example.com', path: '/',
+  expires: Math.floor(Date.now() / 1000) - 10,
+}]);
+const [refresh] = await Promise.all([
+  page.waitForResponse(r => r.url().includes('/auth/refresh') && r.ok()),
+  page.goto('/dashboard'),
+]);
+expect(refresh.status()).toBe(200);
+await expect(page).toHaveURL(/dashboard/);  // refresh succeeded, no redirect to /login
+```
+
+## Pattern 5b: JWT Expiry via `page.clock`
+
+```typescript
+// Issue a short-lived token, fast-forward, watch behavior
+await page.clock.install();
+await login(page);  // token expires in 5 minutes
+await page.clock.fastForward('06:00');  // 6 minutes
+await page.goto('/dashboard');
+await expect(page).toHaveURL(/\/login/);  // expired → redirect
+```
+
+## Pattern 5c: Bearer Token (API) vs Cookie (Web)
+
+```typescript
+// API-only test — set Authorization header instead of using storageState
+const apiCtx = await playwright.request.newContext({
+  extraHTTPHeaders: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+});
+const resp = await apiCtx.get('/api/me');
+expect(resp.ok()).toBe(true);
+```
+
+## Pattern 5d: CSRF Token
+
+```typescript
+// Read CSRF from a tagged meta or cookie before form submit
+const csrf = await page.locator('meta[name="csrf-token"]').getAttribute('content');
+await page.request.post('/api/save', {
+  data: { name: 'X' }, headers: { 'X-CSRF-Token': csrf! },
+});
+```
+
+## Pattern 5e: Role-Boundary Negative Test
+
+```typescript
+// User in `user` role must NOT reach admin route
+test('user blocked from admin', async ({ browser }) => {
+  const ctx = await browser.newContext({ storageState: '.auth/user.json' });
+  const page = await ctx.newPage();
+  const resp = await page.goto('/admin', { waitUntil: 'domcontentloaded' });
+  expect(resp?.status()).toBeGreaterThanOrEqual(401);
+  // OR redirect:
+  await expect(page).toHaveURL(/\/(login|forbidden|403)/);
+});
+```
+
+## Pattern 5f: Logout-All-Devices
+
+```typescript
+// Login on 2 contexts, logout from one, both must invalidate
+const ctxA = await browser.newContext(); const pageA = await ctxA.newPage();
+const ctxB = await browser.newContext(); const pageB = await ctxB.newPage();
+await login(pageA); await login(pageB);  // both authenticated as same user
+await pageA.goto('/account/security');
+await pageA.click('text=Log out everywhere');
+await pageB.goto('/dashboard');
+await expect(pageB).toHaveURL(/\/login/);  // pageB also signed out
+```
+
+## Pattern 6: OAuth/SSO
+
+```typescript
+setup('OAuth authenticate', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('button', { name: 'Sign in with Google' }).click();
+
+  // Handle OAuth provider page
+  await page.waitForURL('**/accounts.google.com/**');
+  await page.getByLabel('Email').fill(process.env.OAUTH_EMAIL!);
+  // ... fill password, handle MFA
+
+  // Wait for FINAL app callback redirect (not the OAuth callback URL)
+  await page.waitForURL('**/dashboard');
+
+  // Save ONLY after landing on app — OAuth callback URL has no app session yet
+  await page.context().storageState({ path: '.auth/oauth-user.json' });
+});
+```
+
+## Security Rules
+
+```gitignore
+# .gitignore — MANDATORY
+.auth/
+*.token
+*.session
+```
+
+```typescript
+// ✅ Credentials from env vars only — never hardcoded
+await page.fill('#email', process.env.TEST_EMAIL!);
+
+// ❌ Never hardcode
+await page.fill('#email', 'admin@example.com');
+```
+
+- sessionStorage is NOT captured by storageState (tab-scoped). Inject manually:
+  ```typescript
+  await page.evaluate(() => sessionStorage.setItem('key', 'value'));
+  ```
+
+## Gotchas
+
+| Gotcha | Fix |
+|---|---|
+| Saving storageState before final redirect | Wait for `page.waitForURL('/dashboard')` first |
+| Parallel workers sharing same state file | Use `workerStorageState` per-worker or read-only shared file |
+| sessionStorage not in storageState | Inject via `page.evaluate()` in test setup |
+| "Remember me" changes cookie expiry | Test explicitly: check `cookie.expires` value with/without |
+| .auth/ committed to git | Add to .gitignore — contains live session tokens |
+
+## Decision Table
+
+| Scenario | Strategy |
+|---|---|
+| Feature test | Reuse storageState — no re-login |
+| Test ABOUT login flow | Re-authenticate fresh — no cache |
+| Test ABOUT logout | Re-authenticate after logout |
+| Test token expiry | Re-authenticate with short-lived token |
+| Parallel CI workers (same run) | Share same storageState file (read-only) |
+

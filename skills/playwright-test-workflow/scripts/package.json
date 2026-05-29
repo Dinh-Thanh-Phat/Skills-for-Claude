@@ -1,0 +1,19 @@
+{
+  "name": "playwright-test-workflow-scripts",
+  "private": true,
+  "scripts": {
+    "snapshot": "ts-node take-snapshot.ts",
+    "capture":  "ts-node capture.ts",
+    "process":  "ts-node process.ts",
+    "diff":     "ts-node diff.ts",
+    "generate": "ts-node generate.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
