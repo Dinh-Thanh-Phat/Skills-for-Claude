@@ -17,6 +17,17 @@
             "statusMessage": "Checking skill structure..."
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/sync-skills-repo.py",
+            "async": true,
+            "statusMessage": "Syncing to skills repo..."
+          }
+        ]
       }
     ],
     "PreCompact": [
