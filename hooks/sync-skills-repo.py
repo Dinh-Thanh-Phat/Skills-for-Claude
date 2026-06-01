@@ -1,6 +1,6 @@
 import json, sys, re, os, subprocess, shutil
 
-REPO = 'D:/tmp/Skills-for-Claude'
+REPO = 'C:/Users/wi/Skills-for-Claude'
 
 data = json.load(sys.stdin)
 f = data.get('tool_input', {}).get('file_path', '')
