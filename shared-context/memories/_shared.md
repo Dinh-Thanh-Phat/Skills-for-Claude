@@ -60,3 +60,4 @@ File mới luôn vào đúng thư mục — không để ở root.
 - **Verify path tồn tại trước khi chạy** — đặc biệt paths có Unicode/tiếng Việt
 - **`get_column_letter(n)` thay vì `chr(64+n)`** cho openpyxl (breaks ở col > 26)
 - **Grep uniqueness trước Edit tool** — `old_string` phải xuất hiện đúng 1 lần
+# test line
