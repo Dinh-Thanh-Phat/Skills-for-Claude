@@ -1,6 +1,5 @@
 ---
 name: ask-when-stuck
-# test sync hook
 description: "⚠️ P0 — HIGHEST PRIORITY. Use when: (1) UI element/locator not found after 1-2 attempts, (2) test keeps failing after 1-2 fix attempts, (3) timeout is unclear after 1 measurement, (4) any repeated failure with no clear root cause. STOP and ask BEFORE attempt 3."
 priority: P0
 ---
