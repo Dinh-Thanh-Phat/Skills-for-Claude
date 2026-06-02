@@ -16,6 +16,12 @@ Mount a real component in Chromium/Firefox/WebKit — no full app, no dev server
 | Accessibility of a single component | Full-stack data flows |
 | Faster feedback on UI logic | Confirming the whole app works together |
 
+## CT vs Vitest/JSDOM (which skill to use)
+
+See also `vitest-unit-testing`. Pick by **rendering environment**, not by the phrase "component test":
+- **`vitest-unit-testing`** — JSDOM (simulated DOM), fastest, best for logic, hooks, and components that don't depend on real layout/paint. Default for unit + most component tests.
+- **`playwright-component-testing`** (this skill) — real browser engine. Use when the test needs real CSS/layout, true browser events, visual states, or Playwright locators/traces. Slower than JSDOM; reserve for components where simulated DOM is not faithful enough.
+
 ## Setup
 
 ```bash
