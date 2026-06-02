@@ -1,4 +1,4 @@
-# Skills-for-Claude — Windows Setup Script
+# Skills-for-Claude - Windows Setup Script
 # Run from repo root: .\setup.ps1
 # Requires: Git Bash or PowerShell 5+
 
@@ -27,7 +27,7 @@ $skills = Get-ChildItem $skillsSrc -Directory
 foreach ($skill in $skills) {
     $dst = "$skillsDst\$($skill.Name)"
     if ((Test-Path $dst) -and -not $Force) {
-        Write-Warn "Skipping $($skill.Name) (exists — use -Force to overwrite)"
+        Write-Warn "Skipping $($skill.Name) (exists - use -Force to overwrite)"
     } else {
         Copy-Item -Recurse -Force $skill.FullName $skillsDst
         Write-Ok $skill.Name
@@ -52,7 +52,7 @@ $ctxDst = "$ClaudeDir\shared-context"
 $sharedMem = "$ctxDst\memories\_shared.md"
 if (-not (Test-Path "$ctxDst\memories")) { New-Item -ItemType Directory -Force "$ctxDst\memories" | Out-Null }
 if ((Test-Path $sharedMem) -and -not $Force) {
-    Write-Warn "_shared.md already exists — skipping (use -Force to overwrite)"
+    Write-Warn "_shared.md already exists - skipping (use -Force to overwrite)"
 } else {
     Copy-Item -Force "$ctxSrc\memories\_shared.md" "$ctxDst\memories\_shared.md"
     Write-Ok "memories/_shared.md"
@@ -63,7 +63,7 @@ if (-not (Test-Path "$ctxDst\knowledge")) { New-Item -ItemType Directory -Force 
 Get-ChildItem "$ctxSrc\knowledge" -File | ForEach-Object {
     $dst = "$ctxDst\knowledge\$($_.Name)"
     if ((Test-Path $dst) -and -not $Force) {
-        Write-Warn "knowledge/$($_.Name) exists — skipping"
+        Write-Warn "knowledge/$($_.Name) exists - skipping"
     } else {
         Copy-Item -Force $_.FullName $dst
         Write-Ok "knowledge/$($_.Name)"
