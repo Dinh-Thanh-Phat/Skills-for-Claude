@@ -19,15 +19,16 @@ Does NOT (hard cloud limitations — documented so future-you doesn't re-attempt
 - ❌ Read the user's local chat-session transcripts (`C:\Users\wi\.claude\projects\*.jsonl`) — local only, not in cloud. The "learn from each chat session" idea needs a **local** component (a session-close hook that pushes lessons into this repo). Out of scope here. See "Future: hybrid mode".
 - ❌ Edit the user's local `C:\Users\wi\.claude\skills\` directly. This repo IS the source of truth for skills; the user syncs to their machine via `setup.ps1`/`setup.sh` (or `git pull`) when at the machine.
 
-## Focus domains (derived from the existing skills in this repo)
+## Focus domains (QA / testing ONLY)
+
+This routine evolves **QA and testing** skills only. Stay strictly within these domains:
 
 1. **Playwright / web E2E** — locators, network mocking, flaky-test prevention, reporters, config, accessibility.
 2. **Maestro / mobile automation** — iOS + Android, ADB, speed, scaling, auth-state strategy.
 3. **Test design & QA process** — coverage matrices, behavioral coverage, bug reports, test plans, diagnosis-first.
-4. **AI chatbot testing** — QA generation, response evaluation, OCR, performance analysis.
-5. **Odoo / ERP automation** — only when relevant.
-6. **Google Workspace automation** — Sheets formatting, safe-write.
-7. **Frontend / Figma-to-code** — React component building.
+4. **AI chatbot / LLM testing** — QA generation, response evaluation, OCR, performance analysis, LLM security/red-teaming.
+
+**OUT OF SCOPE — do NOT create or update skills for these** (even though such skills exist in the repo): frontend/dev work (Figma-to-code, React component building, design tokens), Odoo/ERP automation, Google Workspace automation (Sheets formatting). These are dev/automation, not testing. If a finding is genuinely a *testing technique* for one of these areas (e.g. how to test a design-token pipeline), it belongs under domain 1–4; the dev/build side does not.
 
 Rotate emphasis day to day so domains get fresh coverage over the week — use the changelog to see what was last touched.
 
