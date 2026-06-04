@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-04 (GMT+7)
+
+Domains researched: AI chatbot/LLM security (adversarial testing), Frontend/Figma-to-code (design tokens), Playwright/web E2E (accessibility coverage update).
+
+- CREATED: skills/llm-red-teaming — Adversarial LLM security testing using Garak (static probes), PyRIT (multi-turn Crescendo/TAP/Skeleton Key orchestration), and Promptfoo (CI-integrated red teaming). Covers direct injection, indirect RAG injection, and multi-turn escalation. Prompt injection is OWASP LLM Top-10 #1 in 2026; not covered by existing chatbot-tester (functional) or llm-production-observability (monitoring). Sources: https://genai.owasp.org/llmrisk/llm01-prompt-injection/, https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/, https://appsecsanta.com/ai-security-tools/llm-red-teaming
+- CREATED: skills/figma-design-tokens — Figma → Token Studio → Style Dictionary → CSS/Tailwind/TypeScript pipeline for React design systems. Covers W3C token JSON export, Style Dictionary transforms, GitHub Actions auto-sync, Tailwind integration, and component naming conventions. No existing skill covers Figma-to-React code workflows. Sources: https://medium.com/@alexdev82/how-we-built-a-reliable-design-token-pipeline-from-figma-to-react-fddf4725cdbe, https://docs.tokens.studio/transform-tokens/style-dictionary, https://www.superdevacademy.com/en/blogs/figma-to-react-workflow-2026
+- UPDATED: skills/accessibility-testing — Corrected automated coverage figure from "~30-40%" to "~57%" per Deque Systems 2026 study; added source URL. Source: https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
+
 ## 2026-06-03 (GMT+7)
 
 Domains researched: Maestro/mobile (MCP integration), Odoo/ERP (Odoo 19 testing framework), QA test design.
