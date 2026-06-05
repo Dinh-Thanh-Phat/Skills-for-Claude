@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-05 (GMT+7)
+
+Domains researched: Playwright/web E2E (1.59 new APIs), AI chatbot/LLM testing (red-teaming), QA test design (mutation testing).
+
+- CREATED: skills/playwright-agentic-apis — Playwright 1.59 (April 2026) new agentic APIs: `locator.normalize()` to canonicalize brittle selectors to ARIA/testId form, `page.pickLocator()` for interactive element discovery, `page.screencast` for precise annotated video recording with chapter overlays and live frame streaming, `browserContext.setStorageState()` for mid-test auth switching. Not covered by any existing skill. Sources: https://github.com/microsoft/playwright/releases/tag/v1.59.0, https://testdino.com/blog/playwright-release-guide, https://bug0.com/blog/whats-new-playwright-1-59
+- CREATED: skills/mutation-testing-stryker — StrykerJS mutation testing for JS/TS: validates tests actually catch bugs beyond code coverage, incremental CI mode (--incremental flag) for PR pipelines with nightly full runs, mutation score thresholds (break at 55%, target 80%), AI-assisted survivor killing workflow, supported runners (Vitest/Jest/Mocha). No existing mutation testing skill in repo. Sources: https://github.com/stryker-mutator/stryker-js, https://stryker-mutator.io/docs/stryker-js/incremental/, https://oneuptime.com/blog/post/2026-01-25-mutation-testing-with-stryker/view
+- UPDATED: skills/llm-red-teaming — Added DeepTeam framework (50+ vulns, 20+ attack vectors, OWASP ASI 2026/NIST/MITRE aligned) alongside existing Garak/PyRIT/Promptfoo tools; added bias testing coverage matrix (gender/race/religion/socioeconomic probing) and structured toxicity/PII leakage sections not previously covered. Sources: https://github.com/confident-ai/deepteam, https://datavlab.ai/post/red-teaming-llms-practitioner-guide-2026
+
 ## 2026-06-04 (GMT+7)
 
 Domains researched: AI chatbot/LLM security (adversarial testing), Frontend/Figma-to-code (design tokens), Playwright/web E2E (accessibility coverage update).
