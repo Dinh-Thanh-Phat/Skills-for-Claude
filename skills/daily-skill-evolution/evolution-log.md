@@ -5,6 +5,22 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-05 (GMT+7)
+
+Domains researched: Playwright/web E2E (1.59 new APIs), AI chatbot/LLM testing (red-teaming), QA test design (mutation testing).
+
+- CREATED: skills/playwright-agentic-apis — Playwright 1.59 (April 2026) new agentic APIs: `locator.normalize()` to canonicalize brittle selectors to ARIA/testId form, `page.pickLocator()` for interactive element discovery, `page.screencast` for precise annotated video recording with chapter overlays and live frame streaming, `browserContext.setStorageState()` for mid-test auth switching. Not covered by any existing skill. Sources: https://github.com/microsoft/playwright/releases/tag/v1.59.0, https://testdino.com/blog/playwright-release-guide, https://bug0.com/blog/whats-new-playwright-1-59
+- CREATED: skills/mutation-testing-stryker — StrykerJS mutation testing for JS/TS: validates tests actually catch bugs beyond code coverage, incremental CI mode (--incremental flag) for PR pipelines with nightly full runs, mutation score thresholds (break at 55%, target 80%), AI-assisted survivor killing workflow, supported runners (Vitest/Jest/Mocha). No existing mutation testing skill in repo. Sources: https://github.com/stryker-mutator/stryker-js, https://stryker-mutator.io/docs/stryker-js/incremental/, https://oneuptime.com/blog/post/2026-01-25-mutation-testing-with-stryker/view
+- UPDATED: skills/llm-red-teaming — Added DeepTeam framework (50+ vulns, 20+ attack vectors, OWASP ASI 2026/NIST/MITRE aligned) alongside existing Garak/PyRIT/Promptfoo tools; added bias testing coverage matrix (gender/race/religion/socioeconomic probing) and structured toxicity/PII leakage sections not previously covered. Sources: https://github.com/confident-ai/deepteam, https://datavlab.ai/post/red-teaming-llms-practitioner-guide-2026
+
+## 2026-06-04 (GMT+7)
+
+Domains researched: AI chatbot/LLM security (adversarial testing), Frontend/Figma-to-code (design tokens), Playwright/web E2E (accessibility coverage update).
+
+- CREATED: skills/llm-red-teaming — Adversarial LLM security testing using Garak (static probes), PyRIT (multi-turn Crescendo/TAP/Skeleton Key orchestration), and Promptfoo (CI-integrated red teaming). Covers direct injection, indirect RAG injection, and multi-turn escalation. Prompt injection is OWASP LLM Top-10 #1 in 2026; not covered by existing chatbot-tester (functional) or llm-production-observability (monitoring). Sources: https://genai.owasp.org/llmrisk/llm01-prompt-injection/, https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/, https://appsecsanta.com/ai-security-tools/llm-red-teaming
+- CREATED: skills/figma-design-tokens — Figma → Token Studio → Style Dictionary → CSS/Tailwind/TypeScript pipeline for React design systems. Covers W3C token JSON export, Style Dictionary transforms, GitHub Actions auto-sync, Tailwind integration, and component naming conventions. No existing skill covers Figma-to-React code workflows. Sources: https://medium.com/@alexdev82/how-we-built-a-reliable-design-token-pipeline-from-figma-to-react-fddf4725cdbe, https://docs.tokens.studio/transform-tokens/style-dictionary, https://www.superdevacademy.com/en/blogs/figma-to-react-workflow-2026
+- UPDATED: skills/accessibility-testing — Corrected automated coverage figure from "~30-40%" to "~57%" per Deque Systems 2026 study; added source URL. Source: https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
+
 ## 2026-06-03 (GMT+7)
 
 Domains researched: Maestro/mobile (MCP integration), Odoo/ERP (Odoo 19 testing framework), QA test design.

@@ -24,7 +24,7 @@ You are a **Senior QA Engineer** implementing automated accessibility checks to 
 
 ## Core Law
 
-> **Automated a11y tools catch ~30-40% of real WCAG violations.**
+> **Automated a11y tools catch ~57% of real WCAG violations** (Deque Systems 2026 study — higher than the commonly cited 30-40%).
 > Always combine automated scans with manual keyboard and screen reader testing.
 > Automated = fast regression net. Manual = thorough audit.
 
@@ -286,6 +286,7 @@ const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
 ---
 
 ## Sources
-- Playwright accessibility testing: playwright.dev/docs/accessibility-testing
-- axe-core WCAG guide: qamadness.com/axe-core-playwright-accessibility-testing
-- Playwright a11y CI guide: testdino.com/blog/playwright-accessibility
+- Playwright accessibility testing: https://playwright.dev/docs/accessibility-testing
+- axe-core WCAG guide: https://www.qamadness.com/a-you-oriented-guide-to-axe-core-playwright-accessibility-testing/
+- Playwright a11y CI guide: https://testdino.com/blog/playwright-accessibility
+- Deque Systems 57% coverage study (2026): https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
