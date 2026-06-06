@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-06 (GMT+7)
+
+Domains researched: Maestro/mobile (real iOS device testing), AI chatbot/LLM testing (DeepEval CI/CD evaluation), QA test design (property-based testing for APIs).
+
+- CREATED: skills/maestro-real-ios-device — community tool `maestro-runner` (devicelab-dev) adds real physical iOS device support to Maestro via XCTest driver + auto port forwarding; 3.6× faster than maestro-ios-device, supports parallel multi-device runs; existing YAML flows unchanged. Not covered by maestro-mobile (simulators/Android only). Sources: https://github.com/devicelab-dev/maestro-runner, https://blog.devicelab.dev/went-in-to-support-maestro-for-physical-devices-came-out-with-even-more/
+- CREATED: skills/deepeval-llm-cicd — DeepEval (Confident AI) pytest-native LLM quality CI/CD framework: assert_test() gates PRs on AnswerRelevancy / Faithfulness / Hallucination / ContextualRecall metrics; parallel eval (-n 4); GitHub Actions integration; RAG eval pipeline. Distinct from llm-red-teaming (security) and llm-production-observability (runtime monitoring). Sources: https://deepeval.com/docs/evaluation-unit-testing-in-ci-cd, https://deepeval.com/guides/guides-regression-testing-in-cicd
+- CREATED: skills/property-based-testing-api — Property-based testing with fast-check (JS/TS) and Hypothesis (Python): auto-generates 100s of inputs from invariants (idempotency, schema compliance, referential integrity, ordering, error handling), shrinks failures to minimal case. API migration playbook included. 35–50% higher edge-case defect detection than example-only tests. No existing skill covered this technique. Sources: https://www.sachith.co.uk/property%E2%80%91based-testing-for-apis-migration-playbook-practical-guide-jun-4-2026/, https://fast-check.dev/
+
 ## 2026-06-05 (GMT+7)
 
 Domains researched: Playwright/web E2E (1.59 new APIs), AI chatbot/LLM testing (red-teaming), QA test design (mutation testing).
