@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-07 (GMT+7)
+
+Domains researched: Maestro/mobile (GraalJS JS engine migration), Playwright/web E2E (blob reporter for shard merging), AI chatbot/LLM testing (DeepEval — checked for novelty).
+
+- UPDATED: skills/maestro-mobile — Added GraalJS vs Rhino migration section: `jsEngine: graaljs` frontmatter opt-in, `MAESTRO_USE_GRAALJS=true` env var (local only), ES5 vs ECMAScript 2022 comparison table. Maestro 2.0+ defaults to GraalJS; Rhino is being deprecated. Sources: https://github.com/mobile-dev-inc/Maestro/issues/2049, https://github.com/mobile-dev-inc/maestro-docs/blob/main/advanced/javascript/graaljs-support.md
+- UPDATED: skills/test-parallelization — Added blob reporter config (`reporter: process.env.CI ? 'blob' : 'html'`) required for shard report merging, full GitHub Actions shard+merge workflow (upload per shard, merge-multiple artifact download, merge-reports step), and 2026 optimal shard count table (4–6 shards × 2–4 workers = ~80% time reduction). Existing skill had the `merge-reports` CLI command but not the blob reporter config needed to enable it. Sources: https://playwright.dev/docs/test-sharding, https://qaskills.sh/blog/playwright-parallel-testing-best-practices-2026, https://bug0.com/blog/playwright-test-sharding-guide
+- SKIPPED AI chatbot/LLM testing — DeepEval already covered thoroughly by skills/deepeval-llm-cicd (created 2026-06-06); no new angle found worth adding.
+
 ## 2026-06-06 (GMT+7)
 
 Domains researched: Maestro/mobile (real iOS device testing), AI chatbot/LLM testing (DeepEval CI/CD evaluation), QA test design (property-based testing for APIs).

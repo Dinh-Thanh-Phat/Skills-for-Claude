@@ -427,6 +427,34 @@ output.email = params.PREFIX + '-' + timestamp + '@test.com';
 output.timestamp = timestamp;
 ```
 
+### JavaScript Engine: GraalJS vs Rhino
+
+Maestro is migrating from **Rhino** (ECMAScript 5, default until 2.0) to **GraalJS** (ECMAScript 2022).
+GraalJS is now the default in Maestro 2.0+. If running an older version, opt-in explicitly:
+
+```yaml
+# Top of your flow file — ignored in subflows
+appId: com.example.app
+jsEngine: graaljs          # opt-in to GraalJS (ECMAScript 2022)
+---
+- runScript:
+    file: scripts/modern.js
+```
+
+```bash
+# Local only (not supported in Maestro Cloud)
+export MAESTRO_USE_GRAALJS=true
+maestro test flow.yaml
+```
+
+| Engine | ES Version | Status |
+|--------|-----------|--------|
+| Rhino | ECMAScript 5 | Being deprecated |
+| GraalJS | ECMAScript 2022 | Default in Maestro 2.0+ |
+
+GraalJS enables `const`/`let`, arrow functions, template literals, `Promise`, and proper block scoping.
+Old Rhino-style `var`-only scripts still work under GraalJS.
+
 ## Repeat / Loops
 
 ```yaml

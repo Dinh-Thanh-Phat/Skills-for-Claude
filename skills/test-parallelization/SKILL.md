@@ -171,21 +171,60 @@ npx playwright test --shard=2/4
 # Machine 3, 4: similar
 ```
 
-### GitHub Actions sharding example
+### Step 1: Enable blob reporter in CI
+
+The blob reporter emits a `.zip` per shard that can be merged after all shards finish. Without it, each shard only produces a standalone HTML report that can't be combined.
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  reporter: process.env.CI ? 'blob' : 'html',  // blob in CI, human-readable HTML locally
+  fullyParallel: true,
+  workers: process.env.CI ? 4 : 2,
+});
+```
+
+### Step 2: GitHub Actions sharding + merge
+
 ```yaml
 jobs:
   test:
     strategy:
       matrix:
-        shard: [1, 2, 3, 4]
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     steps:
-      - run: npx playwright test --shard=${{ matrix.shard }}/4
+      - run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+
+  merge-reports:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports/
+          pattern: blob-report-*
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: playwright-report/
 ```
 
-### Merging shard reports
-```bash
-npx playwright merge-reports --reporter html ./blob-reports
-```
+### Optimal shard count (2026 guidance)
+
+The sweet spot for most teams is **4–6 shards × 2–4 workers each** — yields ~80% time reduction without runaway CI costs. Scale up shards (not workers) once a single machine can't finish in your time budget (~5–10 min threshold).
+
+| Suite size | Recommended config | Wall time reduction |
+|-----------|-------------------|-------------------|
+| 50–200 tests | 4 shards × 2 workers | ~75% |
+| 200–500 tests | 4 shards × 4 workers | ~80% |
+| 500+ tests | 6 shards × 4 workers | ~85% |
 
 ---
 
