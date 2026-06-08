@@ -179,6 +179,54 @@ test.describe('Template management', () => {
 - Tests with fewer than 3 locators
 - Exploration/discovery tests
 
+## Composable Fixtures as an Alternative (2026)
+
+For small-to-medium suites (< 200 specs), Playwright's `test.extend()` fixtures give the same isolation and reusability with less boilerplate than class hierarchies. In 2026, this is the community-preferred pattern for new suites.
+
+```typescript
+// fixtures/app.fixture.ts
+import { test as base } from '@playwright/test';
+import { TemplatePage } from '../pages/template.page';
+
+type AppFixtures = {
+  templatePage: TemplatePage;
+};
+
+export const test = base.extend<AppFixtures>({
+  // Fixture: depends on built-in `page`; Playwright composes them automatically
+  templatePage: async ({ page }, use) => {
+    const templatePage = new TemplatePage(page);
+    await templatePage.goto();
+    await use(templatePage);   // test runs here
+    // teardown (e.g. cleanup) goes after use() if needed
+  },
+});
+
+export { expect } from '@playwright/test';
+```
+
+```typescript
+// specs/templates.spec.ts — no beforeEach, no manual instantiation
+import { test, expect } from '../fixtures/app.fixture';
+
+test('create template', async ({ templatePage }) => {
+  await templatePage.create('My Template');
+  await templatePage.expectCreatedSuccessfully('My Template');
+});
+```
+
+**Prefer fixtures over POM when:**
+- New suite, small-to-medium size (< 200 specs) — less class hierarchy ceremony
+- Setup is stateful (auth sessions, seeded data) — explicit setup/teardown in one place
+- Tests need different combinations of setup — fixtures compose without inheritance
+
+**Keep POM when:**
+- 200+ specs across many engineers — shared Page class vocabulary aids coordination
+- Migrating from Selenium — POM is already the team's mental model
+- UI structure is very stable — the abstraction cost pays back over time
+
+The two are not mutually exclusive: use fixtures for the setup/teardown lifecycle, and POM classes for interaction methods inside those fixtures.
+
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Fix |

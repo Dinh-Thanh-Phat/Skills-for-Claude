@@ -183,6 +183,47 @@ assert_test(rag_case, [
 
 Tighten after baseline runs; never set thresholds before collecting data on your system.
 
+## Agent Evaluation Metrics
+
+When testing AI agents (tool use, multi-step reasoning), use agent-specific metrics:
+
+```python
+from deepeval.metrics import TaskCompletionMetric, ToolCorrectnessMetric
+
+agent_case = LLMTestCase(
+    input="Book a flight from Hanoi to HCMC for next Monday",
+    actual_output=agent.run("Book a flight from Hanoi to HCMC for next Monday"),
+    # tools_called is populated from your agent's trace
+)
+
+assert_test(agent_case, [
+    TaskCompletionMetric(threshold=0.8),     # did the agent achieve the user's goal?
+    ToolCorrectnessMetric(threshold=0.9),    # were the right tools called in the right order?
+])
+```
+
+## Controlling the Judge Model (Cost vs Accuracy)
+
+DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
+
+```python
+from deepeval.models import GPTModel
+
+# Per-PR (fast & cheap): smaller judge model
+fast_metric = FaithfulnessMetric(
+    threshold=0.8,
+    model=GPTModel(model="gpt-4o-mini"),
+)
+
+# Release gate (accurate): best available judge
+release_metric = FaithfulnessMetric(
+    threshold=0.85,
+    model=GPTModel(model="gpt-4o"),
+)
+```
+
+Strategy: use a lightweight judge for per-PR speed checks; use the strongest judge for release-gate evals where accuracy matters most.
+
 ## Sources
 
 - https://deepeval.com/docs/evaluation-unit-testing-in-ci-cd

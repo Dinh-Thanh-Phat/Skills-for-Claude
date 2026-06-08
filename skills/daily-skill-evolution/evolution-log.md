@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-08 (GMT+7)
+
+Domains researched: AI chatbot/LLM testing (DeepEval agent metrics, judge model cost control), Playwright/web E2E (composable fixtures vs POM, 2026 consensus), Maestro/mobile (accessibility testing — skipped).
+
+- UPDATED: skills/deepeval-llm-cicd — Added "Agent Evaluation Metrics" section (TaskCompletionMetric, ToolCorrectnessMetric for agentic systems) and "Controlling the Judge Model" section (GPT-4o-mini for per-PR speed vs GPT-4o for release gates). Existing skill covered RAG and chatbot eval well but had no agent-specific metrics or model-swapping guidance. Sources: https://github.com/confident-ai/deepeval, https://labelyourdata.com/articles/llm-as-a-judge, https://calmops.com/testing/llm-evaluation-frameworks-deepeval-2026/
+- UPDATED: skills/playwright-page-object-model — Added "Composable Fixtures as an Alternative (2026)" section with test.extend() TypeScript pattern, full fixture example with setup/teardown, and a clear fixtures-vs-POM decision guide. 2026 community consensus: fixtures preferred for new small-to-medium suites; POM retained for 200+ spec teams or Selenium migrations. Sources: https://playwright.dev/docs/test-fixtures, https://getautonoma.com/blog/playwright-best-practices-2026, https://dzone.com/articles/playwright-fixtures-vs-pom
+- SKIPPED Maestro accessibility — search returned general mobile a11y advice (touch targets, WCAG contrast, TalkBack/VoiceOver) not specific to Maestro YAML commands. Existing maestro-mobile skill already covers label: and id: selectors (the same accessibility-layer primitives). No actionable Maestro-specific additions found.
+
 ## 2026-06-07 (GMT+7)
 
 Domains researched: Maestro/mobile (GraalJS JS engine migration), Playwright/web E2E (blob reporter for shard merging), AI chatbot/LLM testing (DeepEval — checked for novelty).
