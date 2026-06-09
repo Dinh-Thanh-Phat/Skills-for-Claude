@@ -5,6 +5,15 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-09 (GMT+7)
+
+Domains researched: Maestro/mobile (parallel sharding), AI chatbot/LLM testing (RAGAS RAG evaluation), QA test design (skipped — recent coverage sufficient).
+
+- CREATED: skills/rag-evaluation-ragas — RAGAS 4-core metrics for RAG pipeline evaluation: context precision, context recall, faithfulness, answer relevancy; diagnostic decision table (which metric failing → which layer is broken); production confusion matrix (TP/FP/FN/TN for retrieval); chunking fix patterns for low context recall; CI gate thresholds; DeepEval integration for pytest runner. Distinct from deepeval-llm-cicd (covers DeepEval API wrappers only, not RAGAS framework or diagnostic interpretation). Sources: https://datavlab.ai/post/rag-evaluation-methods-metrics-2026-guide, https://www.invra.co/en/rag-evaluation-with-ragas-measuring-faithfulness-context-precision-and-recall-in-production/, https://blog.premai.io/rag-evaluation-metrics-frameworks-testing-2026/
+- UPDATED: skills/maestro-mobile — Added "Parallel Testing & Sharding" section: `maestro test --shards N` to distribute flows across N devices; `${MAESTRO_SHARD_INDEX}` and `${MAESTRO_DEVICE_UDID}` built-in variables for artifact isolation; `clearState: true` + unique-per-device test data pattern to prevent concurrent account conflicts; Maestro Cloud CI guidance. Not previously covered (2026-06-07 update added GraalJS only). Sources: https://maestro.dev/insights/parallel-testing-android-ios, https://docs.maestro.dev/maestro-flows/flow-control-and-logic/specify-and-start-devices
+- SKIPPED AI chatbot/LLM testing (DeepEval) — deepeval-llm-cicd already thoroughly covers DeepEval including RAG metrics, agent metrics, and judge model control (updated 2026-06-08). No new angle found.
+- SKIPPED QA test design — property-based-testing-api (2026-06-06) and mutation-testing-stryker (2026-06-05) cover advanced techniques; general BDD/shift-left content already in behavioral-coverage-matrix and qa-test-plan.
+
 ## 2026-06-08 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (DeepEval agent metrics, judge model cost control), Playwright/web E2E (composable fixtures vs POM, 2026 consensus), Maestro/mobile (accessibility testing — skipped).

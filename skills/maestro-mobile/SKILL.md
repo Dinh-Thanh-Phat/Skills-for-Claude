@@ -516,6 +516,61 @@ See [references/ci-cd.md](references/ci-cd.md) for full GitHub Actions and GitLa
     maestro test --format junit --output test-results.xml flows/
 ```
 
+## Parallel Testing & Sharding
+
+Run multiple flows simultaneously across devices to cut suite time by 1/N.
+
+```bash
+# Shard across 3 connected devices/emulators — 9 flows → 3 per device
+maestro test --shards 3 flows/
+
+# With JUnit output for CI
+maestro test --shards 3 --format junit --output results/ flows/
+```
+
+**Artifact isolation** — avoid screenshot overwrites when shards run simultaneously:
+
+```yaml
+# ✓ Use built-in shard variables in screenshot filenames
+- takeScreenshot: "checkout-step1-shard${MAESTRO_SHARD_INDEX}-${MAESTRO_DEVICE_UDID}"
+```
+
+`MAESTRO_SHARD_INDEX` (0-based shard number) and `MAESTRO_DEVICE_UDID` are injected automatically during sharded runs.
+
+**Test isolation for parallel runs** — each shard must start from a clean state:
+
+```yaml
+# ✓ clearState at the top of every flow (not just sub-flows)
+- clearState: true
+- launchApp
+
+# ✓ Use MAESTRO_DEVICE_UDID for unique test data to avoid account conflicts
+- runScript:
+    file: scripts/generate-user.js
+    env:
+      DEVICE_ID: ${MAESTRO_DEVICE_UDID}
+    outputVars:
+      TEST_EMAIL: result.email
+```
+
+```javascript
+// scripts/generate-user.js — unique email per device avoids concurrent login conflicts
+output.email = "qa-" + params.DEVICE_ID.slice(-6) + "-" + Date.now() + "@test.com";
+```
+
+**CI parallel testing** — `--shards N` requires N devices connected locally. For cloud CI, use Maestro Cloud or BrowserStack which handle device provisioning and distribute flows automatically:
+
+```yaml
+# Maestro Cloud (handles parallel device allocation)
+- name: Run parallel Maestro tests
+  uses: mobile-dev-inc/maestro-github-action@v1
+  with:
+    api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+    app-file: app.apk
+    flows-dir: flows/
+    # Maestro Cloud distributes flows across a device pool automatically
+```
+
 ## Directory Structure (Recommended)
 
 ```
