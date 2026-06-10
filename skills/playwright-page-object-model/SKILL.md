@@ -179,9 +179,9 @@ test.describe('Template management', () => {
 - Tests with fewer than 3 locators
 - Exploration/discovery tests
 
-## Composable Fixtures as an Alternative (2026)
+## Composable Fixtures — Complement to POM (2026)
 
-For small-to-medium suites (< 200 specs), Playwright's `test.extend()` fixtures give the same isolation and reusability with less boilerplate than class hierarchies. In 2026, this is the community-preferred pattern for new suites.
+Playwright's `test.extend()` fixtures handle the **setup/teardown lifecycle** and compose well with POM classes — the fixture instantiates the Page Object, POM handles interaction methods. Use them together, not as an either/or choice.
 
 ```typescript
 // fixtures/app.fixture.ts
@@ -215,17 +215,17 @@ test('create template', async ({ templatePage }) => {
 });
 ```
 
-**Prefer fixtures over POM when:**
-- New suite, small-to-medium size (< 200 specs) — less class hierarchy ceremony
-- Setup is stateful (auth sessions, seeded data) — explicit setup/teardown in one place
-- Tests need different combinations of setup — fixtures compose without inheritance
+**Use fixtures for:**
+- Setup/teardown lifecycle (auth sessions, seeded data, cleanup after `use()`)
+- Composing multiple POM objects across tests without repeating `beforeEach`
+- Tests that need different combinations of setup — fixtures compose without inheritance
 
-**Keep POM when:**
-- 200+ specs across many engineers — shared Page class vocabulary aids coordination
-- Migrating from Selenium — POM is already the team's mental model
-- UI structure is very stable — the abstraction cost pays back over time
+**Use POM for:**
+- All interaction methods and locators — always, regardless of suite size
+- Shared vocabulary across engineers
+- Encapsulating dialog handling (see `test-dialog-pom-pattern`)
 
-The two are not mutually exclusive: use fixtures for the setup/teardown lifecycle, and POM classes for interaction methods inside those fixtures.
+**Recommended default:** wrap POM instantiation inside a fixture so setup/teardown is centralized, while all UI interaction stays in the Page Object class.
 
 ## Anti-Patterns
 
