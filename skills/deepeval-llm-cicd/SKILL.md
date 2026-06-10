@@ -202,6 +202,53 @@ assert_test(agent_case, [
 ])
 ```
 
+## Multi-Turn (Conversational) Evaluation
+
+Use `ConversationalTestCase` when correctness depends on conversation history — chatbots,
+support bots, onboarding wizards, or any system where later turns reference earlier context.
+Single-turn `LLMTestCase` metrics cannot detect context loss or persona drift across turns.
+
+```python
+from deepeval.test_case import ConversationalTestCase, Turn
+from deepeval.metrics.conversation import (
+    KnowledgeRetentionMetric,
+    RoleAdherenceMetric,
+    ConversationCompletenessMetric,
+)
+
+def test_support_conversation():
+    test_case = ConversationalTestCase(
+        turns=[
+            Turn(role="user",      content="My order #1234 is late."),
+            Turn(role="assistant", content="I'm sorry. Let me check order #1234 for you."),
+            Turn(role="user",      content="It was supposed to arrive yesterday."),
+            Turn(role="assistant", content="You're right — order #1234 was due yesterday. I've escalated it."),
+            Turn(role="user",      content="What was my order number again?"),
+            Turn(role="assistant", content="Your order number is #1234."),  # tests retention
+        ],
+        scenario="Customer support agent helping with a delayed delivery",
+    )
+    assert_test(test_case, [
+        KnowledgeRetentionMetric(threshold=0.8),       # retains facts across turns
+        RoleAdherenceMetric(threshold=0.7),             # stays in support-agent persona
+        ConversationCompletenessMetric(threshold=0.7),  # user's goal was resolved
+    ])
+```
+
+Multi-turn simulation (auto-generate the user turns using an LLM):
+```python
+from deepeval.synthesizer import ConversationalSynthesizer
+
+synth = ConversationalSynthesizer()
+conversations = synth.simulate(
+    scenario="User complains about missing shipment",
+    agent_fn=my_chatbot.respond,
+    num_turns=6,
+    num_conversations=10,
+)
+# Returns list[ConversationalTestCase] ready for assert_test()
+```
+
 ## Controlling the Judge Model (Cost vs Accuracy)
 
 DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
@@ -229,4 +276,7 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/docs/evaluation-unit-testing-in-ci-cd
 - https://deepeval.com/guides/guides-regression-testing-in-cicd
 - https://deepeval.com/docs/metrics-introduction
+- https://deepeval.com/docs/evaluation-multiturn-test-cases
+- https://deepeval.com/guides/guides-multi-turn-evaluation-metrics
+- https://www.confident-ai.com/blog/multi-turn-llm-evaluation-in-2026
 - https://github.com/confident-ai/deepeval

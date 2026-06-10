@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-10 (GMT+7)
+
+Domains researched: QA test design (skipped — general BVA/decision-table content already covered), Maestro/mobile (skipped — flaky-test and self-healing content already covered by maestro-mobile), AI chatbot/LLM testing (DeepEval multi-turn evaluation).
+
+- UPDATED: skills/deepeval-llm-cicd — Added "Multi-Turn (Conversational) Evaluation" section: `ConversationalTestCase` with `Turn` objects, `KnowledgeRetentionMetric` / `RoleAdherenceMetric` / `ConversationCompletenessMetric` for chatbot context-retention testing, and `ConversationalSynthesizer` for auto-generating user turns. Not previously covered — skill had only single-turn `LLMTestCase`. Sources: https://deepeval.com/docs/evaluation-multiturn-test-cases, https://deepeval.com/guides/guides-multi-turn-evaluation-metrics, https://www.confident-ai.com/blog/multi-turn-llm-evaluation-in-2026
+- SKIPPED QA test design — boundary value analysis / decision table / AI-assisted test generation returned only general content already covered by behavioral-coverage-matrix, qa-generator, qa-test-generation.
+- SKIPPED Maestro/mobile — flaky-test self-healing content from maestro.dev duplicates existing maestro-mobile skill (animations, retry layers, smart sync). Nothing new actionable found.
+
 ## 2026-06-09 (GMT+7)
 
 Domains researched: Maestro/mobile (parallel sharding), AI chatbot/LLM testing (RAGAS RAG evaluation), QA test design (skipped — recent coverage sufficient).
