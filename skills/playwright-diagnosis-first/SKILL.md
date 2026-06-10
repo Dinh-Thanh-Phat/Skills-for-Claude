@@ -143,3 +143,29 @@ npx playwright test --grep "^Test Name$"
 ❌ Skip screenshot/video and just read error message
 ❌ Increase timeout instead of investigating why operation is slow
 ❌ Make code changes before gathering evidence
+
+---
+
+## Shared-helper failure: when MANY tests fail at the SAME line, fix the helper FIRST
+
+If a whole suite (e.g. 7/7 wizard tests) fails, **do not debug each test**. Look at
+the stack: if they all die inside the **same POM method / shared helper / fixture**,
+that one helper is the single root cause — fix it once and the suite goes green.
+
+Real example (June 2026): all 7 wizard tests timed out at 30s. Every stack ended in
+`AgentWizardPage.continue()`. The bug was one broken locator in that helper
+(`.filter({ has: page.locator('visible=true') })` is invalid, and `getByText(/^Continue/)`
+didn't match because the link text had leading whitespace/an icon → 0 matches →
+`isDisabled()` hung for the full timeout). Fixing `continue()` once turned 7 reds green.
+
+Triage step (do this before touching any test):
+```
+1. Read the failure stack of 2–3 failing tests.
+2. Do they share a final frame (same helper/POM method/locator)?  → fix that helper.
+3. Different frames?  → triage individually (see test-failure-triage).
+```
+
+Helper-bug smells: a locator that resolves to **0 elements** then an action/assertion
+**hangs to timeout**; `^anchored` getByText against text that has whitespace/icons/CSS
+`text-transform`; invalid pseudo-locators (`visible=true`); a `.catch(()=>{})` swallowing
+the real error. See also `dom-inspect-first` and `safe-locators`.
