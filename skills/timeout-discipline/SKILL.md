@@ -161,3 +161,31 @@ Instead of inflating timeouts to absorb cold-start:
 2. Set `assertStepIs` = 45s (30s cold start × 1.5) in ONE step
 3. Set test timeout = 90s (30s cold start + 15s networkidle + 45s assertion + buffer) in ONE step
 4. Add warm-up request in `global-setup.ts` to eliminate cold start entirely
+
+---
+
+## Raise the TEST timeout too — not just the action/expect timeout (June 2026)
+
+A long `expect`/action timeout is **capped by the test-level timeout**. I bumped a
+`createPosts()` wait to `expect(...).toBeVisible({ timeout: 240000 })` but the test
+kept dying at 90s — because `test.slow()` only gives 3× the 30s default = **90s**,
+and the test timeout kills the test before the 240s wait can finish.
+
+```
+Error: Test timeout of 90000ms exceeded.
+  - Expect "toBeVisible" with timeout 240000ms   ← my wait was 240s
+    89 × locator resolved to <span ...>All done!</span> - hidden  ← never got there
+```
+
+**Rule:** when one operation legitimately needs N seconds, set BOTH:
+```ts
+test('slow generation flow', async ({ page }) => {
+  test.setTimeout(360000);                 // test budget MUST exceed the sum of waits
+  ...
+  await expect(success).toBeVisible({ timeout: 240000 });
+});
+```
+The test timeout must be **≥ sum of every long wait in the test + setup buffer**.
+`test.slow()` (3×) is often not enough for AI/generation flows — use an explicit
+`test.setTimeout(...)`. (And before spending minutes per run on AI ops, see
+`expensive-irreversible-ops` — don't re-run to "find" the right timeout.)
