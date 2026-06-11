@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-11 (GMT+7)
+
+Domains researched: Playwright/web E2E (1.60 new APIs), QA test design (contract testing with Pact), Maestro/mobile (skipped — no new content found beyond existing skills).
+
+- CREATED: skills/playwright-1.60-new-apis — Playwright 1.60 (May 2026) six new APIs: `locator.drop()` for synthetic file/data drag-and-drop on upload zones, `tracing.startHar()`/`tracing.stopHar()` for HAR recording as first-class tracing API, `test.abort()` for runtime test guardrails from fixtures/hooks, ARIA bounding boxes via `ariaSnapshot({ boxes: true })`, `errorContext` for ARIA-snapshot-enriched assertion failure diagnostics, and JSON pretty-print in Trace Viewer. Not covered by `playwright-agentic-apis` (1.59-specific). Sources: https://www.testdino.com/blog/playwright-1-60-release, https://github.com/microsoft/playwright/releases/tag/v1.60.0, https://playwright.dev/docs/release-notes
+- CREATED: skills/pact-contract-testing — Consumer-driven contract testing with Pact for microservices API compatibility: consumer writes tests to generate JSON contracts, provider verifies against real API, Pact Broker/PactFlow stores and versions contracts, `can-i-deploy` blocks unsafe deployments in CI/CD, `record-deployment` tracks production state. No existing skill covers contract testing. Sources: https://docs.pact.io/, https://www.sqaexperts.com/consumerdriven-contract-testing-with-pact-microservices-qa-guide-for-2026, https://totalshiftleft.ai/blog/contract-testing-for-microservices, https://qaskills.sh/blog/pact-contract-testing-complete-guide-2026
+- SKIPPED Maestro/mobile — web search returned general best practices already covered by `maestro-mobile` (runFlow composition, env.yaml, real device testing, AI commands). No new June 2026 content found.
+
 ## 2026-06-10 (GMT+7)
 
 Domains researched: QA test design (skipped — general BVA/decision-table content already covered), Maestro/mobile (skipped — flaky-test and self-healing content already covered by maestro-mobile), AI chatbot/LLM testing (DeepEval multi-turn evaluation).

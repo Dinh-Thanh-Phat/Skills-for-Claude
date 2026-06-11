@@ -1,0 +1,153 @@
+---
+name: playwright-1.60-new-apis
+description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic drag-and-drop on upload zones, tracing.startHar() for unified HAR+trace recording, test.abort() to abort a test from a fixture/hook, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
+---
+
+# Playwright 1.60 New APIs
+
+Released May 2026. Six headline features that improve drag-and-drop testing, HAR recording, test guardrails, and failure diagnostics.
+
+---
+
+## 1. `locator.drop()` — Synthetic File/Data Drop
+
+Simulates an external drag-and-drop onto an element. Dispatches `dragenter`, `dragover`, and `drop` with a synthetic `DataTransfer` — works across Chromium, Firefox, and WebKit. Ideal for testing file-upload zones that use `drop` events instead of `<input type=file>`.
+
+```typescript
+// Drop a file onto an upload zone
+await page.getByTestId('upload-zone').drop({
+  files: [{ name: 'report.csv', mimeType: 'text/csv', buffer: Buffer.from('a,b\n1,2') }],
+});
+await expect(page.getByText('report.csv')).toBeVisible();
+
+// Drop text data (e.g., dragging a card onto a Kanban column)
+await page.getByTestId('card-123').drop({
+  target: page.getByTestId('column-done'),
+});
+await expect(page.getByTestId('column-done').getByText('Task title')).toBeVisible();
+```
+
+> Use `locator.drop()` for upload-zone tests instead of `setInputFiles()` — `setInputFiles()` only works on `<input type=file>` elements, not custom drop targets.
+
+---
+
+## 2. `tracing.startHar()` / `tracing.stopHar()` — HAR as First-Class Tracing API
+
+Before 1.60, capturing HAR required a separate `recordHar` option on `BrowserContext`, producing a parallel artifact. Now HAR is embedded directly into the trace:
+
+```typescript
+// ✅ 1.60+ — unified setup
+await context.tracing.start({ screenshots: true, snapshots: true });
+await context.tracing.startHar({ path: 'trace.har', urlFilter: '**/api/**' });
+
+await page.goto('/dashboard');
+// ... test actions ...
+
+await context.tracing.stopHar();
+await context.tracing.stop({ path: 'trace.zip' });
+// HAR is now inside trace.zip — visible in Trace Viewer network panel
+```
+
+**Options** (same as `recordHar`):
+| Option | Values | Effect |
+|--------|--------|--------|
+| `content` | `"omit"` \| `"embed"` \| `"attach"` | Response body inclusion |
+| `mode` | `"full"` \| `"minimal"` | Full HAR vs. headers only |
+| `urlFilter` | glob / RegExp | Only record matching URLs |
+
+---
+
+## 3. `test.abort()` — Test Guardrails from Fixtures and Hooks
+
+Aborts the currently running test (marks it as `skipped` with a message) from inside a fixture, `beforeEach`, or route handler. Use as a guard when a precondition is not met and continuing would produce misleading failures.
+
+```typescript
+// In a fixture — abort if feature flag is off
+const test = base.extend<{ featureEnabled: void }>({
+  featureEnabled: async ({ page }, use, testInfo) => {
+    const flags = await page.evaluate(() => window.__featureFlags);
+    if (!flags.newCheckout) {
+      await testInfo.abort('Skipping — newCheckout flag is off in this environment');
+      return;
+    }
+    await use();
+  },
+});
+
+// In beforeEach — abort if seed data missing
+test.beforeEach(async ({ page }, testInfo) => {
+  const count = await page.locator('[data-testid="product-card"]').count();
+  if (count === 0) {
+    await testInfo.abort('No products seeded — cannot run cart tests');
+  }
+});
+```
+
+> `test.abort()` is NOT the same as `test.skip()`. `skip()` is a static compile-time declaration; `abort()` fires at runtime based on actual conditions. Aborted tests show as skipped with the abort message in the HTML report.
+
+---
+
+## 4. ARIA Bounding Boxes — `boxes: true` on `ariaSnapshot()`
+
+The `boxes` option appends each element's bounding box `[box=x,y,w,h]` to the ARIA snapshot string. Makes snapshots useful for AI-driven or coordinate-aware assertions.
+
+```typescript
+// Without boxes (default)
+const snapshot = await page.ariaSnapshot();
+// - heading "Dashboard" [level=1]
+// - button "Export"
+
+// With boxes
+const snapshotWithBoxes = await page.ariaSnapshot({ boxes: true });
+// - heading "Dashboard" [level=1] [box=24,48,320,36]
+// - button "Export" [box=680,48,96,32]
+
+// Useful for asserting layout — e.g., button is in the top-right
+const lines = snapshotWithBoxes.split('\n');
+const exportLine = lines.find(l => l.includes('"Export"'));
+// parse [box=x,y,w,h] and assert x > 500 for right-aligned button
+```
+
+---
+
+## 5. `errorContext` — ARIA Snapshot at Assertion Failure
+
+`testInfoError.errorContext` now contains additional diagnostic information at the moment an `expect()` matcher fails. For locator assertions, this is the ARIA snapshot of the matched element's subtree — giving you the actual DOM structure rather than just a string diff.
+
+This is surfaced automatically in the HTML report and Trace Viewer error panel for 1.60+. No code change required to benefit from it.
+
+```typescript
+// When this assertion fails:
+await expect(page.getByRole('dialog')).toContainText('Order confirmed');
+
+// The error report now includes:
+// errorContext: ARIA snapshot of <dialog> at failure time:
+//   - dialog
+//     - heading "Payment failed" [level=2]
+//     - paragraph "Your card was declined."
+// → immediately shows you what IS in the dialog, not just what wasn't found
+```
+
+---
+
+## 6. JSON Pretty-Print in Trace Viewer
+
+The Trace Viewer network panel now has a pretty-print toggle for JSON response bodies. No test-code change needed — just toggle in the UI when debugging.
+
+---
+
+## Quick Reference
+
+| Feature | API / Flag | Use When |
+|---------|-----------|----------|
+| Drop files/data on element | `locator.drop({ files })` | Upload zones, Kanban drag-and-drop |
+| HAR inside trace | `tracing.startHar()` / `stopHar()` | Unify network capture + trace |
+| Abort test at runtime | `testInfo.abort(message)` | Feature flag off, missing seed data |
+| ARIA layout assertions | `page.ariaSnapshot({ boxes: true })` | AI-driven tests, layout verification |
+| Richer assertion errors | automatic via `errorContext` | Always on in 1.60+ |
+
+## Sources
+
+- [Playwright 1.60 Release — TestDino](https://www.testdino.com/blog/playwright-1-60-release)
+- [Release v1.60.0 — GitHub microsoft/playwright](https://github.com/microsoft/playwright/releases/tag/v1.60.0)
+- [Release Notes — Playwright Docs](https://playwright.dev/docs/release-notes)
