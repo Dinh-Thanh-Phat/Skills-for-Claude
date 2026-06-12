@@ -269,7 +269,57 @@ tests/
 
 ---
 
+## Beyond Native Playwright: Visual Testing SaaS Tools (2026)
+
+Native Playwright visual comparison is free and sufficient for many projects. Move to a SaaS tool when you need AI-powered noise filtering, cross-browser cloud rendering, or component-library integration.
+
+### Decision Guide
+
+| Situation | Recommended tool |
+|-----------|-----------------|
+| Small team, free budget, simple pixel comparison | **Native Playwright** |
+| Storybook component library as primary deliverable | **Chromatic** |
+| BrowserStack user, CI-first, multi-browser rendering | **Percy** (5,000 free snapshots/mo) |
+| Enterprise, multi-platform, Figma-to-test design system | **Applitools Eyes** |
+
+### Tool Summaries
+
+**Native Playwright** — zero cost, pixel-by-pixel comparison, runs in your own CI. Best features-to-price ratio for teams that don't need AI filtering. Platform rendering differences require Docker to stabilize.
+
+**Chromatic** — built around Storybook; snapshots components automatically and highlights changes in a PR review workflow. No AI layer — pixel-diff based. Right choice only if you're Storybook-first.
+
+**Percy (BrowserStack)** — DOM snapshot model: captures DOM → renders in real cloud browsers → compares. More deterministic than local screenshots. Free tier: 5,000 snapshots/month, unlimited users. Best for straightforward CI/CD pipelines.
+
+**Applitools Eyes** — AI visual engine (not pixel comparison): understands layout vs. content changes, supports Strict / Layout / Content / Dynamic modes, handles cross-browser font rendering without false positives. Genuine 2026 differentiator: Figma plugin (Eyes 10.22, Jan 2026) lets you compare designs directly against screenshots — no equivalent in Percy or Chromatic. Most expensive; justified for large design systems with frequent multi-browser coverage requirements.
+
+### Percy Integration (Playwright)
+
+```typescript
+// Install: npm install --save-dev @percy/playwright @percy/cli
+// Set env: PERCY_TOKEN=<project_token>
+
+import { percySnapshot } from '@percy/playwright';
+
+test('visual: dashboard', async ({ page }) => {
+  await page.goto('/dashboard');
+  await expect(page.getByRole('main')).toBeVisible();
+  await percySnapshot(page, 'Dashboard - default state');
+});
+```
+
+```bash
+# Run via Percy CLI (wraps your test command)
+npx percy exec -- npx playwright test visual/
+```
+
+Percy renders in its cloud and posts a PR comment with visual diffs — no local baseline management.
+
+---
+
 ## Sources
-- Playwright visual comparisons: playwright.dev/docs/test-snapshots
-- Visual testing guide: testdino.com/blog/playwright-visual-testing
-- Cross-platform stability: arbisoft.com/blogs/playwright-visual-testing
+- [Playwright visual comparisons — playwright.dev](https://playwright.dev/docs/test-snapshots)
+- [Visual testing guide — testdino.com](https://testdino.com/blog/playwright-visual-testing)
+- [Cross-platform stability — arbisoft.com](https://arbisoft.com/blogs/playwright-visual-testing)
+- [Visual Regression Testing Tools 2026 — Bug0](https://bug0.com/knowledge-base/visual-regression-testing-tools)
+- [Chromatic vs Percy vs Applitools 2026 — PkgPulse](https://www.pkgpulse.com/guides/chromatic-vs-percy-vs-applitools-visual-regression-2026)
+- [Applitools vs Percy Comparison 2026 — Delta-QA](https://delta-qa.com/en/blog/applitools-vs-percy-comparison-2026/)

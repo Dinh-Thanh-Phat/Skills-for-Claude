@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-12 (GMT+7)
+
+Domains researched: AI chatbot/LLM testing (agent eval platforms), Playwright/web E2E (visual regression SaaS tools), Maestro/mobile (skipped — no new June 2026 content beyond existing skills).
+
+- CREATED: skills/ai-agent-eval-platforms — 2026 comparison of commercial/OSS platforms for evaluating multi-turn AI agents: Braintrust (experiment-first, sandboxed Python scorers, merge-blocking CI gate), Latitude (agent-native causal trace, multi-turn simulation testing, GEPA auto-generates regression tests from production failures), Langfuse (open-source self-hosted, annotation workflows). Distinct from deepeval-llm-cicd (metric library) and llm-production-observability (tracing/guardrails) — covers the SaaS platform layer for team experiment tracking and production session scoring. Sources: https://latitude.so/blog/best-ai-agent-evaluation-platforms-2026-comprehensive-comparison, https://latitude.so/blog/agent-first-comparison-guide-vs-braintrust, https://www.digitalapplied.com/blog/ai-agent-eval-frameworks-testing-guide-2026, https://laminar.sh/article/2026-04-23-top-6-agent-observability-platforms
+- UPDATED: skills/visual-regression-testing — Added "Beyond Native Playwright: Visual Testing SaaS Tools (2026)" section: decision guide (Chromatic for Storybook, Percy for CI/BrowserStack, Applitools for enterprise/Figma), Applitools 2026 differentiator (Figma plugin in Eyes 10.22 Jan 2026), Percy DOM-snapshot mechanism, and Percy+Playwright integration code example. Existing skill covered native Playwright only; no SaaS comparison existed. Sources: https://bug0.com/knowledge-base/visual-regression-testing-tools, https://www.pkgpulse.com/guides/chromatic-vs-percy-vs-applitools-visual-regression-2026, https://delta-qa.com/en/blog/applitools-vs-percy-comparison-2026/
+- SKIPPED Maestro/mobile — search returned no new June 2026 features beyond GraalJS (06-07), parallel sharding (06-09), and real iOS device (06-06) already in existing skills.
+
 ## 2026-06-11 (GMT+7)
 
 Domains researched: Playwright/web E2E (1.60 new APIs), QA test design (contract testing with Pact), Maestro/mobile (skipped — no new content found beyond existing skills).
