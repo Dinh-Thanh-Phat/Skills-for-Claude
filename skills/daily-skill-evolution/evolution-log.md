@@ -5,6 +5,15 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-13 (GMT+7)
+
+Domains researched: AI chatbot/LLM testing (streaming performance/load testing), QA test design (contract testing — skipped duplicate), Maestro/mobile (skipped — no new June 2026 content).
+
+- CREATED: skills/llm-load-testing — LLM streaming load testing: TTFT/ITL/TPS metrics and SLOs (chat: TTFT<500ms, ITL<200ms; RAG: TTFT<50ms), tool comparison (Gatling native SSE, Locust Python, k6+xk6-sse), Locust SSE streaming implementation, Gatling simulation with p95 assertions, load test protocol (warm-up→ramp→sustained→soak), diagnostic table (TTFT vs ITL patterns), CI gate with Locust 2-min smoke run. Not covered by existing llm-production-observability (monitoring/tracing) or performance-analyzer (Playwright results). Sources: https://gatling.io/blog/load-testing-an-llm-api, https://latitude.so/blog/ultimate-guide-llm-load-testing, https://medium.com/@hiteshpara762/how-i-load-tested-a-conversational-ai-chatbot-agent-with-a-streaming-endpoint-c8e26e7a091b, https://blog.premai.io/load-testing-llms-tools-metrics-realistic-traffic-simulation-2026/
+- SKIPPED QA test design (contract testing) — skills/pact-contract-testing already created 2026-06-11; would be a duplicate.
+- SKIPPED Maestro/mobile — parallel sharding (06-09), GraalJS (06-07), iOS real device (06-06) already in existing skills; search returned no new June 2026 content.
+- SKIPPED AI chatbot multi-turn eval — skills/deepeval-llm-cicd updated 2026-06-10 with ConversationCompletenessMetric / KnowledgeRetentionMetric; would be a duplicate.
+
 ## 2026-06-12 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (agent eval platforms), Playwright/web E2E (visual regression SaaS tools), Maestro/mobile (skipped — no new June 2026 content beyond existing skills).
