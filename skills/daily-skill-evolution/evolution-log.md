@@ -5,6 +5,16 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-14 (GMT+7)
+
+Domains researched: Playwright/web E2E (API testing via request fixture), QA test design (property-based testing — skipped duplicate, Testcontainers — skipped as backend infra), AI chatbot/LLM testing (multi-turn DeepEval — skipped duplicate in deepeval-llm-cicd), Maestro/mobile (skipped — no new June 2026 content beyond existing skills).
+
+- CREATED: skills/playwright-api-testing — Playwright `request` fixture and `APIRequestContext` for testing REST and GraphQL APIs directly (no browser), with CRUD `test.step` patterns, Bearer token auth, browser↔API shared storage state, hybrid API-setup+UI-validation pattern, and GraphQL request structure. No existing skill covers Playwright's built-in API testing mode (api-network-mocking covers intercepting browser calls; this covers hitting endpoints directly). Sources: https://playwright.dev/docs/api-testing, https://getautonoma.com/blog/playwright-api-testing-guide, https://testdino.com/blog/playwright-api-testing, https://www.browserstack.com/guide/playwright-api-test, https://qaskills.sh/blog/playwright-apirequestcontext-storagestate-guide
+- SKIPPED property-based testing — skills/property-based-testing-api (created 2026-06-06) covers fast-check and Hypothesis with API invariant patterns; would be a duplicate.
+- SKIPPED LLM multi-turn evaluation — skills/deepeval-llm-cicd (updated 2026-06-10) already covers ConversationalTestCase, KnowledgeRetentionMetric, RoleAdherenceMetric, ConversationCompletenessMetric, ConversationalSynthesizer; would be a duplicate.
+- SKIPPED Maestro/mobile — web search returned general best practices (reusable flows, Accessibility IDs, real device cloud) already covered by maestro-mobile, maestro-mcp-workflow, maestro-real-ios-device; no new June 2026 content.
+- SKIPPED Testcontainers — backend Docker integration test infrastructure; does not fall within QA/testing domains 1–4 in the runbook scope.
+
 ## 2026-06-13 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (streaming performance/load testing), QA test design (contract testing — skipped duplicate), Maestro/mobile (skipped — no new June 2026 content).
