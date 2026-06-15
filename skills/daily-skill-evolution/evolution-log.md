@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-15 (GMT+7)
+
+Domains researched: AI chatbot/LLM testing (agent trace/span evaluation, multi-turn metrics), Maestro/mobile (iOS regression CI strategy — skipped, already covered by maestro-mobile skill).
+
+- CREATED: skills/llm-agent-trace-eval — DeepEval `@observe` decorator for component-level agent evaluation: trace (end-to-end) vs span (per tool-call / retriever / LLM completion) architecture, ArgumentCorrectnessMetric and ContextualRelevancyMetric on individual spans, `deepeval.collect_traces()` context manager, pytest CI integration for per-tool assertions. Distinct from deepeval-llm-cicd (which covers end-to-end LLMTestCase with `tools_called` but not the trace/span instrumentation layer). Sources: https://www.confident-ai.com/blog/llm-agent-evaluation-complete-guide, https://deepeval.com/docs/evaluation-component-level-llm-evals, https://deepeval.com/docs/evaluation-llm-tracing, https://deepeval.com/guides/guides-ai-agent-evaluation-metrics
+- SKIPPED multi-turn chatbot metrics — deepeval-llm-cicd already covers ConversationalTestCase, KnowledgeRetentionMetric, RoleAdherenceMetric, ConversationCompletenessMetric; would be a duplicate.
+- SKIPPED Maestro/mobile — maestro.dev iOS regression blog covers smoke-on-PR / full-regression-nightly patterns already implied in maestro-mobile; no new YAML commands or APIs found.
+
 ## 2026-06-14 (GMT+7)
 
 Domains researched: Playwright/web E2E (API testing via request fixture), QA test design (property-based testing — skipped duplicate, Testcontainers — skipped as backend infra), AI chatbot/LLM testing (multi-turn DeepEval — skipped duplicate in deepeval-llm-cicd), Maestro/mobile (skipped — no new June 2026 content beyond existing skills).
