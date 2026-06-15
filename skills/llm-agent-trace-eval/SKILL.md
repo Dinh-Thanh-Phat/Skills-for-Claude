@@ -157,6 +157,7 @@ def test_agent_tool_selection(query, expected_tool):
 ## Relationship to Other Skills
 
 - Use `response-evaluator` for simple single-turn Q&A bots (no tool use, no retrieval chain).
+- Use `deepeval-llm-cicd` for answer-level quality gates (relevancy / faithfulness / hallucination) on a single LLM output; use **this** skill for component/span-level scoring when the agent has tool calls or retrieval. Same library (DeepEval), different granularity.
 - Use `llm-production-observability` for runtime monitoring and drift detection after deploy.
 - Use this skill when the agent has tool calls, RAG, or multi-step reasoning and you need to know *which step* failed.
 
