@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-16 (GMT+7)
+
+Domains researched: Maestro/mobile (AI assertion commands), QA test design / Playwright (AI self-healing test automation).
+
+- CREATED: skills/maestro-ai-assertions — Maestro's three LLM-powered assertion commands: `assertWithAI` (natural-language visual validation — good for OTP/CAPTCHA/dynamic content), `extractTextWithAI` (extracts on-screen text to `${aiOutput}` variable for use in subsequent steps), `assertNoDefectsWithAI` (visual smoke test detecting clipped text / overlapping elements, outputs HTML+JSON report). Distinct from maestro-mcp-workflow (which lists them in a table but does not document syntax or decision guide) and from maestro-mobile (standard YAML flows). Sources: https://docs.maestro.dev/reference/commands-available/assertwithai, https://docs.maestro.dev/reference/commands-available/extracttextwithai, https://docs.maestro.dev/api-reference/commands/assertnodefectswithai, https://deepwiki.com/mobile-dev-inc/Maestro/6.5-ai-features-and-mcp-server
+- CREATED: skills/self-healing-test-automation — AI self-healing for E2E/Playwright suites: the 6 failure categories with ~% breakdown (selector ~28%, timing ~30%, runtime ~15%, test data ~12%, visual ~10%, interaction ~5%), rule-based locator fallback chain (Tier 1, covers 40–70% of selector failures) vs LLM intent-resolution (Tier 2, reaches 75–90%+), Detection→Diagnosis→Remediation pipeline, Playwright healing fixture pattern using Anthropic SDK, and guard rails (always review healed locators; never self-heal timing failures). Distinct from flaky-test-prevention (prevention + root cause diagnosis) and playwright-flaky-test-detection (diagnosis workflow); this covers automated AI repair mechanisms. Sources: https://www.qawolf.com/blog/self-healing-test-automation-types, https://getautonoma.com/blog/ai-self-healing-test-automation, https://software-testing-tutorials-automation.com/2026/02/implement-playwright-self-healing-locators-enterprise-framework.html, https://wopee.io/blog/self-healing-in-sw-test-automation/
+- SKIPPED Maestro general best practices — general YAML patterns (launchApp, tapOn, runFlow composition) already thoroughly covered by maestro-mobile; no new June 2026 commands found beyond the AI assertion layer.
+
 ## 2026-06-15 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (agent trace/span evaluation, multi-turn metrics), Maestro/mobile (iOS regression CI strategy — skipped, already covered by maestro-mobile skill).
