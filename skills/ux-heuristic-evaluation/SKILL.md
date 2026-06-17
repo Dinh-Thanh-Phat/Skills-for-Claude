@@ -302,6 +302,22 @@ report so nobody mistakes one pass for completeness. A true heuristic evaluation
 multiple passes (and ideally multiple evaluators — agreement between any two is only 5–65%), not in
 one shot.
 
+**Simulate multiple evaluators by changing the lens, not just re-looking.** You're one agent, so a
+second pass through the *same* eyes finds little new. Instead do the second pass **as a different
+persona**, each of which trips different problems:
+
+- **Novice / first-timer** — knows nothing; runs the Cognitive Walkthrough (§B). Catches "I don't
+  know what to do next", unexplained jargon, missing guidance.
+- **Power user / returning** — does this daily; wants speed. Catches missing shortcuts, redundant
+  steps, no bulk actions, re-entering known data (§C efficiency).
+- **Constrained user** — mobile + one thumb, slow network, or keyboard-only. Catches reach/target,
+  no-feedback-on-slow, unreachable controls.
+- **Skeptic / adversary** — actively tries to break the mental model: wrong order, back button,
+  interrupt mid-flow, paste junk. Catches recovery and state-loss gaps.
+
+Run at least the novice + one constrained persona before a verdict; note which personas you ran.
+This is the cheap, solo-agent stand-in for the multi-evaluator practice the research recommends.
+
 ---
 
 ## Web vs Mobile
