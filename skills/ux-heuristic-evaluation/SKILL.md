@@ -102,6 +102,55 @@ Heuristic evaluation has a brutal, well-measured reliability problem. Treat your
 
 ---
 
+## Operational safety — how you DRIVE the app while evaluating (not just how you judge)
+
+Evidence discipline governs *findings*. This governs *your own actions*. A UX evaluation can quietly
+become a destructive one: you create test data, spend credits, submit paid flows, and "clean up" —
+each is a real operation on a real environment. **Apply the same rigor to your actions that you apply
+to your findings.** (This section exists because a cleanup step once deleted three of the user's real
+agents via an unscoped "click the first Delete on the page" fallback. Never again.)
+
+1. **Read-only by default.** Most UX evaluation is observation: navigate, screenshot, inspect, count.
+   Do that first and as much as possible **without changing state**. You can evaluate the vast majority
+   of a flow without submitting anything.
+
+2. **Mutating / paid / irreversible actions need explicit, per-action consent.** Creating records,
+   submitting a form that writes data, triggering generation that **costs credits**, or anything that
+   takes minutes — name the cost out loud and confirm before doing it. Approval to "evaluate the
+   feature" is **not** approval to spend money or write data. Don't submit a paid/irreversible step
+   *just to see what the wait looks like* unless the user specifically okayed that cost.
+
+3. **Destructive actions (delete / archive / remove) are the highest-risk thing you will do — treat
+   them that way:**
+   - Act **only on an element you have proven belongs to the target** — scoped within the specific
+     card/row/dialog you identified and verified (ideally confirmed in a screenshot first).
+   - **NEVER use an unscoped fallback** ("click the first matching button/Delete/icon on the page").
+     UI frameworks often render every row's menu in the DOM at once; a page-wide match will hit the
+     wrong one and you won't notice until it's gone.
+   - If your scoped locator fails, **STOP and ask** — do not "try the first thing that matches".
+   - **Don't auto-accept confirmation dialogs** for destructive actions unless you are certain the
+     target is correct; the dialog is the last safety net, not a nuisance to bypass.
+   - Verify after: confirm *only* the intended item is gone (and nothing else).
+
+4. **Test data you create, you clean up — carefully.** Tag with a clear prefix (e.g. `TEST_AUTO`),
+   and clean up using the same scoped, verified, non-fallback discipline as any destructive action.
+   Cleanup is itself an expensive-irreversible operation — it caused the incident above. Prefer
+   selecting **existing** data over creating new (e.g. pick an existing brand rather than making one).
+
+5. **Prefer reliable observation tooling over brittle scripts.** Use real, scoped locators / the
+   accessibility snapshot / Playwright MCP rather than coordinate-clicking or page-wide DOM scans.
+   If a probe returns a sentinel/uncertain value, don't act on it (this is the action-side of
+   "observation overrides inference").
+
+6. **Match effort to need — don't burn the environment or the budget.** Default to a quick read-only
+   pass; escalate to deep driving only when it adds findings the screenshots can't. Every mutating run
+   has a cost (data, credits, risk). Cheap, safe, read-only evidence first.
+
+See [[feedback_warn-environment-factors]], [[expensive-irreversible-ops]], and
+[[lesson_destructive-cleanup-incident]].
+
+---
+
 ## Evaluation workflow
 
 Pick the method(s) that fit the request. You can combine them — they layer well.
