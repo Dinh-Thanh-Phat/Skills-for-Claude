@@ -175,6 +175,34 @@ User nói: "test mobile", "maestro", "test app"
          maestro-mobile (viết/chạy flow)
 ```
 
+### "Đánh giá UX / trải nghiệm / workflow"
+
+```
+User nói: "đánh giá UX", "trải nghiệm thế nào", "workflow này ổn không",
+          "feature chạy đúng nhưng bất tiện", "usability review", "too many steps"
+                    ↓
+              ux-heuristic-evaluation (Nielsen + severity + metrics)
+                    ↓
+         Report: friction points + severity 0-4 + đề xuất fix
+```
+
+### AUTO sau khi test feature user-facing
+
+```
+Vừa chạy/test xong 1 feature user-facing (run suite / mobile / exploratory PASS)?
+                    ↓
+         Có phải feature thật user dùng (không phải unit/infra)?
+         /                                          \
+        YES                                          NO
+         ↓                                            ↓
+  ux-heuristic-evaluation (tự động)            bỏ qua, không nhắc
+         ↓
+  Kèm 1 đoạn đánh giá UX ngắn vào kết quả test:
+  "Chức năng PASS. Về trải nghiệm: [friction + severity + fix]"
+         ↓
+  KHÔNG đợi user hỏi — user đã opt-in
+```
+
 ### "Không biết bắt đầu"
 
 ```
