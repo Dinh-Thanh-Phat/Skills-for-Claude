@@ -126,7 +126,10 @@ don't fabricate context.)
 
 ### A. Heuristic Evaluation (Nielsen's 10)
 
-Inspect the feature against the 10 heuristics. For each violation, log a finding. This is the
+Inspect the feature against the 10 heuristics. For each violation, log a **candidate** finding
+(mark it `PREDICTED`) — then confirm it against a native screenshot or real interaction before it
+graduates to a reported finding (see **Evidence discipline** above; a heuristic violation alone is a
+hypothesis, not a problem). This is the
 default broad method. The 10 heuristics, the severity scale, and worked examples live in
 **`references/heuristics-and-metrics.md` §1–§2** — read it before running this method so you
 apply the exact wording and rate consistently.
