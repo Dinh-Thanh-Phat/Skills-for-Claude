@@ -151,6 +151,29 @@ See [[feedback_warn-environment-factors]], [[expensive-irreversible-ops]], and
 
 ---
 
+## Reliable observation — capture evidence you can actually trust
+
+Your findings are only as good as your observations, and this session proved ad-hoc probes lie
+(Alpine state returned `-1`, a DOM "no label" check was wrong, coordinate-clicks missed). Bias toward
+methods that fail loudly and target precisely:
+
+- **Prefer the accessibility snapshot + scoped role/text locators** (Playwright MCP `browser_snapshot`,
+  `getByRole`/`getByText` within a known container) over raw `querySelectorAll`, `elementFromPoint`,
+  or coordinate clicks. Scoped locators are self-verifying; coordinate math is not.
+- **Validate the probe before you trust its output.** If a state query returns a sentinel
+  (`-1`, `null`, empty) or you can't explain the number, the probe is broken — fix it or fall back to
+  a screenshot; never report from a probe you haven't confirmed works.
+- **A screenshot is ground truth; a DOM/measurement is a hypothesis.** When they disagree, the
+  screenshot wins (this is the observation side of Evidence discipline).
+- **Screenshot the actual state you're claiming.** "Blank screen on load" needs a shot OF the blank
+  moment (use CDP `Page.captureScreenshot` if Playwright's font-wait stalls under throttle), not the
+  loaded page.
+
+Concrete locator/MCP patterns and the throttle-screenshot trick are in
+`references/heuristics-and-metrics.md` §11.
+
+---
+
 ## Evaluation workflow
 
 Pick the method(s) that fit the request. You can combine them — they layer well.
