@@ -248,7 +248,7 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 ## Cross-references (flow thường dùng)
 
 - Viết test: `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` → `qa-e2e-complete`
-- Chạy test: `qa-router` → `qa-preflight` → `playwright-test-workflow` → (AUTO) `ux-heuristic-evaluation`
-- Đánh giá UX: `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)
+- Chạy test: `qa-router` → `qa-preflight` → `playwright-test-workflow`
+- Đánh giá UX (flow RIÊNG, chạy độc lập): `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)
 - Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck`
 - Close: `qa-router` → `qa-session-close` → `beads`
