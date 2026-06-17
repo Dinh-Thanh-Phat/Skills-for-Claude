@@ -288,6 +288,11 @@ A single happy-path pass is low-reliability. A flow isn't "evaluated" until you'
 considered each dimension and said which you covered vs skipped:
 
 - [ ] **Happy path** — the intended successful flow
+- [ ] **Completion → next goal** — after the task succeeds, does the app deliver the user to their
+  obvious next action (use/see the thing they just made), or dump them on a generic dashboard/list
+  forcing extra navigation? Don't stop at the "Done!" screen — follow what the success CTA actually
+  does. (This dimension exists because a "→ go to dashboard" after creation, instead of "→ open the
+  new agent's chat", is real friction that a stop-at-Done pass misses.)
 - [ ] **Empty / first-use state** — zero data, brand-new account (often the worst experience)
 - [ ] **Error / validation** — submit empty, invalid input, the disabled/blocked path
 - [ ] **Boundary** — min/max, limits, very long names, max selections
