@@ -310,3 +310,47 @@ https://www.tandfonline.com/doi/abs/10.1080/014492997119824 — report each find
 **Distilled rules (mirrored in SKILL.md Evidence discipline):** tag OBSERVED vs PREDICTED · heuristic
 violation is necessary not sufficient · observation overrides inference · record refuted findings ·
 rank by impact not count · state reliability (one pass = low) honestly.
+
+---
+
+## 11. Reliable observation playbook (patterns that don't lie)
+
+Concrete techniques behind SKILL.md "Reliable observation". Every example here is a lesson from a real
+run where the brittle version produced a wrong finding.
+
+**Prefer scoped, self-verifying locators over raw DOM / coordinates.**
+- Good: `page.getByRole('button', { name: /Create Posts/i })`, or scope within a known card:
+  `card.getByRole('menuitem', { name: 'Delete' })`. If it doesn't match, it *throws* — you find out.
+- Avoid: `document.querySelectorAll('*')` scans, `elementFromPoint(x, y)`, `page.mouse.click(x, y)`.
+  They silently hit the wrong thing. A coordinate that's right at 1366×900 is wrong after a scroll or
+  on another viewport.
+- For destructive actions, the locator MUST be scoped to the verified target (see SKILL.md Operational
+  safety). A page-wide `getByText('Delete').first()` will hit the first row's menu, not yours.
+
+**Validate a probe before trusting it.** App-state probes (Alpine `$data`, React fiber, global stores)
+are version- and structure-specific and break silently.
+- If a probe returns a sentinel (`-1`, `null`, `undefined`, `0` where you expected data), treat it as
+  *broken*, not as *the answer*. Example from a real run: an `Alpine.$data(...).platform_ids.length`
+  probe returned `-1` every time (wrong element); reporting from it would have falsely claimed
+  "selection lost on Back" — the screenshot showed the selection persisted.
+- Confirm the probe on a known-true case first (does it return the right value when you KNOW the state?).
+
+**Screenshot the exact moment you're claiming.**
+- "Blank screen / no loader on load" needs a shot taken DURING the blank window, not after.
+- Playwright's `page.screenshot()` waits for fonts and can time out under heavy network throttle. Use
+  CDP instead — it captures immediately:
+  ```js
+  const cdp = await context.newCDPSession(page);
+  const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' });
+  fs.writeFileSync('shot.png', Buffer.from(data, 'base64'));
+  ```
+- To probe slow-network system-status: `cdp.send('Network.emulateNetworkConditions', {...})` (Fast-3G:
+  ~1.5 Mbps down, 562 ms latency), navigate with `waitUntil:'commit'`, then sample/capture at intervals.
+
+**Measuring touch targets (mobile):** read the real box —
+`await locator.boundingBox()` → compare `width`/`height` against 44 pt / 48 dp. A 32 px-wide control
+fails even if it "looks" tappable.
+
+**Reuse saved auth instead of re-logging each run:** drive with `storageState`; if it 302s to
+`/login`, the session expired — refresh it (don't report a "bug"). Auth expiry is an environment
+state, not a finding.
