@@ -206,9 +206,29 @@ pure inspection.
 
 ### E. Score & report
 
-See the report template below. Every finding gets a **severity 0–4** (NNGroup scale), derived
-from **frequency × impact × persistence** — a minor-looking issue that hits every user, every
-time, and never goes away escalates toward 3–4.
+See the report template below. Every reported finding gets a **severity 0–4** (NNGroup scale),
+derived from **frequency × impact × persistence** — a minor-looking issue that hits every user,
+every time, and never goes away escalates toward 3–4 — and an evidence tag (`OBSERVED`/`PREDICTED`).
+A `PREDICTED` finding may not carry a severity ≥3; promote it to `OBSERVED` first.
+
+**Coverage dimensions — sweep these BEFORE you give a verdict (don't wait to be asked).**
+A single happy-path pass is low-reliability. A flow isn't "evaluated" until you've at least
+considered each dimension and said which you covered vs skipped:
+
+- [ ] **Happy path** — the intended successful flow
+- [ ] **Empty / first-use state** — zero data, brand-new account (often the worst experience)
+- [ ] **Error / validation** — submit empty, invalid input, the disabled/blocked path
+- [ ] **Boundary** — min/max, limits, very long names, max selections
+- [ ] **Keyboard-only** — can every control be reached & operated by Tab/Enter? focus order sane?
+- [ ] **Mobile / touch** — reflow, touch-target sizes, thumb reach (if product is used on mobile)
+- [ ] **Long-running / async** — the wait experience (progress? cancel? leave & return?)
+- [ ] **Slow network** — does the UI show system status under throttle?
+- [ ] **Back / interruption** — does going Back or backgrounding lose entered data?
+
+Cover what's relevant to the task; **explicitly list which dimensions you did NOT cover** in the
+report so nobody mistakes one pass for completeness. A true heuristic evaluation converges over
+multiple passes (and ideally multiple evaluators — agreement between any two is only 5–65%), not in
+one shot.
 
 ---
 
