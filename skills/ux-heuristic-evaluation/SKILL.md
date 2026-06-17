@@ -53,6 +53,55 @@ error" — stop, that's a bug, route it elsewhere.
 
 ---
 
+## Evidence discipline — READ THIS FIRST (the part that makes the report trustworthy)
+
+Heuristic evaluation has a brutal, well-measured reliability problem. Treat your own findings as
+**suspects, not verdicts**, until you have seen the breakdown with your own eyes.
+
+**Why this is non-negotiable (the numbers):**
+- **Evaluator effect** (Hertzum & Jacobsen 2003): agreement between any two evaluators on the same
+  system is only **5–65%**. One pass by one evaluator is *low-reliability by definition*.
+- **False positives**: across studies, **34–65% of heuristic-evaluation predictions are NOT real
+  problems** (Bailey 43% false; Woolrych & Cockton 65% of predictions false). Expert inspection
+  *invents* problems a real user never hits, because the evaluator imagines the user instead of
+  observing one.
+- **DOM/code presence ≠ user reality**: automated/code signals catch only ~30–40% of real issues.
+  An element existing in the DOM does not mean it's visible/reachable; a label being *present* in
+  markup does not mean it's *announced or usable*. (In this skill's own pilot run, **five** findings
+  inferred from code/DOM — chip "click trap", placeholder-as-label, "no Step N of 4", back data-loss,
+  empty-submit advancing — were each **refuted by a screenshot**. Half the first-pass findings were
+  wrong. Do not repeat this.)
+
+**The rules — apply to every single finding:**
+
+1. **Tag each finding `OBSERVED` or `PREDICTED`.**
+   - `OBSERVED` = you saw the breakdown in a native screenshot or a real interaction trace.
+   - `PREDICTED` = inferred from code, DOM, a measurement, or reasoning, but NOT yet seen.
+   - **Never report a `PREDICTED` finding as if confirmed.** It carries a ~35–65% false-positive base
+     rate. Either confirm it (promote to `OBSERVED`) or list it under "To verify", not under Findings.
+
+2. **A heuristic violation is necessary, not sufficient.** "Label is ambiguous" is not a finding —
+   it's a hypothesis. A real problem needs a plausible **user breakdown** (slowed / blocked / errs /
+   wrong choice) AND a **causal mechanism** tying the UI property to that breakdown. No breakdown, no
+   mechanism → it's speculative; downgrade it.
+
+3. **Observation overrides inference, always.** When a DOM/measurement says one thing and a screenshot
+   says another, **the screenshot wins.** If a programmatic probe returns a sentinel / uncertain value
+   (e.g. an Alpine query returns -1), do NOT report from it — confirm visually or drop it. See
+   [[feedback_visual-bug-native-screenshot-only]].
+
+4. **Record what you REFUTED.** Findings you checked and cleared are first-class output — they prove
+   rigor and stop others re-raising them. A report that only lists problems, with no refuted column,
+   is a red flag that you didn't verify.
+
+5. **Rank by user impact, not by count.** Heuristic eval over-produces minor issues (Jeffries et al.).
+   Ten cosmetic notes are worth less than one task-blocking finding. Volume is a vanity metric.
+
+6. **State your reliability honestly.** One pass = low reliability. Say so in the verdict; don't imply
+   completeness you didn't earn (see Coverage dimensions in §E and the "what was NOT covered" rule).
+
+---
+
 ## Evaluation workflow
 
 Pick the method(s) that fit the request. You can combine them — they layer well.
