@@ -39,8 +39,10 @@ triggers:
 | Viết test cases → Manual TRƯỚC, đợi confirm, automation sau | Hard block |
 | 1-2 lần fail bất kỳ → DỪNG, invoke `ask-when-stuck` | Hard block |
 | Trước khi chạy test → `qa-preflight` TRƯỚC | Hard block |
+| Sau khi chạy/test xong 1 feature **user-facing** (web/mobile) → TỰ ĐỘNG `ux-heuristic-evaluation` + kèm đánh giá UX/workflow trong câu trả lời | Auto — KHÔNG đợi user nhắc |
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
+**"Auto"** = tự làm mặc định, user đã opt-in ("không cần nhắc, tự động đánh giá"). Chỉ bỏ qua nếu task rõ ràng KHÔNG phải feature user-facing (unit test, build script, infra). KHÔNG gán bug chức năng thành lỗi UX — tách riêng.
 
 ---
 
