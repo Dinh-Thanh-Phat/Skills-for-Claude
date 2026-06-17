@@ -192,6 +192,13 @@ they are baseline-relative. The only hard, research-backed thresholds you may as
 **Lostness bands** above and **touch-target sizes** (see Mobile). The "3-click rule" is debunked —
 never bake in a click cap; use Lostness + information scent instead. (Details & sources in §3.)
 
+> **⚠️ A measured/DOM signal is a hypothesis, not a finding.** Counting inputs, reading
+> `disabled`, probing app state (Alpine/React), checking a label exists in markup — these are
+> `PREDICTED` evidence at best. Element-in-DOM ≠ visible/reachable; label-in-markup ≠ announced or
+> usable; `min=1` attribute ≠ enforced. Confirm the user-facing effect in a screenshot before
+> reporting (per Evidence discipline). If a probe returns an uncertain/sentinel value, drop it —
+> don't build a finding on it.
+
 If you want a **perceived-usability score**, administer **SUS** (System Usability Scale) — 10
 questions, 0–100, where **68 = average**. Bands and scoring in `references/heuristics-and-metrics.md` §6.
 SUS needs human respondents, so use it when real users/stakeholders are available, not for a
