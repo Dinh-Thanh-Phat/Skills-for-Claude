@@ -21,6 +21,11 @@ triggers:
   - "generate test"
   - "viết automation"
   - "fix test"
+  - "đánh giá UX"
+  - "đánh giá trải nghiệm"
+  - "workflow ổn không"
+  - "feature bất tiện"
+  - "usability review"
 ---
 
 # QA Router — Entry Point cho Mọi Task QA
