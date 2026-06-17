@@ -261,3 +261,51 @@ https://baymard.com/lists/cart-abandonment-rate)
 - Material touch targets — https://support.google.com/accessibility/android/answer/7101858
 - GOV.UK service manual — https://www.gov.uk/service-manual/design/introduction-designing-government-services
 - Baymard UX audit / checkout — https://baymard.com/learn/ux-audit , https://baymard.com/research/checkout-usability
+
+---
+
+## 10. Reliability & false-positives (why the SKILL.md "Evidence discipline" exists)
+
+Heuristic/expert evaluation is **low-reliability and high-false-positive** unless you anchor every
+finding to observation. The numbers below are the justification — quote them when stakeholders push
+back on "but you only found a few confirmed issues".
+
+**Evaluator effect** — Hertzum & Jacobsen (2003), *The Evaluator Effect: A Chilling Fact About
+Usability Evaluation Methods*, IJHCI 15(1):183–204. https://mortenhertzum.dk/publ/IJHCI2003.pdf
+- Agreement between **any two evaluators** on the same system with the same method is only
+  **5–65%**. Affects heuristic eval, cognitive walkthrough, AND think-aloud; affects both problem
+  detection and severity ratings; persists for novices and experts.
+- Causes: vague goals → variable scenarios; vague procedure → anchoring; **vague problem criteria →
+  "anything" gets logged as a problem.**
+- It measures **reliability, not validity** — low agreement doesn't even tell you the findings are
+  *correct*. Mitigation: **multiple evaluators**, merged; the effect is managed, not eliminated.
+
+**False-positive rates** (predicted problems that real users never hit):
+- Bailey, Allan & Raiello: **43%** of HE-flagged problems were not real; HE caught only **21%** of the
+  genuine problems user-testing found. https://measuringu.com/effective-he/
+- Cross-study: **~34%** of HE problems are "false alarms" not seen in user tests (same source).
+- Woolrych & Cockton: **65% of HE predictions were false**; heuristics "mostly incorrectly confirm
+  false predictions." https://researchportal.northumbria.ac.uk/en/publications/why-and-when-five-test-users-arent-enough
+- Cockton & Woolrych, *Sale Must End* (Interactions IX.5, 2002): **69% of predictions tied to an
+  inappropriate heuristic.** https://interactions.acm.org/archive/view/september-2002/sale-must-end1
+- Jeffries et al. (CHI'91): HE finds the **most** problems but skewed to **minor** ones; user testing
+  finds the **major** ones → count ≠ value.
+
+**Why expert inspection over-predicts:** no real user is present, so the evaluator *imagines* one and
+*predicts* a problem. Recognition that something violates a heuristic ≠ evidence a user is impeded. A
+**real** problem = observed (or strongly predicted) **user breakdown** (slowed/blocked/errs/fails) +
+a **causal mechanism**. A **speculative** finding has only a heuristic label and an imagined user.
+
+**Automated/DOM signals mislead** — automated checks catch only **~30–40%** of real issues; the rest
+need manual observation. https://testparty.ai/blog/automated-accessibility-testing-guide
+- Element in DOM ≠ visible/reachable; alt/label *present* ≠ *meaningful or announced*; focusable ≠
+  logical focus order; `min`/`max` attribute ≠ enforced. Treat all such signals as `PREDICTED`.
+
+**Structured problem-report format** reduces false matches — Lavery, Cockton & Atkinson (1997),
+*Comparison of evaluation methods using structured usability problem reports*, BIT 16(4–5):246–266.
+https://www.tandfonline.com/doi/abs/10.1080/014492997119824 — report each finding as
+**problem + observed evidence + user impact + causal context**, not just a heuristic name.
+
+**Distilled rules (mirrored in SKILL.md Evidence discipline):** tag OBSERVED vs PREDICTED · heuristic
+violation is necessary not sufficient · observation overrides inference · record refuted findings ·
+rank by impact not count · state reliability (one pass = low) honestly.
