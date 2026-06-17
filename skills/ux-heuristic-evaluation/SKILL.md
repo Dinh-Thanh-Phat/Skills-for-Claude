@@ -271,23 +271,34 @@ ALWAYS produce this exact structure so findings are actionable and comparable ac
 ## Verdict
 [1-2 sentences: is this workflow good? The headline a PM needs.]
 [If measured: happy-path steps = X (min Y) · Lostness = Z · SUS = N]
+[Reliability caveat: how many passes / which dimensions — don't imply completeness you didn't earn.]
 
-## Findings
+## Findings (confirmed)
+Only `OBSERVED` findings go here. Each one:
 
-### UX-001 — [short title] · Severity [0-4: label]
+### UX-001 — [short title] · Severity [0-4: label] · `OBSERVED`
 - **Heuristic / step violated:** [e.g. "H1 Visibility of system status" or "Walkthrough Q4 at step 3"]
 - **What happens:** [the experiential problem — what the user feels/does]
 - **Why it hurts:** [frequency × impact × persistence reasoning that justifies the severity]
-- **Evidence:** [screenshot ref / step count / lostness / measured number]
+- **Evidence:** [the screenshot you LOOKED AT / interaction observed — not just "the DOM said"]
 - **Recommendation:** [concrete fix — describe the better workflow, not just "improve UX"]
 
 ### UX-002 — ...
 
+## To verify (PREDICTED — not yet confirmed, do NOT treat as bugs)
+Suspected from code/DOM/reasoning but not yet seen. Each carries a ~35–65% false-positive base rate.
+- [short title] — what you suspect + the one check that would confirm/refute it.
+
+## Refuted / cleared (checked, NOT a problem)
+Records rigor and stops re-litigation. Each: what was suspected → what the screenshot/observation
+showed → verdict (e.g. "back data-loss → chip persists after Back → cleared").
+
 ## Summary
-- Findings by severity: [4: n] [3: n] [2: n] [1: n]
-- Top 3 to fix first: [the severity-3/4 items]
+- Findings by severity (OBSERVED only): [4: n] [3: n] [2: n] [1: n]
+- Top to fix first: [the severity-3/4 items]
 - Measured signals: [steps, lostness, time, field count, etc.]
-- Out of scope (route elsewhere): [any functional bugs spotted → qa-bug-report; a11y → accessibility-testing]
+- **Coverage:** dimensions covered = [...] · **NOT covered = [...]** (be explicit)
+- Out of scope (route elsewhere): [functional bugs → qa-bug-report; deep a11y → accessibility-testing]
 ```
 
 Severity labels (NNGroup): **0** not a problem · **1** cosmetic · **2** minor · **3** major ·
