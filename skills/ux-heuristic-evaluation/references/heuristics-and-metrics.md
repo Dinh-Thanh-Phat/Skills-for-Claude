@@ -13,6 +13,7 @@ load the whole file unless doing a full multi-method evaluation.
 7. Mobile-specific heuristics & touch-target thresholds
 8. Workflow efficiency & form benchmarks
 9. Sources
+10. Reliability & false-positives (why evidence discipline matters)
 
 ---
 
