@@ -399,11 +399,25 @@ Severity labels (NNGroup): **0** not a problem · **1** cosmetic · **2** minor 
 
 ## Relationship to other skills
 
-- Run **after** functional testing — once `qa-exploratory` confirms it works, this asks if it works *well*.
-- **`accessibility-testing`** is the sibling for WCAG/screen-reader; this skill covers experiential
-  flow + touch-target ergonomics, and defers full a11y there.
-- **`behavioral-coverage-matrix`** defines *what tasks* to evaluate; this evaluates the *quality* of each.
-- Spotted a real bug mid-evaluation? Log it via **`qa-bug-report`** — don't bury it as a UX note.
+This skill is the **hub** of a UX toolkit. It judges experiential/workflow quality; for the dimensions
+it doesn't measure, run a companion and fold its OBSERVED numbers into your report.
+
+**Companion skills — when evaluating a web flow, consider running these alongside:**
+- [[web-vitals-ux]] — performance AS UX (LCP/INP/CLS). A slow/janky page is real friction; this gives
+  you the measured backing for a "visibility of system status" / "feels slow" note.
+- [[microcopy-readability]] — the words: readability grade, sentence length, jargon, vague links.
+  Backs heuristic H2 (match the real world) with computed scores.
+- [[conversion-funnel-audit]] — for sign-up / lead / checkout flows: field-count, guest checkout,
+  inline validation, autocomplete, trust signals vs Baymard benchmarks.
+- [[accessibility-testing]] — WCAG / axe / screen-reader. This skill covers experiential flow +
+  touch-target ergonomics and **defers deep a11y here** (axe catches ~57%, the rest needs humans).
+- [[responsive-viewport-testing]] — layout across breakpoints; pair it when a flow looks fine on one
+  size but wastes/breaks on another (e.g. desktop content stuck in a narrow column).
+
+**Boundaries (route elsewhere):**
+- Run **after** functional testing — once [[qa-exploratory]] confirms it works, this asks if it works *well*.
+- [[behavioral-coverage-matrix]] defines *what tasks* to evaluate; this evaluates the *quality* of each.
+- Spotted a real bug mid-evaluation? Log it via [[qa-bug-report]] — don't bury it as a UX note.
 
 For exact heuristic wording, the severity definitions, SUS questions/bands, cognitive-walkthrough
 template, interaction-cost checklist, mobile thresholds, and all source URLs, read
