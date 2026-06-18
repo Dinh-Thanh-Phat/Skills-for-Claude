@@ -31,20 +31,26 @@ These four bands are **hard, citable** — assert them. Don't invent other absol
 ## How to measure (no Lighthouse install needed)
 Run against a real page with Playwright; capture is OBSERVED evidence.
 
-1. **Lab LCP/CLS/TTFB** — inject the `web-vitals` library from CDN and read callbacks:
+1. **PRIMARY — native `PerformanceObserver` (CSP-proof, always works).** Inject via `addInitScript`
+   BEFORE navigation so it's armed at load. CDN script injection is often **blocked by the site's
+   Content Security Policy** (verified live: unpkg was blocked on a real site) — so don't rely on it.
    ```js
-   await page.addScriptTag({ url: 'https://unpkg.com/web-vitals@4/dist/web-vitals.iife.js' });
-   await page.evaluate(() => new Promise((res) => {
-     const out = {}; const { onLCP, onCLS, onTTFB, onINP } = webVitals;
-     onLCP(m => out.LCP = m.value); onCLS(m => out.CLS = m.value);
-     onTTFB(m => out.TTFB = m.value); onINP(m => out.INP = m.value);
-     setTimeout(() => res(out), 4000); // let LCP/CLS settle
-   }));
+   await page.addInitScript(() => {
+     window.__lcp = 0; window.__cls = 0;
+     new PerformanceObserver(l => { for (const e of l.getEntries()) window.__lcp = e.startTime; })
+       .observe({ type: 'largest-contentful-paint', buffered: true });
+     new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; })
+       .observe({ type: 'layout-shift', buffered: true });
+   });
+   // after load: const {__lcp,__cls} = await page.evaluate(...); TTFB:
+   // performance.getEntriesByType('navigation')[0].responseStart
    ```
-2. **INP needs a real interaction** — after load, perform representative clicks/typing, THEN read `onINP`
-   (it only reports after input). No interaction → INP is null; say so, don't report 0.
-3. **Fallback** (no network for CDN): `PerformanceObserver` for `largest-contentful-paint` and
-   `layout-shift`; `performance.getEntriesByType('navigation')[0].responseStart` for TTFB.
+2. **For INP (and to cross-check), add the `web-vitals` lib** — but use a **CSP-allowed** CDN. Check the
+   page's CSP `script-src`; many allow `cdn.jsdelivr.net` (`https://cdn.jsdelivr.net/npm/web-vitals@4/dist/web-vitals.iife.js`).
+   If injection throws a CSP error, fall back to PerformanceObserver and report INP as n/a.
+3. **INP needs a real interaction** — after load, perform a representative click/type that triggers JS,
+   THEN read `onINP`. A trivial click on empty space may not register; if INP stays null, say
+   **"n/a (no measurable interaction)"** — never report 0.
 4. **If `lighthouse` / `playwright-lighthouse` IS installed**, prefer it for a full lab run
    (`lhr.audits['largest-contentful-paint'].numericValue`).
 
