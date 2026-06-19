@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-19 (GMT+7)
+
+Domains researched: Playwright/web E2E (1.61 new APIs), AI chatbot/LLM testing (LLM-as-a-Judge bias mitigation), QA test design (ephemeral preview environments — skipped, insufficient actionable depth).
+
+- CREATED: skills/playwright-1.61-new-apis — Playwright 1.61 (June 2026) seven new capabilities: WebAuthn passkeys via `browserContext.credentials` virtual authenticator (register+seed without hardware, Chromium-only); Web Storage API (`page.localStorage`/`page.sessionStorage` with `setItem`/`getItem`/`items()`); three new video retention modes (`'on-all-retries'`, `'retain-on-first-failure'`, `'retain-on-failure-and-retries'`); `expect.soft.poll()` for combined polling+soft-assertions; `failOnFlakyTests` config to fail CI when tests only pass on retry; `apiResponse.securityDetails()`/`apiResponse.serverAddr()` for security assertions; HAR and trace now capture WebSocket frames. Not covered by playwright-1.60-new-apis (locator.drop, tracing.startHar, test.abort, ARIA boxes) or playwright-agentic-apis (1.59 APIs). Sources: https://github.com/microsoft/playwright/releases/tag/v1.61.0, https://www.corbado.com/blog/passkeys-e2e-playwright-testing-webauthn-virtual-authenticator, https://changjoon-baek.medium.com/overcoming-passkey-verification-in-test-automation-fc7fc6748bd6
+- CREATED: skills/llm-judge-bias — LLM-as-a-Judge bias mitigation for AI eval pipelines: the 5 bias types with measured impact (verbosity/length +15–30 pts, self-preference/family +10–25%, position bias ~60% first-choice, format bias, calibration drift), cross-family judge selection table (never judge your own family's output), frontier vs small-judge cost tiers, four anti-bias techniques (rubric-based scoring with explicit anti-verbosity language, length normalization, pairwise position swap, human calibration with Pearson r ≥ 0.70 threshold), real-time guardrail implementation with Claude Haiku. Distinct from response-evaluator (implementation code for chatbot QA scoring) — this covers bias awareness, judge selection, and calibration methodology. Sources: https://futureagi.com/blog/llm-as-judge-best-practices-2026, https://futureagi.com/blog/evaluating-llm-judge-bias-mitigation-2026/, https://medium.com/@jiminlee-ai/understanding-llm-as-a-judge-benefits-biases-and-best-practices-4b4d5cc3cbcd, https://arxiv.org/pdf/2412.05579
+- SKIPPED ephemeral/preview environments (QA domain) — search returned general platform-level content (Bunnyshell, Northflank per-PR environments + BASE_URL pattern); not enough Playwright-specific actionable detail to meet quality bar without duplicating test-isolation and existing CI guidance.
+
 ## 2026-06-16 (GMT+7)
 
 Domains researched: Maestro/mobile (AI assertion commands), QA test design / Playwright (AI self-healing test automation).
