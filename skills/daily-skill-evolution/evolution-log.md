@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-20 (GMT+7)
+
+Domains researched: Playwright/web E2E (MCP server for AI agents, Clock API for time control), QA test design (AI test generation trends — skipped, too general).
+
+- CREATED: skills/playwright-mcp-server — Official Microsoft Playwright MCP server (`@playwright/mcp`): snapshot mode (accessibility tree, default) vs vision mode (`--caps=vision`, screenshots), ~40 tools (browser_navigate, browser_click, browser_snapshot, browser_network_requests, browser_storage_state_save, etc.), element ref system (`ref=e42`), Claude Desktop/VS Code/Cursor setup JSON, inline vs file snapshot-response-mode, session persistence. Distinct from playwright-agentic-apis (1.59 in-process APIs) and maestro-mcp-workflow (Maestro's MCP server). Sources: https://playwright.dev/docs/getting-started-mcp, https://github.com/microsoft/playwright-mcp, https://playwright.dev/mcp/vision-mode, https://testdino.com/blog/playwright-mcp, https://bug0.com/blog/playwright-mcp-servers-ai-testing
+- CREATED: skills/playwright-clock-testing — Playwright Clock API for time-sensitive tests: `setFixedTime` (freeze Date.now() only, timers run naturally), `install + fastForward` (jump time without firing intermediate timers — for session expiry, auto-logout), `install + runFor` (advance time AND fire all intermediate setInterval/setTimeout — for countdown timers, polling), `pauseAt + resume` (freeze at exact instant). Includes decision table, time format reference, and the critical rule: install clock before page.goto(). No existing skill covered time control. Sources: https://playwright.dev/docs/clock, https://github.com/microsoft/playwright/blob/main/docs/src/clock.md, https://qaskills.sh/blog/playwright-clock-time-control-testing-guide
+- SKIPPED QA test design (AI test generation / shift-left) — search returned high-level 2026 trend reports (72% AI adoption stats, "shift-everywhere" framing) without new actionable technique distinct from existing qa-generator, qa-test-generation, behavioral-coverage-matrix skills.
+
 ## 2026-06-19 (GMT+7)
 
 Domains researched: Playwright/web E2E (1.61 new APIs), AI chatbot/LLM testing (LLM-as-a-Judge bias mitigation), QA test design (ephemeral preview environments — skipped, insufficient actionable depth).
