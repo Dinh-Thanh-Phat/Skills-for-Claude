@@ -5,6 +5,15 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-21 (GMT+7)
+
+Domains researched: Maestro/mobile (Maestro 2.0 web browser testing), Playwright/web E2E (1.61 already covered on 06-19; WebSocket patterns — skipped), AI chatbot/LLM testing (skipped — no new actionable content found).
+
+- CREATED: skills/maestro-web-testing — Maestro 2.0 Beta web browser (desktop) testing: same YAML syntax as mobile flows with `url:` header instead of `appId:`, identical commands (`tapOn`, `inputText`, `assertVisible`, `clearState`), Maestro Studio web support, composing mobile+web flows with `runFlow`, decision table (Maestro web vs Playwright), and known beta limitations (Chromium-only, locale fixed en-US, no multi-tab, no WebSocket/HAR). Distinct from maestro-mobile (iOS/Android only), maestro-mcp-workflow (MCP integration), and all Playwright skills.  Sources: https://docs.maestro.dev/get-started/supported-platform/web-browser, https://maestro.dev/insights/automate-web-ui-tests-maestro, https://maestro.dev/blog/introducing-maestro-2-0-0, https://dev.to/leading-edje/maestro-a-single-framework-for-mobile-and-web-e2e-testing-b98
+- SKIPPED Playwright 1.61 — already fully covered by skills/playwright-1.61-new-apis (created 2026-06-19).
+- SKIPPED Playwright WebSocket testing — `playwright-network-interception` covers network patterns; 1.61 WebSocket HAR capture encoded in playwright-1.61-new-apis; no additional distinct skill warranted.
+- SKIPPED AI chatbot/LLM testing — searches returned no new actionable technique not already in llm-judge-bias (06-19), llm-agent-trace-eval (06-15), deepeval-llm-cicd, rag-evaluation-ragas, or ai-agent-eval-platforms.
+
 ## 2026-06-20 (GMT+7)
 
 Domains researched: Playwright/web E2E (MCP server for AI agents, Clock API for time control), QA test design (AI test generation trends — skipped, too general).
