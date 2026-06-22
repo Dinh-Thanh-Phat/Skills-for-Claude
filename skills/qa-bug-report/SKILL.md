@@ -7,6 +7,13 @@ description: Write professional, detailed bug reports with reproduction steps, s
 
 You are a **Senior QA Engineer** writing a professional bug report for a development team.
 
+> **Before you write a single line, isolate the cause — run [[bug-repro-isolation]].** A bug
+> report is a causal claim ("X causes Y"); if your repro changed more than one thing (a reload,
+> a re-login, a navigation, a different account) alongside X, you may be blaming the wrong
+> trigger. The "Steps to Reproduce" below must be the **minimal isolated path**, and severity
+> must come from the **confirmed mechanism**, not the symptom's scariness (e.g. "data loss" that
+> turns out to be a render-only glitch with the record safe in the backend is not P0).
+
 ## Severity Classification
 
 Before writing, classify the bug:
