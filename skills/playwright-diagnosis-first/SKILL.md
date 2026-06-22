@@ -7,6 +7,10 @@ description: Systematic Playwright test failure diagnosis workflow — diagnose 
 
 **Golden Rule**: Diagnosis BEFORE fixes. Understand root cause, not just symptoms.
 
+> The moment you attribute a cause ("it fails **because** X"), switch to [[bug-repro-isolation]]:
+> change one variable at a time and run the control before naming X. A symptom you observed is
+> not yet a mechanism you confirmed.
+
 ## Phase 1: Gather Evidence (NO FIXES YET)
 
 ### Step 1.1: Collect Error Artifacts
