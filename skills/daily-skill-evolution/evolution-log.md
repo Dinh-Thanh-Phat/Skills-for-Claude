@@ -5,6 +5,16 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-22 (GMT+7)
+
+Domains researched: Playwright/web E2E (Clock API — found playwright-clock-testing already created 06-20; playwright-mcp-server already created 06-20; 1.61 APIs already created 06-19), AI chatbot/LLM testing (LLM-as-a-Judge techniques — found llm-judge-bias already created 06-19), QA test design (general BVA/pairwise/error-guessing — too general, already covered by behavioral-coverage-matrix).
+
+- UPDATED: skills/playwright-clock-testing — Added `setSystemTime` method (section 5): moves `Date.now()` mid-test without cancelling already-registered timers; includes New Year rollover example and `setSystemTime` vs `fastForward` distinction. Not previously documented. Sources: https://playwright.dev/docs/clock, https://qaskills.sh/blog/playwright-clock-time-control-testing-guide
+- UPDATED: skills/llm-judge-bias — Added "G-Eval — Chain-of-Thought Judging" section (two-step prompt pattern: generate evaluation steps, then apply them; reduces position and verbosity bias; now the 2026 recommended rubric technique) and "Cohen's Kappa for Calibration" section (preferred over Pearson r for ordinal 1–5 scores because it corrects for chance agreement; Kappa ≥ 0.60 threshold for QA, ≥ 0.80 for high-stakes). Existing skill used Pearson r only. Sources: https://deepeval.com/blog/llm-as-a-judge, https://deepchecks.com/llm-judge-calibration-automated-issues/
+- SKIPPED creating playwright-clock-api — duplicate of playwright-clock-testing (06-20); would be a full duplicate.
+- SKIPPED creating llm-as-judge-calibration — llm-judge-bias (06-19) already covers the core; surgical updates preferred.
+- SKIPPED QA test design — pairwise/all-pairs and error-guessing searches returned general technique content already covered by behavioral-coverage-matrix; no new actionable June 2026 finding.
+
 ## 2026-06-21 (GMT+7)
 
 Domains researched: Maestro/mobile (Maestro 2.0 web browser testing), Playwright/web E2E (1.61 already covered on 06-19; WebSocket patterns — skipped), AI chatbot/LLM testing (skipped — no new actionable content found).

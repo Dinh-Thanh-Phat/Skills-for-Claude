@@ -116,6 +116,27 @@ test('midnight promotion banner appears exactly at 00:00', async ({ page }) => {
 
 ---
 
+## 5. `setSystemTime` — Move the Clock Without Resetting Timer Schedules
+
+`setSystemTime` shifts what `Date.now()` returns mid-test without cancelling or rescheduling already-registered timers. Use when you need to simulate a date change after timers are already running.
+
+```typescript
+test('banner updates on day rollover without resetting running timers', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-12-31T23:59:50') });
+  await page.goto('/new-year-countdown');
+
+  // Timers already registered. Move system time forward 15 s into new year.
+  await page.clock.setSystemTime(new Date('2027-01-01T00:00:05'));
+  await page.clock.runFor(5000);  // fire remaining timers after the shift
+
+  await expect(page.getByText('Happy New Year 2027!')).toBeVisible();
+});
+```
+
+**`setSystemTime` vs `fastForward`**: `fastForward` fires all timers between now and the target; `setSystemTime` only moves the Date — timers still need `runFor`/`fastForward` to fire after the shift.
+
+---
+
 ## Time Format Reference
 
 All time-advance methods accept:

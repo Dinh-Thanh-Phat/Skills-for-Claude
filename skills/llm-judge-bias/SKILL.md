@@ -141,6 +141,60 @@ if verdict["reject"]:
     return SAFE_FALLBACK_RESPONSE  # or escalate to human support
 ```
 
+## G-Eval — Chain-of-Thought Judging (2026 Standard)
+
+G-Eval makes the judge reason before scoring, which reduces position and verbosity bias compared to direct "score 1–5" prompts. It is now the recommended prompting pattern for LLM-as-a-Judge rubrics.
+
+**Two-step process:**
+1. Ask the judge to generate evaluation steps from the criterion.
+2. Apply those steps to produce a reasoning chain, then extract the final score.
+
+```python
+GEVAL_PROMPT = """You are an expert evaluator. Follow this exact process:
+1. Read the criterion.
+2. Write numbered evaluation steps for this criterion.
+3. Apply each step to the output.
+4. Output a final score (1–5) and one justification sentence.
+
+CRITERION: {criterion}
+OUTPUT: {output}
+
+Format your response as:
+STEPS: <evaluation steps>
+REASONING: <step-by-step application>
+SCORE: <1-5>
+JUSTIFICATION: <one sentence>"""
+
+def geval_score(criterion: str, output: str, judge_client) -> int:
+    response = judge_client.complete(GEVAL_PROMPT.format(
+        criterion=criterion, output=output
+    ))
+    score_line = next(l for l in response.splitlines() if l.startswith("SCORE:"))
+    return int(score_line.split(":")[1].strip())
+```
+
+Use G-Eval for any rubric where subjectivity is a risk. Do NOT use a simple "rate this 1-5" prompt without evaluation steps — it amplifies verbosity and format biases.
+
+## Cohen's Kappa for Calibration (More Precise Than Pearson r)
+
+When calibrating against human labels, Cohen's Kappa is preferred over Pearson r for ordinal
+scores (1–5) because it corrects for chance agreement that inflates Pearson correlation.
+
+```python
+from sklearn.metrics import cohen_kappa_score
+
+human_labels = [4, 2, 5, 3, 1, 4, 4, 2, 3, 5]
+judge_labels  = [4, 3, 5, 3, 2, 4, 3, 2, 3, 5]
+
+kappa = cohen_kappa_score(human_labels, judge_labels)
+# Target: ≥ 0.60 for general QA; ≥ 0.80 for high-stakes (medical, legal, safety)
+print(f"Cohen's Kappa: {kappa:.3f}")
+```
+
+**Pearson r vs Kappa:** `r = 0.90, Kappa = 0.10` means the judge is essentially guessing (one class dominates, accuracy looks high by chance). `r = 0.70, Kappa = 0.60` means genuine reasoning. **Always report Kappa alongside Pearson r.**
+
+---
+
 ## Pre-Deployment Checklist
 
 - [ ] Judge model is a **different family** from the evaluated model
@@ -157,3 +211,5 @@ if verdict["reject"]:
 - https://medium.com/@jiminlee-ai/understanding-llm-as-a-judge-benefits-biases-and-best-practices-4b4d5cc3cbcd
 - https://medium.com/@adnanmasood/rubric-based-evals-llm-as-a-judge-methodologies-and-empirical-validation-in-domain-context-71936b989e80
 - https://arxiv.org/pdf/2412.05579
+- https://deepeval.com/blog/llm-as-a-judge (G-Eval technique)
+- https://deepchecks.com/llm-judge-calibration-automated-issues/ (Cohen's Kappa calibration)
