@@ -81,6 +81,31 @@ in [[ux-heuristic-evaluation]]: a `PREDICTED` cause can't carry a high severity.
 6. **Only now: name the cause and assign severity.** Write the report with the isolated trigger,
    note the control you ran, and set severity from the confirmed mechanism.
 
+## After isolating the cause: is it actually NEW, and is it ONE bug?
+
+Isolating the cause is not the last step. Two more checks decide whether you have a *finding* worth
+reporting as new — skip them and you'll waste the team's time re-raising what they already track.
+
+**1. Dedup against what's already known.** Before you label anything "new", map the confirmed cause
+to the existing backlog / known-issues list / tickets you logged this session. A different *symptom*
+(empty form, stuck button, lost edit, wrong number) does **not** make it a new bug if it traces back
+to a cause already on file. Ask: *"If this cause were fixed, would my finding disappear too?"* If yes,
+it's the same bug — link to the existing ticket, don't open a new one. You usually don't have the
+whole backlog in view, so when unsure, **say "is this already tracked?" and ask** rather than
+asserting novelty.
+
+**2. Collapse symptoms to their root — one cause = one issue.** A single underlying defect often
+surfaces as several symptoms across the flow (e.g. "reload empties form", "exit loses input",
+"interrupt sends you back to step 2", "re-entry shows blank" can all be *one* root: the flow never
+persists/re-hydrates state). Reporting each symptom as a separate "finding" inflates the list and
+hides that they share one fix. Group them under the root cause; list the symptoms as evidence of it,
+not as independent bugs.
+
+> Real failure (22-Jun, onboarding): after correctly isolating "the form never re-hydrates state", I
+> presented reload-loss, exit-loss, interrupt-reset, and blank-re-entry as *four new findings* — they
+> were all the **one known root** (N1 data-loss) plus the known duplicate-create bug. The user replied
+> "list này toàn cái cũ mà" (this list is all old). Lesson: isolating the cause ≠ the cause being new.
+
 ## When you can't fully isolate
 
 If you genuinely can't strip a variable (e.g., the symptom only appears after a real reload),
