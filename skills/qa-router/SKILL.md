@@ -259,4 +259,5 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 - Chạy test: `qa-router` → `qa-preflight` → `playwright-test-workflow`
 - Đánh giá UX (flow RIÊNG, chạy độc lập): `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)
 - Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck`
+- Bug report: `qa-router` → `bug-repro-isolation` (cô lập nguyên nhân) → `qa-bug-report` → `odoo-project-automation`
 - Close: `qa-router` → `qa-session-close` → `beads`
