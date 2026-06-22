@@ -153,6 +153,23 @@ Use this pattern for filenames + IDs:
 - Screenshot path: `data/outputs/screenshots/bug<NN>_<context>.png`
 - Always link to the verification spec if one exists (e.g. `tests/cms/_verify_24.spec.ts`)
 
+## Novelty & dedup check — BEFORE you file (or call anything "new")
+
+Filing a bug, or telling the user "I found a new issue", is a claim of **novelty**. A re-discovery of
+an already-tracked bug — even with a fresh symptom — wastes the team's time and erodes trust the same
+way a wrong cause does. Run this before opening a ticket:
+
+- **Map the confirmed cause to the existing backlog / tickets you already logged.** Different symptom,
+  same root cause → it's the *same* bug. Link/append to the existing ticket; don't open a new one.
+- **Test:** "If the known bug were fixed, would my finding vanish too?" Yes → not new.
+- **Collapse symptoms to root:** several findings fixed by one change = **one** issue with many
+  symptoms (list them as evidence), not several issues. See [[bug-repro-isolation]] "is it new, one bug?".
+- **You rarely see the whole backlog.** When you can't verify it's untracked, **ask "is this already
+  logged?" instead of asserting "new"** — then file only what the user confirms is missing.
+
+(Lesson 22-Jun: presented 4 symptoms of one known data-loss root as "new findings" → user: "toàn cái
+cũ mà". Isolating the cause did not make the cause new.)
+
 ## Regression Detection Checklist
 Ask yourself:
 - Was this feature tested before? Check git blame or recent PRs.
