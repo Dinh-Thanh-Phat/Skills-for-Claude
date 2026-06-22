@@ -144,12 +144,19 @@ User nói: "coverage còn thiếu gì", "coverage gap", "coverage > X%"
 ```
 User nói: "viết bug report", "log bug", "tìm ra bug"
                     ↓
-              qa-bug-report (viết report)
+   bug-repro-isolation (cô lập 1 biến → xác nhận NGUYÊN NHÂN, không chỉ triệu chứng)
+                    ↓
+              qa-bug-report (viết report với minimal repro + control đã chạy)
                     ↓
          Hỏi: "Log lên Odoo luôn không?"
                     ↓
          YES → odoo-project-automation
 ```
+
+> **Mọi causal claim ("làm X gây Y") + mọi lần gán severity → `bug-repro-isolation` TRƯỚC.**
+> Đặc biệt nếu repro có reload/điều hướng/đăng nhập lại lẫn với hành động đang test —
+> đừng đổ lỗi cho hành động khi một thay đổi môi trường mới là thủ phạm (bài học sự cố
+> "Back xoá data" = thực ra reload không re-hydrate form). Hard block.
 
 ### "Kết thúc session"
 
