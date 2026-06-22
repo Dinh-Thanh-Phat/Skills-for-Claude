@@ -44,6 +44,7 @@ triggers:
 | Viết test cases → Manual TRƯỚC, đợi confirm, automation sau | Hard block |
 | 1-2 lần fail bất kỳ → DỪNG, invoke `ask-when-stuck` | Hard block |
 | Trước khi chạy test → `qa-preflight` TRƯỚC | Hard block |
+| Claim "X gây Y" / gán severity / log bug → `bug-repro-isolation` (cô lập 1 biến) TRƯỚC | Hard block |
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
 
