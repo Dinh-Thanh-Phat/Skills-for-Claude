@@ -121,6 +121,10 @@ the trigger you actually proved, even if it's narrower or less dramatic than you
 - You changed two things since the last good state and only mention one in the report.
 - A teammate says "I can't reproduce that" — that's usually a confound in *your* path, not theirs.
   Re-derive the minimal repro before defending the finding.
+- You're about to call something "new" / "I found a bug" without checking it against the known-issues
+  list — and you haven't asked "is this already tracked?"
+- Your report has several findings that would all be fixed by the **same** change — that's one bug
+  with many symptoms, not many bugs.
 
 ## Relationship to other skills
 
