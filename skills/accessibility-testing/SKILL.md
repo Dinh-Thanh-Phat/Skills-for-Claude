@@ -44,6 +44,46 @@ import AxeBuilder from '@axe-core/playwright';
 
 ---
 
+## Standalone live-site audit (no test harness, no app routes)
+
+When you need to audit a **live URL** (or a list of routes) ad-hoc — not a CI test suite — run a
+single Node script that loops the routes, injects axe, and prints violations. This matches an
+exploratory QA pass where you don't have the app's test setup, just the deployed site. axe-core
+runs in-page, so it works against any URL.
+
+```js
+// a11y-audit.mjs — node a11y-audit.mjs   (needs: npm i -D @playwright/test @axe-core/playwright)
+import { chromium } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import fs from 'fs';
+
+const BASE = process.argv[2] || 'https://example.com';
+const ROUTES = ['/', '/about-us', '/contact-us'];        // edit per site (or crawl links first)
+const browser = await chromium.launch();
+const page = await (await browser.newContext()).newPage();
+const out = [];
+
+for (const r of ROUTES) {
+  await page.goto(BASE + r, { waitUntil: 'domcontentloaded', timeout: 35000 });
+  await page.waitForTimeout(1200);
+  const res = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+  const blockers = res.violations.filter(v => v.impact === 'critical' || v.impact === 'serious');
+  out.push({ route: r,
+    total: res.violations.length, critical: blockers.length,
+    top: res.violations.slice(0, 8).map(v => ({ id: v.id, impact: v.impact,
+      nodes: v.nodes.length, sample: v.nodes[0]?.target?.join(' ') })) });
+  console.log(`${r}: ${res.violations.length} violations (${blockers.length} critical/serious)`);
+}
+await browser.close();
+fs.writeFileSync('a11y-audit.json', JSON.stringify(out, null, 2));
+```
+
+Use this for a quick site-wide a11y read; for a permanent regression net, graduate the findings
+into the test-suite pattern below. Keyboard/focus/contrast-over-image still need the manual
+supplements (see end of file) — axe catches ~57%, not all. Pair engine coverage with
+[[cross-browser-webkit-testing]] and performance with [[web-vitals-ux]] for a full UX-quality sweep.
+
 ## Basic Pattern: Navigate → Scan → Assert
 
 ```typescript
