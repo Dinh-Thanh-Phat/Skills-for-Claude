@@ -80,17 +80,22 @@ for (const [name, type] of Object.entries(engines)) {
   await page.goto(URL, { waitUntil: 'domcontentloaded', timeout: 35000 });
   await page.waitForTimeout(1800);
   const m = await page.evaluate(() => {
-    const de = document.documentElement;
-    // detect text CLIPPING (content cut without horizontal scroll): elements whose
-    // scrollWidth exceeds clientWidth while overflow is hidden — the silent killer.
+    const de = document.documentElement, vw = de.clientWidth;
+    // Text CLIPPING is sneaky and a single heuristic MISSES it (verified live: a hero <h1> was
+    // visibly cut mid-word in all 3 engines while scrollWidth===clientWidth and docOverflow===0).
+    // So flag TWO independent signals, and STILL treat screenshots as the real verdict:
     const clipped = [];
     for (const el of document.querySelectorAll('h1,h2,h3,p,span,a,button,li')) {
-      const cs = getComputedStyle(el);
-      if ((cs.overflow === 'hidden' || cs.overflowX === 'hidden' || cs.textOverflow === 'clip') &&
-          el.scrollWidth - el.clientWidth > 2 && el.clientWidth > 40) {
-        clipped.push({ tag: el.tagName, over: el.scrollWidth - el.clientWidth,
-          txt: (el.innerText || '').slice(0, 35).replace(/\s+/g, ' ') });
-      }
+      const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+      if (r.width < 40 || !el.innerText) continue;
+      const overflowsBox = (cs.overflow==='hidden'||cs.overflowX==='hidden'||cs.textOverflow==='clip')
+        && el.scrollWidth - el.clientWidth > 2;            // signal A: cut by its own overflow
+      const pastViewport = r.right > vw + 2 && r.left < vw; // signal B: text runs off-screen right
+      const nowrapWide = cs.whiteSpace.includes('nowrap') && el.scrollWidth > vw; // signal C
+      if (overflowsBox || pastViewport || nowrapWide)
+        clipped.push({ tag: el.tagName, right: Math.round(r.right), vw,
+          why: overflowsBox?'overflow':pastViewport?'pastViewport':'nowrap',
+          txt: (el.innerText||'').slice(0,35).replace(/\s+/g,' ') });
     }
     return { docOverflow: de.scrollWidth - de.clientWidth, clippedCount: clipped.length,
              clipped: clipped.slice(0, 8) };
@@ -101,8 +106,10 @@ for (const [name, type] of Object.entries(engines)) {
 }
 fs.writeFileSync(`${OUT}/diff.json`, JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
-// THEN: open the 3 *-fold.png and look. A number that differs across engines = a real lead;
-// confirm the visual breakage in the screenshot of the engine that shows it.
+// THEN OPEN THE 3 *-fold.png AND LOOK — this is non-negotiable. The metrics above are a triage
+// aid, not a verdict: clipping can render visibly while every numeric probe reads 0 (text painted
+// past the box without changing scrollWidth). A number that DIFFERS across engines = a strong
+// engine-specific lead; identical numbers do NOT mean "no bug" — confirm in the images.
 ```
 
 Read it as: **docOverflow or clippedCount that differs across engines = engine-specific bug.**
