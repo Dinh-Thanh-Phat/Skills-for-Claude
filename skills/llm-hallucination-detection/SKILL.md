@@ -111,7 +111,7 @@ Requires embedding model to cluster semantically equivalent responses, then comp
 
 | Situation | Method |
 |---|---|
-| RAG: have retrieved context | Faithfulness / NLI-based scorer |
+| RAG: have retrieved context | Faithfulness / NLI-based scorer (for the full retrieval-vs-generation metric suite, see `rag-evaluation-ragas`) |
 | Open-domain: no context | Consistency sampling (SelfCheckGPT) |
 | Multi-turn: prior conversation | NLI check claim vs user-stated facts |
 | CI regression suite | DeepEval `HallucinationMetric` in pytest |
