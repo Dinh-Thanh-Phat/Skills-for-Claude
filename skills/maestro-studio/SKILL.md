@@ -113,6 +113,53 @@ MaestroGPT reads the live hierarchy, identifies the correct element, and propose
 
 ---
 
+## ⚡ Element discovery for an AI agent (no browser clicking)
+
+Studio's Inspector/Flow Builder/MaestroGPT are **browser UI** at `localhost:9999` — an autonomous
+agent (Claude Code, CI, headless) **cannot click them**. Use the **scriptable CLI equivalents**
+instead — same on-device hierarchy, no human interaction:
+
+```bash
+# Dump the CURRENT screen's full hierarchy (JSON) — the agent-friendly Inspector
+maestro hierarchy > screen.json
+# Then grep resource-id / text to pick selectors:
+grep -oE '"resource-id"[: ]+"[^"]+"' screen.json | sort -u   # RN testIDs land here
+grep -oE '"(text|hintText)"[: ]+"[^"]+"' screen.json | sort -u
+```
+
+**Do NOT use `adb shell uiautomator dump` for React Native / Expo apps** — it often returns a
+near-empty tree (RN renders to a canvas; only native chrome shows). `maestro hierarchy` pulls the
+a11y tree Maestro actually uses, so RN `testID`s appear (mapped to `id:`). If a container shows no
+children even in `maestro hierarchy` (a known Maestro issue), fall back to `text:`/relative selectors
+or a screenshot.
+
+### One WARM session — never re-login per dump
+Login/`clearState` is the bottleneck (~30–40s each). Don't pay it for every element lookup:
+
+1. Drive the app to the target screen **once** (one flow with login).
+2. Leave it parked — run `maestro hierarchy` repeatedly as you navigate via **small attach flows
+   that do NOT `launchApp`/`clearState`** (they act on the running app):
+   ```yaml
+   appId: com.example.app
+   ---
+   - tapOn: { id: "clients-add" }   # no launchApp → attaches to current session
+   - takeScreenshot: "create-form"
+   ```
+3. Or use **Studio REPL** (when a human is driving): type single YAML commands that execute
+   instantly on-device — experiment without rerunning the whole flow.
+
+### Verify your fix with a CANARY, not the whole folder
+After changing one flow, run **that one flow** (`maestro test flows/x.yaml`), not
+`maestro test flows/` — a full-suite rerun for a one-line fix wastes minutes. See
+`maestro-speed-optimization`.
+
+### Ask the human about app-specific behaviour early
+If a capability isn't discoverable in 1–2 probes (e.g. "where is Delete?", "what's the appointment
+flow?"), **ask the person who knows the app** instead of probing N ways. Blind exploration is the
+biggest time sink — cross-ref `ask-when-stuck`.
+
+---
+
 ## Studio vs MCP vs CLI
 
 | Situation | Use |
