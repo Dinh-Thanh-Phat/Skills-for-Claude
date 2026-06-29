@@ -427,34 +427,6 @@ output.email = params.PREFIX + '-' + timestamp + '@test.com';
 output.timestamp = timestamp;
 ```
 
-### JavaScript Engine: GraalJS vs Rhino
-
-Maestro is migrating from **Rhino** (ECMAScript 5, default until 2.0) to **GraalJS** (ECMAScript 2022).
-GraalJS is now the default in Maestro 2.0+. If running an older version, opt-in explicitly:
-
-```yaml
-# Top of your flow file — ignored in subflows
-appId: com.example.app
-jsEngine: graaljs          # opt-in to GraalJS (ECMAScript 2022)
----
-- runScript:
-    file: scripts/modern.js
-```
-
-```bash
-# Local only (not supported in Maestro Cloud)
-export MAESTRO_USE_GRAALJS=true
-maestro test flow.yaml
-```
-
-| Engine | ES Version | Status |
-|--------|-----------|--------|
-| Rhino | ECMAScript 5 | Being deprecated |
-| GraalJS | ECMAScript 2022 | Default in Maestro 2.0+ |
-
-GraalJS enables `const`/`let`, arrow functions, template literals, `Promise`, and proper block scoping.
-Old Rhino-style `var`-only scripts still work under GraalJS.
-
 ## Repeat / Loops
 
 ```yaml
@@ -516,61 +488,6 @@ See [references/ci-cd.md](references/ci-cd.md) for full GitHub Actions and GitLa
     maestro test --format junit --output test-results.xml flows/
 ```
 
-## Parallel Testing & Sharding
-
-Run multiple flows simultaneously across devices to cut suite time by 1/N.
-
-```bash
-# Shard across 3 connected devices/emulators — 9 flows → 3 per device
-maestro test --shards 3 flows/
-
-# With JUnit output for CI
-maestro test --shards 3 --format junit --output results/ flows/
-```
-
-**Artifact isolation** — avoid screenshot overwrites when shards run simultaneously:
-
-```yaml
-# ✓ Use built-in shard variables in screenshot filenames
-- takeScreenshot: "checkout-step1-shard${MAESTRO_SHARD_INDEX}-${MAESTRO_DEVICE_UDID}"
-```
-
-`MAESTRO_SHARD_INDEX` (0-based shard number) and `MAESTRO_DEVICE_UDID` are injected automatically during sharded runs.
-
-**Test isolation for parallel runs** — each shard must start from a clean state:
-
-```yaml
-# ✓ clearState at the top of every flow (not just sub-flows)
-- clearState: true
-- launchApp
-
-# ✓ Use MAESTRO_DEVICE_UDID for unique test data to avoid account conflicts
-- runScript:
-    file: scripts/generate-user.js
-    env:
-      DEVICE_ID: ${MAESTRO_DEVICE_UDID}
-    outputVars:
-      TEST_EMAIL: result.email
-```
-
-```javascript
-// scripts/generate-user.js — unique email per device avoids concurrent login conflicts
-output.email = "qa-" + params.DEVICE_ID.slice(-6) + "-" + Date.now() + "@test.com";
-```
-
-**CI parallel testing** — `--shards N` requires N devices connected locally. For cloud CI, use Maestro Cloud or BrowserStack which handle device provisioning and distribute flows automatically:
-
-```yaml
-# Maestro Cloud (handles parallel device allocation)
-- name: Run parallel Maestro tests
-  uses: mobile-dev-inc/maestro-github-action@v1
-  with:
-    api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
-    app-file: app.apk
-    flows-dir: flows/
-    # Maestro Cloud distributes flows across a device pool automatically
-```
-
 ## Directory Structure (Recommended)
 
 ```
@@ -608,6 +525,29 @@ env:
 | Keyboard covers element | Soft keyboard showing | Add `hideKeyboard` before next tap |
 | App relaunches mid-flow | `launchApp` in runFlow resets | Use `clearState` instead of `launchApp` in sub-flows |
 | Video recording empty | Stopped too early | Add `waitForAnimationToEnd` before `stopRecording` |
+| `uiautomator dump` returns near-empty tree | React Native / Expo renders to canvas — no native testIDs | Use `maestro hierarchy` (a11y tree, shows RN `testID`→`id`), not adb uiautomator |
+| `assertVisible: "X"` fails though "X" is on screen | Maestro matches the element's **whole** text; node is e.g. "First Last" not "Last" | Use regex for substring: `assertVisible: ".*X.*"` |
+| Assert/tap matches the search box, not the result | Typing into a search input makes the box **echo** your text → it matches your selector | Target the result relatively: `text: "X"` + `below: { id: search-input }` — never assert the bare typed text |
+| `device offline` / `unauthorized` mid-run | USB drops when screen locks (esp. Samsung) | `adb reconnect && adb wait-for-device`; `stay_on_while_plugged_in 3`; keep phone unlocked |
+| System autofill dialog (Samsung Pass / Google) blocks login | OS offers to save creds, steals focus after typing password | Disable before run: `adb shell settings put secure autofill_service null` (restore after) |
+
+### ⚠️ Verify the OUTCOME, not just the tap (fail-loud)
+
+A login flow that only types + taps Submit + `takeScreenshot` **passes even when login fails** —
+the taps "complete" regardless, hiding broken auth (wrong creds, backend change). Assert the
+post-action state was actually reached:
+
+```yaml
+- tapOn: { id: login-submit-button }
+# ❌ shallow: just a screenshot → green even on "Invalid credentials"
+# ✓ fail-loud: prove you reached Home
+- assertVisible: "HELLO"      # a Home text / testID / tab
+- assertVisible: "CRM"
+```
+
+Put this in the **shared login helper** so every flow that logs in fails loudly when auth breaks.
+Same rule for create/edit/delete — assert the record actually appears/changes, don't trust that the
+tap "worked". Cross-ref `outcome-verification`, `soft-assertion-ban`.
 
 ## Maestro AI Commands (`assertWithAI`, `extractTextWithAI`)
 
