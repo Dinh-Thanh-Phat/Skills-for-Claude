@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-29 (GMT+7)
+
+Domains researched: Maestro/mobile (official Maestro MCP + Viewer, CLI 2.6.0), Playwright/web E2E (official Planner/Generator/Healer test agents), QA test design / accessibility (shift-left, WCAG 2.2/3.0 CI integration — skipped, existing `accessibility-testing` skill already comprehensive).
+
+- CREATED: skills/maestro-viewer — Official Maestro MCP server (built into CLI 2.6.0 via `maestro mcp`, no separate clone) + Maestro Viewer: web app that embeds a live iOS simulator/Android emulator/physical device inside the coding agent so every MCP command is visible in real time; `take_screenshot` auto-downscales to avoid LLM token limits; YAML errors now pinpoint exact line+column; self-healing flow on selector failures. Distinct from `maestro-mcp-workflow` (covers third-party slapglif/maestro-mcp community server) and `maestro-studio` (browser IDE for flow recording, no agent integration). Sources: https://maestro.dev/blog/maestro-cli-v2-6-0, https://docs.maestro.dev/get-started/maestro-mcp, https://maestro.dev/blog/maestro-mcp-an-introduction, https://github.com/mobile-dev-inc/maestro-mcp
+- CREATED: skills/playwright-test-agents — Playwright's official three-agent workflow (v1.56+, `npx playwright init-agents --loop=claude|vscode`): Planner (browses running app, writes `test-plan.md` with numbered scenarios and expected outcomes), Generator (converts plan to verified `.spec.ts` files — verifies each selector live before saving, unlike Codegen), Healer (reruns in debug mode, reads console/network/ARIA snapshot, updates locator for selector drift, annotates with `test.skip` for real regressions). ~15–30 min to bootstrap coverage for a 5-scenario flow. Distinct from `self-healing-test-automation` (third-party Anthropic SDK approach), `playwright-mcp-server` (AI uses Playwright to navigate, doesn't generate tests), `playwright-agentic-apis` (1.59 low-level APIs). Sources: https://playwright.dev/docs/test-agents, https://dev.to/playwright/playwright-agents-planner-generator-and-healer-in-action-5ajh, https://testdino.com/blog/playwright-test-agents, https://qaskills.sh/blog/playwright-test-agents-planner-generator-healer-guide, https://www.testmuai.com/blog/playwright-agents/
+- SKIPPED QA test design / accessibility — search returned WCAG 2.2/3.0 shift-left and CI/CD integration content; existing `accessibility-testing` skill (including `--ui` mode, `reducedMotion`/`forcedColors` patterns, 57% coverage stat, and keyboard focus testing) already covers these thoroughly. No new actionable technique found.
+
 ## 2026-06-28 (GMT+7)
 
 Domains researched: Maestro/mobile (network API mocking — WireMock, Mockoon, Requestly proxy, CI Docker Compose integration), QA test design (BDD with Playwright — playwright-bdd library, Gherkin feature files, POM fixture integration, tags, anti-patterns).
