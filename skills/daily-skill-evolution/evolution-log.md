@@ -5,6 +5,15 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-06-30 (GMT+7)
+
+Domains researched: Playwright/web E2E (WebSocket mocking via `page.routeWebSocket`), Maestro/mobile (pixel-level visual regression `assertScreenshot`, Maestro Viewer CLI v2.6.0), AI chatbot/LLM testing (intent-based chaos testing for AI agents).
+
+- CREATED: skills/playwright-websocket-testing — Playwright WebSocket routing and mocking: `page.routeWebSocket()` / `browserContext.routeWebSocket()` for full mock (no real server), proxy+inject mode (`connectToServer()` to intercept specific messages while letting others pass), client-message assertion pattern, disconnect/reconnect simulation. Decision table (full mock vs proxy vs real server). Distinct from `playwright-network-interception` (HTTP-only route mocking) and `playwright-1.61-new-apis` (passive WebSocket frame capture in HAR/trace only — does not cover the routing/mocking API). Sources: https://playwright.dev/docs/api/class-websocketroute, https://playwright.dev/docs/api/class-websocket, https://playwright.dev/docs/release-notes
+- CREATED: skills/maestro-visual-testing — Maestro `assertScreenshot` pixel-level visual regression: baseline comparison with configurable `thresholdPercentage`, `cropOn` to isolate volatile regions (status bars, timestamps, avatars), CI workflow for updating baselines after intentional changes. Decision table (assertScreenshot vs assertNoDefectsWithAI vs assertWithAI). Distinct from `maestro-ai-assertions` (AI/LLM-based visual defect detection and content assertions) — `assertScreenshot` is pixel-level screenshot diffing, not AI reasoning. Sources: https://maestro.dev/blog/visual-testing, https://docs.maestro.dev/reference/commands-available/assertscreenshot
+- CREATED: skills/ai-chaos-testing — Intent-based chaos testing for AI agents and LLM systems: 5 chaos dimensions (input integrity, context trust, policy enforcement, tool selection safety, decision handoffs), 8 core chaos scenarios (ambiguous intent, context spoofing, guideline boundary probe, confidence trap, multi-turn erosion, etc.), pytest scaffold with binary LLM-as-judge evaluation, CI gate against staging. Distinct from `llm-red-teaming` (adversarial security: jailbreaks, injections, PII leakage) and `deepeval-llm-cicd` (metric-based correctness evaluation) — this targets behavioral correctness when normal operational conditions go wrong. Sources: https://www.progressiverobot.com/2026/05/09/intent-based-chaos-testing/, https://venturebeat.com/infrastructure/intent-based-chaos-testing-is-designed-for-when-ai-behaves-confidently-and-wrongly/
+- SKIPPED maestro-viewer — skill already created 2026-06-29; covers official Maestro MCP server + Viewer comprehensively.
+
 ## 2026-06-29 (GMT+7)
 
 Domains researched: Maestro/mobile (official Maestro MCP + Viewer, CLI 2.6.0), Playwright/web E2E (official Planner/Generator/Healer test agents), QA test design / accessibility (shift-left, WCAG 2.2/3.0 CI integration — skipped, existing `accessibility-testing` skill already comprehensive).
