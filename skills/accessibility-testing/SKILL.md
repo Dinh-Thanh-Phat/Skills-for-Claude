@@ -309,6 +309,37 @@ await page.goto('/');
 const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
 ```
 
+### Native `prefers-contrast` emulation (distinct from `forcedColors`)
+
+`forcedColors: 'active'` (above) emulates OS-level forced-colors mode (Windows High Contrast). Playwright
+separately supports the CSS `prefers-contrast` media feature directly via `page.emulateMedia()` /
+`browser.newContext({ contrast })` — use this to test a site's own "more contrast" theme toggle (values:
+`'no-preference'` | `'more'`), which is a different code path than forced-colors remapping:
+
+```typescript
+// Test the app's own high-contrast theme (not OS forced-colors)
+await page.emulateMedia({ contrast: 'more' });
+await page.goto('/settings');
+const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
+expect(results.violations).toEqual([]);
+```
+
+### `toHaveAccessibleErrorMessage()` — form error assertions
+
+Playwright's accessible-name/description matcher family now includes an assertion for `aria-errormessage`,
+closing a gap where form validation errors were only checkable via brittle text-content locators:
+
+```typescript
+test('A11Y-005: Invalid email shows accessible error', async ({ page }) => {
+  await page.goto('/signup');
+  await page.locator('#email').fill('not-an-email');
+  await page.locator('#email').blur();
+
+  // Asserts the element pointed to by aria-errormessage, not just visible text
+  await expect(page.locator('#email')).toHaveAccessibleErrorMessage('Enter a valid email address');
+});
+```
+
 **Rule:** Run automated scan every PR. Run manual screen reader test every major feature release.
 
 ---
@@ -330,3 +361,4 @@ const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
 - axe-core WCAG guide: https://www.qamadness.com/a-you-oriented-guide-to-axe-core-playwright-accessibility-testing/
 - Playwright a11y CI guide: https://testdino.com/blog/playwright-accessibility
 - Deque Systems 57% coverage study (2026): https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
+- Playwright release notes (native `contrast` emulateMedia option, `toHaveAccessibleErrorMessage()`): https://playwright.dev/docs/release-notes
