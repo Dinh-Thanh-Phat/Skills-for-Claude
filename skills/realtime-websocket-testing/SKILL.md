@@ -1,6 +1,6 @@
 ﻿---
 name: realtime-websocket-testing
-description: Patterns for testing real-time UI in Playwright — WebSocket mocking, live update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for features that update in real time without user action: notifications, live dashboards, chat, collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time", "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push notification", "live data".
+description: Patterns for testing real-time UI in Playwright — WebSocket mocking, proxy/inject mode, live update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for features that update in real time without user action: notifications, live dashboards, chat, collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time", "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push notification", "live data", "intercept websocket", "mock websocket playwright", "fake websocket server", "ws mocking".
 ---
 
 # Real-Time / WebSocket UI Testing
@@ -102,6 +102,77 @@ await page.click('#subscribe-button');
 expect(messages.some(m => JSON.parse(m).type === 'subscribe')).toBe(true);
 ```
 
+## WebSocketRoute API Reference
+
+| Method | Description |
+|---|---|
+| `ws.send(message)` | Send a message from server → client |
+| `ws.onMessage(handler)` | Handle client → server message |
+| `ws.onClose(handler)` | Handle connection close |
+| `ws.close()` | Close the connection from the server side |
+| `ws.connectToServer()` | Proxy mode: connect to the real server AND intercept |
+
+## Proxy + Inject Mode — `connectToServer`
+
+Full mocking (above) is best for fast, backend-free tests. When you need **real data but want to inject specific edge cases** (an error frame, a malformed payload) on top of a live server, proxy it:
+
+```typescript
+test('handles upstream error gracefully', async ({ page }) => {
+  await page.routeWebSocket('wss://stream.example.com/', async ws => {
+    const server = await ws.connectToServer();
+    server.onMessage(message => {
+      const parsed = JSON.parse(message.toString());
+      if (parsed.type === 'price') {
+        // Inject an error instead of the real price update
+        ws.send(JSON.stringify({ type: 'error', code: 503, message: 'Upstream unavailable' }));
+      } else {
+        ws.send(message); // pass everything else through unchanged
+      }
+    });
+  });
+  await page.goto('/trading');
+  await expect(page.locator('.error-banner')).toBeVisible();
+});
+```
+
+## Simulate Disconnect / Reconnect
+
+```typescript
+test('reconnects after server drop', async ({ page }) => {
+  let connectionCount = 0;
+  await page.routeWebSocket('wss://api.example.com/ws', ws => {
+    connectionCount++;
+    if (connectionCount === 1) {
+      setTimeout(() => ws.close(), 100); // drop the first connection
+    } else {
+      ws.send(JSON.stringify({ type: 'connected', attempt: connectionCount }));
+    }
+  });
+  await page.goto('/realtime-feature');
+  await expect(page.locator('.reconnecting')).not.toBeVisible({ timeout: 5000 });
+});
+```
+
+## Decision Table: Mock vs Proxy vs Real
+
+| Scenario | Approach |
+|---|---|
+| Fast unit-style tests, no real backend | Full mock (`routeWebSocket` without `connectToServer`) |
+| Test error/edge handling on top of real data | Proxy + inject (`connectToServer` + intercept specific messages) |
+| Integration tests against a staging WS server | No route — let connections pass through unmodified |
+| Assert what the client sends | Collect in `onMessage` handler + `expect.poll()` |
+
+## HAR / Trace Recording (Playwright 1.61+)
+
+WebSocket frames are automatically captured in traces — no extra config beyond enabling tracing:
+
+```typescript
+// playwright.config.ts
+use: { trace: 'retain-on-failure' }  // WS frames appear in the trace Network tab
+```
+
+Open the trace (`npx playwright show-trace trace.zip`) → **Network → WebSocket** shows every sent/received frame with timestamps.
+
 ## Gotchas
 
 | Gotcha | Fix |
@@ -121,4 +192,10 @@ expect(messages.some(m => JSON.parse(m).type === 'subscribe')).toBe(true);
 - [ ] Multi-user scenarios: separate browser contexts, not separate pages
 - [ ] Polling: verify both UI state AND request count (confirms polling happened)
 - [ ] WS traffic: `page.on('websocket')` for inspecting sent/received frames
+- [ ] Error/edge cases on live data: proxy with `connectToServer` + inject, don't full-mock
+
+## Sources
+- https://playwright.dev/docs/api/class-websocketroute
+- https://playwright.dev/docs/api/class-websocket
+- https://playwright.dev/docs/release-notes
 

@@ -203,6 +203,29 @@ await pageB.goto('/dashboard');
 await expect(pageB).toHaveURL(/\/login/);  // pageB also signed out
 ```
 
+## Pattern 5g: Partitioned Cookies (CHIPS) for Cross-Site Embeds
+
+Browsers now partition third-party cookies per top-level site (CHIPS). If your app is embedded as
+a widget/iframe on customer domains and sets its own auth/session cookie, verify the cookie is
+correctly scoped with `Partitioned` — a non-partitioned third-party cookie will silently fail to
+persist across page loads in Chrome/Edge once third-party cookies are blocked.
+
+```typescript
+// Assert a cross-site embed's session cookie is set with the CHIPS partition key
+const cookies = await page.context().cookies();
+const sessionCookie = cookies.find(c => c.name === 'embed_session');
+expect(sessionCookie?.partitionKey).toBeDefined(); // absent => cookie isn't partitioned, will be blocked
+
+// Seed a partitioned cookie directly for a test that needs pre-authenticated embed state
+await page.context().addCookies([{
+  name: 'embed_session', value: 'abc123', domain: 'widget.example.com', path: '/',
+  partitionKey: 'https://customer-site.com', // top-level site the widget is embedded under
+}]);
+```
+
+Only relevant when testing embeddable/iframe auth (widgets, SSO popups on partner domains) — regular
+first-party login flows are unaffected by CHIPS.
+
 ## Pattern 6: OAuth/SSO
 
 ```typescript
@@ -264,4 +287,7 @@ await page.fill('#email', 'admin@example.com');
 | Test ABOUT logout | Re-authenticate after logout |
 | Test token expiry | Re-authenticate with short-lived token |
 | Parallel CI workers (same run) | Share same storageState file (read-only) |
+
+## Sources
+- Playwright `partitionKey` cookie property (CHIPS support) release notes: https://playwright.dev/docs/release-notes
 
