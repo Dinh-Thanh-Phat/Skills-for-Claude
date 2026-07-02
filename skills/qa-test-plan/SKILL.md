@@ -118,6 +118,40 @@ Use these baselines to size effort honestly (adjust for team velocity):
 
 **Add 30-50% buffer** for new codebases, new framework, or unstable staging.
 
+## Risk Scoring Formulas (2026)
+
+A plain HIGH/MED/LOW gut call is fine for a quick plan, but when stakeholders push back on priority, back it with
+a formula:
+
+**Basic risk score:** `Risk = Likelihood × Impact` (each 1–5) → 1–25. This is what the Risk Matrix table above encodes.
+
+**Weighted probability (Bob Crews' formula)** — use when "likelihood" itself needs justifying, not just asserted:
+
+```
+Probability = ((Complexity × 3) + (Frequency × 2) + Newness) ÷ 3
+```
+- Complexity (weight 3) — complex components carry more latent defects.
+- Frequency (weight 2) — heavily-used components have more exposure to any given defect.
+- Newness (weight 1) — new/recently-changed code is inherently riskier than stable code.
+
+**RPN (Risk Priority Number)** — pulls in detectability, useful when a bug could ship silently:
+```
+RPN = Severity × Occurrence × Detection   (each 1–10; higher Detection = harder to catch before prod)
+```
+
+**Risk tier → required coverage** (map the score to how much testing it earns, not just a priority label):
+
+| Score (1–25 scale) | Tier | Required coverage |
+|---|---|---|
+| 20–25 | Critical | Full automated coverage (unit + API + integration + E2E) **plus** manual exploratory |
+| 12–19 | High | Comprehensive automated coverage at all levels |
+| 6–11 | Medium | Automated unit + API tests, periodic regression only |
+| 1–5 | Low | Smoke test / production monitoring; test only when the area is directly changed |
+
+**CI/CD tie-in:** tag test suites by the module/area they cover so the pipeline can do risk-based *selection*, not
+just risk-based *authoring* — a change to a Critical-tier module triggers its full dependent-suite regression;
+a Low-tier change triggers only its own smoke test.
+
 ## Entry / Exit Criteria Per Test Type
 
 | Test type | Entry | Exit |
@@ -136,3 +170,9 @@ Use these baselines to size effort honestly (adjust for team velocity):
 - Always distinguish **what to test manually** vs **what to automate**.
 - Recommend Playwright for E2E, Postman for API, pytest/jest for unit.
 - Think like a user, not just a developer — include UX and usability checks.
+
+## Sources
+
+- [Risk-Based Testing Guide: Strategy, Matrix & Real Examples — testomat.io](https://testomat.io/blog/risk-based-testing/)
+- [A Practical Approach to Risk-Based Testing in 2026 — testingmind.com](https://www.testingmind.com/risk-based-testing-approach-2026/)
+- [Risk Based Testing in 2026: Aligning QA with Business — trigyn.com](https://www.trigyn.com/insights/risk-based-testing-2026-aligning-qa-priorities-business-impact)

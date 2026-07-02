@@ -113,6 +113,32 @@ MaestroGPT reads the live hierarchy, identifies the correct element, and propose
 
 ---
 
+## Maestro Studio Desktop (Beta) — No CLI Required
+
+A separate, native **desktop app** (macOS Apple Silicon & Intel, Windows, Linux) — distinct from the
+`maestro studio` browser IDE above. It's a fully self-contained IDE: no Maestro CLI install, no terminal, no
+`ANDROID_HOME`/Xcode toolchain setup. Free even though Studio itself isn't open source.
+
+**Install:**
+- Windows: download `MaestroStudio.exe`, run the setup wizard.
+- macOS: download `MaestroStudio.dmg`, drag into Applications.
+- Linux: download `MaestroStudio.AppImage`, `chmod +x`, run.
+
+**What it gives you that the CLI-launched browser Studio doesn't:**
+- Instantly connect a device (Android, iOS, **or Web**) without first installing/configuring the Maestro CLI.
+- Same Element Inspector, visual Flow Builder, and MaestroGPT as browser Studio, but as a standalone app —
+  useful for testers/PMs who need to build and run flows without a dev environment.
+
+**When to prefer Desktop over `maestro studio` (browser/CLI-launched):**
+
+| Situation | Use |
+|---|---|
+| Team already has Maestro CLI + flows in a repo, needs CI | CLI + browser Studio (this skill's main sections) |
+| Non-developer tester needs to build/run flows with zero setup | Studio Desktop |
+| Testing a web app alongside mobile in one tool, no CLI installed | Studio Desktop |
+
+---
+
 ## Studio vs MCP vs CLI
 
 | Situation | Use |
@@ -120,6 +146,7 @@ MaestroGPT reads the live hierarchy, identifies the correct element, and propose
 | Discovering element IDs on a live device | Studio — Element Inspector |
 | Recording a happy-path flow quickly | Studio — Flow Builder |
 | Generating complex YAML from English | Studio — MaestroGPT |
+| Zero-install flow authoring (no CLI/terminal) | Studio Desktop (beta) |
 | Driving Maestro from Claude Code | `maestro-mcp-workflow` skill |
 | Running flows in CI without a UI | `maestro test` CLI |
 | AI assertions in YAML (`assertWithAI`) | `maestro-ai-assertions` skill |
@@ -132,3 +159,5 @@ MaestroGPT reads the live hierarchy, identifies the correct element, and propose
 - [How AI Improves Mobile UI Test Automation — maestro.dev](https://maestro.dev/insights/how-ai-improves-mobile-ui-test-automation)
 - [Maestro Mobile Testing Guide 2026 — qaskills.sh](https://qaskills.sh/blog/maestro-mobile-testing-guide-2026)
 - [GitHub — mobile-dev-inc/Maestro](https://github.com/mobile-dev-inc/maestro)
+- [Maestro Studio Desktop — Beta (docs.maestro.dev)](https://docs.maestro.dev/getting-started/maestro-studio-desktop)
+- [Maestro Studio Desktop Beta — Product Hunt](https://www.producthunt.com/products/maestro-studio-beta)
