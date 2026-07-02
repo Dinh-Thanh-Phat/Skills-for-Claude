@@ -7,7 +7,7 @@ description: |
   without leaving the agent. Use when you want to: set up the official (not third-party) Maestro
   MCP server, use Maestro Viewer for live device visibility in Claude Code/Cursor/Copilot, or
   understand the difference between the official MCP and the slapglif/maestro-mcp community server.
-  Triggers on: "maestro viewer", "maestro mcp server", "official maestro mcp", "maestro mcp 2.6",
+  Triggers on: "maestro viewer", "official maestro mcp", "official maestro mcp server", "maestro mcp 2.6",
   "embed device in coding agent", "maestro live device", "maestro claude code mcp".
 ---
 
