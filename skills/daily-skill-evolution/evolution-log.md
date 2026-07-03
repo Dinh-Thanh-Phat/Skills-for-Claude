@@ -5,6 +5,13 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-07-03 (GMT+7)
+
+Domains researched: Playwright/web E2E (release-notes sweep across current APIs), QA test design (test case design techniques — equivalence partitioning/BVA/decision tables, checked for new 2026 angle).
+
+- CREATED: skills/playwright-test-steps — `test.step()` structuring guide: basic nesting for report/Trace-Viewer readability, `box: true` to collapse a helper's internal call stack so errors point at the test's call site instead of Page Object internals (`box: 'self'` variant for fixtures), the `timeout` option to bound one slow phase independently of the overall test timeout, `step.skip(condition, reason)` for a visible runtime skip of a single step, and a TypeScript class-method decorator pattern to auto-step every Page Object method. Verified `timeout`/`step.skip()` both shipped "since: v1.50" via the pinned v1.61.0 docs source (not new this month, but genuinely uncovered — no existing skill documented `test.step()` at all). Distinct from `playwright-trace-viewer` (post-run trace analysis, doesn't cover how steps are authored) and `playwright-page-object-model`/`playwright-1.60-new-apis`/`playwright-1.61-new-apis` (neither covers step structuring). Sources: https://raw.githubusercontent.com/microsoft/playwright/v1.61.0/docs/src/test-api/class-test.md, https://github.com/microsoft/playwright/issues/33475, https://github.com/microsoft/playwright/issues/19332, https://timdeschryver.dev/blog/keep-your-playwright-tests-structured-with-steps, https://learn.microsoft.com/en-us/samples/microsoft/playwright-examples/boxed-steps/, https://qaskills.sh/blog/playwright-test-step-annotations-guide
+- SKIPPED QA test design — "test case design techniques 2026" search returned only equivalence partitioning / BVA / decision tables / state transition testing, already thoroughly covered by `behavioral-coverage-matrix`. No new actionable technique found.
+
 ## 2026-07-02 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (multi-agent handoff/dispatch evaluation — Claude Agent SDK Task tool, OpenAI Agents SDK, LangGraph, CrewAI, AutoGen), Maestro/mobile (Maestro Studio Desktop beta — native no-CLI IDE), QA test design (risk-based testing scoring formulas — skipped as standalone skill, folded into existing `qa-test-plan`).
