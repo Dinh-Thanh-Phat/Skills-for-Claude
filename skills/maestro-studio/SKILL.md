@@ -176,6 +176,13 @@ A separate, native **desktop app** (macOS Apple Silicon & Intel, Windows, Linux)
 - Same Element Inspector, visual Flow Builder, and MaestroGPT as browser Studio, but as a standalone app —
   useful for testers/PMs who need to build and run flows without a dev environment.
 
+**Redesign (April 2026) — Contextual Autocomplete:** Desktop Studio now autocompletes commands,
+arguments, and *selectors* as you type, pulled live from your connected device's current screen — not
+just static YAML keyword completion. Typing `tapOn:` suggests real `id:`/`text:` values visible on
+screen right now, so you stop tabbing back to Inspector to copy a selector by hand, and commands you
+didn't know existed surface exactly when they're relevant. Cuts both new-user ramp-up (no need to
+memorize Maestro syntax up front) and the repetitive selector-lookup loop for experienced authors.
+
 **When to prefer Desktop over `maestro studio` (browser/CLI-launched):**
 
 | Situation | Use |
@@ -208,3 +215,4 @@ A separate, native **desktop app** (macOS Apple Silicon & Intel, Windows, Linux)
 - [GitHub — mobile-dev-inc/Maestro](https://github.com/mobile-dev-inc/maestro)
 - [Maestro Studio Desktop — Beta (docs.maestro.dev)](https://docs.maestro.dev/getting-started/maestro-studio-desktop)
 - [Maestro Studio Desktop Beta — Product Hunt](https://www.producthunt.com/products/maestro-studio-beta)
+- [New Maestro Studio — Redesigned, with Contextual Autocomplete (maestro.dev, Apr 2026)](https://maestro.dev/blog/new-maestro-studio)

@@ -5,6 +5,15 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-07-04 (GMT+7)
+
+Domains researched: AI chatbot/LLM testing (voice/speech agent evaluation — new sub-domain, not previously covered), Maestro/mobile (Studio Desktop redesign, CLI changelog sweep, accessibility/TalkBack-VoiceOver testing — checked for novelty).
+
+- CREATED: skills/voice-ai-agent-testing — Voice/speech AI agent testing (IVR bots, voice assistants, phone-call agents), distinct from existing text-chatbot skills (`response-evaluator`, `chatbot-tester`, `llm-load-testing`, etc. — none covered the audio channel). WER formula (`(S+D+I)/N×100`) with clean/noisy-audio targets (<5% enterprise, <8%/<15% general); latency budget table (TTFT <500ms, E2E <500ms natural / >1000ms broken, P50<1.5s/P95<5s for cascading STT→LLM→TTS); turn-detection/barge-in metrics (≥95% detection accuracy, <200ms interruption response, <5% false-positive/negative rates, Nova Sonic-style 1.5/1.75/2.0s sensitivity tradeoff); the 4 barge-in test scenarios that catch demo→production regressions (greeting, mid-tool-call, long confirmation read-back, noisy room); replay-corpus + synthetic-noise-injection + LLM-judge testing methodology; decision table for where this skill hands off to `llm-load-testing`/`response-evaluator`/`llm-judge-bias`. Sources: https://hamming.ai/resources/voice-agent-evaluation-metrics-guide, https://hamming.ai/resources/voice-agent-interruption-handling-runbook, https://hamming.ai/resources/asr-accuracy-evaluation-for-voice-agents, https://hamming.ai/resources/voice-agent-testing-guide, https://www.cekura.ai/blogs/voice-ai-evaluation-metrics, https://www.getmaxim.ai/articles/best-voice-agent-evaluation-tools-in-2026/, https://www.speechmatics.com/company/articles-and-news/de-risk-your-voice-agent-11-best-voice-agent-testing-platforms
+- UPDATED: skills/maestro-studio — Added "Redesign (April 2026) — Contextual Autocomplete" note under the Studio Desktop section: Desktop Studio now autocompletes commands/arguments/selectors live from the connected device's current screen (not just static YAML keyword completion), cutting the selector-lookup round-trip to Inspector. Added the announcement blog as a source. Sources: https://maestro.dev/blog/new-maestro-studio
+- SKIPPED Maestro CLI changelog sweep — found iOS 26 device support, expanded Cloud device catalog (iPhone 13 Mini, 16 Pro Max), Rhino JS engine fully removed in favor of GraalJS; all CLI-version/device-catalog trivia already implied by the existing GraalJS migration coverage (created 2026-06-07) or too minor/non-testing-technique to warrant a skill change.
+- SKIPPED Maestro accessibility (TalkBack/VoiceOver) — confirmed still only general "Maestro drives the a11y tree" content, same conclusion as 2026-06-08; no new Maestro-specific command or pattern found.
+
 ## 2026-07-03 (GMT+7)
 
 Domains researched: Playwright/web E2E (release-notes sweep across current APIs), QA test design (test case design techniques — equivalence partitioning/BVA/decision tables, checked for new 2026 angle).
