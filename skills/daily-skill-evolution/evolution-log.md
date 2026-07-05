@@ -5,6 +5,16 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-07-05 (GMT+7)
+
+Domains researched: Playwright/web E2E (verified full 1.61 release-notes text against official docs for gaps), Maestro/mobile (CLI changelog sweep for undocumented commands), AI chatbot/LLM testing (DeepEval framework updates).
+
+- UPDATED: skills/playwright-1.61-new-apis — Cross-checked the official release-notes-js.md against the existing skill and found 4 genuinely undocumented 1.61 items: `browserType.connectOverCDP({ artifactsDir })` (controls trace/download storage location when attaching to an existing browser over CDP), `screencast.showActions({ cursor })` (visual cursor decoration for demo/bug-repro recordings), and the `-G` CLI shorthand for `--grep-invert`. Added as sections 8–10 with code examples; updated frontmatter description/triggers. Sources: https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md, https://github.com/microsoft/playwright/releases/tag/v1.61.0
+- UPDATED: skills/maestro-mobile — Added `maestro check-syntax` section: validates flow YAML without booting a device/app, useful as a fast pre-commit hook or first CI step before the slower device-backed `maestro test` run. Sourced from the CLI changelog (shipped v1.40.0 but was never documented in any existing skill — verified via `Grep` across skills/ that no file mentioned it). Also added a `## Sources` heading (previously had none). Source: https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md
+- UPDATED: skills/deepeval-llm-cicd — Added "Arena Evaluation (ArenaGEval)" section: DeepEval's new pairwise LLM-as-a-Judge metric that picks a winner between 2+ candidate outputs (e.g. prod prompt vs. candidate rewrite) instead of scoring one output against a fixed threshold — blinded contestant identity + randomized position to control self-preference/position bias. Distinct from the existing single-output `GEval`/threshold metrics and from `llm-judge-bias` (judge calibration methodology, not a specific metric). Verified against official docs. Sources: https://deepeval.com/docs/metrics-arena-g-eval, https://deepeval.com/docs/getting-started-llm-arena, https://github.com/confident-ai/deepeval/issues/2143
+- SKIPPED creating a new skill for `maestro chat` / `maestro chat --ask=` CLI assistant mode — it's a conversational helper, not a distinct testing technique; not enough standalone actionable content to justify a skill vs. a one-line mention.
+- SKIPPED QA test design — no rotation slot today (3 domains already covered); revisit next run.
+
 ## 2026-07-04 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (voice/speech agent evaluation — new sub-domain, not previously covered), Maestro/mobile (Studio Desktop redesign, CLI changelog sweep, accessibility/TalkBack-VoiceOver testing — checked for novelty).

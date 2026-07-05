@@ -598,6 +598,23 @@ xcrun simctl spawn booted notifyutil -p com.apple.LocalAuthentication.evaluation
 
 (Test infra setup — verify with the dev/SRE team for your actual app.)
 
+## Validate Flow Syntax Before Running (`maestro check-syntax`)
+
+Lint a flow's YAML without booting a device or app — catches typos/indentation errors in seconds, useful as a pre-commit hook or a fast first CI step before the slower device-backed `maestro test` run:
+
+```bash
+maestro check-syntax flows/checkout.yaml
+maestro check-syntax flows/          # whole directory
+```
+
+```yaml
+# .github/workflows/maestro.yml
+- name: Lint Maestro flows
+  run: maestro check-syntax flows/    # fails fast on bad YAML, before spinning up an emulator
+- name: Run Maestro tests
+  run: maestro test flows/
+```
+
 ## Anti-Patterns to Avoid
 
 ```yaml
@@ -624,3 +641,7 @@ xcrun simctl spawn booted notifyutil -p com.apple.LocalAuthentication.evaluation
 # ✓ Use environment variables
 - inputText: ${TEST_EMAIL}
 ```
+
+## Sources
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (`maestro check-syntax`, introduced v1.40.0)
+- https://docs.maestro.dev/

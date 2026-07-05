@@ -249,6 +249,49 @@ conversations = synth.simulate(
 # Returns list[ConversationalTestCase] ready for assert_test()
 ```
 
+## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
+
+Standard metrics score one output in isolation. `ArenaGEval` instead picks a **winner** between
+two or more candidate outputs for the same input — use it when regression-testing a prompt
+rewrite, a model swap, or a fine-tune against the current production version, not just checking
+whether the new version clears a fixed threshold.
+
+```python
+from deepeval.test_case import ArenaTestCase, LLMTestCase
+from deepeval.metrics import ArenaGEval
+from deepeval.test_case import LLMTestCaseParams
+
+arena_case = ArenaTestCase(
+    contestants={
+        "prompt_v1_prod": LLMTestCase(
+            input="How do I reset my password?",
+            actual_output=prompt_v1("How do I reset my password?"),
+        ),
+        "prompt_v2_candidate": LLMTestCase(
+            input="How do I reset my password?",
+            actual_output=prompt_v2("How do I reset my password?"),
+        ),
+    },
+)
+
+arena_metric = ArenaGEval(
+    name="Support Response Quality",
+    criteria="The response is accurate, concise, and gives an actionable next step.",
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+)
+
+arena_metric.measure(arena_case)
+print(arena_metric.winner)  # e.g. "prompt_v2_candidate"
+```
+
+`ArenaGEval` first generates evaluation steps via chain-of-thought from `criteria` (same
+mechanism as `GEval`), then applies them to each contestant with contestant identity masked
+and position randomized — this blinding prevents both self-preference and position bias from
+skewing the winner. Run across a batch of `ArenaTestCase`s and tally wins per contestant to
+decide whether a prompt/model candidate is a net improvement before rolling it out. Distinct
+from `llm-judge-bias` (single-output scoring calibration) and the threshold-based metrics above
+(pass/fail against a fixed bar, not head-to-head comparison).
+
 ## Controlling the Judge Model (Cost vs Accuracy)
 
 DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
@@ -279,4 +322,7 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/docs/evaluation-multiturn-test-cases
 - https://deepeval.com/guides/guides-multi-turn-evaluation-metrics
 - https://www.confident-ai.com/blog/multi-turn-llm-evaluation-in-2026
+- https://deepeval.com/docs/metrics-arena-g-eval
+- https://deepeval.com/docs/getting-started-llm-arena
+- https://github.com/confident-ai/deepeval/issues/2143
 - https://github.com/confident-ai/deepeval

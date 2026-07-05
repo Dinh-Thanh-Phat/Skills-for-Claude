@@ -1,6 +1,6 @@
 ---
 name: playwright-1.61-new-apis
-description: Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests, and WebSocket recording in HAR/traces. Use when testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring video on retries, or capturing WebSocket traffic in traces. Triggers on: "test passkeys playwright", "WebAuthn virtual authenticator", "playwright localStorage", "sessionStorage test", "video on retries playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright".
+description: Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests, WebSocket recording in HAR/traces, connectOverCDP artifactsDir, screencast cursor decoration, and the -G grep-invert shorthand. Use when testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring video on retries, capturing WebSocket traffic in traces, attaching to an existing browser via CDP, or annotating screencast recordings. Triggers on: "test passkeys playwright", "WebAuthn virtual authenticator", "playwright localStorage", "sessionStorage test", "video on retries playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright", "connectOverCDP artifactsDir", "screencast cursor", "grep-invert shorthand".
 ---
 
 # Playwright 1.61 New APIs
@@ -177,8 +177,42 @@ await context.tracing.stop({ path: 'trace.zip' });
 
 For HAR recording via `tracing.startHar()` (added in 1.60), WebSocket frames are also captured — useful for replaying WS-heavy interaction sequences.
 
+## 8. `browserType.connectOverCDP()` — `artifactsDir` Option
+
+Controls where traces and downloads land when attaching Playwright to an already-running browser over CDP (e.g. a browser launched by another tool, or a persistent debugging session):
+
+```typescript
+const browser = await chromium.connectOverCDP('http://localhost:9222', {
+  artifactsDir: './cdp-artifacts',  // traces/downloads from this session land here
+});
+const context = browser.contexts()[0];
+await context.tracing.start({ screenshots: true, snapshots: true });
+// ... drive the already-open browser ...
+await context.tracing.stop({ path: './cdp-artifacts/session.zip' });
+```
+
+**Use case**: CDP-attach workflows (debugging extensions, reusing a logged-in browser instance, AI-agent browser control) previously had no first-class place to put artifacts — they'd default to a temp dir or be lost.
+
+## 9. `screencast.showActions()` — `cursor` Option
+
+Adds a visual cursor decoration over recorded pointer actions, useful for demo/bug-repro recordings where a reviewer needs to see exactly where clicks landed:
+
+```typescript
+await page.screencast.showActions({ cursor: true });
+```
+
+## 10. `-G` Shorthand for `--grep-invert`
+
+```bash
+# Run everything except tests tagged @slow
+npx playwright test -G @slow
+```
+
+Same behavior as `--grep-invert @slow`, just terser for frequent CLI use (e.g. excluding a smoke-only tag during full-suite local runs).
+
 ## Sources
 - https://github.com/microsoft/playwright/releases/tag/v1.61.0
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
 - https://www.corbado.com/blog/passkeys-e2e-playwright-testing-webauthn-virtual-authenticator
 - https://changjoon-baek.medium.com/overcoming-passkey-verification-in-test-automation-fc7fc6748bd6
 - https://dev.to/kochan/testing-webauthn-in-ci-e2e-automation-with-virtual-authenticators-and-mailpit-part-2-4j4i
