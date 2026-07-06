@@ -615,6 +615,32 @@ maestro check-syntax flows/          # whole directory
   run: maestro test flows/
 ```
 
+## More CLI Utility Commands & Flags (1.39–1.40)
+
+Also uncovered by any existing Maestro skill:
+
+```bash
+# Interactive AI chat for building/debugging a flow from the terminal, no editor round-trip
+maestro chat
+maestro chat --ask="why does this flow fail on the login step?"
+
+# Reinstall the xctestrunner driver before this run — fixes stale-driver flakiness on iOS
+# without a manual `maestro cleanup` + reinstall dance
+maestro test --reinstall-driver flows/ios/
+
+# Target a specific iOS minor version / device model instead of "whatever booted simulator"
+maestro test --device-os "17.4" --device-model "iPhone 15" flows/
+
+# Shrink hierarchy JSON output by dropping empty fields (useful when piping to an LLM/agent)
+maestro hierarchy --compact
+```
+
+```yaml
+# MAESTRO_FILENAME — built-in env var exposing the current flow's filename inside the flow itself
+# Useful for tagging screenshots/artifacts with the source file without hardcoding it per flow
+- takeScreenshot: "${MAESTRO_FILENAME}-before-checkout"
+```
+
 ## Anti-Patterns to Avoid
 
 ```yaml
@@ -643,5 +669,5 @@ maestro check-syntax flows/          # whole directory
 ```
 
 ## Sources
-- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (`maestro check-syntax`, introduced v1.40.0)
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0)
 - https://docs.maestro.dev/
