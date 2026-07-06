@@ -1,0 +1,138 @@
+---
+name: odoo-timesheet
+description: >-
+  Log timesheet hours and set allocated time (task time budget) on Odoo.
+  Use ONLY when the user's message mentions "Odoo" or "ERP" AND wants to record
+  time worked or set/adjust a task's time budget — e.g. "log 3h on the Olivia
+  testing task in Odoo", "chấm công 4 tiếng hôm nay cho task X trên Odoo",
+  "record 2.5 hours timesheet for yesterday on ERP", "set allocated time to 8h
+  for task Y in Odoo", "đặt allocated time / planned hours cho task này".
+  Timesheet = actual hours spent (account.analytic.line). Allocated time = the
+  planned time budget on a task (project.task.allocated_hours). Trigger this even
+  when the user just says "log time"/"chấm công"/"ghi timesheet" for a named task
+  as long as Odoo/ERP is mentioned. Do NOT trigger without "Odoo"/"ERP", and do
+  NOT trigger for creating/moving tasks or bugs (that is odoo-project-automation).
+---
+
+# Odoo Timesheet & Allocated Time
+
+Record **time spent** (timesheets) and set **allocated time** (task time budget) on
+the InApps Odoo instance. Both operations write to Odoo, so accuracy matters — a
+timesheet on the wrong task or with the wrong hours corrupts real project reporting.
+
+**Environment** (Odoo 19.0): `erp.inapps.net`, database `inapps`, tz `Asia/Saigon`.
+Connected user: `phat.dinh@inapps.net` (uid 18) → employee **Phat Dinh** (`employee_id` 8).
+
+## The two things this skill does
+
+| Concept | Meaning | Where it lives |
+|---|---|---|
+| **Timesheet** | Actual hours a person worked on a task/project on a given day | A record in `account.analytic.line` (create one per entry) |
+| **Allocated time** | The planned time *budget* for a task | The `allocated_hours` float field on `project.task` |
+
+They are linked: logging a timesheet on a task increases that task's `effective_hours`
+(time spent), and `remaining_hours = allocated_hours − effective_hours`. After any
+write, report the task's remaining time so the user sees the budget impact.
+
+## Golden rule: confirm the target before writing
+
+The most damaging mistake is logging time against the wrong task. A task name like
+"testing" can match dozens of tasks across projects. Before any write:
+
+1. **Resolve the task/project by search, never by guess.** Search `project.task`
+   with the user's keywords (and project if named). Show the matches you found.
+2. **If exactly one match** and the user was specific, proceed to preview.
+3. **If multiple matches or ambiguity**, list them (id, name, project) and ask which
+   one — do not pick the first. This follows the ask-when-stuck discipline.
+
+## Field reference
+
+**Timesheet — `account.analytic.line` (create):**
+
+| Field | Value | Notes |
+|---|---|---|
+| `task_id` | resolved task id | Task must belong to a timesheet-enabled project |
+| `project_id` | the task's project id | Set it explicitly to be safe |
+| `employee_id` | default **8** (Phat Dinh) | Override only if another person is named |
+| `date` | `YYYY-MM-DD` | Default = today in Asia/Saigon. Parse "yesterday", weekday names, explicit dates |
+| `unit_amount` | hours as float | `3h30` → `3.5`, `45m` → `0.75`, `2 tiếng` → `2.0` |
+| `name` | short description of the work | **Required.** Never leave it as Odoo's `/` placeholder — if the user gives no description, use a concise one derived from the task/work, or ask |
+
+Do **not** set `account_id` — Odoo derives the analytic account from `project_id`.
+
+**Allocated time — `project.task` (write):**
+
+| Field | Value | Notes |
+|---|---|---|
+| `allocated_hours` | hours as float | This is the "Allocated Time" field. Same hour-parsing rules |
+
+## Resolving the employee
+
+Default to the connected user, **Phat Dinh (`employee_id` 8)**. Only change the employee
+when the user names someone else ("log 3h for Vinh"). In that case resolve with
+`mcp__odoo__search_employee` and confirm the match before writing. If a named employee
+returns multiple results, list them and ask.
+
+## Parsing hours
+
+Users express time many ways. Convert everything to a float number of hours:
+
+- `3h`, `3 hours`, `3 tiếng`, `3 giờ` → `3.0`
+- `3h30`, `3.5h`, `3 hours 30 min`, `3 tiếng rưỡi` → `3.5`
+- `45m`, `45 phút`, `0.75h` → `0.75`
+- A full day → `8.0` (standard workday) — but confirm if the user said "a day" vaguely.
+
+## Workflow — logging a timesheet
+
+1. **Resolve the task** (see Golden rule). Capture `task_id` and its `project_id`.
+2. **Resolve employee** (default 8; override if named).
+3. **Parse date** (default today, Asia/Saigon) **and hours**.
+4. **Determine description** (`name`). Ask if none can be reasonably inferred.
+5. **Preview**: call `mcp__odoo__preview_write` with `model="account.analytic.line"`,
+   `operation="create"`, and the `values` above. Show the user what will be created.
+6. **Execute**: call `mcp__odoo__execute_approved_write` with the approval object from
+   the preview and `confirm=true`.
+7. **Report outcome**: state the created line (date, hours, task, employee) and the
+   task's updated `remaining_hours` — read `project.task` after the write to show how
+   much of the allocated budget is left.
+
+## Workflow — setting allocated time
+
+1. **Resolve the task** and capture `task_id`.
+2. **Parse hours** for the budget.
+3. **Preview**: `mcp__odoo__preview_write` with `model="project.task"`,
+   `operation="write"`, `record_ids=[task_id]`, `values={"allocated_hours": <float>}`.
+4. **Execute**: `mcp__odoo__execute_approved_write` with the approval and `confirm=true`.
+5. **Report**: new `allocated_hours`, current `effective_hours` (time already spent),
+   and the resulting `remaining_hours`. If spent already exceeds the new budget, call
+   that out — it means the task is over-allocated.
+
+## Reporting format
+
+Keep it short and factual. Example after a timesheet:
+
+```
+✅ Timesheet logged
+  Task:      [Testing] Verify bugs  (#2529, Olivia - CRM App)
+  Employee:  Phat Dinh
+  Date:      2026-07-07
+  Hours:     3.0
+  Note:      Regression pass on login flow
+  → Task budget: 3.0 spent of 8.0 allocated · 5.0h remaining
+```
+
+## Edge cases & guardrails
+
+- **Non-timesheet project**: if the resolved project has `allow_timesheets = false`, the
+  create will fail. Surface that clearly instead of retrying — the project must enable
+  timesheets first.
+- **No allocated time set**: `allocated_hours = 0` means no budget; `remaining_hours`
+  will show negative once time is logged. Mention it, don't treat it as an error.
+- **Zero/blank hours**: don't log a `0` timesheet unless the user explicitly asks.
+- **Ambiguous date** ("last Monday" near a week boundary): state the concrete date you
+  resolved to so the user can catch a mistake.
+- **Batch requests** ("log 3h Mon and 5h Tue"): this skill is single-entry by design —
+  handle each entry as its own preview→execute cycle, confirming each, rather than one
+  bulk write.
+- Never mask a write failure. If `execute_approved_write` returns an error, report it
+  verbatim and stop — do not invent a workaround that makes it look successful.
