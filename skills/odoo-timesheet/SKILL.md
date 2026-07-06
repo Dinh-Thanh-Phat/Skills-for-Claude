@@ -88,10 +88,11 @@ Users express time many ways. Convert everything to a float number of hours:
 2. **Resolve employee** (default 8; override if named).
 3. **Parse date** (default today, Asia/Saigon) **and hours**.
 4. **Determine description** (`name`). Ask if none can be reasonably inferred.
-5. **Preview**: call `mcp__odoo__preview_write` with `model="account.analytic.line"`,
-   `operation="create"`, and the `values` above. Show the user what will be created.
-6. **Execute**: call `mcp__odoo__execute_approved_write` with the approval object from
-   the preview and `confirm=true`.
+5. **Validate**: call `mcp__odoo__validate_write` with `model="account.analytic.line"`,
+   `operation="create"`, and the `values` above. This returns an `approval` object with
+   a token that is *stored in the server session* — that is what makes it executable.
+6. **Execute**: call `mcp__odoo__execute_approved_write` passing that **full approval
+   object** (including `token`, `validated_at`, `expires_at`) and `confirm=true`.
 7. **Report outcome**: state the created line (date, hours, task, employee) and the
    task's updated `remaining_hours` — read `project.task` after the write to show how
    much of the allocated budget is left.
