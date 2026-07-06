@@ -92,6 +92,29 @@ for i, combo in enumerate(AllPairs(parameters, filter_func=is_valid)):
 
 `filter_func` is checked incrementally as each parameter is added — encode the same "impossible in production" rules here that you'd put in PICT's `IF/THEN` constraints.
 
+> ⚠️ **allpairspy + `filter_func` can silently drop *unrelated* pairs.** The greedy generator rejects
+> partial rows that fail the filter and does **not** backfill, so a pair with nothing to do with your
+> constraint can end up uncovered. Verified example: the model above with the Safari+Linux filter drops
+> the `Chrome`+`Pro` pair — 2-way coverage is no longer guaranteed. **After generating with a filter,
+> always assert full coverage (snippet below), or use PICT instead** — PICT applies `IF/THEN` constraints
+> without losing all-pairs coverage. Unconstrained allpairspy *does* give full 2-way coverage.
+
+```python
+# Coverage guard — run this after any filtered generation; fail the build if a pair was dropped
+from itertools import combinations
+
+def assert_pairwise_coverage(rows, params, excluded=frozenset()):
+    missing = []
+    for a, b in combinations(range(len(params)), 2):
+        for va in params[a]:
+            for vb in params[b]:
+                if (a, b, va, vb) in excluded:      # pairs you intentionally removed via constraints
+                    continue
+                if not any(r[a] == va and r[b] == vb for r in rows):
+                    missing.append((va, vb))
+    assert not missing, f"pairwise coverage broken, missing pairs: {missing}"
+```
+
 ## Step 3 — Turn generated rows into test cases
 
 Each output row of the tool = one test case. Feed rows straight into a parameterized Playwright test instead of writing them by hand:
@@ -128,6 +151,8 @@ Pairwise selection can skip a specific combination that matters for business or 
    pairwise multiplies whatever parameter/value counts you give it.
 ❌ Skipping constraints — an unconstrained model generates "impossible in production" test cases
    (e.g. Free plan + Admin role, if that combination can't exist) and wastes CI time asserting on unreachable states.
+❌ Trusting allpairspy's all-pairs guarantee when filter_func is set — the greedy filter can drop
+   unrelated pairs. Assert coverage with the guard snippet after filtered runs, or switch to PICT.
 ```
 
 ## Sources
