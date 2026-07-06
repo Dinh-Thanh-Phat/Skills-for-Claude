@@ -41,7 +41,7 @@ The most damaging mistake is logging time against the wrong task. A task name li
 
 1. **Resolve the task/project by search, never by guess.** Search `project.task`
    with the user's keywords (and project if named). Show the matches you found.
-2. **If exactly one match** and the user was specific, proceed to preview.
+2. **If exactly one match** and the user was specific, proceed to validate.
 3. **If multiple matches or ambiguity**, list them (id, name, project) and ask which
    one — do not pick the first. This follows the ask-when-stuck discipline.
 
