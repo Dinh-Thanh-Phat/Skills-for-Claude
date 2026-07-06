@@ -134,7 +134,7 @@ Keep it short and factual. Example after a timesheet:
 - **Ambiguous date** ("last Monday" near a week boundary): state the concrete date you
   resolved to so the user can catch a mistake.
 - **Batch requests** ("log 3h Mon and 5h Tue"): this skill is single-entry by design —
-  handle each entry as its own preview→execute cycle, confirming each, rather than one
+  handle each entry as its own validate→execute cycle, confirming each, rather than one
   bulk write.
 - Never mask a write failure. If `execute_approved_write` returns an error, report it
   verbatim and stop — do not invent a workaround that makes it look successful.
