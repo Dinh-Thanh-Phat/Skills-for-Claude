@@ -101,9 +101,10 @@ Users express time many ways. Convert everything to a float number of hours:
 
 1. **Resolve the task** and capture `task_id`.
 2. **Parse hours** for the budget.
-3. **Preview**: `mcp__odoo__preview_write` with `model="project.task"`,
+3. **Validate**: `mcp__odoo__validate_write` with `model="project.task"`,
    `operation="write"`, `record_ids=[task_id]`, `values={"allocated_hours": <float>}`.
-4. **Execute**: `mcp__odoo__execute_approved_write` with the approval and `confirm=true`.
+4. **Execute**: `mcp__odoo__execute_approved_write` with the returned approval object and
+   `confirm=true`.
 5. **Report**: new `allocated_hours`, current `effective_hours` (time already spent),
    and the resulting `remaining_hours`. If spent already exceeds the new budget, call
    that out — it means the task is over-allocated.
