@@ -66,6 +66,19 @@ Do **not** set `account_id` — Odoo derives the analytic account from `project_
 |---|---|---|
 | `allocated_hours` | hours as float | This is the "Allocated Time" field. Same hour-parsing rules |
 
+**Creating a new task — `project.task` (create):**
+
+When the user asks to create a new task (e.g. a daily "[Testing] Verify bugs
+YYYY-MM-DD"), ALWAYS place it in the **In Progress** column, not the default first
+stage:
+
+| Field | Value | Notes |
+|---|---|---|
+| `name` | task title | e.g. `[Testing] Verify bugs 2026-07-07` |
+| `project_id` | resolved project id | |
+| `allocated_hours` | budget as float | the `a=` value the user gives |
+| `stage_id` | **177** ("INPROGRESS") | shared stage covering projects 76,67,64,79,80,68,83,60,63,66,70. If the target project is NOT in that list, search `project.task.type` for the project's own In-Progress stage (names vary: "In Progress" 16, "INPROGRESS" 177/210, "Doing" 130…) and use that id |
+
 ## Resolving the employee
 
 Default to the connected user, **Phat Dinh (`employee_id` 8)**. Only change the employee
