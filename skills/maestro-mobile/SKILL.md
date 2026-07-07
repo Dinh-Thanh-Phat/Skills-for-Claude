@@ -641,6 +641,26 @@ maestro hierarchy --compact
 - takeScreenshot: "${MAESTRO_FILENAME}-before-checkout"
 ```
 
+## Parallel Local iOS Simulator Runs (2.6.0)
+
+Before CLI 2.6.0, running multiple `maestro test` processes against different iOS simulators
+on the same machine was unreliable — concurrent local runs would intermittently collide on driver
+ports and session state. 2.6.0 fixes this with per-device session tracking, cross-process file
+locking, and a port-availability check, plus a new flag to pin the driver port explicitly when
+you need deterministic port assignment (e.g. matching a CI matrix or a firewall rule):
+
+```bash
+# Run two local iOS suites in parallel without them fighting over the same xctestrunner driver port
+maestro test --driver-host-port 9080 flows/ios/suite-a/ &
+maestro test --driver-host-port 9081 flows/ios/suite-b/ &
+wait
+```
+
+This is distinct from the `--shards` distribution model above — `--shards` splits one flow set
+across N devices for a single `maestro test` invocation, while this fix targets running several
+independent `maestro test` processes (e.g. different suites, different CI jobs) against local iOS
+simulators at the same time.
+
 ## Anti-Patterns to Avoid
 
 ```yaml
@@ -669,5 +689,6 @@ maestro hierarchy --compact
 ```
 
 ## Sources
-- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0)
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0)
+- https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
