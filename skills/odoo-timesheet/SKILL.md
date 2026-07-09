@@ -79,6 +79,20 @@ stage:
 | `allocated_hours` | budget as float | the `a=` value the user gives |
 | `stage_id` | **177** ("INPROGRESS") | shared stage covering projects 76,67,64,79,80,68,83,60,63,66,70. If the target project is NOT in that list, search `project.task.type` for the project's own In-Progress stage (names vary: "In Progress" 16, "INPROGRESS" 177/210, "Doing" 130…) and use that id |
 
+## Resolving the date
+
+**Never type a date from memory or from an earlier turn in the conversation.** Defaulting
+to a stale date silently files hours on the wrong day, and the user only catches it later.
+
+1. Read today's date from the **`currentDate` value in your environment context** (or run
+   `date +%Y-%m-%d`). Treat that as today in `Asia/Saigon`.
+2. Resolve any relative expression ("hôm nay", "hôm qua", "thứ 2 tuần trước", "9/7")
+   against that date. Vietnamese `9/7` = **D/M** → `2026-07-09`, not July 9th read as M/D.
+3. **State the concrete `YYYY-MM-DD` you resolved to in your report**, so the user can spot
+   an off-by-a-day before it matters.
+4. In a long session that may span midnight or resume the next day, re-read the date for
+   each write rather than reusing the one from a previous entry.
+
 ## Resolving the employee
 
 Default to the connected user, **Phat Dinh (`employee_id` 8)**. Only change the employee
