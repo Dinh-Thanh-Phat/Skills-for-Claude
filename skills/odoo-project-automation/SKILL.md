@@ -82,6 +82,35 @@ Override: pass `priority` explicitly if needed.
   - `network_request` — failing HTTP request info
   - `stack_trace` — full stack trace
 
+#### ⚠️ Expected vs Actual — NEVER guess the direction
+
+Short bug notes from the reporter are almost always ambiguous about which side is the bug and which side is the fix. **Guessing wrong inverts the whole ticket** and the dev implements the bug.
+
+**Ambiguous patterns — treat as UNKNOWN direction, do not resolve them yourself:**
+
+| Note | Reading 1 | Reading 2 |
+|---|---|---|
+| "2 line màu trắng chứ không phải màu xám" | Actual = white (bug), Expected = gray | Expected = white, Actual = gray (bug) |
+| "X chứ không phải Y" / "X not Y" | Actual = X | Expected = X |
+| "phải là X" / "should be X" | — | Expected = X (unambiguous) |
+| "đang bị X" / "it's showing X" | Actual = X (unambiguous) | — |
+| "chữ light + dark thụt vô trong" | Actual = indented (bug) | Expected = indented |
+
+**Rule:** Before writing a bug ticket, if the note does not contain an explicit *"đang là / hiện tại / it shows"* marker for Actual **or** an explicit *"phải là / should be / mong muốn"* marker for Expected, you MUST echo back the parsed pair and get confirmation:
+
+```
+Tôi hiểu như sau — xác nhận giúp:
+  Actual (hiện tại):   lines đang màu xám
+  Expected (mong muốn): lines phải màu trắng
+Đúng hướng chưa?
+```
+
+Only after confirmation do you call `preview_write` / `execute_approved_write`.
+
+**Never** infer direction from "which one sounds like a bug" — gray-vs-white, indented-vs-aligned, and most cosmetic pairs are symmetric; either could be the defect.
+
+**Corollary for the title:** phrase it as the defect, not the fix. `"Theme lines are gray instead of white"` — a title like `"Change gray to white"` reads as a task and hides which state is broken.
+
 ### Task (Default)
 **Format:** Implementation Plan + Success Criteria
 **Use for:** Features, general work, general requests
