@@ -74,7 +74,7 @@ stage:
 
 | Field | Value | Notes |
 |---|---|---|
-| `name` | task title | e.g. `[Testing] Verify bugs 2026-07-07` |
+| `name` | task title | If it embeds a date, use the **resolved today** — see "Resolving the date" |
 | `project_id` | resolved project id | |
 | `allocated_hours` | budget as float | the `a=` value the user gives |
 | `stage_id` | **177** ("INPROGRESS") | shared stage covering projects 76,67,64,79,80,68,83,60,63,66,70. If the target project is NOT in that list, search `project.task.type` for the project's own In-Progress stage (names vary: "In Progress" 16, "INPROGRESS" 177/210, "Doing" 130…) and use that id |
