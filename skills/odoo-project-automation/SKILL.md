@@ -214,9 +214,11 @@ The colored circle (bottom-right of each task card) = `state` field. **Not** `ka
 ### Process:
 1. You provide task details (project, name, type, description, etc.)
 2. Skill validates inputs (project/assignee exist, etc.)
-3. Skill shows confirmation dialog with:
+3. **For bugs:** resolve Expected/Actual direction first — see "Expected vs Actual" above. If the note is ambiguous, ask before step 4.
+4. Skill shows confirmation dialog with:
    - Full task details
    - Auto-expanded description preview
+   - **Bug only:** Actual and Expected shown as two explicitly labelled lines, never merged into one sentence
    - Status transition (if moving)
    - Summary (if closing)
 4. ⏳ **WAITS FOR YOUR CONFIRMATION**
