@@ -74,6 +74,8 @@ Generate a bug report in this format:
 ### Actual Behavior
 [What ACTUALLY happens — be specific, include error messages verbatim]
 
+> ⚠️ **Never guess which side is which.** A reporter's shorthand like "lines are white not gray" / "X chứ không phải Y" is ambiguous — X may be the observed defect or the desired fix. If the note lacks an explicit Actual marker ("đang là", "hiện tại", "it shows") or Expected marker ("phải là", "should be"), echo the parsed pair back and confirm before writing the report. Cosmetic pairs (gray/white, indented/aligned) are symmetric — neither side "sounds more like a bug".
+
 ```
 Error: [paste exact error message]
 ```
