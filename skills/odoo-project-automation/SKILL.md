@@ -221,10 +221,10 @@ The colored circle (bottom-right of each task card) = `state` field. **Not** `ka
    - **Bug only:** Actual and Expected shown as two explicitly labelled lines, never merged into one sentence
    - Status transition (if moving)
    - Summary (if closing)
-4. ⏳ **WAITS FOR YOUR CONFIRMATION**
-5. ✅ You respond: "yes"/"confirm"/"ok"/"proceed"
-6. ❌ Or cancel: "no"/"cancel"/"abort"
-7. Action executes or is cancelled
+5. ⏳ **WAITS FOR YOUR CONFIRMATION**
+6. ✅ You respond: "yes"/"confirm"/"ok"/"proceed"
+7. ❌ Or cancel: "no"/"cancel"/"abort"
+8. Action executes or is cancelled
 
 ---
 
