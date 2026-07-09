@@ -54,7 +54,7 @@ The most damaging mistake is logging time against the wrong task. A task name li
 | `task_id` | resolved task id | Task must belong to a timesheet-enabled project |
 | `project_id` | the task's project id | Set it explicitly to be safe |
 | `employee_id` | default **8** (Phat Dinh) | Override only if another person is named |
-| `date` | `YYYY-MM-DD` | Default = today in Asia/Saigon. Parse "yesterday", weekday names, explicit dates |
+| `date` | `YYYY-MM-DD` | Default = today, read fresh from `currentDate` — see "Resolving the date". Never carry a date over from an earlier entry |
 | `unit_amount` | hours as float | `3h30` → `3.5`, `45m` → `0.75`, `2 tiếng` → `2.0` |
 | `name` | short description of the work | **Required.** Never leave it as Odoo's `/` placeholder — if the user gives no description, use a concise one derived from the task/work, or ask |
 
