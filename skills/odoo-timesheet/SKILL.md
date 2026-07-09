@@ -109,6 +109,39 @@ Users express time many ways. Convert everything to a float number of hours:
 - `45m`, `45 phút`, `0.75h` → `0.75`
 - A full day → `8.0` (standard workday) — but confirm if the user said "a day" vaguely.
 
+## The user's shorthand
+
+This user writes terse one-liners. Recognise them:
+
+```
+odoo -> <project> -> <task description> với a = 4, ts = 2
+HVS - retest trên prod mobile với a = 2, s = 1 và mark done lun
+```
+
+| Token | Means |
+|---|---|
+| `a = N` | `allocated_hours` = N (the task's time budget) |
+| `s = N` / `ts = N` | the **timesheet** hours to log (time actually spent) |
+| `mark done` | after logging, set the task's `state` — see below |
+| `->` chain | project → task, in that order |
+
+When the described task does not already exist, this user's intent is to **create it**
+(they confirmed this pattern repeatedly), placed in the In Progress stage. Still search
+first and show what you found; only skip the confirmation question when the description
+is specific and no existing task plausibly matches.
+
+## Marking a task done
+
+Set the `state` field (this is the ✓ circle button in the Odoo UI, **not** `kanban_state`
+and not a stage move):
+
+```
+model="project.task", operation="write", record_ids=[task_id],
+values={"state": "1_done"}
+```
+
+Log the timesheet **before** marking done, so the hours land on an open task.
+
 ## Workflow — logging a timesheet
 
 1. **Resolve the task** (see Golden rule). Capture `task_id` and its `project_id`.
