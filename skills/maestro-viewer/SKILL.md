@@ -126,6 +126,11 @@ choice so screenshot calls don't burn through LLM vision-token budgets in long a
 > If you set up this MCP server before CLI 2.5.0, drop any tool config referencing `run_flow`,
 > `run_flow_files`, or `use_fuzzy_matching` on `tap_on` (all removed) — point agents at `run` instead.
 
+**Android performance (2.6.0):** MCP calls against Android devices now go over a direct ADB
+socket instead of TCP port forwarding — **~41% faster** on a simple `assertVisible` flow, and it
+removes a flaky forwarding thread that could intermittently drop the connection during longer
+agent sessions. No config change needed; this is automatic on CLI ≥ 2.6.0.
+
 ---
 
 ## Maestro Cloud via MCP (2.5.0+)
