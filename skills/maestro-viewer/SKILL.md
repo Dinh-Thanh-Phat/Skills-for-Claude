@@ -105,20 +105,48 @@ device state the agent sees — no mental model, no lag, no surprise failures.
 
 ## Key MCP Tools (available to your agent)
 
+**As of CLI 2.5.0, the tool surface was consolidated from 15 down to 8 tools** — the separate
+`run_flow` and `run_flow_files` tools were merged into a single `run` tool that mirrors the shape
+of the `maestro test` CLI command (pass either a flow file or a directory):
+
 | Tool | What it does |
 |---|---|
-| `run_flow` | Execute a Maestro YAML flow file |
-| `take_screenshot` | Capture and return device screenshot (auto-downscaled to avoid LLM token limits) |
+| `run` | Execute a Maestro YAML flow file or directory (replaces the old `run_flow`/`run_flow_files`) |
+| `take_screenshot` | Capture and return device screenshot (auto-downscaled to 2000px to avoid LLM token limits) |
 | `inspect_hierarchy` | Dump the full UI element tree (element IDs, text, bounds) |
 | `tap_on` | Tap an element by id, text, or coordinates |
 | `input_text` | Type into the focused element |
 | `assert_visible` | Assert an element is visible; returns pass/fail |
-| `scroll_down` | Scroll the current screen |
 | `open_viewer` | Open Maestro Viewer in the system browser |
 | `validate_flow` | Validate YAML syntax before running |
 
 `take_screenshot` **downscales** images before returning them — this is a deliberate design
 choice so screenshot calls don't burn through LLM vision-token budgets in long agent sessions.
+
+> If you set up this MCP server before CLI 2.5.0, drop any tool config referencing `run_flow`,
+> `run_flow_files`, or `use_fuzzy_matching` on `tap_on` (all removed) — point agents at `run` instead.
+
+**Android performance (2.6.0):** MCP calls against Android devices now go over a direct ADB
+socket instead of TCP port forwarding — **~41% faster** on a simple `assertVisible` flow, and it
+removes a flaky forwarding thread that could intermittently drop the connection during longer
+agent sessions. No config change needed; this is automatic on CLI ≥ 2.6.0.
+
+---
+
+## Maestro Cloud via MCP (2.5.0+)
+
+The MCP server now exposes **native Maestro Cloud tools**, so an agent can trigger and poll a
+cloud run without shelling out to `maestro cloud`:
+
+| Tool | What it does |
+|---|---|
+| `run_on_cloud` | Submit a flow + app binary to Maestro Cloud asynchronously; returns a dashboard URL |
+| `get_cloud_run_status` | Poll a cloud run's status and per-flow results |
+| `list_cloud_devices` | List valid `{platform, model, supported_os}` triples for the `device_model` param on `run_on_cloud` |
+
+This is useful when you want the agent to kick off a full-device-matrix cloud run (instead of the
+single local simulator/emulator `run` targets) and report back once it completes — e.g. "run this
+flow on cloud against an iPhone 15 and an iPhone 13 Mini, then tell me if either failed."
 
 ---
 
@@ -176,3 +204,4 @@ Windsurf, JetBrains AI Assistant — any MCP-compatible tool works.
 - [Maestro MCP Server — official docs](https://docs.maestro.dev/get-started/maestro-mcp)
 - [Maestro MCP: An Introduction — maestro.dev blog](https://maestro.dev/blog/maestro-mcp-an-introduction)
 - [Official Maestro MCP GitHub — mobile-dev-inc/maestro-mcp](https://github.com/mobile-dev-inc/maestro-mcp)
+- [Maestro CHANGELOG.md — 2.5.0 MCP tool consolidation + native Cloud tools, 2.6.0 CLI details](https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md)

@@ -187,6 +187,43 @@ test('FLAKY-023: Payment flow intermittent timeout', async ({ page }) => {
 - Fix within 1 sprint — quarantine is temporary, not permanent
 - Remove quarantine tag when fixed + verified green 5 runs
 
+### Better: quarantine as a non-blocking CI job, not `test.skip`
+
+`test.skip` in CI stops the test from running at all — you lose the failure signal exactly when you need it most. The 2026-standard pattern instead keeps the test **running** but makes its job **non-required**, so a flaky failure can't block a merge but the flake rate stays visible:
+
+```typescript
+// Tag quarantined tests instead of skipping them
+test('FLAKY-023: Payment flow intermittent timeout @quarantine', async ({ page }) => {
+  // ... test code still executes every run
+});
+```
+
+```yaml
+# .github/workflows/e2e.yml — split into a required job and an informational job
+jobs:
+  e2e-required:
+    steps:
+      - run: npx playwright test -G @quarantine   # excludes quarantined tests (1.61 grep-invert shorthand)
+
+  e2e-quarantine:
+    continue-on-error: true                        # job reports "neutral", never blocks merge/required checks
+    steps:
+      - run: npx playwright test --grep @quarantine
+```
+
+Only list `e2e-required` in branch protection / required status checks — `e2e-quarantine` still runs and reports every build, it just can't gate the merge.
+
+**SLA by severity (escalate if exceeded, don't let it go stale):**
+
+| Flake rate / impact | Max time in quarantine |
+|---|---|
+| Critical path (payment, auth) | 3 days |
+| High (>10% flake rate) | 1 week |
+| Medium (5–10% flake rate) | 2 weeks |
+| Low (<5% flake rate) | 1 month |
+
+Past the SLA: either fix it or formally retire the test with a written reason — don't let it sit in quarantine indefinitely.
+
 ---
 
 ## When Retries Are Acceptable
@@ -232,6 +269,7 @@ When a test fails intermittently, check in this order:
 - Playwright best practices: playwright.dev/docs/best-practices
 - Flaky test patterns: medium.com/@samuel.sperling/say-goodbye-to-flaky-tests
 - Selector stability: browserstack.com/guide/playwright-selectors-best-practices
+- Quarantine-as-non-blocking-CI-job pattern + severity SLA tiers (2026): https://docs.trunk.io/flaky-tests/get-started/ci-providers/github-actions, https://scrolltest.com/flaky-tests-detection-quarantine-prevention-guide-2026/, https://flakyguard.com/blog/how-to-quarantine-flaky-tests, https://qaskills.sh/blog/ai-flaky-test-detection-guide
 
 ---
 

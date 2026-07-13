@@ -1,6 +1,6 @@
 ﻿---
 name: safe-locators
-description: Rules for writing safe, unique Playwright locators — avoid .first()/.nth() silent failures, enforce strict uniqueness. Use when writing locators, dealing with "strict mode violation", ambiguous selectors, or multiple matching elements. Triggers on: "locator first()", "nth(0)", "ambiguous locator", "strict mode violation", "selector không unique", "multiple elements matched".
+description: Rules for writing safe, unique Playwright locators — avoid .first()/.nth() silent failures, enforce strict uniqueness, and auto-normalize brittle CSS/XPath locators with locator.normalize(). Use when writing locators, dealing with "strict mode violation", ambiguous selectors, or multiple matching elements. Triggers on: "locator first()", "nth(0)", "ambiguous locator", "strict mode violation", "selector không unique", "multiple elements matched", "locator.normalize", "brittle CSS selector".
 type: qa-practice
 triggers:
   - "locator first()"
@@ -9,6 +9,8 @@ triggers:
   - "strict mode violation"
   - "selector không unique"
   - "multiple elements matched"
+  - "locator.normalize"
+  - "brittle CSS selector"
 scope: playwright, e2e-testing
 ---
 
@@ -63,6 +65,22 @@ const select = form.getByRole('combobox', { name: 'Language' });
 await select.getByRole('option', { name: 'EN', exact: true }).click();
 ```
 
+## Auto-Normalize a Brittle Locator (`locator.normalize()`, v1.59+)
+
+Instead of hand-rewriting a CSS/XPath locator inherited from Codegen or old code, ask Playwright to convert it for you:
+
+```typescript
+// Inherited from Codegen — implementation-detail CSS, breaks on any DOM reshuffle
+const brittle = page.locator('div.container > ul li:nth-child(3) > button.submit-btn');
+
+// Resolves the live element and returns an equivalent locator built from
+// test ids / ARIA roles / other user-facing attributes instead of CSS structure
+const safe = await brittle.normalize();
+await safe.click();
+```
+
+`normalize()` inspects the actual matched element at call time — it needs the page in the state where that element exists (same rule as any other action: locate after the element is rendered). It doesn't replace scoping or uniqueness checks: still verify `toHaveCount(1)` before treating the normalized locator as safe to commit. Useful as a one-shot cleanup pass over old CSS-locator-heavy specs rather than a runtime pattern in new tests (write `getByRole`/`getByTestId` directly instead).
+
 ## When `.first()` Is Acceptable
 
 Only use `.first()` when:
@@ -88,5 +106,8 @@ Before committing any locator:
 - [ ] Text filters use `exact: true` or `^...$` anchored regex
 - [ ] Locator is scoped to nearest unique container (dialog, tabpanel, form)
 
-**Sources:** Playwright Locators docs, Playwright Best Practices
+## Sources
+- https://playwright.dev/docs/locators
+- https://playwright.dev/docs/best-practices
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/api/class-locator.md (`Locator.normalize()`, since v1.59)
 

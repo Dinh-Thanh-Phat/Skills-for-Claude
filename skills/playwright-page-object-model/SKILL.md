@@ -1,6 +1,6 @@
 ﻿---
 name: playwright-page-object-model
-description: Playwright Page Object Model patterns — organizing locators, actions, and assertions into reusable classes. Use when structuring any Playwright test suite, creating new test files, or when the same UI interactions appear in 3+ tests. Triggers on: "page object model", "POM", "page object", "locator encapsulation", "reusable page", "test organization", "action method", "page class", "component object".
+description: Playwright Page Object Model patterns — organizing locators, actions, and assertions into reusable classes, plus naming complex locator chains with locator.describe() for readable traces/reports. Use when structuring any Playwright test suite, creating new test files, or when the same UI interactions appear in 3+ tests. Triggers on: "page object model", "POM", "page object", "locator encapsulation", "reusable page", "test organization", "action method", "page class", "component object", "locator.describe", "name a locator", "trace shows raw selector".
 origin: research
 scope: testing, playwright, pom, code-organization
 triggers:
@@ -227,6 +227,25 @@ test('create template', async ({ templatePage }) => {
 
 **Recommended default:** wrap POM instantiation inside a fixture so setup/teardown is centralized, while all UI interaction stays in the Page Object class.
 
+## Naming Complex Locators for Trace/Report Readability — `locator.describe()`
+
+`locator.describe(description)` (since v1.53, no existing skill covered it) attaches a human-readable label to a locator that shows up in the Trace Viewer and HTML report instead of the raw selector chain. It returns a locator pointing to the same element, so it chains like any other locator method — most useful on the dynamic, filter-heavy locators POM getters tend to produce:
+
+```typescript
+// Without describe() — trace/report shows the raw chain:
+// locator('tr').filter({ hasText: name }).getByRole('button', { name: 'Delete' })
+getRow(name: string): Locator {
+  return this.page.locator('tr').filter({ hasText: name });
+}
+
+// With describe() — trace/report shows "row for <name>" instead
+getRow(name: string): Locator {
+  return this.page.locator('tr').filter({ hasText: name }).describe(`row for ${name}`);
+}
+```
+
+Apply it on Page Object query methods that build multi-step locator chains (`.filter()`, `.locator()`, `.and()`/`.or()` combinations) — that's where trace output is least readable by default and a plain label pays off most.
+
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Fix |
@@ -235,4 +254,7 @@ test('create template', async ({ templatePage }) => {
 | Assertions inside action methods | Test can't control assertion behavior | Move to `expectX()` methods |
 | One giant 300-line Page Object | Hard to maintain | Split by feature section |
 | POM for every single test | Over-engineering | Only when 3+ tests reuse the flow |
+
+## Sources
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/api/class-locator.md
 

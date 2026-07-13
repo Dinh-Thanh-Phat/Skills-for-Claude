@@ -1,6 +1,6 @@
 ---
 name: playwright-1.61-new-apis
-description: Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests, WebSocket recording in HAR/traces, connectOverCDP artifactsDir, screencast cursor decoration, and the -G grep-invert shorthand. Use when testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring video on retries, capturing WebSocket traffic in traces, attaching to an existing browser via CDP, or annotating screencast recordings. Triggers on: "test passkeys playwright", "WebAuthn virtual authenticator", "playwright localStorage", "sessionStorage test", "video on retries playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright", "connectOverCDP artifactsDir", "screencast cursor", "grep-invert shorthand".
+description: Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests, WebSocket recording in HAR/traces, connectOverCDP artifactsDir, screencast cursor decoration, the -G grep-invert shorthand, and FullConfig.argv/configFile reporter introspection. Use when testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring video on retries, capturing WebSocket traffic in traces, attaching to an existing browser via CDP, annotating screencast recordings, or writing a custom reporter that needs the run's CLI args or resolved config path. Triggers on: "test passkeys playwright", "WebAuthn virtual authenticator", "playwright localStorage", "sessionStorage test", "video on retries playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright", "connectOverCDP artifactsDir", "screencast cursor", "grep-invert shorthand", "FullConfig.argv", "custom reporter config file".
 ---
 
 # Playwright 1.61 New APIs
@@ -210,9 +210,34 @@ npx playwright test -G @slow
 
 Same behavior as `--grep-invert @slow`, just terser for frequent CLI use (e.g. excluding a smoke-only tag during full-suite local runs).
 
+## 11. `FullConfig.argv` and `FullConfig.configFile` — Reporter Introspection
+
+Two new fields on the `FullConfig` object passed to custom reporters:
+
+```typescript
+// custom-reporter.ts
+import type { Reporter, FullConfig } from '@playwright/test/reporter';
+
+class CustomReporter implements Reporter {
+  onBegin(config: FullConfig) {
+    // Snapshot of process.argv from the runner process — read custom args
+    // passed after the `--` separator without re-parsing process.argv yourself.
+    console.log('Runner argv:', config.argv);
+
+    // Path to the config file actually loaded, if any — useful when a
+    // reporter needs to resolve paths relative to the config, or log which
+    // of several config files (e.g. staging vs prod) a run used.
+    console.log('Config file:', config.configFile);
+  }
+}
+```
+
+**Use case**: custom reporters that need to know exactly how the run was invoked (e.g. `npx playwright test -- --env=staging`) or which config file was resolved, without duplicating CLI-argument parsing logic.
+
 ## Sources
 - https://github.com/microsoft/playwright/releases/tag/v1.61.0
 - https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
+- https://raw.githubusercontent.com/microsoft/playwright/v1.61.0/docs/src/release-notes-js.md
 - https://www.corbado.com/blog/passkeys-e2e-playwright-testing-webauthn-virtual-authenticator
 - https://changjoon-baek.medium.com/overcoming-passkey-verification-in-test-automation-fc7fc6748bd6
 - https://dev.to/kochan/testing-webauthn-in-ci-e2e-automation-with-virtual-authenticators-and-mailpit-part-2-4j4i
