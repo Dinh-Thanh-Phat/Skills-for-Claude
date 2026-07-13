@@ -27,19 +27,29 @@ echo "======================="
 # 1. Skills
 step "Installing skills to $CLAUDE_DIR/skills/"
 mkdir -p "$CLAUDE_DIR/skills"
-count=0
+# Skills in the repo are the source of truth: always sync when the installed
+# copy differs (new/updated), skip only when identical. Independent of --force,
+# which stays scoped to shared-context/settings below.
+dir_hash() {
+  [ -d "$1" ] || { echo ""; return; }
+  find "$1" -type f -exec sha256sum {} \; 2>/dev/null | sort -k2 | sha256sum | cut -d' ' -f1
+}
+count=0; new=0; updated=0; unchanged=0
 for skill_dir in "$REPO_ROOT/skills"/*/; do
   skill_name=$(basename "$skill_dir")
   dst="$CLAUDE_DIR/skills/$skill_name"
-  if [ -d "$dst" ] && [ "$FORCE" != true ]; then
-    warn "Skipping $skill_name (exists — use --force to overwrite)"
-  else
-    cp -r "$skill_dir" "$CLAUDE_DIR/skills/"
-    ok "$skill_name"
-  fi
   count=$((count + 1))
+  if [ -d "$dst" ] && [ "$(dir_hash "$skill_dir")" = "$(dir_hash "$dst")" ]; then
+    unchanged=$((unchanged + 1))
+    continue
+  fi
+  if [ -d "$dst" ]; then existed=true; else existed=false; fi
+  rm -rf "$dst"
+  cp -r "$skill_dir" "$CLAUDE_DIR/skills/"
+  if [ "$existed" = true ]; then ok "$skill_name (updated)"; updated=$((updated + 1))
+  else ok "$skill_name (new)"; new=$((new + 1)); fi
 done
-echo "    $count skills processed"
+echo "    $count skills processed — $new new, $updated updated, $unchanged unchanged"
 
 # 2. Hooks
 step "Installing hooks to $CLAUDE_DIR/hooks/"

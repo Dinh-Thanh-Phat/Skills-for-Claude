@@ -23,17 +23,33 @@ Write-Step "Installing skills to $ClaudeDir\skills\"
 $skillsSrc = "$RepoRoot\skills"
 $skillsDst = "$ClaudeDir\skills"
 if (-not (Test-Path $skillsDst)) { New-Item -ItemType Directory -Force $skillsDst | Out-Null }
+# Skills in the repo are the source of truth: always sync when the installed
+# copy differs (NEW / UPDATED), and skip only when identical. This is independent
+# of -Force, which stays scoped to shared-context/settings below.
+function Get-DirHash($path) {
+    if (-not (Test-Path $path)) { return $null }
+    $parts = Get-ChildItem $path -Recurse -File | Sort-Object FullName | ForEach-Object {
+        (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+    }
+    if (-not $parts) { return "" }
+    $joined = [System.Text.Encoding]::UTF8.GetBytes(($parts -join ""))
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    return [System.BitConverter]::ToString($sha.ComputeHash($joined)) -replace '-', ''
+}
 $skills = Get-ChildItem $skillsSrc -Directory
+$new = 0; $updated = 0; $unchanged = 0
 foreach ($skill in $skills) {
     $dst = "$skillsDst\$($skill.Name)"
-    if ((Test-Path $dst) -and -not $Force) {
-        Write-Warn "Skipping $($skill.Name) (exists - use -Force to overwrite)"
+    $exists = Test-Path $dst
+    if ($exists -and (Get-DirHash $skill.FullName) -eq (Get-DirHash $dst)) {
+        $unchanged++
     } else {
         Copy-Item -Recurse -Force $skill.FullName $skillsDst
-        Write-Ok $skill.Name
+        if ($exists) { Write-Ok "$($skill.Name) (updated)"; $updated++ }
+        else         { Write-Ok "$($skill.Name) (new)"; $new++ }
     }
 }
-Write-Host "    $($skills.Count) skills processed" -ForegroundColor Gray
+Write-Host "    $($skills.Count) skills processed - $new new, $updated updated, $unchanged unchanged" -ForegroundColor Gray
 
 # 2. Hooks
 Write-Step "Installing hooks to $ClaudeDir\hooks\"
@@ -48,7 +64,7 @@ Write-Step "Installing shared-context to $ClaudeDir\shared-context\"
 $ctxSrc = "$RepoRoot\shared-context"
 $ctxDst = "$ClaudeDir\shared-context"
 
-# memories/_shared.md — merge if exists, else copy
+# memories/_shared.md - merge if exists, else copy
 $sharedMem = "$ctxDst\memories\_shared.md"
 if (-not (Test-Path "$ctxDst\memories")) { New-Item -ItemType Directory -Force "$ctxDst\memories" | Out-Null }
 if ((Test-Path $sharedMem) -and -not $Force) {
