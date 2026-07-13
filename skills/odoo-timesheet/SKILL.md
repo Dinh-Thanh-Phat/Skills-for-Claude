@@ -164,9 +164,12 @@ Log the timesheet **before** marking done, so the hours land on an open task.
 
 ## Workflow — logging a timesheet
 
+0. **Read the date first** — copy `currentDate` from context (see 🚨 DATE GATE). Do this
+   before building any payload; it is the step most often skipped.
 1. **Resolve the task** (see Golden rule). Capture `task_id` and its `project_id`.
 2. **Resolve employee** (default 8; override if named).
-3. **Parse date** (default today, Asia/Saigon) **and hours**.
+3. **Parse date**: default = the `currentDate` you read in step 0. Only shift it if the
+   user explicitly said "hôm qua"/a weekday/an explicit date. Never carry over a date.
 4. **Determine description** (`name`). Ask if none can be reasonably inferred.
 5. **Validate**: call `mcp__odoo__validate_write` with `model="account.analytic.line"`,
    `operation="create"`, and the `values` above. This returns an `approval` object with
