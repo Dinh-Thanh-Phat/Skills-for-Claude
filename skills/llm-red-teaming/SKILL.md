@@ -1,6 +1,6 @@
 ---
 name: llm-red-teaming
-description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "AI security testing", "bias testing", "toxicity testing", "PII leakage test".
+description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo".
 ---
 
 # LLM Red Teaming
@@ -120,6 +120,42 @@ strategies:
 
 `custom` strategies can be named/versioned (`custom:it-urgency`, `custom:tech-confusion`) to build a library of manual-pentest findings that re-run automatically in CI — this is the automatable half of the "manual required" gap noted below, for patterns you've already discovered once.
 
+### Encoding Bypass Automation (2026): `other-encodings`, `layer`, and `system-prompt-override`
+
+The "manual required" encoding-bypass gap below is now partially closed. Promptfoo's `other-encodings` strategy collection auto-generates `camelcase`, `morse`, `piglatin`, and `emoji` transforms of every attack payload (the emoji variant hides the UTF-8 payload inside invisible Unicode variation selectors appended to a base emoji — undetectable to a naive text-content filter):
+
+```yaml
+strategies:
+  - basic
+  - other-encodings   # expands to camelcase + morse + piglatin + emoji
+```
+
+`layer` composes strategies sequentially — output of one step feeds the next — so you can stack classic encodings (Base64 → ROT13) or combine an agentic attack with a delivery transform:
+
+```yaml
+strategies:
+  - id: layer
+    config:
+      steps:
+        - base64
+        - rot13
+  - id: layer   # agentic attack + multi-modal delivery
+    config:
+      steps:
+        - id: jailbreak
+          config:
+            maxIterations: 2
+        - audio
+```
+
+Separately, the `system-prompt-override` plugin probes whether a user turn can overwrite the (supposedly immutable) system prompt — it injects provider-specific chat-format payloads instructing the model to prefix replies with `HACKED:`, and any response starting with that string is a confirmed override:
+
+```yaml
+redteam:
+  plugins:
+    - system-prompt-override   # requires Promptfoo remote generation enabled
+```
+
 ## DeepTeam — Responsibility Testing (Bias, Toxicity, PII)
 
 DeepTeam (`pip install deepteam`) covers vulnerability categories that Garak/PyRIT/Promptfoo don't emphasize: **bias**, **toxicity**, and **PII leakage**. Required for EU AI Act high-risk applications.
@@ -205,7 +241,7 @@ def test_indirect_injection(chatbot_fn):
 ## What Automated Tools Miss (Manual required)
 
 - **Business logic injection**: "Transfer funds to account X" via clever phrasing
-- **Language/encoding bypasses**: Base64, ROT13, leetspeak obfuscation
+- **Language/encoding bypasses**: leetspeak and novel obfuscation your probes don't generate yet. (Base64/ROT13/camelCase/Morse/Pig Latin/emoji are now automatable — see `other-encodings`/`layer` above.)
 - **Domain-specific jailbreaks**: Attacks specific to your app's use case
 - **Multimodal injection**: Injected text in uploaded images (OCR attack surface)
 
@@ -221,3 +257,7 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Red-Teaming LLMs: A Practitioner's Guide 2026: https://datavlab.ai/post/red-teaming-llms-practitioner-guide-2026
 - Promptfoo Mischievous User strategy: https://www.promptfoo.dev/docs/red-team/strategies/mischievous-user/
 - Promptfoo Custom Strategy (natural-language, no-code): https://www.promptfoo.dev/docs/red-team/strategies/custom-strategy/
+- Promptfoo Other Encodings strategy (camelCase/Morse/Pig Latin/emoji): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/other-encodings.md
+- Promptfoo Layer strategy (strategy chaining): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/layer.md
+- Promptfoo System Prompt Override plugin: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/plugins/system-prompt-override.md
+- AppSec Tool Radar coverage of emoji-encoding strategy: https://appsecsanta.com/newsletter/2026-w12
