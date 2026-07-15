@@ -111,3 +111,9 @@ def main():
     elif cmd == "rename":
         rename(at, rest[0], rest[1])
     else:
+        print(f"Unknown command: {cmd}\n")
+        print(__doc__)
+
+
+if __name__ == "__main__":
+    main()
