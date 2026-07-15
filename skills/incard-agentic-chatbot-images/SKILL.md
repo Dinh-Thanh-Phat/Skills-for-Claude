@@ -193,4 +193,10 @@ Run with `PYTHONIOENCODING=utf-8` on Windows so Vietnamese names print.
   bot to auto-attach and strip link output from the instructions.
 - **Broken/blank image (`naturalWidth=0`)** → stale record; delete + rescan + retrain.
 - **Bot sends a globe photo for a "map" question** → no map images exist; instructions
-  5.C must forbid substituting and the bot should offer to have
+  5.C must forbid substituting, and the bot should describe in words and offer to have a
+  human send the real photo (collect phone/Zalo) instead of attaching anything.
+
+## Deeper references
+- `references/markdown-link-mode.md` — full recipe for the self-inserted-link approach
+  (web-only exact-1-image control): building the 5.E table, the 5.A wording, and the
+  render test to run before committing to it.
