@@ -191,6 +191,16 @@ Run with `PYTHONIOENCODING=utf-8` on Windows so Vietnamese names print.
   the staging fix.
 - **Raw `![...](url)` shown to customer** → markdown mode on Facebook/Zalo; switch that
   bot to auto-attach and strip link output from the instructions.
+- **Raw `*asterisks*` / `**bold**` shown to customer** → Facebook/Zalo render NO markdown
+  at all, not just images. Instruct the bot to reply in PLAIN TEXT only: no `**bold**`,
+  no `*italic*`, no `#`/`_`/`` ` ``. List items = each on its own line, plain words. Same
+  root cause as the image-link leak — any markdown syntax leaks as literal characters on
+  these channels.
+- **Bot answers a "xin link / đặt online" request with only an image + no link** →
+  an over-broad "don't print links" rule (added to stop image-link leaks) also suppressed
+  legitimate PRODUCT-PAGE links. Split the rule: ban image-file URLs + markdown image
+  syntax, but explicitly ALLOW plain product-page URLs (narenca.com.vn/…) when the
+  customer asks for a link, and make providing that link the turn's top priority.
 - **Broken/blank image (`naturalWidth=0`)** → stale record; delete + rescan + retrain.
 - **Bot sends a globe photo for a "map" question** → no map images exist; instructions
   5.C must forbid substituting, and the bot should describe in words and offer to have a
