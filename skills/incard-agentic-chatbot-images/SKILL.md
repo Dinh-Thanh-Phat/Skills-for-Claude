@@ -201,6 +201,14 @@ Run with `PYTHONIOENCODING=utf-8` on Windows so Vietnamese names print.
   legitimate PRODUCT-PAGE links. Split the rule: ban image-file URLs + markdown image
   syntax, but explicitly ALLOW plain product-page URLs (narenca.com.vn/…) when the
   customer asks for a link, and make providing that link the turn's top priority.
+- **Link request also auto-attaches an image (customer wanted link only)** → with
+  `enable_image_reply` ON, the platform attaches an image on ANY turn where the
+  product/variant is named (it can't tell "wants link" from "wants image", and likely
+  keys off the customer's query, which already names the product). Instructions can nudge
+  ("on pure link requests, keep it link-focused") but CANNOT reliably suppress the attach.
+  A true per-intent toggle (link→no image, "cho xem ảnh"→image) is platform-side — needs
+  InCard to expose per-turn image control. Set this expectation with the user rather than
+  promising an instruction-only fix.
 - **Broken/blank image (`naturalWidth=0`)** → stale record; delete + rescan + retrain.
 - **Bot sends a globe photo for a "map" question** → no map images exist; instructions
   5.C must forbid substituting, and the bot should describe in words and offer to have a
