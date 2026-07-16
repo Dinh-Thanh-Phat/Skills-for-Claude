@@ -1,6 +1,6 @@
 ---
 name: playwright-mcp-server
-description: Official Microsoft Playwright MCP server (@playwright/mcp) — exposes ~40 browser automation tools (browser_navigate, browser_click, browser_snapshot, etc.) that AI agents call via MCP to drive a real browser using accessibility snapshots instead of screenshots. Use when wiring Claude Desktop/VS Code/Cursor to a live browser for AI-driven test authoring, exploratory automation, or agentic QA workflows. Triggers on: "playwright mcp", "@playwright/mcp", "playwright mcp server", "AI agent browser", "browser_snapshot", "browser_click mcp", "playwright mcp setup", "claude browser automation".
+description: Official Microsoft Playwright MCP server (@playwright/mcp) — exposes ~40 browser automation tools (browser_navigate, browser_click, browser_snapshot, etc.) that AI agents call via MCP to drive a real browser using accessibility snapshots instead of screenshots. Use when wiring Claude Desktop/VS Code/Cursor to a live browser for AI-driven test authoring, exploratory automation, or agentic QA workflows. Triggers on: "playwright mcp", "@playwright/mcp", "playwright mcp server", "AI agent browser", "browser_snapshot", "browser_click mcp", "playwright mcp setup", "claude browser automation", "browser_find", "browser_drop mcp", "browser_run_code_unsafe".
 ---
 
 # Playwright MCP Server
@@ -104,6 +104,19 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 
 ---
 
+## 2026 Updates (v0.0.71 → v0.0.78)
+
+Verified against the official `microsoft/playwright-mcp` GitHub releases page — none of these were previously documented here:
+
+- **`browser_find` (v0.0.78, July 9)** — searches the current accessibility snapshot for a text/regex match and returns just the matching nodes with surrounding context, instead of re-reading the whole tree. Use it on large pages (long tables, big forms) to save tokens versus re-calling `browser_snapshot` and scanning manually.
+- **`--mobile` flag (v0.0.78)** — enables mobile viewport/UA emulation for the server's browser session; snapshots are also less verbose by default as of this release to cut token usage further.
+- **`browser_drop` (v0.0.71)** — exposes `Locator.drop` as an MCP tool, so an agent can complete a drag-and-drop sequence (e.g. drop a file card onto an upload zone) without falling back to raw mouse-move/mouse-up calls.
+- **`browser_network_requests` numbering + `responseBody`/`responseHeaders` (v0.0.71–72)** — the network log is now numbered; fetch full details (including response body, with binary bodies rendered as a mime-type placeholder rather than raw bytes) for a specific entry via `browser_network_request { index }` instead of re-dumping the whole log.
+- **`browser_run_code` renamed to `browser_run_code_unsafe` (v0.0.72)** — same sandbox-escaping arbitrary-code-execution tool, renamed so the capability is unmistakable in an agent's tool list before you grant it.
+- **`--output-max-size` (v0.0.76)** — caps response payload size for any tool call; pair with `--snapshot-response-mode file` (already documented above) when driving pages with very large accessibility trees.
+
+---
+
 ## Typical Agentic Workflow
 
 ```
@@ -137,3 +150,4 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 - [Playwright MCP Explained: Setup, Config & Real-World Examples — TestDino](https://testdino.com/blog/playwright-mcp)
 - [Playwright MCP Server: How to Set Up, Configure & Use It (2026) — TestCollab](https://testcollab.com/blog/playwright-mcp)
 - [6 Most Popular Playwright MCP Servers for AI Testing in 2026 — Bug0](https://bug0.com/blog/playwright-mcp-servers-ai-testing)
+- [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.78)](https://github.com/microsoft/playwright-mcp/releases)
