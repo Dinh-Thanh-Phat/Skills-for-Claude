@@ -1,6 +1,6 @@
 ---
 name: llm-red-teaming
-description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo".
+description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin", "jailbreak meta-agent", "promptfoo cloud red team".
 ---
 
 # LLM Red Teaming
@@ -156,6 +156,50 @@ redteam:
     - system-prompt-override   # requires Promptfoo remote generation enabled
 ```
 
+### Cloud Agentic Strategies (2026): `hydra`, `goblin`, `meta-agent`
+
+Beyond the local/free strategies above, Promptfoo's three most capable jailbreak strategies require **Promptfoo Cloud** (`PROMPTFOO_REMOTE_GENERATION_URL` or Cloud auth) because they coordinate a persistent attacker agent with scan-wide memory instead of running a fixed local algorithm:
+
+```yaml
+redteam:
+  strategies:
+    # Multi-turn adversarial agent: adapts to every target response, branches into
+    # a new attack vector when the current one fails, shares learnings across the
+    # whole scan. Best for stateful/conversational targets — highest depth, highest cost.
+    - id: jailbreak:hydra
+      config:
+        maxTurns: 12       # default 10
+        maxBacktracks: 5   # rollback-and-retry attempts after a refusal, default 10
+        stateful: false    # true = send only the newest turn; provider keeps session history
+
+    # Same multi-turn/backtracking engine as hydra, but aimed at semantic-guardrail edge
+    # cases instead of natural-language persuasion: exotic encodings, interleaved
+    # questions, logic/math puzzles that induce pattern-completion past safety training.
+    - id: jailbreak:goblin
+      config:
+        maxTurns: 10
+        maxBacktracks: 10
+        stateful: false
+
+    # Builds a custom attack taxonomy and pivots to a fundamentally different technique
+    # each time one fails, instead of refining one prompt repeatedly — broad single-shot
+    # coverage across attack *categories* rather than deep multi-turn conversation.
+    - id: jailbreak:meta
+      config:
+        numIterations: 50   # override via PROMPTFOO_NUM_JAILBREAK_ITERATIONS
+```
+
+**When to reach for which:**
+
+| Strategy | Depth | Breadth | Cost | Best for |
+|---|---|---|---|---|
+| `jailbreak:composite`/`multi-turn` (local, free) | Medium | Medium | Low | Default CI sweep, no Cloud dependency |
+| `jailbreak:meta` | Low (mostly single-shot) | High — many distinct attack categories | Medium-high | "Find every category of weakness" on a production system |
+| `jailbreak:hydra` | High — full adaptive conversation | Medium | High | Stateful conversational agents where a human pentester would keep pushing |
+| `jailbreak:goblin` | High (same engine as hydra) | Medium, semantic-edge-case-focused | High | Advanced targets already hardened against natural-language jailbreaks — logic/encoding puzzles instead |
+
+All three stop early once a vulnerability is confirmed, a security determination is reached, or `maxTurns`/iteration limits are hit — budget for the worst case (full limit, no early stop) when estimating scan cost.
+
 ## DeepTeam — Responsibility Testing (Bias, Toxicity, PII)
 
 DeepTeam (`pip install deepteam`) covers vulnerability categories that Garak/PyRIT/Promptfoo don't emphasize: **bias**, **toxicity**, and **PII leakage**. Required for EU AI Act high-risk applications.
@@ -261,3 +305,7 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Promptfoo Layer strategy (strategy chaining): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/layer.md
 - Promptfoo System Prompt Override plugin: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/plugins/system-prompt-override.md
 - AppSec Tool Radar coverage of emoji-encoding strategy: https://appsecsanta.com/newsletter/2026-w12
+- Promptfoo Hydra strategy: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/hydra.md
+- Promptfoo Goblin strategy: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/goblin.md
+- Promptfoo Meta-Agent strategy: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/meta.md
+- Promptfoo 0.121.19 release notes (goblin strategy introduced): https://github.com/promptfoo/promptfoo/releases
