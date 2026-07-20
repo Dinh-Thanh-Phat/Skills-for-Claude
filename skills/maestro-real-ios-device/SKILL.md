@@ -4,9 +4,11 @@ description: |
   Run Maestro YAML flows on real (physical) iOS devices using the community
   maestro-runner tool (devicelab-dev). Use when testing on physical iPhones or iPads,
   not simulators; when parallel real-device runs are needed; or when BrowserStack / cloud
-  device labs are unavailable. Triggers on: "real iOS device maestro", "physical device
-  maestro", "maestro iPhone", "maestro runner", "maestro-runner", "devicelab maestro",
-  "maestro real device".
+  device labs are unavailable. As of 2026 maestro-runner also covers Android/Web/React
+  Native/Flutter/Expo as a single cross-platform runner — use this skill too when asked
+  about maestro-runner on those platforms. Triggers on: "real iOS device maestro", "physical
+  device maestro", "maestro iPhone", "maestro runner", "maestro-runner", "devicelab maestro",
+  "maestro real device", "maestro-runner react native", "maestro-runner flutter".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -117,16 +119,40 @@ jobs:
 | Setup | Zero (auto-boot) | USB + provisioning |
 | Parallel on CI | Spin up N simulators | Need N physical devices |
 
+## 2026: maestro-runner Has Outgrown "iOS-Only" (v1.1.15–1.1.19)
+
+As of mid-2026, maestro-runner (v1.1.19, July 1) is a full cross-platform Maestro-compatible
+runner — **"Fast UI test automation for Android, iOS, Web, React Native, Flutter & Expo"** —
+not just an iOS real-device gap-filler. The caveat below about using `maestro-mobile` for
+Android real devices still holds (standard Maestro + ADB works fine there), but maestro-runner
+is now a legitimate single-binary alternative across *all* those platforms, with:
+
+- **Dynamic work-queue parallelism** — devices pull from a shared queue rather than static
+  sharding, so faster devices automatically pick up more tests (`maestro-runner test flows/ --device <UDID_1> --device <UDID_2> ...`
+  scales this way with no per-device test-count balancing needed).
+- **Configurable timeouts** at both levels: `--wait-for-idle-timeout 0` to disable device-idle
+  waiting entirely, plus per-flow config (`commandTimeout: 10000`, `waitForIdleTimeout: 3000`)
+  for flows with known-slow steps.
+- **Smart element finding for React Native (testIDs) and Flutter (semantics)** — reduces the
+  brittle-selector problem those frameworks are notorious for in Maestro/Appium alike; also
+  recognizes RN container testIDs via a descendant-visibility fallback on iOS.
+- **Web support** with Playwright-style actionability gates on `tapOn` (element must be enabled,
+  not `pointer-events: none`, etc.) and auto-surfaced, color-coded browser console errors in
+  flow reports.
+
 ## Key Caveats
 
 - **Unofficial** — not affiliated with mobile.dev or the Maestro project.
 - iOS provisioning profile must cover the test device UDID (free dev cert is fine for 1 device).
 - The Maestro team has not committed a timeline for official real-device support.
-- Android real devices already work with standard Maestro + ADB — use `maestro-mobile` for that.
+- Android real devices already work with standard Maestro + ADB (`maestro-mobile`) too — but
+  maestro-runner's own Android driver (UIAutomator2) also supports physical Android devices
+  directly, so it's a valid single-tool choice for Android+iOS+Web mixed suites.
 
 ## Sources
 
 - https://github.com/devicelab-dev/maestro-runner
+- https://raw.githubusercontent.com/devicelab-dev/maestro-runner/main/CHANGELOG.md
 - https://github.com/devicelab-dev/maestro-ios-device
 - https://blog.devicelab.dev/went-in-to-support-maestro-for-physical-devices-came-out-with-even-more/
 - https://news.ycombinator.com/item?id=46232126
