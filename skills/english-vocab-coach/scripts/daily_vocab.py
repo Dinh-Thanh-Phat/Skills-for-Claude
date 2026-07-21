@@ -167,18 +167,28 @@ def add_new_words(progress, items, topic):
     return added
 
 
+# Passive spaced-repetition ladder for the Sheet: a word resurfaces this many days
+# after it was first added, regardless of whether the learner ever formally quizzed
+# it. This is what makes "review daily" work for someone who just reads the Sheet.
+# (Mode 4's interactive quiz layers active grading on top via the per-word `rung`.)
+REVIEW_OFFSETS = {1, 3, 7, 16, 35, 75, 150}
+
+
 def due_words(progress):
+    """Words to resurface for review today, by days-since-added (passive SR)."""
     t = today()
     out = []
     for w in progress["words"].values():
+        added = w.get("added")
+        if not added:
+            continue
         try:
-            nd = datetime.datetime.strptime(w.get("next_due", fmt(t)), "%Y-%m-%d").date()
+            age = (t - datetime.datetime.strptime(added, "%Y-%m-%d").date()).days
         except (ValueError, TypeError):
-            nd = t
-        # Words added today (rung -1) are "new", not "review".
-        if nd <= t and w.get("rung", -1) >= 0:
+            continue
+        if age in REVIEW_OFFSETS:
             out.append(w)
-    out.sort(key=lambda w: w.get("next_due", ""))
+    out.sort(key=lambda w: w.get("added", ""))
     return out
 
 
