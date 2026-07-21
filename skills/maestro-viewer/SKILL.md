@@ -142,6 +142,7 @@ cloud run without shelling out to `maestro cloud`:
 |---|---|
 | `run_on_cloud` | Submit a flow + app binary to Maestro Cloud asynchronously; returns a dashboard URL |
 | `get_cloud_run_status` | Poll a cloud run's status and per-flow results |
+| `describe_cloud_run` | New in **2.7.0** — inspect the status and results of a Maestro Cloud run (per the official CHANGELOG). Overlaps in description with `get_cloud_run_status`; the changelog doesn't state whether it replaces or supplements that tool, and the official MCP docs page 403'd to verification — if both appear in your agent's tool list, prefer whichever one is actually offered and treat the other as possibly deprecated. |
 | `list_cloud_devices` | List valid `{platform, model, supported_os}` triples for the `device_model` param on `run_on_cloud` |
 
 This is useful when you want the agent to kick off a full-device-matrix cloud run (instead of the
@@ -204,4 +205,4 @@ Windsurf, JetBrains AI Assistant — any MCP-compatible tool works.
 - [Maestro MCP Server — official docs](https://docs.maestro.dev/get-started/maestro-mcp)
 - [Maestro MCP: An Introduction — maestro.dev blog](https://maestro.dev/blog/maestro-mcp-an-introduction)
 - [Official Maestro MCP GitHub — mobile-dev-inc/maestro-mcp](https://github.com/mobile-dev-inc/maestro-mcp)
-- [Maestro CHANGELOG.md — 2.5.0 MCP tool consolidation + native Cloud tools, 2.6.0 CLI details](https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md)
+- [Maestro CHANGELOG.md — 2.5.0 MCP tool consolidation + native Cloud tools, 2.6.0 CLI details, `describe_cloud_run` tool (2.7.0)](https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md)

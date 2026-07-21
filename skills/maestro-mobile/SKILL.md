@@ -455,6 +455,25 @@ output.timestamp = timestamp;
 - stopRecording                         # saves video
 ```
 
+### Automatic Per-Step Screenshots + Failure Hierarchy (2.7.0)
+
+You no longer need explicit `takeScreenshot` calls just to debug a failure: as of CLI 2.7.0,
+Maestro captures a screenshot **before every step automatically**, and on a failing step it also
+captures the full view hierarchy alongside that screenshot — so a CI failure gives you the exact
+visual + element-tree state at the point of failure without adding instrumentation to the flow.
+The output bundle itself was also revamped into a leaner, flat structure with a manifest
+(`readable step names`, device logs, and crash/ANR reports all in one place) instead of the older
+nested-per-flow layout — worth knowing if you have tooling that parses the artifacts directory
+structure directly, since paths changed.
+
+Android also gained **native (SIGSEGV) crash detection** in 2.7.0 — previously Maestro only
+detected JVM-level crashes, so a native-library segfault (common in apps with native/NDK code,
+e.g. video/camera/ML SDKs) could silently kill the app under test without Maestro surfacing it as
+a crash in the report. Explicit `takeScreenshot`/`startRecording` calls are still worth keeping
+for narrative bug-repro captures (e.g. a specific before/after pair to attach to a bug report) —
+the automatic per-step capture is for *debugging why a step failed*, not for producing a curated
+artifact set.
+
 ## CI/CD Integration
 
 See [references/ci-cd.md](references/ci-cd.md) for full GitHub Actions and GitLab CI examples.
@@ -619,6 +638,11 @@ maestro check-syntax flows/          # whole directory
 
 Also uncovered by any existing Maestro skill:
 
+> **Discontinued in 2.7.0:** `maestro chat` was removed — the CLI now points users at Maestro MCP
+> (see the `maestro-viewer` skill) for the same "ask an agent about a failing flow" workflow,
+> since an MCP-connected coding agent can inspect the live hierarchy and fix selectors directly
+> instead of a terminal-only chat loop. Kept below for historical/pre-2.7.0 reference.
+
 ```bash
 # Interactive AI chat for building/debugging a flow from the terminal, no editor round-trip
 maestro chat
@@ -689,6 +713,6 @@ simulators at the same time.
 ```
 
 ## Sources
-- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0)
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0)
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
