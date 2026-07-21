@@ -172,7 +172,10 @@ Keep all of a learner's files together so progress accumulates. Default location
 
 ```
 vocab/
-├── progress.json          # spaced-repetition state + learner profile (Mode 4)
+├── config.json            # daily-routine config: level, goal, words_per_day, topics (Mode 5)
+├── progress.json          # spaced-repetition state + per-word cards + profile (Modes 4 & 5)
+├── run_log.csv            # one line per daily run (Mode 5)
+├── task_stdout.log        # scheduler stdout/stderr (Mode 5)
 ├── decks/                 # generated Anki CSVs (Mode 3)
 └── extracted/             # word lists pulled from texts (Mode 2)
 ```
