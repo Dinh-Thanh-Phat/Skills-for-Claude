@@ -118,6 +118,7 @@ def generate_words(config, topic):
     proc = subprocess.run(
         [claude, "-p", prompt, "--output-format", "text"],
         capture_output=True, text=True, timeout=300, shell=False,
+        encoding="utf-8", errors="replace",
     )
     out = proc.stdout.strip()
     if proc.returncode != 0 or not out:
