@@ -117,6 +117,55 @@ Keep the quiz **conversational and encouraging** — this is a coach, not an exa
 
 ---
 
+## Mode 5 — Daily automated routine (scheduled)
+
+A hands-off daily flow: every morning it picks a rotating topic, generates a fresh
+batch of new words, pulls the words due for spaced-repetition review, and publishes
+both to a Google Sheet the learner can open on their phone. This is already set up on
+this machine — this section documents how it works and how to manage it, so you can
+adjust it or rebuild it elsewhere.
+
+**How it runs:** Windows Task Scheduler task `EnglishVocabDaily` fires
+`scripts/run_daily_vocab.cmd` at 07:00 local daily, which runs `scripts/daily_vocab.py`.
+Task Scheduler (OS-level) is used deliberately instead of an in-session cron because the
+in-session scheduler dies when Claude exits; the OS task survives reboots and runs
+whether or not Claude is open. The machine must be **on** at 07:00 — if it's off, the
+task runs on the next wake (`-StartWhenAvailable`).
+
+**What `daily_vocab.py` does** (all steps deterministic except word generation, so a
+`claude -p` hiccup still publishes the review list and logs the error):
+1. Rotate to today's topic: `topics[ today.toordinal() % len(topics) ]`.
+2. `claude -p` → JSON array of `words_per_day` items (word, ipa, pos, gloss_vi, example,
+   collocations, mnemonic). Read from stdout — no MCP dependency.
+3. Compute due-for-review words from `progress.json` (spaced repetition), *before*
+   adding today's new words.
+4. Fold new words into `progress.json` (dedup by word, scheduled due today).
+5. Write Google Sheet tabs **"New Words"** and **"To Review"** via `sheets_lib.py`
+   (local Google token — works headless, no browser).
+6. Save `progress.json`; append a line to `run_log.csv`.
+
+**Config** lives at `<workspace>/config.json` (created with defaults on first run):
+`level`, `goal`, `words_per_day`, `spreadsheet_title`, and the `topics` rotation list.
+Edit this file to change level, pace, or topics — no code change needed.
+
+**Managing the schedule** (PowerShell):
+- Change time: `Set-ScheduledTask -TaskName EnglishVocabDaily -Trigger (New-ScheduledTaskTrigger -Daily -At 8:00am)`
+- Pause: `Disable-ScheduledTask -TaskName EnglishVocabDaily` / resume with `Enable-ScheduledTask`
+- Run now (test): `Start-ScheduledTask -TaskName EnglishVocabDaily`
+- Remove: `Unregister-ScheduledTask -TaskName EnglishVocabDaily -Confirm:$false`
+- Health: check `LastTaskResult` (0 = OK) via `Get-ScheduledTaskInfo`, and tail
+  `<workspace>/task_stdout.log` + `run_log.csv`.
+
+**To rebuild on another machine:** register a daily Task Scheduler action pointing at
+`run_daily_vocab.cmd` (fix the python + npm paths inside it), ensure the Google token
+exists at the path in `sheets_lib.py`, and confirm `claude -p` is authenticated for the
+user the task runs as. Real email sending is intentionally NOT part of this flow — no
+available tool can *send* mail (only draft), so the Sheet is the delivery channel.
+
+To connect this to the review quiz (Mode 4): the daily routine and the quiz share the
+same `progress.json`, so words delivered in the morning Sheet are the same words the
+quiz schedules. A quiz session just reads the words the learner has actually studied.
+
 ## Vocab workspace
 
 Keep all of a learner's files together so progress accumulates. Default location: `d:/HK8/Learning/DQ/vocab/`. Create it if missing. Typical contents:
