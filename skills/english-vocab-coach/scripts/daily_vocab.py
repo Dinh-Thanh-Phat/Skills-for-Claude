@@ -115,14 +115,32 @@ def generate_words(config, topic):
         f'Return exactly {n} items.'
     )
     claude = find_claude()
-    proc = subprocess.run(
+    # On Windows, `claude` resolves to a .cmd wrapper that spawns node. A plain
+    # subprocess.run(timeout=) can't reap that grandchild — its open pipes keep
+    # Python blocked past the timeout until Task Scheduler force-kills the whole
+    # task (exit 0xC000013A), so we never reach the graceful "publish anyway"
+    # path. Launch in its own process group and force-kill the TREE on timeout
+    # so a hung claude degrades to a logged PARTIAL run instead of a silent kill.
+    creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+    proc = subprocess.Popen(
         [claude, "-p", prompt, "--output-format", "text"],
-        capture_output=True, text=True, timeout=300, shell=False,
-        encoding="utf-8", errors="replace",
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        encoding="utf-8", errors="replace", shell=False,
+        creationflags=creationflags,
     )
-    out = proc.stdout.strip()
+    try:
+        stdout, stderr = proc.communicate(timeout=300)
+    except subprocess.TimeoutExpired:
+        if sys.platform == "win32":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                           capture_output=True)
+        else:
+            proc.kill()
+        proc.communicate()
+        raise RuntimeError("claude -p timed out after 300s (process tree killed)")
+    out = (stdout or "").strip()
     if proc.returncode != 0 or not out:
-        raise RuntimeError(f"claude -p failed rc={proc.returncode}: {proc.stderr[:500]}")
+        raise RuntimeError(f"claude -p failed rc={proc.returncode}: {(stderr or '')[:500]}")
     # Defensive: strip accidental ```json fences and grab the JSON array.
     out = re.sub(r"^```(?:json)?|```$", "", out, flags=re.MULTILINE).strip()
     m = re.search(r"\[.*\]", out, flags=re.DOTALL)
