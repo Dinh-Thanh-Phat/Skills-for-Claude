@@ -126,11 +126,21 @@ this machine — this section documents how it works and how to manage it, so yo
 adjust it or rebuild it elsewhere.
 
 **How it runs:** Windows Task Scheduler task `EnglishVocabDaily` fires
-`scripts/run_daily_vocab.cmd` at 07:00 local daily, which runs `scripts/daily_vocab.py`.
-Task Scheduler (OS-level) is used deliberately instead of an in-session cron because the
-in-session scheduler dies when Claude exits; the OS task survives reboots and runs
-whether or not Claude is open. The machine must be **on** at 07:00 — if it's off, the
-task runs on the next wake (`-StartWhenAvailable`).
+`scripts/run_daily_vocab.cmd`, which runs `scripts/daily_vocab.py`. Task Scheduler
+(OS-level) is used deliberately instead of an in-session cron because the in-session
+scheduler dies when Claude exits; the OS task survives reboots and runs whether or not
+Claude is open.
+
+**Two triggers, run-once-a-day:** the task fires both at **07:00 daily** AND **at
+logon** (`-AtLogOn`), so on a laptop that is asleep/off at 07:00 it still delivers the
+first time the user signs in that day. `daily_vocab.py` guards with
+`already_succeeded_today()` (scans `run_log.csv` for an `OK` line dated today) and exits
+early if today already succeeded — so multiple triggers never double-generate. A
+PARTIAL run (claude -p failed, no new words) does NOT count as done, so a later trigger
+retries. Pass `--force` to override the guard for a manual re-run. Battery guards are
+disabled (`-AllowStartIfOnBatteries -DontStopIfGoingOnBatteries`) and the kill limit is
+30 min (`ExecutionTimeLimit PT30M`); `generate_words()` force-kills the claude process
+tree on timeout so a hang degrades to a logged PARTIAL, never a silent scheduler kill.
 
 **What `daily_vocab.py` does** (all steps deterministic except word generation, so a
 `claude -p` hiccup still publishes the review list and logs the error):
