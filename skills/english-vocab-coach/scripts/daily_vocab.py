@@ -83,6 +83,27 @@ def log_run(msg):
         w.writerow([datetime.datetime.now().isoformat(timespec="seconds"), msg])
 
 
+def already_succeeded_today():
+    """True if run_log.csv already has an OK line dated today.
+
+    Lets the task fire from multiple triggers (07:00 daily + at-logon) yet run
+    at most once per day. A PARTIAL run (claude -p failed, no new words) is NOT
+    counted as done, so a later trigger retries and can still fetch new words.
+    """
+    p = WORKSPACE / "run_log.csv"
+    if not p.exists():
+        return False
+    stamp = fmt(today())
+    try:
+        with p.open(encoding="utf-8", newline="") as f:
+            for row in csv.reader(f):
+                if len(row) >= 2 and row[0].startswith(stamp) and row[1].startswith("OK"):
+                    return True
+    except (OSError, csv.Error):
+        return False
+    return False
+
+
 # --------------------------------------------------------------------------- #
 def pick_topic(config):
     topics = config["topics"]
