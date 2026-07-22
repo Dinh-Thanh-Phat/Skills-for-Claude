@@ -266,6 +266,13 @@ def publish(config, new_cards, review_cards):
 
 # --------------------------------------------------------------------------- #
 def main():
+    # Idempotency guard: the task fires from several triggers (07:00 daily +
+    # at-logon) so it delivers on the first time the machine is used each day,
+    # even if it was asleep/off at 07:00. Skip if today already succeeded.
+    if "--force" not in sys.argv and already_succeeded_today():
+        print("Already generated today's vocab — skipping (use --force to override).")
+        return
+
     config = load_json(WORKSPACE / "config.json", None)
     if config is None:
         config = DEFAULT_CONFIG
