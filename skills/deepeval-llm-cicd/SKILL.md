@@ -6,7 +6,7 @@ description: |
   faithfulness / hallucination, or running LLM evals as unit tests in a pull-request pipeline.
   Triggers on: "deepeval", "LLM evaluation CI", "LLM quality gate", "pytest LLM eval",
   "answer relevancy metric", "faithfulness metric", "hallucination detection CI",
-  "regression test LLM", "assert_test deepeval".
+  "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -202,6 +202,55 @@ assert_test(agent_case, [
 ])
 ```
 
+## Loop Detection & Tool Permission Metrics (v4.1.3, July 2026)
+
+Two deterministic (no-LLM-judge) agent metrics shipped in DeepEval 4.1.3 — cheaper and more
+reliable than judge-based metrics for the specific failure modes they target.
+
+**`AgentLoopDetectionMetric`** catches infinite/cyclical agent loops directly from the trace,
+without needing a judge model to notice the agent is stuck. Combines three independent
+sub-signals into a weighted 0.0 (severe looping) – 1.0 (clean execution) score:
+- tool-call repetition — identical `(name, args)` pairs; score degrades at `repetition_threshold`
+  (default 3) and bottoms out at double that
+- reasoning stagnation — bigram Jaccard + `SequenceMatcher` similarity across consecutive LLM
+  outputs (`similarity_threshold` default 0.85); short outputs (<20 meaningful words) are skipped
+  to avoid boilerplate false positives
+- call-graph cycles — DFS over the trace's nested `children` tree for a repeated
+  `type:name:input_hash` appearing twice on one root-to-leaf path
+
+```python
+from deepeval.metrics import AgentLoopDetectionMetric
+
+loop_metric = AgentLoopDetectionMetric(
+    threshold=0.5,
+    repetition_threshold=3,
+    similarity_threshold=0.85,
+)
+assert_test(agent_case, [loop_metric])
+# loop_metric.score_breakdown exposes the three sub-signal scores individually
+```
+
+Needs trace data on `actual_output` (via `@observe`), same as `TaskCompletionMetric`.
+
+**`ToolPermissionMetric`** is a deterministic (no judge model, no LLM cost) least-privilege
+check: did the agent call only tools it was authorized to call? Distinct from
+`ToolCorrectnessMetric` above, which compares against an *expected* tool sequence and cares
+about task success — this only checks the permission boundary, independent of outcome.
+
+```python
+from deepeval.metrics import ToolPermissionMetric
+
+permission_metric = ToolPermissionMetric(
+    allowed_tools=["search_flights", "get_weather"],   # least-privilege allowlist
+    # or: denied_tools=["delete_account", "issue_refund"],  # denylist; denial always wins
+)
+assert_test(agent_case, [permission_metric])  # score = fraction of calls that stayed in-policy
+```
+
+Requires at least one of `allowed_tools`/`denied_tools` (raises `ValueError` if neither is set);
+only needs `tools_called` on the test case — cheap enough to run on every agent test, not just
+release gates.
+
 ## Multi-Turn (Conversational) Evaluation
 
 Use `ConversationalTestCase` when correctness depends on conversation history — chatbots,
@@ -326,3 +375,6 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/docs/getting-started-llm-arena
 - https://github.com/confident-ai/deepeval/issues/2143
 - https://github.com/confident-ai/deepeval
+- https://github.com/confident-ai/deepeval/releases (v4.1.3, July 12 2026)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/agent_loop_detection/agent_loop_detection.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/tool_permission/tool_permission.py
