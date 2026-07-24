@@ -33,6 +33,8 @@ npx --no-install playwright-cli --version
 npx playwright-cli <command>   # prefix every command with npx when using the local install
 ```
 
+**Playwright 1.62+ bundles this CLI directly** — if the project already depends on `@playwright/test` 1.62+, `npx playwright cli <command>` works without installing `@playwright/cli` separately. The standalone package still updates independently; prefer it for a version newer than what's bundled, or in a project with no Playwright dependency at all.
+
 ## Core Workflow
 
 ```bash
@@ -128,4 +130,5 @@ playwright-cli show          # visual dashboard: live screencasts + remote contr
 - https://github.com/microsoft/playwright-cli
 - https://www.npmjs.com/package/@playwright/cli
 - https://testcollab.com/blog/playwright-cli
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md (1.62 — bundled `npx playwright cli` entry point)
 - https://testdino.com/blog/playwright-cli

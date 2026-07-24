@@ -57,6 +57,23 @@ Vision mode adds coordinate-based tools backed by screenshots. Use only when the
 
 Add the same JSON block to your editor's MCP settings panel. Works with any MCP-compatible client.
 
+### Bundled Entry Point (Playwright 1.62+)
+
+If the project already depends on `@playwright/test` 1.62+, the server is also runnable without installing `@playwright/mcp` separately:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["playwright", "mcp"]
+    }
+  }
+}
+```
+
+The standalone `@playwright/mcp` package still exists and updates independently — use it when you need a version newer than what's bundled with your `@playwright/test` install, or when driving a browser from a project that doesn't depend on Playwright at all.
+
 ---
 
 ## Core Tool Inventory (~40 tools)
@@ -149,5 +166,6 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 - [Vision Mode — Playwright MCP Docs](https://playwright.dev/mcp/vision-mode)
 - [Playwright MCP Explained: Setup, Config & Real-World Examples — TestDino](https://testdino.com/blog/playwright-mcp)
 - [Playwright MCP Server: How to Set Up, Configure & Use It (2026) — TestCollab](https://testcollab.com/blog/playwright-mcp)
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md (1.62 — bundled `npx playwright mcp` entry point)
 - [6 Most Popular Playwright MCP Servers for AI Testing in 2026 — Bug0](https://bug0.com/blog/playwright-mcp-servers-ai-testing)
 - [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.78)](https://github.com/microsoft/playwright-mcp/releases)
