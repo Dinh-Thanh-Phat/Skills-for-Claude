@@ -1,6 +1,6 @@
 ---
 name: llm-red-teaming
-description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin", "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan".
+description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin", "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
 ---
 
 # LLM Red Teaming
@@ -15,6 +15,44 @@ You are a **Security QA Engineer** performing adversarial testing on LLM-powered
 | **Indirect injection** | Injected via retrieved content (RAG docs, web search) | Ad-review evasion, system prompt leakage |
 | **Multi-turn escalation** | Gradual escalation across conversation turns | Crescendo attack bypasses per-turn guards |
 | **Plugin/tool injection** | Malicious content in tool output hijacks agent | 8/17 popular plugins vulnerable (2026 IEEE study) |
+
+## OWASP Top 10 for Agentic Applications (ASI 2026)
+
+Released 2025-12-09 by the OWASP GenAI Security Project, this is a separate taxonomy from the LLM Top-10 above — it targets **agentic** systems (planning, tool use, memory, multi-agent comms) rather than single-turn chatbot exchanges. Use it as a coverage checklist alongside the chatbot-focused threat table when the target under test is agentic (has tools, memory, or talks to other agents), and map each row to concrete Promptfoo plugins:
+
+| ASI ID | Risk | Description | Promptfoo plugins to test it |
+|---|---|---|---|
+| ASI01 | Agent Goal Hijack | Malicious content alters the agent's objective | `hijacking`, `system-prompt-override`, `indirect-prompt-injection`, `intent` |
+| ASI02 | Tool Misuse & Exploitation | Agent abuses its legitimate tools unsafely | `excessive-agency`, `mcp`, `tool-discovery` |
+| ASI03 | Identity & Privilege Abuse | Agent inherits/escalates high-privilege credentials | `rbac`, `bfla`, `bola`, `imitation` |
+| ASI04 | Agentic Supply Chain Vulnerabilities | Compromised tools, plugins, MCP servers, or skills | `indirect-prompt-injection`, `mcp` |
+| ASI05 | Unexpected Code Execution | Agent generates/runs code or commands unsafely | `shell-injection`, `sql-injection`, `harmful:cybercrime:malicious-code`, `ssrf` |
+| ASI06 | Memory & Context Poisoning | Attacker poisons agent memory or RAG store | `agentic:memory-poisoning`, `cross-session-leak`, `indirect-prompt-injection` |
+| ASI07 | Insecure Inter-Agent Communication | Spoofing/tampering in multi-agent systems | `indirect-prompt-injection`, `hijacking`, `imitation` |
+| ASI08 | Cascading Agent Failures | Small errors propagate across planning/execution | `hallucination`, `harmful:misinformation-disinformation`, `divergent-repetition` |
+| ASI09 | Human-Agent Trust Exploitation | Users over-trust agent output | `overreliance`, `imitation`, `harmful:misinformation-disinformation` |
+| ASI10 | Rogue Agents | Compromised agent acts harmfully while appearing legitimate | `excessive-agency`, `hijacking`, `rbac`, `goal-misalignment` |
+
+```yaml
+# promptfooconfig.yaml — ASI coverage sweep for an agentic (tool-using) target
+redteam:
+  plugins:
+    - hijacking
+    - system-prompt-override
+    - excessive-agency
+    - mcp
+    - rbac
+    - bola
+    - bfla
+    - agentic:memory-poisoning
+    - cross-session-leak
+    - overreliance
+    - goal-misalignment
+  strategies:
+    - multi-turn   # most ASI risks compound across an agent's multi-step run, not a single turn
+```
+
+Not the same taxonomy as DeepTeam's "OWASP ASI 2026" alignment claim above — DeepTeam covers responsibility (bias/toxicity/PII), this is Promptfoo's dedicated plugin mapping to the actual 10 ASI risk categories. Prefer this table when you specifically need to report ASI-ID-level coverage (e.g. for a security sign-off).
 
 ## Tool Selection
 
@@ -344,3 +382,5 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Promptfoo Meta-Agent strategy: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/meta.md
 - Promptfoo 0.121.19 release notes (goblin strategy introduced): https://github.com/promptfoo/promptfoo/releases
 - promptmap (utkusen) — black-box LLM security scanner: https://github.com/utkusen/promptmap
+- OWASP Top 10 for Agentic Applications 2026 (released 2025-12-09, ASI01-ASI10): https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
+- Promptfoo's ASI-to-plugin mapping table (ASI01-ASI10 → plugin names, verbatim source for the table above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-agentic-ai.md
