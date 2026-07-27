@@ -33,9 +33,14 @@ Before you touch any tool, copy today's date out of your context, out loud:
 > "currentDate in my context says `YYYY-MM-DD` → I will use that as the timesheet date."
 
 Rules, non-negotiable:
-- The `date` value comes **only** from the `currentDate` / `Today's date is …` line in
-  the current turn's context (or `date +%Y-%m-%d`). Never from memory, never reused from
-  an earlier entry or an earlier turn in the same session.
+- **A leading date token overrides today.** If the message (or a line) *starts* with a
+  `D/M` token — e.g. `24/7, Agentic -> …` or `24/7 , HVS …` — that is the **date for the
+  entries on that line**, NOT today's date and NOT a "24/7 round-the-clock" marker. Read
+  it as **D/M** (`24/7` → `2026-07-24`) using the year from `currentDate`. A bare `D/M`
+  at the head of the line is always a date, never a label. When in doubt, echo it back.
+- Absent a leading/explicit date, the `date` value comes **only** from the `currentDate` /
+  `Today's date is …` line in the current turn's context (or `date +%Y-%m-%d`). Never from
+  memory, never reused from an earlier entry or an earlier turn in the same session.
 - User writes dates **D/M**: `13/7` → `2026-07-13`, `9/7` → `2026-07-09`. Not M/D.
 - **Echo the resolved `YYYY-MM-DD` in every report** so the user can catch an off-by-day.
 - If you cannot see a date in context, or the session may have crossed midnight, **ask**
