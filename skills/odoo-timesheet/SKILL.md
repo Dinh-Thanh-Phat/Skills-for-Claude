@@ -141,10 +141,12 @@ This user writes terse one-liners. Recognise them:
 ```
 odoo -> <project> -> <task description> với a = 4, ts = 2
 HVS - retest trên prod mobile với a = 2, s = 1 và mark done lun
+24/7, Agentic -> retest and verify bugs OnePMS, a = 4, ts = 3
 ```
 
 | Token | Means |
 |---|---|
+| leading `D/M` | the **date** for the line's entries (D/M). `24/7` → `2026-07-24`. NOT a "24/7" marker |
 | `a = N` | `allocated_hours` = N (the task's time budget) |
 | `s = N` / `ts = N` | the **timesheet** hours to log (time actually spent) |
 | `mark done` | after logging, set the task's `state` — see below |
