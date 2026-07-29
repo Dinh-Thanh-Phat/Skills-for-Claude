@@ -52,7 +52,7 @@ redteam:
     - multi-turn   # most ASI risks compound across an agent's multi-step run, not a single turn
 ```
 
-Not the same taxonomy as DeepTeam's "OWASP ASI 2026" alignment claim above — DeepTeam covers responsibility (bias/toxicity/PII), this is Promptfoo's dedicated plugin mapping to the actual 10 ASI risk categories. Prefer this table when you specifically need to report ASI-ID-level coverage (e.g. for a security sign-off).
+Not the same taxonomy as DeepTeam's "OWASP ASI 2026" alignment claim below — DeepTeam covers responsibility (bias/toxicity/PII), this is Promptfoo's dedicated plugin mapping to the actual 10 ASI risk categories. Prefer this table when you specifically need to report ASI-ID-level coverage (e.g. for a security sign-off).
 
 ## Tool Selection
 
