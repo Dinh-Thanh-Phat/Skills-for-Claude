@@ -6,7 +6,8 @@ description: |
   faithfulness / hallucination, or running LLM evals as unit tests in a pull-request pipeline.
   Triggers on: "deepeval", "LLM evaluation CI", "LLM quality gate", "pytest LLM eval",
   "answer relevancy metric", "faithfulness metric", "hallucination detection CI",
-  "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric".
+  "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric",
+  "flaky metric deepeval", "flaky test case".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -182,6 +183,35 @@ assert_test(rag_case, [
 | ContextualRecall | ≥ 0.65 | ≥ 0.80 |
 
 Tighten after baseline runs; never set thresholds before collecting data on your system.
+
+## Marking a Metric or Test Case Flaky (v4.1.4, July 2026)
+
+Some checks are flaky for reasons outside your system's control (a judge model's own
+inconsistency, an unstable third-party dependency in the test fixture) but you still want the
+result tracked, not silently deleted. DeepEval 4.1.4 added a `flaky` boolean — on a `Metric` or
+on the `LLMTestCase` itself — that changes `assert_test()`'s failure handling without changing
+scoring: the metric still runs and its score is still recorded/reported as normal, but a failure
+on a flaky metric never fails the test case, and a failing flaky test case makes `assert_test()`
+emit a `warnings.warn(...)` (shows up in pytest's warnings summary) instead of raising
+`AssertionError` — so it can't block CI.
+
+```python
+from deepeval.metrics import FaithfulnessMetric
+from deepeval.test_case import LLMTestCase
+
+# Mark one metric as flaky — its failure alone won't fail the test case
+flaky_metric = FaithfulnessMetric(threshold=0.85, flaky=True)
+
+# Or mark the whole test case flaky — any failing metric warns instead of raising
+test_case = LLMTestCase(
+    input="...", actual_output="...", retrieval_context=[...],
+    flaky=True,
+)
+```
+
+Prefer this over deleting or skipping a known-unstable eval outright — the run still shows up in
+`deepeval test run` output and the Confident AI dashboard (if connected), so you can watch its
+trend and un-flake it later instead of losing visibility into it.
 
 ## Agent Evaluation Metrics
 
@@ -378,3 +408,6 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://github.com/confident-ai/deepeval/releases (v4.1.3, July 12 2026)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/agent_loop_detection/agent_loop_detection.py
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/tool_permission/tool_permission.py
+- https://github.com/confident-ai/deepeval/releases/tag/python-v4.1.4 (July 29 2026, PR #2951)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/llm_test_case.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/base_metric.py
