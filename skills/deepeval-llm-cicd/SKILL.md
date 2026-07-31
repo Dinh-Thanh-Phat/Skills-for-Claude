@@ -7,7 +7,7 @@ description: |
   Triggers on: "deepeval", "LLM evaluation CI", "LLM quality gate", "pytest LLM eval",
   "answer relevancy metric", "faithfulness metric", "hallucination detection CI",
   "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric",
-  "flaky metric deepeval", "flaky test case".
+  "flaky metric deepeval", "flaky test case", "deepeval typescript", "deepeval npm", "deepeval-ts".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -371,6 +371,32 @@ decide whether a prompt/model candidate is a net improvement before rolling it o
 from `llm-judge-bias` (single-output scoring calibration) and the threshold-based metrics above
 (pass/fail against a fixed bar, not head-to-head comparison).
 
+## TypeScript SDK (Confident AI Platform Ops Only)
+
+DeepEval now ships a TypeScript package (`npm install deepeval`, published from the same monorepo
+as the Python package) — but scope it correctly before reaching for it: it only covers **Confident
+AI platform operations** (push/pull/queue datasets, run + report evaluations through Confident AI,
+read/write prompts). Local judge-model metrics (`AnswerRelevancyMetric`, `FaithfulnessMetric`,
+`GEval`, etc.) and NLP models are **Python-only** — the TypeScript package cannot run a metric
+locally. For a JS/TS service under CI test, the working split is: keep local metric scoring in a
+Python step, and use the TypeScript SDK only for dataset sync / result reporting from a Node
+process that's already talking to Confident AI.
+
+```typescript
+import { EvaluationDataset, LLMTestCase } from "deepeval";
+
+const dataset = new EvaluationDataset();
+await dataset.pull({ alias: "production-goldens", autoConvertGoldensToTestCases: true });
+
+// ...run the app under test against dataset.testCases, then push results back...
+await dataset.push({ alias: "production-goldens", finalized: true });
+```
+
+`CONFIDENT_API_KEY` env var authenticates the same as the Python `deepeval login` flow. Per the
+package's own roadmap, full Python/TypeScript feature parity for the Confident AI integration
+surface is still in progress — check the package's current README before assuming a given Python
+dataset/prompt API has a TypeScript equivalent yet.
+
 ## Controlling the Judge Model (Cost vs Accuracy)
 
 DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
@@ -402,6 +428,10 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/guides/guides-multi-turn-evaluation-metrics
 - https://www.confident-ai.com/blog/multi-turn-llm-evaluation-in-2026
 - https://deepeval.com/docs/metrics-arena-g-eval
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/README.md (TypeScript SDK scope/roadmap)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/package.json (npm package name/version)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/index.ts (exported API surface)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/dataset/dataset.ts (push/pull/queue method signatures)
 - https://deepeval.com/docs/getting-started-llm-arena
 - https://github.com/confident-ai/deepeval/issues/2143
 - https://github.com/confident-ai/deepeval
