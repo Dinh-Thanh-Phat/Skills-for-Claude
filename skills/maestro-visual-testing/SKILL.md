@@ -31,6 +31,22 @@ On the first execution Maestro saves the screenshot as the baseline. Subsequent 
 |---|---|---|
 | `thresholdPercentage` | `5` | Percentage of differing pixels that triggers failure |
 
+### Per-Environment Threshold via Variables (CLI 2.8.0+)
+
+`thresholdPercentage` now accepts a `${VAR}` env-var reference instead of only a hardcoded
+number — useful for a looser threshold on CI emulators (font-rendering/anti-aliasing noise)
+and a stricter one for a local run against a physical device, without maintaining two flows:
+
+```yaml
+appId: com.example.app
+env:
+  SCREENSHOT_THRESHOLD: 5     # override with --env SCREENSHOT_THRESHOLD=2 for a strict run
+---
+- assertScreenshot:
+    path: ./checkout.png
+    thresholdPercentage: ${SCREENSHOT_THRESHOLD}
+```
+
 ## Isolating Volatile Regions with `cropOn`
 
 Dynamic areas (clocks, user avatars, ad banners, timestamps) change every run and cause false positives. Crop the assertion to a stable UI region:
@@ -138,3 +154,4 @@ git commit -m "update visual baselines: new product card design"
 ## Sources
 - https://maestro.dev/blog/visual-testing
 - https://docs.maestro.dev/reference/commands-available/assertscreenshot
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `thresholdPercentage` variable support (2.8.0), verified against the `034_assertScreenshot_threshold_env.yaml` test fixture in the `mobile-dev-inc/maestro` source repo

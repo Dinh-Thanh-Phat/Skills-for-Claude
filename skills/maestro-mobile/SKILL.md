@@ -405,6 +405,41 @@ appId: ${APP_ID}
 - drag:
     start: { x: 100, y: 400 }
     end: { x: 300, y: 400 }
+
+# Swipe from a point relative to an element (CLI 2.8.0+) — e.g. dragging a
+# specific handle/thumb inside a matched element instead of its whole bounding box
+- swipe:
+    direction: LEFT
+    from:
+      text: "Card A"
+      point: "50%, 85%"    # percentage within the element, or absolute px: "25, 75"
+```
+
+## Permissions (`setPermissions`)
+
+`launchApp` sets permissions by default, but use `setPermissions` mid-flow when you need to
+change them later — e.g. granting camera access right before a deep-link into the scanner
+screen, instead of at launch:
+
+```yaml
+- setPermissions:
+    permissions:
+      camera: allow
+      notifications: unset   # resets to the OS default prompt instead of allow/deny
+```
+
+As of CLI 2.8.0, permission values accept a `${VAR}` env-var reference (same substitution
+already supported by `assertScreenshot`'s `thresholdPercentage` — see `maestro-visual-testing`),
+useful for a shared flow that needs a different permission state per environment/test-account
+without duplicating the flow:
+
+```yaml
+env:
+  CAMERA_PERMISSION: allow
+---
+- setPermissions:
+    permissions:
+      camera: ${CAMERA_PERMISSION}
 ```
 
 ## Scripts (JavaScript for Dynamic Logic)
@@ -506,6 +541,18 @@ See [references/ci-cd.md](references/ci-cd.md) for full GitHub Actions and GitLa
   run: |
     maestro test --format junit --output test-results.xml flows/
 ```
+
+### JUnit/HTML Reports Linked Back to Maestro Cloud (CLI 2.8.0)
+
+Local `maestro test --format junit`/HTML reports for a run uploaded to Maestro Cloud now carry
+the cloud run's identity directly in the report — no more cross-referencing a local report
+against the dashboard by timestamp. Per-flow `cloud.runId`/`cloud.runUrl` properties and a
+suite-level `cloud.uploadId`/`cloud.url` are embedded automatically when the run uploads; useful
+for a CI job summary step that links straight to the Cloud run from a failed local report.
+
+Also in 2.8.0: JUnit report `timestamp` values are now truncated to whole seconds, since some
+CI JUnit importers reject the sub-second precision Maestro previously emitted — worth knowing if
+a CI dashboard was silently failing to ingest Maestro's JUnit output before this fix.
 
 ## Directory Structure (Recommended)
 
@@ -713,6 +760,7 @@ simulators at the same time.
 ```
 
 ## Sources
-- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0)
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0); element-relative swipe `point`, `setPermissions` variable support, JUnit/HTML Cloud-linking properties, JUnit timestamp truncation (2.8.0)
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/maestro-orchestra/src/main/java/maestro/orchestra/yaml/YamlSwipe.kt and the `030_swipe_from_point_percentage.yaml`/`030_swipe_from_point_absolute.yaml` test fixtures in the same repo — verified exact `from.point` YAML syntax directly against source, since `docs.maestro.dev` 403'd the fetcher as usual for this domain
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
