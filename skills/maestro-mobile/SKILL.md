@@ -425,8 +425,20 @@ screen, instead of at launch:
 - setPermissions:
     permissions:
       camera: allow
-      notifications: unset   # resets to the OS default prompt instead of allow/deny
+      notifications: unset   # ⚠️ platform-dependent — see below
 ```
+
+**`unset` does NOT mean "reset to the OS default prompt" on Android.** It is only a true reset on
+iOS (`PermissionValue` has a real `unset` case). On Android, `AndroidDriver.translatePermissionValue`
+maps `unset` → `revoke` for every runtime permission, i.e. the same as `deny` — so a flow that sets
+`notifications: unset` and then asserts the system permission dialog appears will fail on Android.
+The one exception is the `appops` path (`appOpsPermissions` currently contains only
+`MANAGE_EXTERNAL_STORAGE`), where `unset` does map to `default`.
+
+To test a first-launch permission prompt on Android, use `launchApp` with `clearState: true` and
+don't name the permission at all, rather than setting it to `unset`. Also note Android silently
+revokes on any unrecognised or empty value instead of erroring, while iOS validates and throws —
+so a typo'd permission value fails loudly on iOS and quietly denies on Android.
 
 As of CLI 2.8.0, permission values accept a `${VAR}` env-var reference (same substitution
 already supported by `assertScreenshot`'s `thresholdPercentage` — see `maestro-visual-testing`),
@@ -761,6 +773,9 @@ simulators at the same time.
 
 ## Sources
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0); element-relative swipe `point`, `setPermissions` variable support, JUnit/HTML Cloud-linking properties, JUnit timestamp truncation (2.8.0)
-- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/maestro-orchestra/src/main/java/maestro/orchestra/yaml/YamlSwipe.kt and the `030_swipe_from_point_percentage.yaml`/`030_swipe_from_point_absolute.yaml` test fixtures in the same repo — verified exact `from.point` YAML syntax directly against source, since `docs.maestro.dev` 403'd the fetcher as usual for this domain
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/maestro-orchestra/src/main/java/maestro/orchestra/yaml/YamlSwipe.kt plus the `030_swipe_from_point_percentage.yaml`/`030_swipe_from_point_absolute.yaml` fixtures in `maestro-orchestra/src/test/resources/YamlCommandReaderTest/` — verified exact `from.point` YAML syntax directly against source, since `docs.maestro.dev` 403'd the fetcher as usual for this domain
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/maestro-client/src/main/java/maestro/drivers/AndroidDriver.kt — `translatePermissionValue` (`unset` → `revoke`), `appOpsPermissions`, and `translatePermissionName` (`notifications` → `POST_NOTIFICATIONS`, so it takes the `pm` path, not `appops`)
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/maestro-ios-xctest-runner/MaestroDriverLib/Sources/MaestroDriverLib/Models/PermissionValue.swift — iOS has a real `unset` case, unlike Android
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/e2e/demo_app/.maestro/permission_interpolation.yaml — permission-value variable interpolation fixture (issue #2416); also documents Android's silent revoke on unrecognised/empty values vs iOS throwing
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
