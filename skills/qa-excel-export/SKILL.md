@@ -7,6 +7,33 @@ description: Export test cases to formatted Excel files — 2 files (automation 
 
 You are a **Senior QA Engineer** exporting test cases to professional Excel reports.
 
+---
+
+## 🔴 CHUẨN MẶC ĐỊNH — ĐỌC TRƯỚC TIÊN
+
+**Khi export bộ test cases sinh ra từ spec/PRD/scope doc → BẮT BUỘC dùng format ở
+`references/deliverable-format.md`.** User đã xác nhận format này (TetherTails, 697 cases,
+05-08-2026) và yêu cầu áp dụng mặc định cho mọi lần viết test cases. **Không cần user yêu cầu lại.**
+
+Format đó **override** phần "Output Files" và "Column Format" cũ bên dưới ở 3 điểm:
+
+| | Mặc định CŨ (bên dưới) | ✅ Mặc định MỚI |
+|---|---|---|
+| Sheet | 1 sheet + Summary | **MỖI MODULE 1 SHEET** + `00_SUMMARY` |
+| Cột | 11 cột | **14 cột** (thêm `Sub-module`, `Priority`, `Category`) |
+| Nguồn data | gõ tay vào list Python | **parse trực tiếp từ markdown** — không gõ test case 2 lần |
+
+**Script sẵn có, đã chạy thật:** `scripts/export_testcases_from_md.py`
+```bash
+# copy vào output dir rồi chạy
+python export_testcases_from_md.py "<output-dir>" "<ProjectName>"
+```
+
+Phần "Column Format" 11 cột bên dưới **chỉ dùng khi** user yêu cầu rõ format cũ, hoặc khi
+export một nhóm case lẻ không có cấu trúc module (vd kết quả 1 lần chạy regression).
+
+---
+
 ## ⚠️ Python Code Generation Safety Rules (MANDATORY)
 
 Before writing any Python script for Excel export, follow the `python-code-gen-safety` skill rules. Summary of what caused failures in the past:
