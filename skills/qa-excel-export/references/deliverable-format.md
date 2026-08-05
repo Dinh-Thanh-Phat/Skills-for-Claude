@@ -82,20 +82,71 @@ Header bảng, rồi bullet block bên dưới:
 |---|---|---|---|
 | AUTH-001 | POS | critical | Signup thành công với name + DOB + phone + OTP đúng |
 
-- **Pre:** App cài mới, chưa từng đăng nhập. Số `+6591000001` chưa tồn tại.
-- **Steps:** 1) Mở app → Sign up. 2) Name = `Nguyen Test A`. 3) DOB = `01/01/1995`. 4) Submit → nhận OTP. 5) Nhập OTP đúng.
-- **Test data:** UUID đọc trực tiếp từ DB, ví dụ `9f1c2d34-...`
-- **Expected:** 1) Tài khoản tạo thành công, vào Home Feed. 2) DB: tồn tại 1 record với `uuid` dạng UUID.
+- **Pre:**
+  1. App vừa cài mới, chưa từng đăng nhập (nếu đã cài: Settings hệ thống → Apps → TetherTails → Clear data).
+  2. Số `+6591000001` chưa tồn tại trong hệ thống — verify: `SELECT id FROM users WHERE phone='+6591000001'` trả 0 row.
+  3. Có quyền nhận SMS của số này.
+- **Steps:**
+  1. Cold start app (kill hẳn rồi mở lại) → chờ màn Welcome load xong.
+  2. Tap **Sign up** ở màn Welcome.
+  3. Ở field **Name**, nhập `Nguyen Test A`.
+  4. Ở field **Date of birth**, chọn `01/01/1995` từ date picker.
+  5. Ở field **Phone number**, nhập `+6591000001`.
+  6. Tick checkbox **T&C + Privacy + age 13+**.
+  7. **KHÔNG** bật toggle marketing.
+  8. Tap **Continue**.
+  9. **Quan sát:** màn nhập OTP xuất hiện, có countdown resend.
+  10. Đọc mã OTP 6 số từ SMS, nhập vào ô OTP.
+  11. Tap **Verify**.
+- **Test data:** Name `Nguyen Test A` · DOB `01/01/1995` · Phone `+6591000001` · OTP: đọc từ SMS
+- **Expected:**
+  1. Chuyển sang Home Feed, không còn màn signup trong back stack (bấm back không quay lại được).
+  2. DB: `SELECT uuid, phone FROM users WHERE phone='+6591000001'` trả **đúng 1 row**, `uuid` đúng dạng UUID v4.
+  3. Trong toàn bộ flow signup: **0 permission dialog** của OS xuất hiện.
 - **Ghi chú severity:** Đây là rủi ro consumer-protection, không phải copy nit.
 ```
 
-### Quy tắc bắt buộc
+### 🔴 Quy tắc STEPS — quan trọng nhất, đây là chỗ hay bị viết hụt
+
+Steps phải để **người chưa từng thấy feature** repro được mà không hỏi lại.
+
+| Quy tắc | Sai | Đúng |
+|---|---|---|
+| **1 action / 1 step** | `3. Nhập name, DOB, phone rồi Submit` | `3. Ở field Name, nhập …` `4. Ở field DOB, chọn …` `5. Tap Submit` |
+| **Có path điều hướng đầy đủ**, từ điểm khởi đầu xác định | `1. Vào màn Add pet` | `1. Từ Home Feed, tap tab **Pets** ở bottom nav.` `2. Tap **+ Add pet** góc trên phải.` |
+| **Bold tên UI element** đúng như label trên máy | `bấm nút lưu` | `Tap **Save**` |
+| **Backtick giá trị nhập**, giá trị cụ thể | `nhập email hợp lệ` | `nhập \`test.a@tethertails.test\`` |
+| **Tách step QUAN SÁT khỏi step HÀNH ĐỘNG** | `5. Submit và thấy lỗi` | `5. Tap **Submit**.` `6. **Quan sát:** inline error đỏ dưới field DOB.` |
+| **Step verify ngoài UI ghi rõ CÁCH verify** | `7. Kiểm DB` | `7. **Verify DB:** \`SELECT … FROM pets WHERE …\` → 0 row.` |
+| **Step API ghi đủ** method + path + auth + body | `gọi API tạo pet` | `**Verify API:** \`POST /pets\` với header \`Authorization: Bearer <token Free tier>\`, body \`{"name":"X",...}\`, gửi bằng curl (KHÔNG qua app).` |
+| **Step lặp ghi rõ số lần + giá trị** | `thử nhiều lần` | `Lặp bước 3–5 **10 lần**, mỗi lần OTP = \`000000\`. Ghi lại số lần trước khi bị khoá.` |
+| **Step đo ghi rõ đo gì, đo mấy lần** | `đo thời gian load` | `Đo bằng stopwatch từ lúc tap **Publish** tới lúc alert hiện trên device B. **Chạy 5 lần, lấy p95.**` |
+| **Step chờ ghi rõ chờ bao lâu + chờ thật** | `chờ reminder` | `Chờ tới `HH:MM` đã đặt (**chờ thật, không tua**). Nếu tới +2 phút chưa có push → ghi FAIL.` |
+| **Ghi rõ trạng thái app khi cần** | `tap notification` | `Force-kill app (swipe khỏi recent). Tap notification khi app **đã bị kill**.` |
+| **Cleanup nếu case tạo data thật** | (thiếu) | `**Cleanup:** xoá pet \`Milo\` sau khi verify xong.` |
+
+**Prefix chuẩn cho step không phải hành động UI:**
+
+| Prefix | Dùng khi |
+|---|---|
+| `**Quan sát:**` | Chỉ nhìn màn hình, không tác động |
+| `**Verify DB:**` | Query database |
+| `**Verify API:**` | Gọi endpoint trực tiếp, bypass UI |
+| `**Verify log:**` | Đọc server log / crash log / consent log |
+| `**Verify proxy:**` | Đọc traffic bắt được bằng Charles/mitmproxy |
+| `**Verify dashboard:**` | Đọc counter của vendor (moderation ops, OneSignal, store) |
+| `**Đo:**` | Ghi số liệu, nêu rõ chạy mấy lần |
+| `**Chờ:**` | Chờ thời gian thật, nêu rõ bao lâu |
+| `**Cleanup:**` | Dọn data test tạo ra |
+
+### Quy tắc bắt buộc khác
 
 | Quy tắc | Vì sao |
 |---|---|
-| **Nhiều case liên tiếp CHIA SẺ 1 bullet block** — parser tự gán cho cả nhóm | Tránh copy-paste 3 lần cho AUTH-003/004/005 cùng logic |
-| Steps đánh số `1) 2) 3)` trên cùng 1 dòng | Parser tự tách thành nhiều dòng trong Excel |
-| Expected đánh số `1) 2) 3)`, **verifiable**, không được "hoạt động đúng" | "No errors" không kiểm được |
+| **Nhiều case liên tiếp CHIA SẺ 1 bullet block** — parser tự gán cho cả nhóm | Tránh copy-paste 3 lần cho AUTH-003/004/005 cùng logic. Nhưng nếu steps của từng case KHÁC nhau thì phải viết riêng, đừng gộp cho tiện |
+| Steps viết **nhiều dòng, thụt 2 space** dưới `- **Steps:**` | Parser giữ nguyên xuống dòng vào Excel. Dạng `1) 2) 3)` trên 1 dòng vẫn parse được nhưng **chỉ dùng cho case ≤3 step** |
+| Pre-condition cũng đánh số nhiều dòng nếu >1 điều kiện | Người test phải tick từng cái |
+| Expected đánh số, **verifiable**, không được "hoạt động đúng" | "No errors" không kiểm được |
 | **Con số phải chính xác** — "quota còn ~400MB", không phải "quota giảm" | "giảm đâu đó" không phát hiện được bug tính sai |
 | Pre-condition ghi rõ: app state + data phải có + user role + tier + platform | Người khác phải repro được |
 | Test data là giá trị **cụ thể** | "valid email" không chạy được |
