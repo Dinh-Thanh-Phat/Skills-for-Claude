@@ -100,6 +100,11 @@ User nói: "viết test cases", "test cases cho X", "generate tests"
          ↓                          ↓
               qa-test-generation (viết MANUAL test cases)
                     ↓
+    Output THEO CHUẨN: qa-excel-export/references/deliverable-format.md
+    README + 00_COVERAGE_MATRIX + NN_<module>.md + 99_OPEN_ITEMS + export script
+                    ↓
+         qa-excel-export (MỖI MODULE 1 SHEET, parse từ markdown)
+                    ↓
          ⛔ DỪNG — Present manual test cases
          "Bạn review xong thì mình mới viết automation"
                     ↓
@@ -107,6 +112,9 @@ User nói: "viết test cases", "test cases cho X", "generate tests"
                     ↓
               qa-e2e-complete (viết Playwright code)
 ```
+
+> **Chuẩn deliverable là mặc định, không phải tuỳ chọn.** User đã xác nhận format này
+> (TetherTails, 697 cases, 05-08-2026). Không hỏi lại "bạn muốn format nào".
 
 ### "Chạy test / run suite"
 
