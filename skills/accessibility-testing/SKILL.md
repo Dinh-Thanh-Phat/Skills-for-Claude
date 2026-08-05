@@ -1,6 +1,10 @@
 ---
 name: accessibility-testing
-description: Playwright + axe-core accessibility (a11y) testing against WCAG standards. Use when adding accessibility tests, checking WCAG compliance, testing screen reader compatibility, or auditing a11y regressions. Triggers on: "accessibility test", "a11y test", "axe-core", "WCAG", "screen reader", "kiểm tra accessibility", "kiểm tra trợ năng".
+description: >-
+  Playwright + axe-core accessibility (a11y) testing against WCAG standards. Use when adding
+  accessibility tests, checking WCAG compliance, testing screen reader compatibility, or auditing
+  a11y regressions. Triggers on: "accessibility test", "a11y test", "axe-core", "WCAG", "screen
+  reader", "kiểm tra accessibility", "kiểm tra trợ năng".
 triggers:
   - "accessibility test"
   - "a11y test"

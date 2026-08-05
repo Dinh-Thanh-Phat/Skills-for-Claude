@@ -1,6 +1,9 @@
 ---
 name: playwright-test-anti-patterns
-description: Detect and fix Playwright test anti-patterns - soft assertions, nth locators, silent catches, assertions inside expect(). Triggers on: "review test", "check test quality", "anti-pattern", "test always pass", "viết test review".
+description: >-
+  Detect and fix Playwright test anti-patterns - soft assertions, nth locators, silent catches,
+  assertions inside expect(). Triggers on: "review test", "check test quality", "anti-pattern",
+  "test always pass", "viết test review".
 type: skill
 triggers:
   - "review test"

@@ -1,6 +1,13 @@
-﻿---
+---
 name: realtime-websocket-testing
-description: Patterns for testing real-time UI in Playwright — WebSocket mocking, proxy/inject mode, live update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for features that update in real time without user action: notifications, live dashboards, chat, collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time", "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push notification", "live data", "intercept websocket", "mock websocket playwright", "fake websocket server", "ws mocking".
+description: >-
+  Patterns for testing real-time UI in Playwright — WebSocket mocking, proxy/inject mode, live
+  update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for
+  features that update in real time without user action: notifications, live dashboards, chat,
+  collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time",
+  "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push
+  notification", "live data", "intercept websocket", "mock websocket playwright", "fake websocket
+  server", "ws mocking".
 ---
 
 # Real-Time / WebSocket UI Testing

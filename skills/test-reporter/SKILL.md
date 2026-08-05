@@ -1,6 +1,12 @@
 ---
 name: test-reporter
-description: Generate comprehensive self-contained HTML test reports for chatbot evaluation results with embedded charts, performance metrics, accuracy scores, and failed test details. Use when you need a professional shareable report from chatbot test data. Triggers on: "generate test report", "create chatbot test HTML report", "export test results report", "make performance report", "generate QA report for chatbot". Used as Step 6 (final step) in chatbot testing pipeline. Outputs a single self-contained HTML file (and optionally PDF).
+description: >-
+  Generate comprehensive self-contained HTML test reports for chatbot evaluation results with
+  embedded charts, performance metrics, accuracy scores, and failed test details. Use when you
+  need a professional shareable report from chatbot test data. Triggers on: "generate test
+  report", "create chatbot test HTML report", "export test results report", "make performance
+  report", "generate QA report for chatbot". Used as Step 6 (final step) in chatbot testing
+  pipeline. Outputs a single self-contained HTML file (and optionally PDF).
 ---
 
 # Test Reporter

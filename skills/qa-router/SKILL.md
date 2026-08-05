@@ -1,6 +1,11 @@
 ---
 name: qa-router
-description: Entry point cho mọi task QA — enforce routing rules và invoke đúng skill theo đúng thứ tự. PHẢI invoke trước khi làm bất kỳ task QA nào. Triggers on: "viết test", "test cases", "chạy test", "run test", "debug test", "test fail", "tại sao fail", "coverage", "gap coverage", "bug report", "log bug", "xong hôm nay", "kết thúc session", "test mobile", "maestro", "test feature", "generate test", "viết automation", "fix test", "test này fail".
+description: >-
+  Entry point cho mọi task QA — enforce routing rules và invoke đúng skill theo đúng thứ tự. PHẢI
+  invoke trước khi làm bất kỳ task QA nào. Triggers on: "viết test", "test cases", "chạy test",
+  "run test", "debug test", "test fail", "tại sao fail", "coverage", "gap coverage", "bug
+  report", "log bug", "xong hôm nay", "kết thúc session", "test mobile", "maestro", "test
+  feature", "generate test", "viết automation", "fix test", "test này fail".
 tags: [qa, routing, orchestration, entry-point]
 triggers:
   - "viết test"

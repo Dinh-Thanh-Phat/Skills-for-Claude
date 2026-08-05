@@ -1,6 +1,12 @@
 ---
 name: daily-skill-evolution
-description: Daily 7AM (GMT+7) autonomous skill-evolution runbook for a REMOTE Claude Code routine. Use when the scheduled remote agent fires — it web-researches the latest best practices across the user's QA/automation domains, creates or updates skill files inside this repo (Skills-for-Claude), logs the changes, commits & pushes to the skill-evolution branch, then creates a Gmail draft report to thanhphat12tna234@gmail.com. Triggers on: the scheduled routine prompt, "run daily skill evolution", "evolve skills from web research".
+description: >-
+  Daily 7AM (GMT+7) autonomous skill-evolution runbook for a REMOTE Claude Code routine. Use when
+  the scheduled remote agent fires — it web-researches the latest best practices across the
+  user's QA/automation domains, creates or updates skill files inside this repo
+  (Skills-for-Claude), logs the changes, commits & pushes to the skill-evolution branch, then
+  creates a Gmail draft report to thanhphat12tna234@gmail.com. Triggers on: the scheduled routine
+  prompt, "run daily skill evolution", "evolve skills from web research".
 ---
 
 # Daily Skill Evolution (Remote Runbook)

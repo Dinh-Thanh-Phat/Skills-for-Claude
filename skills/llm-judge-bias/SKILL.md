@@ -1,6 +1,12 @@
 ---
 name: llm-judge-bias
-description: Identify, measure, and mitigate the five key biases that corrupt LLM-as-a-Judge evaluation pipelines: verbosity/length bias, self-preference/family bias, position bias, format bias, and calibration drift. Use when building or auditing an LLM judge pipeline, selecting the judge model, calibrating against humans, or controlling eval cost. Triggers on: "LLM judge bias", "judge model selection", "self-preference bias", "verbosity bias", "family bias LLM", "calibrate LLM judge", "cross-family judge", "LLM eval reliability", "judge drift".
+description: >-
+  Identify, measure, and mitigate the five key biases that corrupt LLM-as-a-Judge evaluation
+  pipelines: verbosity/length bias, self-preference/family bias, position bias, format bias, and
+  calibration drift. Use when building or auditing an LLM judge pipeline, selecting the judge
+  model, calibrating against humans, or controlling eval cost. Triggers on: "LLM judge bias",
+  "judge model selection", "self-preference bias", "verbosity bias", "family bias LLM",
+  "calibrate LLM judge", "cross-family judge", "LLM eval reliability", "judge drift".
 ---
 
 # LLM-as-a-Judge Bias Mitigation

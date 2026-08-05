@@ -1,6 +1,11 @@
-﻿---
+---
 name: test-auth-strategy
-description: Reusable test authentication strategy — login once, token caching, global setup, separation of auth vs feature tests, secure token handling. Use when setting up authentication for any test suite, managing multiple roles, or deciding when to reuse vs re-authenticate. Triggers on: "test authentication", "test login", "auth test", "login once", "token caching test", "global setup auth", "reuse token", "auth state", "storage state", "auth fixture".
+description: >-
+  Reusable test authentication strategy — login once, token caching, global setup, separation of
+  auth vs feature tests, secure token handling. Use when setting up authentication for any test
+  suite, managing multiple roles, or deciding when to reuse vs re-authenticate. Triggers on:
+  "test authentication", "test login", "auth test", "login once", "token caching test", "global
+  setup auth", "reuse token", "auth state", "storage state", "auth fixture".
 triggers:
   - "test authentication"
   - "test login"

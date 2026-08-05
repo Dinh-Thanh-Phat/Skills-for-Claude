@@ -1,6 +1,13 @@
 ---
 name: llm-agent-trace-eval
-description: Evaluate AI agents at the component level using DeepEval's trace/span architecture — score each tool call, retrieval step, LLM completion, and planning decision independently rather than only grading the final answer. Use when testing LLM agents with tool use, RAG pipelines, or multi-step reasoning where the final answer alone doesn't reveal what broke. Triggers on: "evaluate agent tool calls", "agent trace evaluation", "DeepEval agent", "span evaluation", "tool correctness metric", "component-level LLM eval", "agent step scoring", "trace-based evaluation".
+description: >-
+  Evaluate AI agents at the component level using DeepEval's trace/span architecture — score each
+  tool call, retrieval step, LLM completion, and planning decision independently rather than only
+  grading the final answer. Use when testing LLM agents with tool use, RAG pipelines, or
+  multi-step reasoning where the final answer alone doesn't reveal what broke. Triggers on:
+  "evaluate agent tool calls", "agent trace evaluation", "DeepEval agent", "span evaluation",
+  "tool correctness metric", "component-level LLM eval", "agent step scoring", "trace-based
+  evaluation".
 ---
 
 # LLM Agent Trace Evaluation — DeepEval Component-Level Evals

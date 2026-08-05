@@ -1,6 +1,13 @@
 ---
 name: performance-analyzer
-description: Analyze chatbot performance metrics including response times (p50/p95/p99), accuracy distribution by category/difficulty, and success rates. Generates statistical summaries and PNG visualizations using matplotlib. Use when you need performance charts or percentile calculations from chatbot test results. Triggers on: "analyze chatbot performance", "calculate response time percentiles", "generate performance metrics", "create accuracy charts", "p95 response time chatbot". Used as Step 5 in chatbot testing pipeline. Outputs JSON metrics and PNG charts.
+description: >-
+  Analyze chatbot performance metrics including response times (p50/p95/p99), accuracy
+  distribution by category/difficulty, and success rates. Generates statistical summaries and PNG
+  visualizations using matplotlib. Use when you need performance charts or percentile
+  calculations from chatbot test results. Triggers on: "analyze chatbot performance", "calculate
+  response time percentiles", "generate performance metrics", "create accuracy charts", "p95
+  response time chatbot". Used as Step 5 in chatbot testing pipeline. Outputs JSON metrics and
+  PNG charts.
 ---
 
 # Performance Analyzer

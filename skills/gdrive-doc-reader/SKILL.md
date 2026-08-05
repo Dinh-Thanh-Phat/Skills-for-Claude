@@ -1,6 +1,11 @@
 ---
 name: gdrive-doc-reader
-description: Read and extract text content from Google Drive files and folders. Use when you need to read documents from Google Drive for processing — especially PDF, DOCX, TXT, and Google Docs. Triggers on: "read Google Drive docs", "extract text from Drive folder", "get content from Drive link", "load documents from Google Drive". Used as Step 1 in chatbot testing pipeline. Outputs combined text content from all docs to a single file.
+description: >-
+  Read and extract text content from Google Drive files and folders. Use when you need to read
+  documents from Google Drive for processing — especially PDF, DOCX, TXT, and Google Docs.
+  Triggers on: "read Google Drive docs", "extract text from Drive folder", "get content from
+  Drive link", "load documents from Google Drive". Used as Step 1 in chatbot testing pipeline.
+  Outputs combined text content from all docs to a single file.
 ---
 
 # Google Drive Document Reader

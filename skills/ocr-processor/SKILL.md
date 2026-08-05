@@ -1,6 +1,14 @@
 ---
 name: ocr-processor
-description: Extract text from scanned PDFs and images using multi-engine OCR (Tesseract → EasyOCR → Google Vision fallback). Automatically detects whether a PDF has a text layer or needs OCR. Supports Vietnamese + English, image preprocessing (deskew, denoise, binarization), batch processing, and quality scoring. Use whenever you need to read text from images or scan-based documents before feeding into the chatbot-tester pipeline. Triggers on: "OCR this PDF", "extract text from image", "read scanned document", "process Vietnamese scan", "convert image to text", "PDF has no text layer", "preprocess document for chatbot testing". Integrates as Step 0 before gdrive-doc-reader in the chatbot testing pipeline.
+description: >-
+  Extract text from scanned PDFs and images using multi-engine OCR (Tesseract → EasyOCR → Google
+  Vision fallback). Automatically detects whether a PDF has a text layer or needs OCR. Supports
+  Vietnamese + English, image preprocessing (deskew, denoise, binarization), batch processing,
+  and quality scoring. Use whenever you need to read text from images or scan-based documents
+  before feeding into the chatbot-tester pipeline. Triggers on: "OCR this PDF", "extract text
+  from image", "read scanned document", "process Vietnamese scan", "convert image to text", "PDF
+  has no text layer", "preprocess document for chatbot testing". Integrates as Step 0 before
+  gdrive-doc-reader in the chatbot testing pipeline.
 ---
 
 # OCR Processor

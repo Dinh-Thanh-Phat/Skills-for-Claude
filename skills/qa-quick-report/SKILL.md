@@ -1,6 +1,11 @@
 ---
 name: qa-quick-report
-description: Show quick test results inline in Claude Code extension FIRST before any file output. Use when running automation tests, viewing test results, or exporting reports. Keywords: "chạy test", "run tests", "test results", "xuất report", "automation results", "kết quả test", "test report". Excel export ONLY when user explicitly asks ("xuất excel", "export excel", "tạo file excel").
+description: >-
+  Show quick test results inline in Claude Code extension FIRST before any file output. Use when
+  running automation tests, viewing test results, or exporting reports. Keywords: "chạy test",
+  "run tests", "test results", "xuất report", "automation results", "kết quả test", "test
+  report". Excel export ONLY when user explicitly asks ("xuất excel", "export excel", "tạo file
+  excel").
 ---
 
 # QA Quick Report Skill

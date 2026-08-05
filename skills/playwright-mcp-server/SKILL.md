@@ -1,6 +1,14 @@
 ---
 name: playwright-mcp-server
-description: Official Microsoft Playwright MCP server (@playwright/mcp) — exposes ~40 browser automation tools (browser_navigate, browser_click, browser_snapshot, etc.) that AI agents call via MCP to drive a real browser using accessibility snapshots instead of screenshots. Use when wiring Claude Desktop/VS Code/Cursor to a live browser for AI-driven test authoring, exploratory automation, or agentic QA workflows. Triggers on: "playwright mcp", "@playwright/mcp", "playwright mcp server", "AI agent browser", "browser_snapshot", "browser_click mcp", "playwright mcp setup", "claude browser automation", "browser_find", "browser_drop mcp", "browser_run_code_unsafe".
+description: >-
+  Official Microsoft Playwright MCP server (@playwright/mcp) — exposes ~40 browser automation
+  tools (browser_navigate, browser_click, browser_snapshot, etc.) that AI agents call via MCP to
+  drive a real browser using accessibility snapshots instead of screenshots. Use when wiring
+  Claude Desktop/VS Code/Cursor to a live browser for AI-driven test authoring, exploratory
+  automation, or agentic QA workflows. Triggers on: "playwright mcp", "@playwright/mcp",
+  "playwright mcp server", "AI agent browser", "browser_snapshot", "browser_click mcp",
+  "playwright mcp setup", "claude browser automation", "browser_find", "browser_drop mcp",
+  "browser_run_code_unsafe".
 ---
 
 # Playwright MCP Server

@@ -1,6 +1,12 @@
 ---
 name: llm-golden-dataset-construction
-description: Use when building, sizing, or maintaining the golden/eval dataset that other LLM testing techniques (DeepEval CI gates, hallucination detection, A/B rollout gates) run against — sourcing examples from production logs, schema design, avoiding few-shot/eval leakage, versioning, and a weekly upkeep routine. Triggers on: "golden dataset", "eval dataset", "gold set", "how many examples for LLM eval", "curate LLM test cases", "eval set data leakage", "few-shot leakage".
+description: >-
+  Use when building, sizing, or maintaining the golden/eval dataset that other LLM testing
+  techniques (DeepEval CI gates, hallucination detection, A/B rollout gates) run against —
+  sourcing examples from production logs, schema design, avoiding few-shot/eval leakage,
+  versioning, and a weekly upkeep routine. Triggers on: "golden dataset", "eval dataset", "gold
+  set", "how many examples for LLM eval", "curate LLM test cases", "eval set data leakage",
+  "few-shot leakage".
 ---
 
 # LLM Golden Dataset Construction

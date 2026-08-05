@@ -1,6 +1,12 @@
 ---
 name: voice-ai-agent-testing
-description: Test and evaluate voice/speech AI agents (IVR bots, voice assistants, phone-call agents) — WER transcription accuracy, latency budgets (TTFT, endpointing), barge-in/interruption handling, and turn-detection regression testing. Use when validating a voice agent before production or diagnosing "feels laggy"/"talks over me"/"cuts me off" complaints. Triggers on: "voice agent testing", "voice AI evaluation", "barge-in testing", "turn detection", "IVR testing", "speech agent QA", "WER benchmark", "voice latency test", "interruption handling test".
+description: >-
+  Test and evaluate voice/speech AI agents (IVR bots, voice assistants, phone-call agents) — WER
+  transcription accuracy, latency budgets (TTFT, endpointing), barge-in/interruption handling,
+  and turn-detection regression testing. Use when validating a voice agent before production or
+  diagnosing "feels laggy"/"talks over me"/"cuts me off" complaints. Triggers on: "voice agent
+  testing", "voice AI evaluation", "barge-in testing", "turn detection", "IVR testing", "speech
+  agent QA", "WER benchmark", "voice latency test", "interruption handling test".
 ---
 
 # Voice AI Agent Testing

@@ -1,6 +1,12 @@
-﻿---
+---
 name: safe-locators
-description: Rules for writing safe, unique Playwright locators — avoid .first()/.nth() silent failures, enforce strict uniqueness, and auto-normalize brittle CSS/XPath locators with locator.normalize(). Use when writing locators, dealing with "strict mode violation", ambiguous selectors, or multiple matching elements. Triggers on: "locator first()", "nth(0)", "ambiguous locator", "strict mode violation", "selector không unique", "multiple elements matched", "locator.normalize", "brittle CSS selector".
+description: >-
+  Rules for writing safe, unique Playwright locators — avoid .first()/.nth() silent failures,
+  enforce strict uniqueness, and auto-normalize brittle CSS/XPath locators with
+  locator.normalize(). Use when writing locators, dealing with "strict mode violation", ambiguous
+  selectors, or multiple matching elements. Triggers on: "locator first()", "nth(0)", "ambiguous
+  locator", "strict mode violation", "selector không unique", "multiple elements matched",
+  "locator.normalize", "brittle CSS selector".
 type: qa-practice
 triggers:
   - "locator first()"

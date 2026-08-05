@@ -1,6 +1,15 @@
 ---
 name: mcp-server-testing
-description: Test an MCP (Model Context Protocol) server itself — as the system under test, not as a tool your agent calls. Covers in-memory unit testing (no transport), MCP Inspector's scriptable CLI mode for CI, schema-drift checks against tool contracts, and the MCP-specific security surface (token passthrough, confused deputy, tool poisoning). Distinct from playwright-mcp-server/maestro-mcp-workflow (those document consuming an MCP server as a tool); this is for verifying an MCP server you build or integrate is correct and safe. Triggers on: "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP server CI".
+description: >-
+  Test an MCP (Model Context Protocol) server itself — as the system under test, not as a tool
+  your agent calls. Covers in-memory unit testing (no transport), MCP Inspector's scriptable CLI
+  mode for CI, schema-drift checks against tool contracts, and the MCP-specific security surface
+  (token passthrough, confused deputy, tool poisoning). Distinct from
+  playwright-mcp-server/maestro-mcp-workflow (those document consuming an MCP server as a tool);
+  this is for verifying an MCP server you build or integrate is correct and safe. Triggers on:
+  "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp
+  tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP
+  server CI".
 ---
 
 # Testing MCP Servers

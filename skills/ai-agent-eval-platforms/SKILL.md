@@ -1,6 +1,13 @@
 ---
 name: ai-agent-eval-platforms
-description: Choosing and using commercial/OSS evaluation platforms for AI agents (multi-turn, tool-calling) in 2026 — Braintrust for pre-deployment experiments with sandboxed scorers, Latitude for agent-native causal tracing and multi-turn simulation, Langfuse for self-hosted open-source eval logging. Use when selecting an LLM eval platform, setting up continuous eval for an agentic system, or comparing eval platforms for a team. Triggers on: "Braintrust", "Latitude eval", "eval platform", "LLM eval SaaS", "agent evaluation platform", "multi-turn simulation testing", "GEPA", "production eval", "LLM experiment tracking".
+description: >-
+  Choosing and using commercial/OSS evaluation platforms for AI agents (multi-turn, tool-calling)
+  in 2026 — Braintrust for pre-deployment experiments with sandboxed scorers, Latitude for
+  agent-native causal tracing and multi-turn simulation, Langfuse for self-hosted open-source
+  eval logging. Use when selecting an LLM eval platform, setting up continuous eval for an
+  agentic system, or comparing eval platforms for a team. Triggers on: "Braintrust", "Latitude
+  eval", "eval platform", "LLM eval SaaS", "agent evaluation platform", "multi-turn simulation
+  testing", "GEPA", "production eval", "LLM experiment tracking".
 ---
 
 # AI Agent Evaluation Platforms (2026)

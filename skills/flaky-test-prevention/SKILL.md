@@ -1,6 +1,10 @@
 ---
 name: flaky-test-prevention
-description: Systematic approach to preventing and eliminating flaky Playwright/E2E tests. Use when tests pass/fail inconsistently, when writing new tests to prevent flakiness, or diagnosing intermittent failures. Triggers on: "flaky test", "intermittent failure", "test passes sometimes", "test không ổn định", "test lúc pass lúc fail", "non-deterministic test".
+description: >-
+  Systematic approach to preventing and eliminating flaky Playwright/E2E tests. Use when tests
+  pass/fail inconsistently, when writing new tests to prevent flakiness, or diagnosing
+  intermittent failures. Triggers on: "flaky test", "intermittent failure", "test passes
+  sometimes", "test không ổn định", "test lúc pass lúc fail", "non-deterministic test".
 triggers:
   - "flaky test"
   - "intermittent failure"

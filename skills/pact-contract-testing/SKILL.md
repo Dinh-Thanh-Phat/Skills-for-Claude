@@ -1,6 +1,13 @@
 ---
 name: pact-contract-testing
-description: Consumer-driven contract testing with Pact for microservices API compatibility — consumer writes tests to generate JSON contracts, provider verifies against real API, Pact Broker/PactFlow manages contracts, can-i-deploy blocks unsafe deployments in CI/CD. Use when testing microservice API compatibility, preventing breaking API changes, or setting up deployment safety gates between services. Triggers on: "contract testing", "Pact", "consumer-driven contract", "can-i-deploy", "PactFlow", "API compatibility", "pact broker", "breaking API change", "microservice testing".
+description: >-
+  Consumer-driven contract testing with Pact for microservices API compatibility — consumer
+  writes tests to generate JSON contracts, provider verifies against real API, Pact
+  Broker/PactFlow manages contracts, can-i-deploy blocks unsafe deployments in CI/CD. Use when
+  testing microservice API compatibility, preventing breaking API changes, or setting up
+  deployment safety gates between services. Triggers on: "contract testing", "Pact",
+  "consumer-driven contract", "can-i-deploy", "PactFlow", "API compatibility", "pact broker",
+  "breaking API change", "microservice testing".
 ---
 
 # Consumer-Driven Contract Testing with Pact

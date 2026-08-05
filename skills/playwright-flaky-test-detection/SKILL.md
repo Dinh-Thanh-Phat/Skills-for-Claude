@@ -1,6 +1,9 @@
 ---
 name: playwright-flaky-test-detection
-description: Detect data dependencies, timeouts, race conditions causing flaky tests - fix before they ship. Triggers on: "flaky test", "test lúc pass lúc fail", "intermittent failure", "passes sometimes", "diagnosis flaky".
+description: >-
+  Detect data dependencies, timeouts, race conditions causing flaky tests - fix before they ship.
+  Triggers on: "flaky test", "test lúc pass lúc fail", "intermittent failure", "passes
+  sometimes", "diagnosis flaky".
 type: skill
 triggers:
   - "flaky test"

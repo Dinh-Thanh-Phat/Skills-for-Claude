@@ -1,6 +1,13 @@
 ---
 name: playwright-trace-viewer
-description: Debug failed Playwright tests with Trace Viewer — configure trace recording modes, read time-travel DOM/network/console snapshots, download CI artifacts, and identify root causes without re-running tests. Use when a test fails in CI and you need to understand why, when investigating flaky tests, or when setting up trace collection for a new test suite. Triggers on: "trace viewer", "playwright trace", "trace.zip", "show-trace", "test failed in CI", "debug CI failure", "retain-on-failure", "on-first-retry trace", "time-travel debugging", "trace artifact".
+description: >-
+  Debug failed Playwright tests with Trace Viewer — configure trace recording modes, read
+  time-travel DOM/network/console snapshots, download CI artifacts, and identify root causes
+  without re-running tests. Use when a test fails in CI and you need to understand why, when
+  investigating flaky tests, or when setting up trace collection for a new test suite. Triggers
+  on: "trace viewer", "playwright trace", "trace.zip", "show-trace", "test failed in CI", "debug
+  CI failure", "retain-on-failure", "on-first-retry trace", "time-travel debugging", "trace
+  artifact".
 ---
 
 # Playwright Trace Viewer

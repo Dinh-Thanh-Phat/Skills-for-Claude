@@ -1,6 +1,10 @@
-﻿---
+---
 name: radix-ui-playwright
-description: Cheatsheet for testing Radix UI components with Playwright — Select, Tabs, Dialog, Dropdown, handles portal rendering. Use when testing any Radix UI component, shadcn/ui, or any component library that renders to DOM portals. Triggers on: "radix ui", "combobox", "listbox", "tabpanel", "select option không thấy", "portal", "options not found", "shadcn".
+description: >-
+  Cheatsheet for testing Radix UI components with Playwright — Select, Tabs, Dialog, Dropdown,
+  handles portal rendering. Use when testing any Radix UI component, shadcn/ui, or any component
+  library that renders to DOM portals. Triggers on: "radix ui", "combobox", "listbox",
+  "tabpanel", "select option không thấy", "portal", "options not found", "shadcn".
 type: qa-practice
 triggers:
   - "radix ui"

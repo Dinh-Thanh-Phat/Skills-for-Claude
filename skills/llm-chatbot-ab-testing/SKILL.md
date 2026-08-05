@@ -1,6 +1,12 @@
 ---
 name: llm-chatbot-ab-testing
-description: Statistical A/B testing methodology for rolling out chatbot/LLM prompt, model, or config variants — minimum detectable effect, sample size, significance tests, guardrail metrics, rollout gate. Use when comparing two prompt versions, deciding whether a model swap actually improved quality, or gating a chatbot config change before 100% rollout. Triggers on: "A/B test chatbot", "prompt A/B test", "compare LLM variants", "statistical significance chatbot", "rollout gate LLM", "is this prompt better".
+description: >-
+  Statistical A/B testing methodology for rolling out chatbot/LLM prompt, model, or config
+  variants — minimum detectable effect, sample size, significance tests, guardrail metrics,
+  rollout gate. Use when comparing two prompt versions, deciding whether a model swap actually
+  improved quality, or gating a chatbot config change before 100% rollout. Triggers on: "A/B test
+  chatbot", "prompt A/B test", "compare LLM variants", "statistical significance chatbot",
+  "rollout gate LLM", "is this prompt better".
 ---
 
 # LLM Chatbot A/B Testing

@@ -1,6 +1,14 @@
 ---
 name: llm-agent-handoff-testing
-description: Evaluate multi-agent LLM systems at the handoff (dispatch) level — the moment work crosses from a supervisor to a sub-agent — instead of only grading the final answer. Use when testing Claude Agent SDK sub-agents (Task tool), OpenAI Agents SDK handoff(), LangGraph edges, CrewAI delegation, or AutoGen turns, and a multi-agent run fails but it's unclear whether the supervisor picked the wrong sub-agent, the sub-agent drifted out of scope, or the supervisor misread the result. Triggers on: "multi-agent evaluation", "agent handoff testing", "sub-agent dispatch eval", "Task tool evaluation", "DispatchCorrectness", "ScopeFidelity", "supervisor agent testing", "evaluate Claude sub-agents".
+description: >-
+  Evaluate multi-agent LLM systems at the handoff (dispatch) level — the moment work crosses from
+  a supervisor to a sub-agent — instead of only grading the final answer. Use when testing Claude
+  Agent SDK sub-agents (Task tool), OpenAI Agents SDK handoff(), LangGraph edges, CrewAI
+  delegation, or AutoGen turns, and a multi-agent run fails but it's unclear whether the
+  supervisor picked the wrong sub-agent, the sub-agent drifted out of scope, or the supervisor
+  misread the result. Triggers on: "multi-agent evaluation", "agent handoff testing", "sub-agent
+  dispatch eval", "Task tool evaluation", "DispatchCorrectness", "ScopeFidelity", "supervisor
+  agent testing", "evaluate Claude sub-agents".
 ---
 
 # LLM Agent Handoff Testing

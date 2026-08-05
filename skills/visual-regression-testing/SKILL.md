@@ -1,6 +1,10 @@
 ---
 name: visual-regression-testing
-description: Playwright built-in visual/screenshot regression testing. Use when testing UI appearance, detecting unintended visual changes, comparing screenshots against baselines. Triggers on: "visual test", "screenshot test", "visual regression", "UI regression", "snapshot test", "toMatchSnapshot", "kiểm tra giao diện", "chụp màn hình so sánh".
+description: >-
+  Playwright built-in visual/screenshot regression testing. Use when testing UI appearance,
+  detecting unintended visual changes, comparing screenshots against baselines. Triggers on:
+  "visual test", "screenshot test", "visual regression", "UI regression", "snapshot test",
+  "toMatchSnapshot", "kiểm tra giao diện", "chụp màn hình so sánh".
 triggers:
   - "visual test"
   - "screenshot test"

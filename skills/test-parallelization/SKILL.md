@@ -1,6 +1,10 @@
 ---
 name: test-parallelization
-description: Playwright parallel test execution — workers, sharding, isolation strategies. Use when configuring parallel tests, debugging parallel failures, setting up CI sharding, or ensuring test isolation for concurrent execution. Triggers on: "parallel tests", "test workers", "shard", "run tests in parallel", "chạy test song song", "test worker", "CI sharding".
+description: >-
+  Playwright parallel test execution — workers, sharding, isolation strategies. Use when
+  configuring parallel tests, debugging parallel failures, setting up CI sharding, or ensuring
+  test isolation for concurrent execution. Triggers on: "parallel tests", "test workers",
+  "shard", "run tests in parallel", "chạy test song song", "test worker", "CI sharding".
 triggers:
   - "parallel tests"
   - "test workers"

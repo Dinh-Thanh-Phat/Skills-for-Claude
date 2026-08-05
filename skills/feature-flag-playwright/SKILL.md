@@ -1,6 +1,10 @@
 ---
 name: feature-flag-playwright
-description: Use when writing or reviewing Playwright tests for features that are gated behind feature flags (LaunchDarkly, Flagsmith, Unleash, PostHog, or env-var toggles). Triggers on: "feature flag test", "toggle-aware test", "LaunchDarkly playwright", "test flag on and off", "skip test when flag disabled", "flag fixture".
+description: >-
+  Use when writing or reviewing Playwright tests for features that are gated behind feature flags
+  (LaunchDarkly, Flagsmith, Unleash, PostHog, or env-var toggles). Triggers on: "feature flag
+  test", "toggle-aware test", "LaunchDarkly playwright", "test flag on and off", "skip test when
+  flag disabled", "flag fixture".
 ---
 
 # Feature Flag Testing with Playwright

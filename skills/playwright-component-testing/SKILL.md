@@ -1,6 +1,12 @@
 ---
 name: playwright-component-testing
-description: Playwright experimental component testing — mount real UI components in a real browser without a full app server. Use when writing isolated component tests for React, Vue, Svelte, or Solid; testing component props, events, slots, accessibility, and UI states; or migrating from Vitest/JSDOM or Cypress Component Testing to Playwright CT. Triggers on: "component test playwright", "mount component", "@playwright/experimental-ct", "playwright CT", "test React component in browser", "playwright component", "CT setup".
+description: >-
+  Playwright experimental component testing — mount real UI components in a real browser without
+  a full app server. Use when writing isolated component tests for React, Vue, Svelte, or Solid;
+  testing component props, events, slots, accessibility, and UI states; or migrating from
+  Vitest/JSDOM or Cypress Component Testing to Playwright CT. Triggers on: "component test
+  playwright", "mount component", "@playwright/experimental-ct", "playwright CT", "test React
+  component in browser", "playwright component", "CT setup".
 ---
 
 # Playwright Component Testing (Experimental CT)

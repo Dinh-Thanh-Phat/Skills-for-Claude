@@ -1,6 +1,11 @@
 ---
 name: figma-design-tokens
-description: Figma → design token pipeline using Token Studio + Style Dictionary to generate CSS custom properties, Tailwind config, and TypeScript definitions for React. Use when syncing Figma design tokens to a React codebase, setting up a design-system token pipeline, or eliminating design-to-code drift. Triggers on: "design tokens", "Figma to React", "Token Studio", "Style Dictionary", "sync Figma with code", "design system tokens".
+description: >-
+  Figma → design token pipeline using Token Studio + Style Dictionary to generate CSS custom
+  properties, Tailwind config, and TypeScript definitions for React. Use when syncing Figma
+  design tokens to a React codebase, setting up a design-system token pipeline, or eliminating
+  design-to-code drift. Triggers on: "design tokens", "Figma to React", "Token Studio", "Style
+  Dictionary", "sync Figma with code", "design system tokens".
 ---
 
 # Figma Design Tokens Pipeline

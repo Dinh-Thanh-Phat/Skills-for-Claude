@@ -1,6 +1,14 @@
 ---
 name: llm-structured-output-testing
-description: Test and validate LLM structured output quality using Pydantic schemas and the Instructor library — track schema pass-rate as a CI gate, monitor retry rate as a prompt-health signal, and design schemas for testability. Use when adding structured output to an LLM pipeline, when a structured-output prompt starts failing validation, when setting up CI gates for a new LLM feature, or when diagnosing why a model keeps needing retries. Triggers on: "structured output", "Pydantic LLM", "Instructor library", "schema validation LLM", "JSON schema LLM", "response_model", "validation error LLM", "schema pass rate", "structured output CI gate", "LLM output validation".
+description: >-
+  Test and validate LLM structured output quality using Pydantic schemas and the Instructor
+  library — track schema pass-rate as a CI gate, monitor retry rate as a prompt-health signal,
+  and design schemas for testability. Use when adding structured output to an LLM pipeline, when
+  a structured-output prompt starts failing validation, when setting up CI gates for a new LLM
+  feature, or when diagnosing why a model keeps needing retries. Triggers on: "structured
+  output", "Pydantic LLM", "Instructor library", "schema validation LLM", "JSON schema LLM",
+  "response_model", "validation error LLM", "schema pass rate", "structured output CI gate", "LLM
+  output validation".
 ---
 
 # LLM Structured Output Testing

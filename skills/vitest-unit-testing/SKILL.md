@@ -1,6 +1,10 @@
 ---
 name: vitest-unit-testing
-description: Vitest unit and component testing patterns for TypeScript/React projects. Use when writing unit tests, component tests, setting up Vitest, configuring coverage, or mocking modules with Vitest. Triggers on: "vitest", "unit test", "component test", "jest.mock", "vi.mock", "test coverage", "React Testing Library", "viết unit test", "viết component test".
+description: >-
+  Vitest unit and component testing patterns for TypeScript/React projects. Use when writing unit
+  tests, component tests, setting up Vitest, configuring coverage, or mocking modules with
+  Vitest. Triggers on: "vitest", "unit test", "component test", "jest.mock", "vi.mock", "test
+  coverage", "React Testing Library", "viết unit test", "viết component test".
 triggers:
   - "vitest"
   - "unit test"

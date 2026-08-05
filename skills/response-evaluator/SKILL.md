@@ -1,6 +1,12 @@
 ---
 name: response-evaluator
-description: Evaluate chatbot response accuracy by comparing actual responses to expected answers using Claude API for semantic scoring. Use when you need to grade chatbot answers for accuracy, relevance, completeness, and hallucination detection. Triggers on: "evaluate chatbot responses", "score chatbot accuracy", "grade AI answers", "check for hallucination in responses", "compare chatbot output to expected". Used as Step 4 in chatbot testing pipeline. Outputs JSON with scores and detailed evaluation for each response.
+description: >-
+  Evaluate chatbot response accuracy by comparing actual responses to expected answers using
+  Claude API for semantic scoring. Use when you need to grade chatbot answers for accuracy,
+  relevance, completeness, and hallucination detection. Triggers on: "evaluate chatbot
+  responses", "score chatbot accuracy", "grade AI answers", "check for hallucination in
+  responses", "compare chatbot output to expected". Used as Step 4 in chatbot testing pipeline.
+  Outputs JSON with scores and detailed evaluation for each response.
 ---
 
 # Response Evaluator
