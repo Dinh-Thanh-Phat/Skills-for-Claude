@@ -210,6 +210,16 @@ def parse_file(path: str):
         if not line.strip():
             continue
 
+        # Blockquote = ghi chu cho nhom case dang cho -> KHONG flush,
+        # neu flush thi bullet block phia sau mat nhom pending.
+        if line.lstrip().startswith(">"):
+            if pending:
+                note = clean_md(line.lstrip().lstrip(">").strip())
+                if note:
+                    block["note"] = (block.get("note", "") + "\n" + note).strip()
+                    last_key = "note"
+            continue
+
         # Van ban thuong -> ket thuc bullet block
         if not line.startswith("|"):
             flush()
