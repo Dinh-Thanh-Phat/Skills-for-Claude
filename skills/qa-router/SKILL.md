@@ -1,11 +1,6 @@
 ---
 name: qa-router
-description: >-
-  Entry point cho mọi task QA — enforce routing rules và invoke đúng skill theo đúng thứ tự. PHẢI
-  invoke trước khi làm bất kỳ task QA nào. Triggers on: "viết test", "test cases", "chạy test",
-  "run test", "debug test", "test fail", "tại sao fail", "coverage", "gap coverage", "bug
-  report", "log bug", "xong hôm nay", "kết thúc session", "test mobile", "maestro", "test
-  feature", "generate test", "viết automation", "fix test", "test này fail".
+description: Entry point cho mọi task QA — enforce routing rules và invoke đúng skill theo đúng thứ tự. PHẢI invoke trước khi làm bất kỳ task QA nào. Triggers on: "viết test", "test cases", "chạy test", "run test", "debug test", "test fail", "tại sao fail", "coverage", "gap coverage", "bug report", "log bug", "xong hôm nay", "kết thúc session", "test mobile", "maestro", "test feature", "generate test", "viết automation", "fix test", "test này fail".
 tags: [qa, routing, orchestration, entry-point]
 triggers:
   - "viết test"
@@ -50,6 +45,8 @@ triggers:
 | 1-2 lần fail bất kỳ → DỪNG, invoke `ask-when-stuck` | Hard block |
 | Trước khi chạy test → `qa-preflight` TRƯỚC | Hard block |
 | Claim "X gây Y" / gán severity / log bug → `bug-repro-isolation` (cô lập 1 biến) TRƯỚC | Hard block |
+| Viết bộ test cases từ spec/PRD → theo `qa-excel-export/references/deliverable-format.md` | Hard block |
+| Xuất Excel test cases → **MỖI MODULE 1 SHEET**, 14 cột, parse từ markdown (không gõ tay 2 lần) | Hard block |
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
 
