@@ -102,7 +102,14 @@ def clean_md(text: str) -> str:
 
 def norm_key(key: str) -> str:
     k = clean_md(key).lower().strip().rstrip(":")
-    return FIELD_MAP.get(k, "note")
+    if k in FIELD_MAP:
+        return FIELD_MAP[k]
+    # Khop tien to: "Steps duoc phep thuc hien", "Pre-condition bat buoc", ...
+    for prefix, field in (("steps", "steps"), ("pre", "pre"),
+                          ("test data", "data"), ("expected", "expected")):
+        if k.startswith(prefix):
+            return field
+    return "note"
 
 
 def split_steps(val: str) -> str:
