@@ -443,9 +443,23 @@ def main():
         print(f"[OK] {sname:34s} {len(cases):4d} cases")
 
     add_summary(wb, per_module, all_cases)
-    wb.save(OUT_FILE)
 
-    print(f"\n[DONE] {OUT_FILE}")
+    # File dang mo trong Excel -> bi lock. Ghi ra ten khac thay vi crash.
+    out = OUT_FILE
+    try:
+        wb.save(out)
+    except PermissionError:
+        base, ext = os.path.splitext(OUT_FILE)
+        n = 2
+        while os.path.exists(f"{base}_v{n}{ext}"):
+            n += 1
+        out = f"{base}_v{n}{ext}"
+        wb.save(out)
+        print(f"\n[WARN] {os.path.basename(OUT_FILE)} dang mo trong Excel (bi lock).")
+        print(f"[WARN] Da ghi ra: {os.path.basename(out)}")
+        print("[WARN] Dong Excel roi chay lai neu muon ghi de ban goc.")
+
+    print(f"\n[DONE] {out}")
     print(f"       {len(all_cases)} cases / {len(per_module)} module sheets + 1 summary")
     blocked = [c["id"] for c in all_cases if c["blocked"]]
     print(f"       BLOCKED: {len(blocked)} -> {', '.join(blocked)}")
