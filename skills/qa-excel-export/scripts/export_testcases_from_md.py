@@ -222,6 +222,11 @@ def parse_file(path: str):
     RE_XREF = re.compile(
         r"(xem|Xem|Chi tiết|chi tiết|Trùng|trùng|Ripple|ripple)\s+[A-Z]{2,4}-[A-Z0-9-]+"
     )
+    # Chuan hoa: bo newline dau/cuoi (xay ra khi '- **Steps:**' de trong roi xuong dong)
+    for c in cases:
+        for k in ("pre", "steps", "data", "expected", "note"):
+            c[k] = c[k].strip("\n").strip()
+
     for c in cases:
         if c["expected"] or c["blocked"]:
             continue
