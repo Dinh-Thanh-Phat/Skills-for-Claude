@@ -11,6 +11,8 @@ triggers:
   - "kiểm tra accessibility"
   - "kiểm tra trợ năng"
   - "tab navigation"
+  - "ElementInternals"
+  - "form-associated custom element"
 scope:
   - qa
   - e2e
@@ -344,6 +346,42 @@ test('A11Y-005: Invalid email shows accessible error', async ({ page }) => {
 
 ---
 
+## axe-core 4.13.0 (August 2026)
+
+Released 2026-08-05. Playwright's `@axe-core/playwright` picks this up on the next `npm update` —
+no config change needed to get the new checks, but two behaviors are worth knowing before your
+next CI run surfaces something unexpected:
+
+**ElementInternals scanning is now on by default.** Custom elements / Web Components that call
+`this.attachInternals()` and set their accessible role, label, or validity through the
+`ElementInternals` object (rather than plain `role`/`aria-label` attributes) were previously
+invisible to this — the capability existed but sat behind an unreleased internal flag
+(`axe._enableElementInternals`). 4.13.0 removes that flag entirely, so `aria-allowed-attr`,
+`label`, `navigation`, and form-related checks now resolve names/roles set via internals
+automatically. If your app uses form-associated custom elements (a common pattern for design-system
+input components), re-run your a11y suite after upgrading — you may see **new, previously-hidden**
+violations or passes on elements that were silently skipped before, not a regression in your code.
+
+**Deprecated ARIA attributes are now flagged as `needs-review`, not a violation.** `aria-allowed-attr`
+puts deprecated attribute usage into `results.incomplete` rather than `results.violations`. The
+common CI pattern `expect(results.violations).toEqual([])` (used throughout this skill) will **not**
+catch these — they pass silently unless you also assert on `results.incomplete`:
+
+```typescript
+const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).analyze();
+expect(results.violations).toEqual([]);
+if (results.incomplete.length) {
+  console.warn('Needs review:', results.incomplete.map(r => r.id)); // e.g. deprecated ARIA attrs
+}
+```
+
+**Other 4.13.0 changes:** two new landmark-adjacent roles, `sectionheader`/`sectionfooter`;
+`role="image"` is now treated as an alias for `role="img"`; several `color-contrast` stacking-context
+false positives were fixed — if you excluded a contrast violation as a "known false positive," re-run
+the scan on that element before assuming the exclusion still applies.
+
+---
+
 ## Checklist — A11Y Test Review
 
 - [ ] Every page/feature has at least one a11y scan test
@@ -362,3 +400,6 @@ test('A11Y-005: Invalid email shows accessible error', async ({ page }) => {
 - Playwright a11y CI guide: https://testdino.com/blog/playwright-accessibility
 - Deque Systems 57% coverage study (2026): https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
 - Playwright release notes (native `contrast` emulateMedia option, `toHaveAccessibleErrorMessage()`): https://playwright.dev/docs/release-notes
+- axe-core 4.13.0 changelog (2026-08-05): https://raw.githubusercontent.com/dequelabs/axe-core/master/CHANGELOG.md
+- axe-core PR #5284 — graduating ElementInternals support off the `axe._enableElementInternals` flag to on-by-default: https://github.com/dequelabs/axe-core/pull/5284
+- axe-core results object structure (`violations`/`incomplete`/`passes`/`inapplicable`): https://github.com/dequelabs/axe-core/blob/develop/doc/API.md
