@@ -5,6 +5,58 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-08 (GMT+7)
+
+Orientation caught a repeat of the 2026-08-04 near-miss pattern: this run was invoked from a stale
+`main` checkout (last synced 2026-07-29) and, before switching to `skill-evolution`, independently
+drafted two updates that felt like genuine findings — a Maestro "swipe from an element with an
+element-relative `point`" addition to `maestro-mobile` (verified against the first-party `swipe.md`
+API reference) and a DeepEval "`flaky` boolean on `LLMTestCase`/`BaseMetric`" addition to
+`deepeval-llm-cicd` (v4.1.5, verified against `llm_test_case.py`/`base_metric.py`/`test_run.py`
+source). Switching to `skill-evolution` per the runbook (step 1 must read the actual branch, not
+`main`) surfaced merge conflicts showing both were already shipped, in more depth: the swipe/point
+feature was documented 2026-08-01 with Kotlin-source-and-test-fixture verification (not just the
+docs page), alongside `setPermissions`/`assertScreenshot` variable support and the Maestro-Cloud
+JUnit/HTML report linkage that this run's draft had skipped as "not a surgical fit"; the DeepEval
+`flaky` flag was documented 2026-07-30/07-31 with the *correct* semantics (metric-level `flaky`
+suppresses test-case failure entirely via `test_run/api.py`'s success-aggregation step — confirmed
+by re-reading that file just now) — this run's independent draft had gotten that semantic wrong,
+describing `flaky` as purely a separate reporting sub-count rather than a failure suppressor, which
+would have been a factual regression had it been merged over the already-correct 07-30 content.
+Discarded both drafts via `git reset --hard`/`git stash drop`, no edit made to either skill. Lesson
+reinforced (already noted 2026-08-04): orient from `skill-evolution`'s actual file content before
+drafting anything, not from `main`'s log or `main`'s file state, both of which lag significantly by
+design since the user merges manually.
+
+With the near-miss cleared, re-verified all four primary sources directly against the same
+first-party endpoints the 2026-08-07 run used, to confirm nothing shipped in the one day since:
+Playwright (`release-notes-js.md` — 1.62 remains the only/latest `## Version` header), Maestro
+(`CHANGELOG.md` — 2.8.0 remains latest, "Unreleased" section still empty), DeepEval (GitHub releases
+— v4.1.5, July 29, remains latest), Promptfoo (`CHANGELOG.md` — 0.122.0, Aug 4, remains latest,
+still Node-20-drop + dependency-security-patches only), axe-core (`CHANGELOG.md` — 4.13.0, Aug 5,
+remains latest). QA test design (general 2026 technique sweep — only AI-assisted/shift-left-shift-
+right/pairwise-70%-reduction trend framing, same as every prior run of this angle, no new
+reproducible technique).
+
+- No changes — the two candidate updates drafted this run were both already-shipped duplicates
+  (one of them a would-be factual regression), caught before commit by switching to the actual
+  `skill-evolution` branch content per the runbook. Every primary release/changelog re-check
+  (Playwright, Maestro, DeepEval, Promptfoo, axe-core) confirmed the version already documented by
+  the 2026-08-07 run, unchanged one day later. QA test design sweep returned only trend-level
+  framing already covered by existing skills. Quality-over-quantity and no-duplicates guardrails
+  applied.
+- SKIPPED Maestro/mobile — 2.8.0 remains latest; swipe/`point` draft discarded as a duplicate of the
+  2026-08-01 `maestro-mobile` update (which is also more rigorously sourced — Kotlin fixtures, not
+  just the docs page).
+- SKIPPED AI chatbot/LLM testing — DeepEval `flaky` draft discarded as a duplicate of the
+  2026-07-30/07-31 update, whose semantics (failure-suppressing, not just reporting) this run's
+  independent re-derivation had gotten wrong before catching the duplicate; Promptfoo 0.122.0 and
+  axe-core 4.13.0 both confirmed still latest and already fully documented.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, no new release in the one day since
+  2026-08-07.
+- SKIPPED QA test design — general sweep returned only trend framing already covered by
+  `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/`metamorphic-testing`.
+
 ## 2026-08-07 (GMT+7)
 
 Domains researched: Playwright/web E2E (release-notes re-check via direct fetch of `release-notes-js.md` — 1.62 confirmed still latest stable, verbatim bullet list matches `playwright-1.62-new-apis`), Maestro/mobile (changelog re-check via direct fetch of `CHANGELOG.md` — 2.8.0 confirmed still latest, no "Unreleased" section content beyond what's already documented; secondary "Maestro AI natural-language testing 2026" sweep surfaced MaestroGPT (plain-English → Maestro YAML generation) and Maestro MCP — both already documented, confirmed via grep: `MaestroGPT` exists in `skills/maestro-studio`, MCP tooling in `skills/maestro-mcp-workflow`/`skills/maestro-viewer`), AI chatbot/LLM testing (DeepEval PyPI JSON re-check — v4.1.5 confirmed still latest; the PyPI summarizer again mis-rendered upload years as 2024 on a first pass, a known WebFetch small-model artifact per this log's recurring notes, discarded without trusting the dates; Promptfoo CHANGELOG.md re-check via direct fetch — 0.122.0 (Aug 4) confirmed still latest, already logged 2026-08-05 as Node-20-drop + security-patch release only; axe-core CHANGELOG.md re-check via direct fetch — 4.13.0 (2026-08-05) confirmed still latest, already fully documented by the 2026-08-06 `accessibility-testing` update; secondary "LLM-as-judge / Agent-as-Judge 2026" sweep — grepped for "Agent-as-Judge" across `skills/`, found only this log's own prior mention (2026-08-04 entry, already resolved as a duplicate of `llm-agent-trajectory-eval`'s existing LLM-as-judge-for-agents coverage) — no new reproducible technique), QA test design (general "QA test design new technique August 2026" sweep — only EP/error-guessing/shift-left-shift-right/AI-driven/security-focused/exploratory-testing trend framing, all already covered by `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/`metamorphic-testing`/`qa-exploratory`, no new reproducible technique).
