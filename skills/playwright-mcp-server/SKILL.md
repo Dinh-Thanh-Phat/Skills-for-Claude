@@ -121,10 +121,15 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 
 ---
 
-## 2026 Updates (v0.0.71 → v0.0.78)
+## 2026 Updates (v0.0.71 → v0.0.79)
 
 Verified against the official `microsoft/playwright-mcp` GitHub releases page — none of these were previously documented here:
 
+- **`browser_take_screenshot` gains a `type` option (v0.0.79, Aug 6)** — pick `png`, `jpeg`, or `webp` explicitly; when unset, the format is inferred from the filename extension, mirroring the WebP support Playwright 1.62 added to `page.screenshot()`.
+- **`--codegen` supports more languages (v0.0.79)** — generated code can now target `python`, `java`, and `csharp` in addition to `typescript`.
+- **`--timeout-settle` (v0.0.79)** — configurable settle delay (`timeouts.settle` config option, default 500ms) controlling how long the server waits after each action for triggered navigations/requests to settle before returning a snapshot; raise it for pages with slow post-action network activity to avoid snapshotting mid-transition state.
+- **`--snapshot-boxes` (v0.0.79)** — enables bounding boxes in every snapshot globally via CLI/config, not just per-command as before.
+- **CDP relay WebSocket security fix (v0.0.79)** — the browser-extension mode now validates `Host`/`Origin` headers on CDP relay WebSocket upgrades; relevant if you run the extension-based connection mode, closes a spoofing gap.
 - **`browser_find` (v0.0.78, July 9)** — searches the current accessibility snapshot for a text/regex match and returns just the matching nodes with surrounding context, instead of re-reading the whole tree. Use it on large pages (long tables, big forms) to save tokens versus re-calling `browser_snapshot` and scanning manually.
 - **`--mobile` flag (v0.0.78)** — enables mobile viewport/UA emulation for the server's browser session; snapshots are also less verbose by default as of this release to cut token usage further.
 - **`browser_drop` (v0.0.71)** — exposes `Locator.drop` as an MCP tool, so an agent can complete a drag-and-drop sequence (e.g. drop a file card onto an upload zone) without falling back to raw mouse-move/mouse-up calls.
@@ -168,4 +173,5 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 - [Playwright MCP Server: How to Set Up, Configure & Use It (2026) — TestCollab](https://testcollab.com/blog/playwright-mcp)
 - https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md (1.62 — bundled `npx playwright mcp` entry point)
 - [6 Most Popular Playwright MCP Servers for AI Testing in 2026 — Bug0](https://bug0.com/blog/playwright-mcp-servers-ai-testing)
-- [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.78)](https://github.com/microsoft/playwright-mcp/releases)
+- [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.79)](https://github.com/microsoft/playwright-mcp/releases)
+- https://api.github.com/repos/microsoft/playwright-mcp/releases/tags/v0.0.79
