@@ -219,6 +219,34 @@ Lỗi âm thầm nhất của cả phiên, chỉ lộ ra khi tôi `ls` lại th�
 
 ---
 
+## LUẬT 13 — KHI NÀO DỪNG SỬA VÀ ĐI HỎI
+
+Không có luật dừng thì tôi vá vô hạn. Thực tế: **~10 vòng instruction + 4 bản KB** cho cùng một
+nhóm lỗi, sau khi bằng chứng đã chỉ rõ lỗi không nằm ở lớp tôi đang sửa.
+
+**Dừng và đi hỏi (platform / dev / user) khi gặp BẤT KỲ dấu hiệu nào:**
+- **2 vòng sửa cùng một lớp mà tỉ lệ không nhúc nhích** → sai lớp. Đừng vòng thứ 3.
+- Ca hỏng **không phản ứng** với thay đổi lớn (thêm 302 alias mà 0/3 vẫn 0/3) → cơ chế nằm ngoài
+  tầm với.
+- Vá được ca A thì **rớt ca B**, lặp lại 2 lần → đang tối ưu vào một ràng buộc không kiểm soát được.
+
+Câu hỏi mang đi hỏi phải kèm bằng chứng, không hỏi chung chung:
+1. Truy xuất khớp theo **trường nào**? (kèm ca: tên đầy đủ đúng / gọi tắt trượt)
+2. Mỗi truy vấn lấy **bao nhiêu đoạn**, có nâng được không?
+3. Câu từ chối mặc định sinh ra ở **bước nào**, có sửa được nội dung không?
+
+## LUẬT 14 — Thí nghiệm tốn kém phải KHAI TRƯỚC dự đoán và CA ĐỐI CHỨNG
+
+Trước khi chạy một thay đổi lớn (sửa KB hàng loạt, đổi cấu hình, viết lại instruction), **nói ra
+trước**:
+- **Dự đoán:** ca nào sẽ lên, lên tới mức nào.
+- **Ca đối chứng:** ca nào phải **giữ nguyên** — nếu nó rớt thì nguyên nhân là thay đổi này.
+- **Điều kiện kết luận sai:** thấy gì thì coi như giả thuyết sai và **dừng hướng đó**.
+
+Đã làm đúng một lần và nó có tác dụng: khai trước rằng 302 alias sẽ vá K37/K39, lấy K38 làm đối
+chứng. Kết quả K37/K39 **0/3 → 0/3** → kết luận thẳng là giả thuyết sai và bỏ hướng KB, thay vì
+vá thêm vòng nữa. Không khai trước thì rất dễ tự diễn giải kết quả xấu thành "có cải thiện nhẹ".
+
 ## Checklist review một instruction
 
 **Trước khi sửa**
