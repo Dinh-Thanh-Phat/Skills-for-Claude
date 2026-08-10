@@ -192,6 +192,30 @@ Không đặt dấu ngoặc kép quanh tên sản phẩm, quanh giá.
 - **Kiểm chứng công cụ chấm TRƯỚC.** Regex giá thiếu cờ `i` từng cho 23 lượt bịa giá lọt qua
   và bị báo là sạch. Danh sách "cụm từ cấm" sai từng khiến tôi chấm **câu trả lời đúng sự thật**
   là bịa (chính sách ship thật của shop). Xem `verify-the-instrument-before-the-finding`.
+- **MỘT harness dùng chung, không chép tay.** Xem luật dưới.
+
+---
+
+## LUẬT 12 — Công cụ đo phải là MỘT module, và vá lỗi phải vá HẾT
+
+Lỗi âm thầm nhất của cả phiên, chỉ lộ ra khi tôi `ls` lại thư mục:
+
+- **128 script**, hàm đọc câu trả lời bị **chép tay vào 43 file**.
+- Bot và khách dùng **chung một CSS class** → bong bóng cuối có thể là **câu hỏi của chính mình**.
+  Bản chép tay kiểm tra ổn định bằng độ dài: `if (l === t && l.length > 20) break;` — câu hỏi của
+  mình cũng dài hơn 20 ký tự nên **luôn đúng**, script chốt vào bong bóng rỗng rồi báo
+  "bot không trả lời". Tôi đã kết luận sai về bot dựa trên dữ liệu này.
+- Khi tìm ra, tôi **chỉ vá 8 file, để nguyên 35 file**. Chúng vẫn chạy, vẫn in bảng số đẹp,
+  và vẫn sai. Thư mục **trông như đã sửa xong**.
+
+**Luật:**
+1. Hàm hỏi/đọc/chấm nằm trong **một** module (`lib/hoi.mjs`). Script đo chỉ `import`.
+2. Tìm ra lỗi trong công cụ đo → vá ở lib, **hoặc khoá/gắn cảnh báo mọi bản chép**.
+   **Vá một phần là tệ hơn không vá** — nó tạo cảm giác đã xong.
+3. Ghi một `CANHBAO.md` liệt kê đích danh file không được tin, và **thứ đáng cứu** trong đó
+   (ca test độc nhất) trước khi nghĩ tới xoá.
+4. Đặt tên script theo **câu hỏi đang trả lời**, không theo phiên bản (`do_lai2`, `deploy_v9`
+   nói lên đúng số 0 thông tin cho phiên sau).
 
 ---
 
