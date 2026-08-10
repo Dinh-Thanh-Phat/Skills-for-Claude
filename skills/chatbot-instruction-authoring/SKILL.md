@@ -263,5 +263,10 @@ vá thêm vòng nữa. Không khai trước thì rất dễ tự diễn giải k
 - [ ] Không có luật nội bộ nào có thể bị đọc cho khách?
 - [ ] Độ dài KHÔNG tăng, hoặc tăng có lý do nêu được?
 
+**Trước khi chạy đo**
+- [ ] Đã khai dự đoán + ca đối chứng + điều kiện kết luận sai? (LUẬT 14)
+- [ ] Đã đến ngưỡng phải dừng và đi hỏi chưa? (LUẬT 13)
+- [ ] Script đo có `import` từ lib dùng chung, không chép tay? (LUẬT 12)
+
 Liên quan: `chatbot-kb-file-design`, `chatbot-platform-config-audit`,
 `llm-hallucination-detection`, `response-evaluator`.
