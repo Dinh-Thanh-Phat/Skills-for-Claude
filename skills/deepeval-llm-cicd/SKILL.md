@@ -8,7 +8,8 @@ description: |
   "answer relevancy metric", "faithfulness metric", "hallucination detection CI",
   "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric",
   "flaky metric deepeval", "deepeval flaky test case", "deepeval typescript", "deepeval npm",
-  "deepeval-ts", "deepeval vitest", "toPass matcher".
+  "deepeval-ts", "deepeval vitest", "toPass matcher", "MCPUseMetric", "MCPTaskCompletionMetric",
+  "MultiTurnMCPUseMetric", "deepeval mcp evaluation", "test agent mcp tool use".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -329,6 +330,51 @@ conversations = synth.simulate(
 # Returns list[ConversationalTestCase] ready for assert_test()
 ```
 
+## MCP-Aware Agent Evaluation (v4.1.6/4.1.7, August 2026)
+
+If your agent talks to Model Context Protocol servers, `LLMTestCase` and `ConversationalTestCase`
+now carry dedicated MCP fields — `mcp_servers` (`MCPServer`: `server_name`, `transport`,
+`available_tools`/`available_resources`/`available_prompts`), `mcp_tools_called`
+(`MCPToolCall`: `name`, `args`, `result`), `mcp_resources_called` (`MCPResourceCall`: `uri`,
+`result`), and `mcp_prompts_called` (`MCPPromptCall`: `name`, `result`) — plus three metrics
+that judge MCP usage directly, instead of treating MCP calls as generic `tools_called` and
+losing the resource/prompt-primitive distinction:
+
+- **`MCPUseMetric`** (single-turn, `LLMTestCase`) — scores `min(primitive_selection_score,
+  argument_correctness_score)`: did the agent pick the right MCP tool/resource/prompt for the
+  input, and were the arguments passed to it correct? Distinct from `ToolCorrectnessMetric`,
+  which only compares against an expected call sequence and doesn't know about MCP's
+  tool/resource/prompt primitive split.
+- **`MultiTurnMCPUseMetric`** (conversational) — the same selection/argument scoring, averaged
+  per-task across a multi-turn conversation's "unit interactions" instead of one isolated call.
+- **`MCPTaskCompletionMetric`** (conversational) — extracts individual tasks from the
+  conversation, scores whether each was completed (accounting for the MCP tool calls/results
+  used to complete it), and averages the per-task scores.
+
+All three take the same common kwargs as other metrics (`threshold`, `model`, `include_reason`,
+`strict_mode`, `flaky`, `async_mode`) and need the relevant `mcp_*` fields actually populated to
+have anything to judge — instrument your agent's MCP client to record calls into these fields
+rather than reusing `tools_called`.
+
+```python
+from deepeval.test_case import LLMTestCase, MCPServer, MCPToolCall
+from deepeval.metrics import MCPUseMetric
+
+mcp_case = LLMTestCase(
+    input="What's the weather in Hanoi?",
+    actual_output=agent.run("What's the weather in Hanoi?"),
+    mcp_servers=[MCPServer(server_name="weather-mcp", transport="stdio")],
+    mcp_tools_called=[MCPToolCall(name="get_weather", args={"city": "Hanoi"}, result="28C, clear")],
+)
+
+assert_test(mcp_case, [MCPUseMetric(threshold=0.7)])
+```
+
+Use this instead of (or alongside) `skills/mcp-server-testing` — that skill tests an MCP
+*server* itself as the system under test (protocol/contract/security); these metrics evaluate an
+*agent's* use of MCP servers as part of its response quality, the same CI-gate pattern as every
+other metric in this skill.
+
 ## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
 
 Standard metrics score one output in isolation. `ArenaGEval` instead picks a **winner** between
@@ -465,7 +511,7 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/guides/guides-multi-turn-evaluation-metrics
 - https://www.confident-ai.com/blog/multi-turn-llm-evaluation-in-2026
 - https://deepeval.com/docs/metrics-arena-g-eval
-- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/package.json (npm package name; version `0.1.32` at time of writing)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/package.json (npm package name; version `0.9.10` at time of writing, up from `0.1.32`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/index.ts (exported API surface — exports `metrics` and `evaluate`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/metrics/index.ts and the ~40 metric dirs under `typescript/src/metrics/` — local judge metrics DO exist in TypeScript
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/metrics/answer-relevancy/answer-relevancy.ts (imports `DeepEvalBaseLLM`/`initializeModel`/`generateWithSchema` — proof of local judge execution)
@@ -482,3 +528,8 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://github.com/confident-ai/deepeval/releases/tag/python-v4.1.4 (July 29 2026, PR #2951)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/llm_test_case.py
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/base_metric.py
+- https://github.com/confident-ai/deepeval/tags (python-v4.1.6 and python-v4.1.7, both Aug 9 2026 — MCP evaluation support)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp_use_metric/mcp_use_metric.py (`MCPUseMetric`)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp/multi_turn_mcp_use_metric.py (`MultiTurnMCPUseMetric`)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp/mcp_task_completion.py (`MCPTaskCompletionMetric`)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/mcp.py (`MCPServer`/`MCPToolCall`/`MCPResourceCall`/`MCPPromptCall` field definitions)
