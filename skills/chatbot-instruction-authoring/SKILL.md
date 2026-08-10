@@ -1,65 +1,68 @@
 ---
 name: chatbot-instruction-authoring
-description: Use when writing, repairing, or reviewing the system instruction of a RAG sales/support chatbot (InCard Agentic, Yasaka, Dify, any "instructions + trained docs" platform) — covers fallback catalogues, escape hatches for mandatory slots, section routing, and how to avoid prompt edits that cause fabrication.
+description: Use when writing, repairing, or reviewing the system instruction of a RAG sales/support chatbot (InCard Agentic, Yasaka, Dify, any "instructions + trained docs" platform). Enforces conflict-review before editing, complete fallback coverage, escape hatches for mandatory slots, and section routing.
 ---
 
 # Viết instruction cho chatbot RAG bán hàng
 
-Rút ra từ ~40 vòng sửa instruction bot NARENCA (InCard Agentic, bot 276 + 291), 6/8/2026.
-Mỗi luật dưới đây đều sinh ra từ một lỗi đã đo được, không phải suy đoán.
+Rút từ phiên NARENCA (InCard Agentic, bot 276 + 291) 6–10/8/2026. Mỗi luật sinh từ một lỗi
+đã đo, phần lớn là **lỗi của tôi**, được chính user chỉ ra.
 
-## Luật 0 — Xác định LỚP trước khi sửa chữ nào
+---
 
-Ba lớp, sửa nhầm lớp là đốt cả buổi:
+## LUẬT 1 — SỬA bằng cách VIẾT LẠI, không bao giờ bằng cách THÊM VÀO
 
-| Lớp | Sở hữu cái gì | Dấu hiệu |
+**Đây là lỗi tốn kém nhất của cả phiên.** Tôi vá từng lỗi bằng cách chèn thêm một mục vào cuối
+instruction, không lần nào đọc lại toàn bộ để xem mục mới có **mâu thuẫn** với mục cũ không.
+Instruction phình **6.064 → 15.905 ký tự qua ~10 vòng**, và bot chạy *tệ đi*, không tốt lên.
+
+Các mâu thuẫn tôi tự tạo ra rồi tự đi đuổi hàng giờ:
+
+| Mục A nói | Mục B nói | Bot làm gì |
 |---|---|---|
-| **Platform config** | chuỗi từ chối cố định, citation, ngôn ngữ, model, guard | câu trả lời **giống hệt từng ký tự** qua nhiều lượt và **không đổi dù xoá hết** khỏi instruction |
-| **Retrieval + KB** | bot có mở được mục hay không | hỏi bằng **tên đầy đủ** thì đúng, hỏi **gọi tắt** thì chặn |
-| **Instruction** | **hình dạng** câu trả lời khi bot ĐÃ đọc được dữ liệu | nội dung đúng nhưng trình bày sai, hỏi ngược khách, thiếu link/ảnh |
+| §11 "khi bí thì dùng câu dự phòng này" | §7,§8,§9,§9b "cấm dùng câu dự phòng" | không còn đường hợp lệ → rơi về mặc định platform |
+| §10 "không chắc thì đừng nêu tên" | §9b "cấm từ chối, phải so sánh hai bên" | bịa sản phẩm thứ hai cho cân |
+| §7 "phải nói rõ lấy ví dụ từ mẫu nào" | §10 "chỉ nêu tên khi đọc thấy dòng ###" | bịa "Quả Địa Cầu Tự Xoay – 25cm" |
 
-Chạy `chatbot-platform-config-audit` trước. Instruction **không** sửa được lỗi của hai lớp kia — mọi vòng sửa thêm chỉ làm instruction dài ra và sinh lỗi mới.
+**Quy trình bắt buộc mỗi lần sửa:**
+1. **Đọc lại TOÀN BỘ** instruction hiện tại trước khi gõ chữ nào.
+2. Liệt kê mọi mục **nhắc tới cùng hành vi** với chỗ sắp sửa (từ chối, hỏi lại khách, nêu tên,
+   nêu giá, gửi link). Đây là các ứng viên mâu thuẫn.
+3. Sửa **tại chỗ** trong các mục đó. Chỉ tạo mục mới khi thực sự là hành vi chưa từng có.
+4. **Bảng đối chiếu cuối:** mỗi mục CẤM một hành vi → chỉ ra mục nào cung cấp hành vi thay thế.
+   Ô nào trống là một lỗ hổng, và ở chế độ tuân thủ nghiêm thì lỗ hổng = lỗi.
+5. Độ dài không tăng thì tốt. Instruction dài ra sau một bản vá là **dấu hiệu** vá sai chỗ.
 
-## Luật 1 — Mọi lệnh CẤM phải kèm hành vi THAY THẾ
+Bản user viết lại rất tốt chính vì nó **gom** chứ không thêm: mọi mục cấm từ chối đều trỏ về
+đúng một catalogue `§11b`, thay vì mỗi mục tự chế một câu.
 
-Cấm mà không kê thay thế → model tự nghĩ ra một câu nghe êm tai, thường là bịa.
+---
 
-```
-SAI:  Không được nói "hết hàng — không chào bán".
-ĐÚNG: Không viết luật này ra cho khách. Thay vào đó dùng câu mẫu §6.
-```
+## LUẬT 2 — Instruction phải PHỦ KÍN, vì bot không được phép ứng biến
 
-## Luật 2 — Mọi ô BẮT BUỘC phải có LỐI THOÁT tường minh
+Nếu platform có cờ kiểu `do_not_go_beyond_instructions` (InCard) / strict mode / "chỉ trả lời
+theo tài liệu" và cờ đó **BẬT**, thì bot **tuân thủ tuyệt đối** instruction. Đây là chế độ nên
+dùng cho bot bán hàng — nhưng nó **khuếch đại** chất lượng instruction theo cả hai chiều:
 
-Đã vấp **5 lần trong một phiên**, cùng một cơ chế: bắt buộc có một trường → không tra được → bịa.
+- Instruction đầy đủ, không mâu thuẫn → bot làm rất sát, câu mẫu viết sao ra vậy.
+- Instruction có lỗ hổng → bot **không tự nghĩ ra lối thoát**, nó rơi về câu mặc định của
+  platform (`"Tôi không tìm thấy thông tin này trong tài liệu được cung cấp."`).
 
-| Ô bắt buộc tôi thêm vào | Model bịa ra |
-|---|---|
-| "phải gợi ý mẫu thay thế" | tên biến thể không tồn tại |
-| "phải kèm link" | 3 tên miền không có thật |
-| "từ chối là sai" | 4 sản phẩm ma |
-| "nói rõ lấy ví dụ từ mẫu nào" | "Quả Địa Cầu Tự Xoay – 25cm" (không có) |
-| "so sánh phải nêu song song hai bên" | bịa bên thứ hai cho cân |
+Chuỗi mặc định đó **không phải guard đè lên prompt**. Nó là **triệu chứng của lỗ hổng**.
+Tôi đã kết luận sai theo hướng ngược lại và đốt nhiều vòng vô ích. Cách vá đúng là **viết câu mẫu
+tường minh cho đúng tình huống đang rơi**, không phải đi cấm chuỗi đó.
 
-Khuôn đúng, đủ **ba** phần trong cùng một chỗ:
-1. **Nguồn** — "chép nguyên từ dòng `Giá bán:` của đúng mục đó, không nhớ, không suy, không làm tròn".
-2. **Lối thoát** — "không mở được mục nào thì dừng ở câu ngắn, bỏ hẳn phần này".
-3. **Xếp hạng lỗi** — "điền số không có trong dữ liệu là lỗi NẶNG HƠN việc trả lời ngắn". Không xếp hạng thì model chọn cái nó vừa bị ép.
+→ Thấy câu mặc định của platform: **hỏi "instruction thiếu câu mẫu cho tình huống nào?"**, đừng
+hỏi "làm sao chặn chuỗi này".
 
-Đánh dấu ô tuỳ chọn ngay trong câu mẫu:
+---
 
-```
-{TUỲ CHỌN, chỉ thêm khi đang thực sự đọc được mục ### của một biến thể còn hàng:
- hoặc anh/chị tham khảo giúp em <tên chép nguyên> — giá <giá chép nguyên>, hiện còn hàng ạ.}
-```
+## LUẬT 3 — Một CATALOGUE câu dự phòng theo tình huống, không phải một câu
 
-## Luật 3 — Một CATALOGUE câu dự phòng, không phải một câu
-
-Một câu dự phòng duy nhất là bẫy: các luật khác đều phải cấm dùng nó ("không dùng câu dự phòng cho §7, §8, §9, §9b"), và khi model rơi vào đúng các ca đó mà vẫn bí thì **không còn câu hợp lệ nào** → nó tự chế, hoặc im, hoặc rơi về chuỗi guard của platform.
-
-Đúng: một mục `§11b` liệt kê câu mẫu **theo tình huống**, mỗi luật khác trỏ tới đúng câu.
+Một câu dự phòng duy nhất luôn dẫn tới Luật 1: các mục khác buộc phải cấm nó, và cấm xong là hở.
 
 ```
+§11b — chọn đúng một tình huống:
 (a) khách nêu tên sản phẩm không tra được   → xin đường kính hoặc ảnh
 (b) so sánh, chỉ mở được một bên            → trình bày bên đó + hỏi nhu cầu
 (c) so sánh, không mở được bên nào          → nêu 3 trục khác biệt + hỏi 1 câu
@@ -71,27 +74,51 @@ Một câu dự phòng duy nhất là bẫy: các luật khác đều phải c�
 
 Ba quy tắc kèm theo, thiếu là hỏng:
 - Mỗi câu chỉ hỏi khách **tối đa một** câu hỏi.
-- **Không giải thích** vì sao chưa trả lời được. Khách không cần biết.
-- **Không xếp chồng** hai câu dự phòng. Chọn một.
+- **Không giải thích** vì sao chưa trả lời được.
+- **Không xếp chồng** hai câu dự phòng.
 
-Và: **mỗi câu dự phòng phải kết thúc bằng một hướng đi tiếp cho khách.** Từ chối cụt = khách rời đi.
+Và **mỗi câu phải kết thúc bằng một hướng đi tiếp cho khách**. Từ chối cụt = khách rời đi.
 
-## Luật 4 — Luật "phải có thật" không được biến thành giấy phép im lặng
+---
 
-Luật chống bịa tên rất dễ bị model đọc thành "không chắc thì đừng nói gì". Phải viết rõ phạm vi của nó và kèm thang xuống cấp:
+## LUẬT 4 — Mọi ô BẮT BUỘC phải có LỐI THOÁT tường minh
 
+Đã vấp **5 lần trong một phiên**, cùng một cơ chế: ép có một trường → không tra được → bịa.
+
+| Ô bắt buộc tôi thêm vào | Model bịa ra |
+|---|---|
+| "phải gợi ý mẫu thay thế" | tên biến thể không tồn tại |
+| "phải kèm link" | 3 tên miền không có thật |
+| "từ chối là sai" | 4 sản phẩm ma |
+| "nói rõ lấy ví dụ từ mẫu nào" | "Quả Địa Cầu Tự Xoay – 25cm" |
+| "so sánh phải nêu song song hai bên" | bịa bên thứ hai cho cân |
+
+Khuôn đúng, đủ **ba** phần trong cùng một chỗ:
+1. **Nguồn** — "chép nguyên từ dòng `Giá bán:` của đúng mục đó, không nhớ, không suy, không làm tròn".
+2. **Lối thoát** — "không mở được mục nào thì dừng ở câu ngắn, bỏ hẳn phần này".
+3. **Xếp hạng lỗi** — "điền số không có trong dữ liệu là lỗi NẶNG HƠN việc trả lời ngắn".
+
+Đánh dấu ô tuỳ chọn ngay trong câu mẫu:
+```
+{TUỲ CHỌN, chỉ thêm khi đang thực sự đọc được mục ### của một biến thể còn hàng:
+ hoặc anh/chị tham khảo giúp em <tên chép nguyên> — giá <giá chép nguyên>, hiện còn hàng ạ.}
+```
+
+---
+
+## LUẬT 5 — Luật chống bịa không được biến thành giấy phép im lặng
+
+Phải viết rõ phạm vi + thang xuống cấp:
 ```
 Luật này chi phối việc NÊU TÊN sản phẩm. Nó KHÔNG cho phép bạn im lặng hay từ chối.
-
-Thứ tự ưu tiên khi bí:
 1. Trả lời được phần nào thì trả lời phần đó, bỏ phần không chắc.
 2. Không nêu được tên cụ thể thì trả lời chung, vẫn phải có nội dung.
-3. Không còn gì để nói thì dùng §11 hoặc §11b — luôn có một câu hợp lệ để dùng.
+3. Không còn gì để nói thì dùng §11b — luôn có một câu hợp lệ để dùng.
 ```
 
-## Luật 5 — Cấm HỌ TỪ NGỮ, không cấm một chuỗi
+---
 
-Cấm đúng một câu → model đổi chữ, giữ nguyên cảm giác "shop không nắm được hàng của mình".
+## LUẬT 6 — Cấm HỌ TỪ NGỮ, không cấm một chuỗi
 
 ```
 Cấm tuyệt đối, trong mọi câu trả lời, kể cả khi từ chối:
@@ -100,56 +127,89 @@ Cấm tuyệt đối, trong mọi câu trả lời, kể cả khi từ chối:
   ngữ cảnh, không tìm thấy, không có thông tin
 ```
 
-## Luật 6 — Ca ở RANH GIỚI phải có luật phân định riêng
+---
 
-Hai mục instruction chồng lấn → model chọn ngẫu nhiên → tỉ lệ đúng dao động. Viết tie-breaker bằng **cụm từ thật của khách**, không bằng khái niệm:
+## LUẬT 7 — Ca ở RANH GIỚI phải có tie-breaker bằng cụm từ THẬT của khách
 
 ```
-Khách hỏi "khác nhau thế nào", "là gì", "có bền không", "dùng để làm gì"
-  → §7, trả lời luôn, không hỏi lại.
-Khách hỏi "có mẫu nào", "cho xem", "bao nhiêu tiền"
-  → §8, được hỏi lại một câu.
+"khác nhau thế nào" / "là gì" / "có bền không" / "dùng để làm gì" → §7, trả lời luôn
+"có mẫu nào" / "cho xem" / "bao nhiêu tiền"                      → §8, được hỏi lại một câu
 ```
+Hai mục chồng lấn mà không phân định → model chọn ngẫu nhiên → tỉ lệ đúng dao động, và bạn sẽ
+tưởng là lỗi dữ liệu.
 
-## Luật 7 — Hỏi khách một câu thì phải trả lời được câu khách hỏi ngược
+---
 
-Bot hỏi "anh/chị quan tâm cỡ nào" rồi khách hỏi "shop có những cỡ nào" mà bot từ chối → khách bế tắc và rời đi. Mọi câu hỏi ngược khả dĩ đều phải có đáp án đóng trong KB, và instruction phải nói thẳng "tuyệt đối không từ chối câu này".
+## LUẬT 8 — KHÔNG nhét dữ liệu vào instruction
 
-## Luật 8 — Luật dành cho bot, đừng để bot đọc cho khách
+Instruction chứa **luật**; KB chứa **dữ liệu**. Nhét giá, link, danh sách cỡ, danh sách màu vào
+instruction thì catalogue đổi một cái là instruction nói dối, mà không ai nhớ để sửa.
+
+Ca thật: `§11b(a)` liệt kê cứng "10cm, 10.6cm, 16cm, 20cm, 23cm, 30cm" — **thiếu 140mm và 200mm**
+của dòng lơ lửng. Khách cầm quả 140mm nghe một danh sách không có cỡ của mình.
+→ Trỏ về mục BẢNG TRA NHANH trong KB, đừng liệt kê.
+
+---
+
+## LUẬT 9 — Cần một hành vi phức tạp thì tách FILE TRAIN RIÊNG, đừng phình instruction
+
+Xem `chatbot-kb-file-design`. Tóm tắt: tôi đã cố dạy bot **so sánh sản phẩm** bằng cách nhồi
+luật vào instruction (§9b, 5 bước) rồi nhồi bảng tra vào file KB lớn — **thất bại cả hai**
+(3/9 lượt, có lượt bịa sản phẩm và giá). Cách đúng là **một file .md train riêng cho so sánh**,
+instruction chỉ giữ **một luật nhỏ** trỏ tới nó.
+
+---
+
+## LUẬT 10 — Luật dành cho bot, đừng để bot đọc cho khách
 
 ```
 Không nhận đơn cho món hết hàng — nhưng đây là luật dành cho bạn,
 không viết luật này ra cho khách đọc.
 ```
-Không có câu bảo vệ đó, bot dán nguyên văn nhãn nội bộ vào câu trả lời (đã xảy ra thật: `"HẾT HÀNG — không chào bán, không nhận đơn"`). Cũng cấm luôn các nhãn kỹ thuật của KB (`Tình trạng:`, `Giá bán:`, `Phân biệt:`) xuất hiện trong câu trả lời.
+Không có câu bảo vệ đó, bot dán nguyên văn nhãn nội bộ vào câu trả lời (đã xảy ra thật:
+`"HẾT HÀNG — không chào bán, không nhận đơn"`). Cấm luôn các nhãn kỹ thuật của KB
+(`Tình trạng:`, `Giá bán:`, `Phân biệt:`) xuất hiện trong câu trả lời.
 
-## Luật 9 — Trình bày phải viết ra thành luật, không mặc định
+---
 
-Lỗi format hay gặp: gạch đầu dòng trống rồi mới xuống dòng viết chữ (lồng cấp giả).
+## LUẬT 11 — Trình bày phải viết ra thành luật
+
 ```
 Dùng "- " ở đầu dòng, không thụt lề, không dùng •, không lồng nhiều cấp.
 Mỗi gạch đầu dòng phải có nội dung NGAY TRÊN CÙNG DÒNG ĐÓ.
 Không để dòng trống xen giữa các gạch đầu dòng.
+Không đặt dấu ngoặc kép quanh tên sản phẩm, quanh giá.
 ```
 
-## Đo lường — luật cứng
+---
 
-- **N ≥ 8 lượt / ca.** Bot RAG dao động rất mạnh. Đã hai lần trong một phiên tôi báo "3/3, sửa xong" rồi phải rút lại khi đo lại. **3 lượt không phân biệt được 50% với 90%.**
-- **Báo tỉ lệ, không báo pass/fail.** "K15 1/3" chứ không phải "K15 hỏng".
-- **Đổi một lớp mỗi lần.** Sửa instruction VÀ train KB cùng lúc → không quy được nguyên nhân. (Đã vấp: K15 rớt 3/3 → 1/3, không biết do KB hay do dao động.)
-- **Luôn chạy lại canh regression** trên nhóm đang tốt. Bản vá cho ca A thường làm rớt ca B. Nhóm "hỏi bằng tên đầy đủ sản phẩm" là canh tốt nhất (ổn định 30/30).
-- **Kiểm chứng công cụ chấm trước khi tin kết quả.** Regex thiếu cờ `i` đã làm 23 lượt bịa giá lọt qua và bị báo là sạch. Xem `verify-the-instrument-before-the-finding`.
+## Đo lường
+
+- **N ≥ 8 lượt / ca.** Đã hai lần trong một phiên báo "3/3, xong" rồi phải rút lại.
+- **Báo tỉ lệ, không báo pass/fail.**
+- **Đổi một lớp mỗi lần** (instruction HOẶC KB HOẶC config).
+- **Luôn có nhóm canh regression** — nhóm "hỏi bằng tên đầy đủ sản phẩm" ổn định nhất.
+- **Kiểm chứng công cụ chấm TRƯỚC.** Regex giá thiếu cờ `i` từng cho 23 lượt bịa giá lọt qua
+  và bị báo là sạch. Danh sách "cụm từ cấm" sai từng khiến tôi chấm **câu trả lời đúng sự thật**
+  là bịa (chính sách ship thật của shop). Xem `verify-the-instrument-before-the-finding`.
+
+---
 
 ## Checklist review một instruction
 
-- [ ] Mỗi lệnh CẤM có kèm hành vi thay thế?
-- [ ] Mỗi ô BẮT BUỘC có nguồn + lối thoát + xếp hạng lỗi?
-- [ ] Có catalogue câu dự phòng theo tình huống, mỗi câu kết thúc bằng hướng đi tiếp?
-- [ ] Luật chống bịa có nói rõ "không cho phép im lặng"?
-- [ ] Có cấm họ từ ngữ máy móc, không chỉ một chuỗi?
-- [ ] Các mục chồng lấn có tie-breaker bằng cụm từ thật?
-- [ ] Câu bot hỏi ngược khách đều có đáp án đóng trong KB?
-- [ ] Không có luật nội bộ nào có thể bị đọc cho khách?
-- [ ] Có luật trình bày (bullet, ngoặc kép, nhãn kỹ thuật)?
+**Trước khi sửa**
+- [ ] Đã đọc lại toàn bộ bản hiện tại?
+- [ ] Đã liệt kê các mục nói về cùng hành vi với chỗ sắp sửa?
+- [ ] Sửa tại chỗ thay vì thêm mục mới?
 
-Liên quan: `chatbot-platform-config-audit`, `llm-hallucination-detection`, `response-evaluator`, `chatbot-tester`.
+**Sau khi sửa**
+- [ ] Mỗi mục CẤM một hành vi đều chỉ ra được mục cung cấp hành vi thay thế?
+- [ ] Mỗi ô BẮT BUỘC có nguồn + lối thoát + xếp hạng lỗi?
+- [ ] Catalogue dự phòng phủ hết các tình huống bị cấm dùng câu chung?
+- [ ] Không có dữ liệu (giá, cỡ, link, danh sách) nằm trong instruction?
+- [ ] Hành vi phức tạp đã tách thành file train riêng chưa?
+- [ ] Không có luật nội bộ nào có thể bị đọc cho khách?
+- [ ] Độ dài KHÔNG tăng, hoặc tăng có lý do nêu được?
+
+Liên quan: `chatbot-kb-file-design`, `chatbot-platform-config-audit`,
+`llm-hallucination-detection`, `response-evaluator`.
