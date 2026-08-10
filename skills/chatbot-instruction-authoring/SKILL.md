@@ -263,6 +263,22 @@ vá thêm vòng nữa. Không khai trước thì rất dễ tự diễn giải k
 - [ ] Không có luật nội bộ nào có thể bị đọc cho khách?
 - [ ] Độ dài KHÔNG tăng, hoặc tăng có lý do nêu được?
 
+**Kiểm bằng script — CHỈ hai phép, phần còn lại phải đọc bằng mắt**
+
+Đã thử mechanize cả checklist. Hai phép này đáng tin và **đã bắt được lỗi thật**:
+1. **Mọi tham chiếu `§X` phải trỏ tới mục có thật** — bắt lỗi "trỏ hụt" khi đổi số mục mà quên
+   sửa chỗ trỏ tới.
+2. **Mọi câu mẫu dự phòng phải có đường đến** — câu định nghĩa mà không mục nào trỏ tới thì hoặc
+   thừa, hoặc **đang tranh chỗ với một câu khác cho cùng tình huống** → bot không biết chọn cái nào.
+
+Các phép còn lại **đã thử và cho quá nhiều báo động giả**, đừng lặp lại:
+- bắt "dữ liệu bị nhét vào instruction" bằng regex giá → **bắt trúng số hotline** thành giá;
+- bắt "lệnh cấm không có lối thoát" bằng regex → 7/9 là báo động giả (bắt trúng tiêu đề mục, bắt
+  trúng dòng có lối thoát nhưng diễn đạt khác).
+
+→ **Checklist này là quy trình ĐỌC, không phải linter.** Chỉ hai phép cấu trúc trên mới nên tự
+động hoá. Bản dùng được: `chatbots/narenca/lint_instruction.py`.
+
 **Trước khi chạy đo**
 - [ ] Đã khai dự đoán + ca đối chứng + điều kiện kết luận sai? (LUẬT 14)
 - [ ] Đã đến ngưỡng phải dừng và đi hỏi chưa? (LUẬT 13)
