@@ -8,7 +8,8 @@ description: |
   Native/Flutter/Expo as a single cross-platform runner — use this skill too when asked
   about maestro-runner on those platforms. Triggers on: "real iOS device maestro", "physical
   device maestro", "maestro iPhone", "maestro runner", "maestro-runner", "devicelab maestro",
-  "maestro real device", "maestro-runner react native", "maestro-runner flutter".
+  "maestro real device", "maestro-runner react native", "maestro-runner flutter",
+  "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -139,6 +140,40 @@ is now a legitimate single-binary alternative across *all* those platforms, with
 - **Web support** with Playwright-style actionability gates on `tapOn` (element must be enabled,
   not `pointer-events: none`, etc.) and auto-surfaced, color-coded browser console errors in
   flow reports.
+
+## v1.1.20 → v1.1.22: New Commands (July–August 2026)
+
+Three releases since the v1.1.19 baseline above added testing-relevant capability, not just bug fixes:
+
+- **`hierarchy` subcommand (v1.1.22)** — dumps the current on-device view hierarchy as normalized JSON,
+  the same tree Maestro itself uses for selector matching, across all drivers (real iOS, Android,
+  Web, React Native, Flutter). Use it for selector discovery/debugging instead of guessing from a
+  screenshot:
+  ```bash
+  maestro-runner hierarchy --device <UDID>              # full tree
+  maestro-runner hierarchy --device <UDID> --compact     # flat listing
+  maestro-runner hierarchy --device <UDID> --find "Add to Cart"   # filter by substring
+  ```
+- **`addMedia` on all platforms (v1.1.22)** — injects photos/videos into the device gallery for
+  flows that test upload pickers; on **real iOS devices** this now works via PhotoKit, which stock
+  Maestro/simulators cannot do (simulators can only seed media at boot, not mid-flow on hardware).
+- **`swipe` distance parameter (v1.1.22)** — a centered, fixed-length gesture instead of the default
+  edge-to-edge travel, for flows where a full-screen swipe overshoots the target.
+- **`swipe: from: <selector>` with `duration:` (v1.1.20)** — selector-anchored swipes derive their
+  start coordinates from an element's bounds and honor a `duration:` across all drivers (this is
+  maestro-runner's own implementation; it predates and is separate from core Maestro's later
+  element-relative-`point` swipe support already documented in `maestro-mobile`).
+- **`assertScreenshot` (v1.1.21)** — maestro-runner ships its own visual-regression implementation
+  (Go stdlib pixel diff, no new dependencies) producing highlighted `*__diff.png` images on failure,
+  auto-creating a baseline on first run, and re-baselining via `--update-screenshots`. Same YAML
+  shape as core Maestro's `assertScreenshot` (documented in `maestro-visual-testing`), but it's a
+  separate reimplementation — diff output and thresholding behavior may not match core Maestro
+  pixel-for-pixel, so don't assume baselines are interchangeable between the two.
+- **Step-level `platform:` conditions (v1.1.21)** — restrict a single step to a platform; it's
+  *skipped*, not failed, on other platforms — useful for cross-platform flows (Web/RN/Flutter) with
+  one or two platform-specific steps instead of forking the whole flow file.
+- **App crash reporting (v1.1.21)** — Android detects the app dying mid-flow and pulls the logcat
+  crash cause when available, instead of the flow just timing out on the next step with no signal.
 
 ## Key Caveats
 
