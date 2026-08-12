@@ -9,7 +9,8 @@ description: |
   about maestro-runner on those platforms. Triggers on: "real iOS device maestro", "physical
   device maestro", "maestro iPhone", "maestro runner", "maestro-runner", "devicelab maestro",
   "maestro real device", "maestro-runner react native", "maestro-runner flutter",
-  "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot".
+  "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot",
+  "maestro-runner dark mode", "maestro-runner lint", "maestro-runner setDarkMode".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -174,6 +175,40 @@ Three releases since the v1.1.19 baseline above added testing-relevant capabilit
   one or two platform-specific steps instead of forking the whole flow file.
 - **App crash reporting (v1.1.21)** — Android detects the app dying mid-flow and pulls the logcat
   crash cause when available, instead of the flow just timing out on the next step with no signal.
+
+## v1.1.23: Dark Mode, `lint`, Latency Metrics (August 2026)
+
+- **Dark mode control** — four new commands: `setDarkMode: dark` (or `light`, or `{enabled: true}`),
+  `toggleDarkMode`, `assertDarkMode`, `assertLightMode`. Android drives this via `cmd uimode night`;
+  iOS simulators via `simctl ui appearance`; **physical iOS devices and Web return an explicit error**
+  instead of a silent no-op, since neither can be toggled programmatically.
+- **`lint` subcommand** — parses flow files and reports YAML/syntax errors without a connected device
+  or simulator:
+  ```bash
+  maestro-runner lint flows/
+  ```
+  Use it as a fast pre-commit/CI gate before the much slower device-backed `test` run.
+- **`hierarchy --screenshot <path>`** — captures a screenshot from the same session that produced the
+  view-hierarchy dump (the `hierarchy` subcommand itself shipped in v1.1.22, above), so the
+  selector-discovery JSON and its visual reference come from one atomic capture instead of two calls
+  that could race against a changing screen.
+- **Per-step latency in `report.json`** — each flow's report now carries a `stepLatency` block with
+  `p50`/`p95`/`max`/`mean` timings and the slowest command type, so you can profile which step is
+  dragging out a flow instead of only seeing total duration.
+- **`point:` on `swipe: from:`** — pick where inside a scrollable element the gesture starts:
+  ```yaml
+  - swipe:
+      from: {id: editor-input, point: "20%, 50%"}
+      direction: DOWN
+      distance: 0.4
+  ```
+
+Notable fixes in this release: `point:` was previously silently ignored on `doubleTapOn`/`longPressOn`
+(now honored); `distance:` was ignored on `swipe: from:` (now honored); taps could land on an
+on-screen keyboard and still report success (an occlusion guard now checks after all input steps and
+fails instead); DeviceLab swipes were inconsistent run-to-run because they shelled out to
+`adb shell input swipe` — now routed through the on-device agent for consistent distance (re-record
+any DeviceLab swipe-distance screenshot baselines, since this changes actual swipe distance).
 
 ## Key Caveats
 
