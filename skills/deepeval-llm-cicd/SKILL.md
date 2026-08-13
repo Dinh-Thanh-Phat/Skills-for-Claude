@@ -375,6 +375,41 @@ Use this instead of (or alongside) `skills/mcp-server-testing` — that skill te
 *agent's* use of MCP servers as part of its response quality, the same CI-gate pattern as every
 other metric in this skill.
 
+**v4.1.8 (August 2026): auto-classification from `evaluate(mcp_servers=...)`.** The manual
+`mcp_tools_called`/`MCPToolCall` instrumentation above still works, but `evaluate()` (not
+`assert_test()`) now takes a top-level `mcp_servers` param that removes it for the common case:
+
+```python
+from deepeval import evaluate
+from deepeval.test_case import LLMTestCase, ToolCall
+
+test_case = LLMTestCase(
+    input="What's the weather in Hanoi?",
+    actual_output=agent.run("What's the weather in Hanoi?"),
+    tools_called=[ToolCall(name="get_weather", input_parameters={"city": "Hanoi"})],
+)
+
+evaluate(
+    test_cases=[test_case],
+    metrics=[MCPUseMetric(threshold=0.7)],
+    mcp_servers=[my_official_mcp_server],  # a real mcp.server.MCPServer instance works directly
+)
+```
+
+Passing the **real MCP SDK server object** (not DeepEval's `MCPServer` dataclass) is now
+supported directly — `evaluate()` calls the live server's `list_tools()`/`list_resources()`/
+`list_prompts()` to build the tool inventory itself. It then walks every test case's plain
+`tools_called`/`expected_tools` (ordinary `ToolCall`, not `mcp_tools_called`) and flips
+`ToolCall.type` from its new default `ToolCallType.FUNCTION` to `ToolCallType.MCP` for any call
+whose `name` matches one of the server's tools — so `MCPUseMetric` can score MCP usage from
+tool-call instrumentation you likely already have, without a separate `mcp_tools_called`
+recording path. This only fires through `evaluate()`'s `mcp_servers` kwarg or a `mcp_servers`
+already set directly on the test case; `assert_test()` still has no `mcp_servers` parameter, so
+route MCP-classified runs through `evaluate()`. Verified against `deepeval/test_case/mcp.py`
+(`normalize_mcp_servers`, `_from_official_mcp_server`), `deepeval/test_case/utils.py`
+(`classify_tool_call_types`, `process_mcp_servers`), and the `evaluate()`/`assert_test()`
+signatures in `deepeval/evaluate/evaluate.py`.
+
 ## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
 
 Standard metrics score one output in isolation. `ArenaGEval` instead picks a **winner** between
@@ -532,4 +567,9 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp_use_metric/mcp_use_metric.py (`MCPUseMetric`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp/multi_turn_mcp_use_metric.py (`MultiTurnMCPUseMetric`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/mcp/mcp_task_completion.py (`MCPTaskCompletionMetric`)
-- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/mcp.py (`MCPServer`/`MCPToolCall`/`MCPResourceCall`/`MCPPromptCall` field definitions)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/mcp.py (`MCPServer`/`MCPToolCall`/`MCPResourceCall`/`MCPPromptCall` field definitions; also `normalize_mcp_servers`/`_from_official_mcp_server`/`get_available_mcp_tool_names`, v4.1.8)
+- https://pypi.org/pypi/deepeval/json (confirmed v4.1.8 latest, Aug 12 2026)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/_version.py
+- https://github.com/confident-ai/deepeval/compare/v4.1.7...v4.1.8.diff
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/utils.py (`classify_tool_call_types`/`process_mcp_servers`)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/evaluate/evaluate.py (`evaluate()`/`assert_test()` signatures — `mcp_servers` param on `evaluate()` only)
