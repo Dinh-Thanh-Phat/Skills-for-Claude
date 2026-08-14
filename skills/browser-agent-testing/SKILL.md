@@ -1,6 +1,17 @@
 ---
 name: browser-agent-testing
-description: Test browser-use / computer-use AI agents (Browser Use, Claude Computer Use, OpenAI Operator/CUA, and similar autonomous GUI-driving agents) as the system under test — distinct from using Playwright/Maestro AI agents as a testing tool. Covers the six-failure-mode taxonomy (DOM selector drift, screenshot ambiguity, login state, modal interruptions, rate-limit cliffs, irreversibility), the "silent wrong-success" anti-pattern and evidence-based assertion fix, a staging-mirror pattern for gating irreversible actions, and why public benchmarks (WebVoyager, WebArena) overstate production reliability. Use when QA-testing an autonomous agent that clicks/types/navigates a real browser or OS UI on its own, evaluating whether such an agent is production-ready, or designing a regression harness for one. Triggers on: "browser-use agent testing", "computer-use agent evaluation", "test AI browser agent", "operator agent QA", "GUI agent reliability", "agent silent wrong success", "irreversible action agent testing".
+description: >-
+  Test browser-use / computer-use AI agents (Browser Use, Claude Computer Use, OpenAI
+  Operator/CUA, and similar autonomous GUI-driving agents) as the system under test — distinct
+  from using Playwright/Maestro AI agents as a testing tool. Covers the six-failure-mode taxonomy
+  (DOM selector drift, screenshot ambiguity, login state, modal interruptions, rate-limit cliffs,
+  irreversibility), the "silent wrong-success" anti-pattern and evidence-based assertion fix, a
+  staging-mirror pattern for gating irreversible actions, and why public benchmarks (WebVoyager,
+  WebArena) overstate production reliability. Use when QA-testing an autonomous agent that
+  clicks/types/navigates a real browser or OS UI on its own, evaluating whether such an agent is
+  production-ready, or designing a regression harness for one. Triggers on: "browser-use agent
+  testing", "computer-use agent evaluation", "test AI browser agent", "operator agent QA", "GUI
+  agent reliability", "agent silent wrong success", "irreversible action agent testing".
 ---
 
 # Browser-Use / Computer-Use Agent Testing

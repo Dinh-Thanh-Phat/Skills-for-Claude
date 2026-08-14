@@ -1,6 +1,12 @@
 ---
 name: gapps-script-batch-ops
-description: Google Apps Script performance and quota patterns for Sheets automation — batch reads/writes, parallel HTTP, trigger design, and Cloud Logging. Use when writing Apps Script code for Google Sheets, hitting 6-minute execution limits, needing to process large datasets inside Sheets, or scheduling automated Workspace tasks. Triggers on: "Apps Script", "google apps script", "SpreadsheetApp", "getValues", "setValues", "onEdit trigger", "time-driven trigger", "apps script quota", "batch update sheets script".
+description: >-
+  Google Apps Script performance and quota patterns for Sheets automation — batch reads/writes,
+  parallel HTTP, trigger design, and Cloud Logging. Use when writing Apps Script code for Google
+  Sheets, hitting 6-minute execution limits, needing to process large datasets inside Sheets, or
+  scheduling automated Workspace tasks. Triggers on: "Apps Script", "google apps script",
+  "SpreadsheetApp", "getValues", "setValues", "onEdit trigger", "time-driven trigger", "apps
+  script quota", "batch update sheets script".
 ---
 
 # Google Apps Script — Batch Operations & Performance

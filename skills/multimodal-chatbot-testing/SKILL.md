@@ -1,6 +1,14 @@
 ---
 name: multimodal-chatbot-testing
-description: Test AI chatbots/agents that accept image or video input (visual QA, document-image upload, chart/screenshot understanding) — distinct from the text-only chatbot-tester pipeline. Covers the MLLM-as-a-Judge scoring pattern (with its known scoring-consistency biases) and lmms-eval for benchmark-style regression testing of the underlying vision-language model. Use when testing a chatbot that takes image/video input, evaluating visual-QA or chart-reading accuracy, or regression-testing a VLM before/after a model swap. Triggers on: "test image chatbot", "multimodal LLM testing", "vision-language model evaluation", "MLLM-as-a-judge", "test chart reading AI", "lmms-eval", "VLM regression test".
+description: >-
+  Test AI chatbots/agents that accept image or video input (visual QA, document-image upload,
+  chart/screenshot understanding) — distinct from the text-only chatbot-tester pipeline. Covers
+  the MLLM-as-a-Judge scoring pattern (with its known scoring-consistency biases) and lmms-eval
+  for benchmark-style regression testing of the underlying vision-language model. Use when
+  testing a chatbot that takes image/video input, evaluating visual-QA or chart-reading accuracy,
+  or regression-testing a VLM before/after a model swap. Triggers on: "test image chatbot",
+  "multimodal LLM testing", "vision-language model evaluation", "MLLM-as-a-judge", "test chart
+  reading AI", "lmms-eval", "VLM regression test".
 ---
 
 # Multimodal Chatbot Testing

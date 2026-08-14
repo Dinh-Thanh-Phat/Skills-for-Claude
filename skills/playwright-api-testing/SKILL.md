@@ -1,6 +1,13 @@
 ---
 name: playwright-api-testing
-description: Playwright API testing using the built-in request fixture and APIRequestContext — test REST and GraphQL endpoints directly without a browser, share auth state with browser sessions, and combine API setup with UI validation in a single test file. Use when testing REST APIs, GraphQL endpoints, or hybrid flows where API data setup precedes UI verification. Triggers on: "playwright API testing", "request fixture playwright", "APIRequestContext", "test API without browser playwright", "playwright REST test", "playwright GraphQL test", "API setup before UI test".
+description: >-
+  Playwright API testing using the built-in request fixture and APIRequestContext — test REST and
+  GraphQL endpoints directly without a browser, share auth state with browser sessions, and
+  combine API setup with UI validation in a single test file. Use when testing REST APIs, GraphQL
+  endpoints, or hybrid flows where API data setup precedes UI verification. Triggers on:
+  "playwright API testing", "request fixture playwright", "APIRequestContext", "test API without
+  browser playwright", "playwright REST test", "playwright GraphQL test", "API setup before UI
+  test".
 ---
 
 # Playwright API Testing (APIRequestContext)

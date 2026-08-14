@@ -1,6 +1,13 @@
 ---
 name: playwright-ui-mode
-description: Use Playwright's interactive UI mode (--ui flag) to develop and debug tests with watch mode, time-travel DOM inspection, locator picking, and test filtering — without re-running from the terminal. Use when writing new tests and you want live feedback on locator changes, when a test is failing locally and you want to step through actions with DOM snapshots, or when you want to pick accurate locators from a live page. Triggers on: "playwright ui mode", "--ui flag", "interactive test runner", "watch mode playwright", "pick locator", "time travel debugging local", "playwright debug locally", "ui mode vs headed", "npx playwright test --ui".
+description: >-
+  Use Playwright's interactive UI mode (--ui flag) to develop and debug tests with watch mode,
+  time-travel DOM inspection, locator picking, and test filtering — without re-running from the
+  terminal. Use when writing new tests and you want live feedback on locator changes, when a test
+  is failing locally and you want to step through actions with DOM snapshots, or when you want to
+  pick accurate locators from a live page. Triggers on: "playwright ui mode", "--ui flag",
+  "interactive test runner", "watch mode playwright", "pick locator", "time travel debugging
+  local", "playwright debug locally", "ui mode vs headed", "npx playwright test --ui".
 ---
 
 # Playwright UI Mode

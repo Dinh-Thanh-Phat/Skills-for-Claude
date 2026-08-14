@@ -1,6 +1,16 @@
 ---
 name: llm-red-teaming
-description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin", "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
+description: >-
+  Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection,
+  jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when
+  testing an AI application for security and responsibility vulnerabilities before deployment,
+  running adversarial red-team exercises, adding injection resistance checks to CI, or auditing
+  for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak
+  test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security
+  testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override",
+  "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin",
+  "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP
+  agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
 ---
 
 # LLM Red Teaming

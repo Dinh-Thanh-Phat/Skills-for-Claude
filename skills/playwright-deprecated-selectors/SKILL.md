@@ -1,6 +1,11 @@
 ---
 name: playwright-deprecated-selectors
-description: Identifies and migrates away from removed Playwright selector engines — _react, _vue, and the :light suffix. Use when a test throws "Unknown engine" errors, when upgrading Playwright, or when reviewing tests that use component-based selectors. Triggers on: "_react selector", "_vue selector", ":light selector", "Unknown engine", "selector engine removed", "migrate Playwright selectors".
+description: >-
+  Identifies and migrates away from removed Playwright selector engines — _react, _vue, and the
+  :light suffix. Use when a test throws "Unknown engine" errors, when upgrading Playwright, or
+  when reviewing tests that use component-based selectors. Triggers on: "_react selector", "_vue
+  selector", ":light selector", "Unknown engine", "selector engine removed", "migrate Playwright
+  selectors".
 ---
 
 # Playwright Deprecated Selectors — Migration Guide

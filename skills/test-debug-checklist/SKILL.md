@@ -1,6 +1,9 @@
 ---
 name: test-debug-checklist
-description: Quick stop-and-diagnose checklist when a single test fails — prevent jumping to fixes without evidence. Use as a quick reference when debugging one specific failing test. Triggers on: "test fail", "debug test", "why test", "test not passing", single test failure scenarios.
+description: >-
+  Quick stop-and-diagnose checklist when a single test fails — prevent jumping to fixes without
+  evidence. Use as a quick reference when debugging one specific failing test. Triggers on: "test
+  fail", "debug test", "why test", "test not passing", single test failure scenarios.
 ---
 
 # Test Debug Checklist — Stop & Diagnose

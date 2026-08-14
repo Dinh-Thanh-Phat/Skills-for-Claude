@@ -1,6 +1,12 @@
 ---
 name: qa-e2e-complete
-description: Write complete, high-value Playwright E2E automation tests that verify real business outcomes — not just UI clicks. Use this skill whenever writing or reviewing automation tests, especially when tests "all pass" but features seem broken, when asked to "write proper tests", "fix shallow tests", "make tests actually useful", "write automation test suite", or when test cases only click buttons without asserting outcomes. This skill prevents the #1 QA anti-pattern: tests that always pass regardless of whether the feature works.
+description: >-
+  Write complete, high-value Playwright E2E automation tests that verify real business outcomes —
+  not just UI clicks. Use this skill whenever writing or reviewing automation tests, especially
+  when tests "all pass" but features seem broken, when asked to "write proper tests", "fix
+  shallow tests", "make tests actually useful", "write automation test suite", or when test cases
+  only click buttons without asserting outcomes. This skill prevents the #1 QA anti-pattern:
+  tests that always pass regardless of whether the feature works.
 ---
 
 # QA: Complete E2E Automation Tests

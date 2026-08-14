@@ -1,6 +1,12 @@
 ---
 name: chatbot-tester
-description: Main orchestrator for automated AI chatbot testing pipeline. Use this skill whenever the user wants to test an AI chatbot's accuracy, performance, or quality — especially when given a Google Drive link with documentation and a chatbot URL. Triggers on: "test my chatbot", "evaluate chatbot accuracy", "run chatbot QA", "benchmark my AI assistant", "test bot with documents". Coordinates the full pipeline: read docs → generate questions → call chatbot → evaluate responses → analyze performance → generate report.
+description: >-
+  Main orchestrator for automated AI chatbot testing pipeline. Use this skill whenever the user
+  wants to test an AI chatbot's accuracy, performance, or quality — especially when given a
+  Google Drive link with documentation and a chatbot URL. Triggers on: "test my chatbot",
+  "evaluate chatbot accuracy", "run chatbot QA", "benchmark my AI assistant", "test bot with
+  documents". Coordinates the full pipeline: read docs → generate questions → call chatbot →
+  evaluate responses → analyze performance → generate report.
 ---
 
 # Chatbot Tester — Main Orchestrator

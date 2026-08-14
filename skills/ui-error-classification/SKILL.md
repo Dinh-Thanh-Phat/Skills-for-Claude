@@ -1,6 +1,11 @@
 ---
 name: ui-error-classification
-description: Classify UI error messages as expected behavior vs production bug before writing assertions or filing bugs. Use when a test sees an error message on screen, when deciding if a UI error is a bug or correct behavior, when "test fails because error message appears", "form shows error", "something went wrong", "lỗi xuất hiện trên UI", "test báo lỗi nhưng tôi không chắc là bug không". CRITICAL: Always invoke this before deciding whether to fix the test or file a bug.
+description: >-
+  Classify UI error messages as expected behavior vs production bug before writing assertions or
+  filing bugs. Use when a test sees an error message on screen, when deciding if a UI error is a
+  bug or correct behavior, when "test fails because error message appears", "form shows error",
+  "something went wrong", "lỗi xuất hiện trên UI", "test báo lỗi nhưng tôi không chắc là bug
+  không". CRITICAL: Always invoke this before deciding whether to fix the test or file a bug.
 scope: playwright, qa, bug-classification, forms, ui-testing
 ---
 

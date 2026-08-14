@@ -1,6 +1,12 @@
 ---
 name: playwright-agentic-apis
-description: Playwright 1.59 agentic testing APIs — locator.normalize() to canonicalize brittle selectors, page.pickLocator() for interactive element discovery, page.screencast for precise annotated video recording. Use when migrating CSS/XPath locators to ARIA-best-practice form, exploring unfamiliar UIs interactively, or recording annotated test videos. Triggers on: "locator.normalize", "pickLocator", "screencast", "normalize locator", "interactive locator picker", "annotated video recording", "Playwright 1.59".
+description: >-
+  Playwright 1.59 agentic testing APIs — locator.normalize() to canonicalize brittle selectors,
+  page.pickLocator() for interactive element discovery, page.screencast for precise annotated
+  video recording. Use when migrating CSS/XPath locators to ARIA-best-practice form, exploring
+  unfamiliar UIs interactively, or recording annotated test videos. Triggers on:
+  "locator.normalize", "pickLocator", "screencast", "normalize locator", "interactive locator
+  picker", "annotated video recording", "Playwright 1.59".
 ---
 
 # Playwright 1.59 Agentic Testing APIs

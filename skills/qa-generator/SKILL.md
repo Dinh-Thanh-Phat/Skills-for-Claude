@@ -1,6 +1,12 @@
 ---
 name: qa-generator
-description: Generate comprehensive test questions with expected answers from document content using Claude API or Groq API. Use when you need to create a test question bank from reference documents to evaluate a chatbot or AI system. Triggers on: "generate test questions from docs", "create QA pairs from document", "make test cases from content", "generate chatbot test questions". Used as Step 2 in chatbot testing pipeline. Outputs structured JSON with factual, reasoning, and edge case questions.
+description: >-
+  Generate comprehensive test questions with expected answers from document content using Claude
+  API or Groq API. Use when you need to create a test question bank from reference documents to
+  evaluate a chatbot or AI system. Triggers on: "generate test questions from docs", "create QA
+  pairs from document", "make test cases from content", "generate chatbot test questions". Used
+  as Step 2 in chatbot testing pipeline. Outputs structured JSON with factual, reasoning, and
+  edge case questions.
 ---
 
 # QA Generator — Test Question Generator

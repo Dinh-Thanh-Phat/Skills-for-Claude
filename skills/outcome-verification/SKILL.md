@@ -1,6 +1,10 @@
 ---
 name: outcome-verification
-description: Verify business outcomes (not just UI actions) in E2E tests. Use when writing Playwright tests for any user workflow — form submissions, sends, creates, deletes, updates. Ask "how do I KNOW this worked?" before writing assertions. Triggers on: "write test", "viết test", "test workflow", "test form", "test submit", any E2E test creation.
+description: >-
+  Verify business outcomes (not just UI actions) in E2E tests. Use when writing Playwright tests
+  for any user workflow — form submissions, sends, creates, deletes, updates. Ask "how do I KNOW
+  this worked?" before writing assertions. Triggers on: "write test", "viết test", "test
+  workflow", "test form", "test submit", any E2E test creation.
 ---
 
 # Outcome Verification Skill

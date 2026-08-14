@@ -1,6 +1,9 @@
 ---
 name: timeout-discipline
-description: Prevent blind timeout escalation in Playwright/E2E tests. Use when a test is flaky or timing out — BEFORE adjusting any timeout value. Triggers on: "test timeout", "flaky test", "increase timeout", "test bị timeout", "test flaky".
+description: >-
+  Prevent blind timeout escalation in Playwright/E2E tests. Use when a test is flaky or timing
+  out — BEFORE adjusting any timeout value. Triggers on: "test timeout", "flaky test", "increase
+  timeout", "test bị timeout", "test flaky".
 ---
 
 # Timeout Discipline Skill

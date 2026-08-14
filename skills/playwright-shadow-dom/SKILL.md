@@ -1,6 +1,11 @@
 ---
 name: playwright-shadow-dom
-description: Testing web components and Shadow DOM elements with Playwright — auto-piercing behavior, locator patterns, closed root workarounds, and framework-specific strategies. Use when tests target Lit, Shoelace, SAP UI5, Salesforce Lightning, or any app using custom HTML elements with shadow roots. Triggers on: shadow DOM, web components, shadow root, custom elements, Shoelace, Lit, SAP UI5, pierce, closed shadow.
+description: >-
+  Testing web components and Shadow DOM elements with Playwright — auto-piercing behavior,
+  locator patterns, closed root workarounds, and framework-specific strategies. Use when tests
+  target Lit, Shoelace, SAP UI5, Salesforce Lightning, or any app using custom HTML elements with
+  shadow roots. Triggers on: shadow DOM, web components, shadow root, custom elements, Shoelace,
+  Lit, SAP UI5, pierce, closed shadow.
 ---
 
 # Playwright Shadow DOM & Web Components Testing

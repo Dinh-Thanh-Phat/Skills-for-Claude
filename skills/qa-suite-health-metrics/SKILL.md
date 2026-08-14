@@ -1,6 +1,12 @@
 ---
 name: qa-suite-health-metrics
-description: Track and act on the 5 key test suite health metrics — flake rate, defect escape rate, pass rate, mean time to detect, and duration trend — with formulas, thresholds, and collection from Playwright JSON reports. Use when establishing QA KPIs, setting up a test health dashboard, or diagnosing systemic test suite degradation. Triggers on: "test suite health", "flake rate", "defect escape rate", "QA metrics", "test KPIs", "test dashboard", "suite performance", "DORA metrics QA", "escaped defects", "test pass rate".
+description: >-
+  Track and act on the 5 key test suite health metrics — flake rate, defect escape rate, pass
+  rate, mean time to detect, and duration trend — with formulas, thresholds, and collection from
+  Playwright JSON reports. Use when establishing QA KPIs, setting up a test health dashboard, or
+  diagnosing systemic test suite degradation. Triggers on: "test suite health", "flake rate",
+  "defect escape rate", "QA metrics", "test KPIs", "test dashboard", "suite performance", "DORA
+  metrics QA", "escaped defects", "test pass rate".
 ---
 
 # QA Suite Health Metrics

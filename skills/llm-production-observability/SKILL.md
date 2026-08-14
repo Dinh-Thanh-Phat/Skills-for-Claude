@@ -1,6 +1,12 @@
 ---
 name: llm-production-observability
-description: Three-pillar strategy for monitoring LLM/chatbot quality in production — offline golden-dataset evals, runtime input/output guardrails, and production tracing with drift alerts. Use when deploying an AI chatbot to production, setting up LLM monitoring, detecting hallucination drift, or building release gates for LLM features. Triggers on: "LLM monitoring", "chatbot drift", "golden dataset", "production tracing", "LLM observability", "hallucination rate", "drift detection", "LLM guardrails".
+description: >-
+  Three-pillar strategy for monitoring LLM/chatbot quality in production — offline golden-dataset
+  evals, runtime input/output guardrails, and production tracing with drift alerts. Use when
+  deploying an AI chatbot to production, setting up LLM monitoring, detecting hallucination
+  drift, or building release gates for LLM features. Triggers on: "LLM monitoring", "chatbot
+  drift", "golden dataset", "production tracing", "LLM observability", "hallucination rate",
+  "drift detection", "LLM guardrails".
 ---
 
 # LLM Production Observability — Three-Pillar Strategy

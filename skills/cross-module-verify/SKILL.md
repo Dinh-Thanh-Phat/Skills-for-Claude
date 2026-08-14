@@ -1,6 +1,10 @@
 ---
 name: cross-module-verify
-description: Enforce cross-module verification in E2E tests for workflows that span multiple app areas. Use when testing any workflow where action in Module A should produce visible results in Module B. Triggers on: "test workflow", "test send", "test create", "test integration", multi-step workflow tests.
+description: >-
+  Enforce cross-module verification in E2E tests for workflows that span multiple app areas. Use
+  when testing any workflow where action in Module A should produce visible results in Module B.
+  Triggers on: "test workflow", "test send", "test create", "test integration", multi-step
+  workflow tests.
 ---
 
 # Cross-Module Verification Skill

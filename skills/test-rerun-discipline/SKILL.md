@@ -1,6 +1,9 @@
 ---
 name: test-rerun-discipline
-description: Prevent unnecessary full-suite re-runs when fixing failing tests. Use whenever fixing test failures, running automation during development, or debugging a test suite. Triggers on: "fix test", "re-run tests", "chạy lại test", "fix failing", "test suite bị fail", "sửa test".
+description: >-
+  Prevent unnecessary full-suite re-runs when fixing failing tests. Use whenever fixing test
+  failures, running automation during development, or debugging a test suite. Triggers on: "fix
+  test", "re-run tests", "chạy lại test", "fix failing", "test suite bị fail", "sửa test".
 ---
 
 # Test Rerun Discipline Skill

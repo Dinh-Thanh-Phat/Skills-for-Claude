@@ -1,6 +1,15 @@
 ---
 name: llm-agent-trajectory-eval
-description: Evaluate an LLM agent's full trajectory — the exact ordered sequence of messages and tool calls it produced — rather than only its final answer or isolated spans. Use LangChain's agentevals library for deterministic trajectory matching (strict/unordered/subset/superset) or LLM-as-judge trajectory scoring (Agent-as-a-Judge pattern), and know when trajectory eval beats trace/span metrics or single-turn judge scoring. Use when testing multi-step agents, tool-calling flows, or LangGraph/LangChain agents where the sequence of decisions matters, not just the outcome. Triggers on: "trajectory evaluation", "agent-as-judge", "agentevals", "evaluate agent trajectory", "tool call sequence testing", "LangGraph agent eval", "trajectory match evaluator".
+description: >-
+  Evaluate an LLM agent's full trajectory — the exact ordered sequence of messages and tool calls
+  it produced — rather than only its final answer or isolated spans. Use LangChain's agentevals
+  library for deterministic trajectory matching (strict/unordered/subset/superset) or
+  LLM-as-judge trajectory scoring (Agent-as-a-Judge pattern), and know when trajectory eval beats
+  trace/span metrics or single-turn judge scoring. Use when testing multi-step agents,
+  tool-calling flows, or LangGraph/LangChain agents where the sequence of decisions matters, not
+  just the outcome. Triggers on: "trajectory evaluation", "agent-as-judge", "agentevals",
+  "evaluate agent trajectory", "tool call sequence testing", "LangGraph agent eval", "trajectory
+  match evaluator".
 ---
 
 # LLM Agent Trajectory Evaluation

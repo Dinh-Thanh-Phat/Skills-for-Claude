@@ -1,6 +1,13 @@
 ---
 name: ai-chaos-testing
-description: Use when designing tests that validate AI agents and LLM-powered systems maintain correct behavioral intent when inputs, context, policies, or tool calls are deliberately disturbed. Covers intent-based chaos testing — distinct from infrastructure chaos engineering (network faults, pod kills) and LLM red-teaming (adversarial security probes). Triggers on: "ai chaos testing", "intent-based chaos", "behavioral chaos", "agent behavioral testing", "LLM chaos", "test AI agent robustness", "agent behavioral boundaries", "chaos testing AI system", "LLM behavioral correctness under disturbance".
+description: >-
+  Use when designing tests that validate AI agents and LLM-powered systems maintain correct
+  behavioral intent when inputs, context, policies, or tool calls are deliberately disturbed.
+  Covers intent-based chaos testing — distinct from infrastructure chaos engineering (network
+  faults, pod kills) and LLM red-teaming (adversarial security probes). Triggers on: "ai chaos
+  testing", "intent-based chaos", "behavioral chaos", "agent behavioral testing", "LLM chaos",
+  "test AI agent robustness", "agent behavioral boundaries", "chaos testing AI system", "LLM
+  behavioral correctness under disturbance".
 ---
 
 # AI / LLM Intent-Based Chaos Testing

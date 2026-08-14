@@ -1,6 +1,15 @@
 ---
 name: playwright-cli-agent
-description: Microsoft's official `@playwright/cli` (`playwright-cli`) — a stateless shell-command companion to Playwright MCP, ~4x cheaper in tokens (27k vs 114k for a typical flow) because snapshots write to disk and each command is a small, independent process call instead of a persistent tool-schema/JSON-RPC session. Use when driving a real browser from a coding agent that's context-constrained, when live-attaching to a paused failing Playwright test (`--debug=cli`) to explore and generate a fix, or when you want CLI-style exploratory automation without wiring up an MCP server. Triggers on: "playwright-cli", "@playwright/cli", "playwright cli agent", "playwright shell commands", "playwright token efficient browser", "debug=cli", "attach playwright-cli", "playwright-cli snapshot".
+description: >-
+  Microsoft's official `@playwright/cli` (`playwright-cli`) — a stateless shell-command companion
+  to Playwright MCP, ~4x cheaper in tokens (27k vs 114k for a typical flow) because snapshots
+  write to disk and each command is a small, independent process call instead of a persistent
+  tool-schema/JSON-RPC session. Use when driving a real browser from a coding agent that's
+  context-constrained, when live-attaching to a paused failing Playwright test (`--debug=cli`) to
+  explore and generate a fix, or when you want CLI-style exploratory automation without wiring up
+  an MCP server. Triggers on: "playwright-cli", "@playwright/cli", "playwright cli agent",
+  "playwright shell commands", "playwright token efficient browser", "debug=cli", "attach
+  playwright-cli", "playwright-cli snapshot".
 ---
 
 # Playwright CLI (`@playwright/cli`)

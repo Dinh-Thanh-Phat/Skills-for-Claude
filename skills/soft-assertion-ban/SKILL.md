@@ -1,6 +1,9 @@
 ---
 name: soft-assertion-ban
-description: Prevent OR-assertions and length>N checks that always pass in Playwright tests. Use when writing or reviewing any test code. Triggers on: "soft assertion", "expect(A || B)", "length > 0", "length > N", ".catch(() => false)", "assertion OR", any test code generation or review.
+description: >-
+  Prevent OR-assertions and length>N checks that always pass in Playwright tests. Use when
+  writing or reviewing any test code. Triggers on: "soft assertion", "expect(A || B)", "length >
+  0", "length > N", ".catch(() => false)", "assertion OR", any test code generation or review.
 ---
 
 # Soft Assertion Ban Skill

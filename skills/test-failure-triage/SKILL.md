@@ -1,6 +1,10 @@
 ---
 name: test-failure-triage
-description: Batch triage all test failures at once — categorize into test bugs vs system bugs before fixing anything. Use when a test suite has multiple failures and you need to categorize them all before starting fixes. Triggers on: "multiple test fail", "test suite fail", "triage failures", "categorize test failures", "10 fail", "N tests failing".
+description: >-
+  Batch triage all test failures at once — categorize into test bugs vs system bugs before fixing
+  anything. Use when a test suite has multiple failures and you need to categorize them all
+  before starting fixes. Triggers on: "multiple test fail", "test suite fail", "triage failures",
+  "categorize test failures", "10 fail", "N tests failing".
 ---
 
 # Test Failure Triage — Quick Decision Tree

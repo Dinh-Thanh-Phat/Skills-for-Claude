@@ -1,6 +1,11 @@
-﻿---
+---
 name: login-verification
-description: Always verify test credentials work manually before writing automated login tests — prevents entire suites failing because of invalid accounts. Use when setting up a new test environment, when all tests fail at beforeEach, or when writing login helper functions. Triggers on: "writing login helper", "test credentials", "all tests fail beforeEach", "login not working", "beforeEach fails", "test account", "staging credentials", "auth smoke".
+description: >-
+  Always verify test credentials work manually before writing automated login tests — prevents
+  entire suites failing because of invalid accounts. Use when setting up a new test environment,
+  when all tests fail at beforeEach, or when writing login helper functions. Triggers on:
+  "writing login helper", "test credentials", "all tests fail beforeEach", "login not working",
+  "beforeEach fails", "test account", "staging credentials", "auth smoke".
 type: skill
 scope: playwright, e2e, automation, test-setup
 triggers:

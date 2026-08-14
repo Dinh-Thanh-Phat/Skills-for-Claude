@@ -1,6 +1,14 @@
 ---
 name: chatbot-ui-automator
-description: Automate chatbot testing through browser UI using Playwright — sends questions, waits for stable responses, measures response time, and captures screenshots. Use as a drop-in replacement for chatbot-api-caller when the chatbot has a web interface instead of (or in addition to) an API. No API keys needed. Triggers on: "test chatbot via browser", "automate chatbot UI", "send questions to chatbot web interface", "test chatbot without API", "chatbot UI automation", "Playwright chatbot testing". Outputs raw_responses.json in the same format as chatbot-api-caller so all downstream skills (response-evaluator, performance-analyzer, test-reporter) work unchanged.
+description: >-
+  Automate chatbot testing through browser UI using Playwright — sends questions, waits for
+  stable responses, measures response time, and captures screenshots. Use as a drop-in
+  replacement for chatbot-api-caller when the chatbot has a web interface instead of (or in
+  addition to) an API. No API keys needed. Triggers on: "test chatbot via browser", "automate
+  chatbot UI", "send questions to chatbot web interface", "test chatbot without API", "chatbot UI
+  automation", "Playwright chatbot testing". Outputs raw_responses.json in the same format as
+  chatbot-api-caller so all downstream skills (response-evaluator, performance-analyzer,
+  test-reporter) work unchanged.
 ---
 
 # Chatbot UI Automator

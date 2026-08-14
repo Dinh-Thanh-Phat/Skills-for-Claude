@@ -1,6 +1,11 @@
 ---
 name: maestro-visual-testing
-description: Use when you need pixel-level visual regression testing in Maestro mobile flows to catch unintended UI changes across releases, React Native / Flutter library upgrades, or theme changes. Triggers on: "maestro assertScreenshot", "maestro visual regression", "maestro screenshot comparison", "maestro visual testing", "mobile visual diff", "maestro baseline screenshot", "catch UI changes maestro".
+description: >-
+  Use when you need pixel-level visual regression testing in Maestro mobile flows to catch
+  unintended UI changes across releases, React Native / Flutter library upgrades, or theme
+  changes. Triggers on: "maestro assertScreenshot", "maestro visual regression", "maestro
+  screenshot comparison", "maestro visual testing", "mobile visual diff", "maestro baseline
+  screenshot", "catch UI changes maestro".
 ---
 
 # Maestro Visual Testing

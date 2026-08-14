@@ -1,6 +1,9 @@
 ---
 name: fail-loud
-description: Enforce hard assertions and prevent error swallowing in Playwright tests. Use when writing or reviewing automation tests to ensure they fail loudly when features break. Triggers on: "write test", "review test", "viết test", "kiểm tra test", any test code generation task.
+description: >-
+  Enforce hard assertions and prevent error swallowing in Playwright tests. Use when writing or
+  reviewing automation tests to ensure they fail loudly when features break. Triggers on: "write
+  test", "review test", "viết test", "kiểm tra test", any test code generation task.
 ---
 
 # Fail Loud Skill

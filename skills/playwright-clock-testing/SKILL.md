@@ -1,6 +1,13 @@
 ---
 name: playwright-clock-testing
-description: Playwright Clock API for time-sensitive test scenarios — freeze Date.now(), advance timers with fastForward/runFor, test session timeouts, countdown timers, scheduled tasks, and timezone-dependent UIs without real waiting. Use when tests depend on the current date/time, need to fast-forward through waiting periods, or verify timer-driven behavior. Triggers on: "playwright clock", "page.clock", "setFixedTime", "fastForward", "runFor", "fake clock", "time control test", "test timer", "test countdown", "test session timeout", "test auto logout", "mock date".
+description: >-
+  Playwright Clock API for time-sensitive test scenarios — freeze Date.now(), advance timers with
+  fastForward/runFor, test session timeouts, countdown timers, scheduled tasks, and
+  timezone-dependent UIs without real waiting. Use when tests depend on the current date/time,
+  need to fast-forward through waiting periods, or verify timer-driven behavior. Triggers on:
+  "playwright clock", "page.clock", "setFixedTime", "fastForward", "runFor", "fake clock", "time
+  control test", "test timer", "test countdown", "test session timeout", "test auto logout",
+  "mock date".
 ---
 
 # Playwright Clock API

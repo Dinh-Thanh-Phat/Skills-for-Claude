@@ -1,6 +1,11 @@
-﻿---
+---
 name: error-state-ui-testing
-description: Patterns for testing error UI states in Playwright — HTTP errors (4xx/5xx), network failures, empty states, error boundaries. Use when writing tests for "what happens when things go wrong" scenarios: API failures, offline states, empty data, React/Vue error boundaries. Triggers on: "error state", "5xx", "4xx", "network error", "empty state", "error boundary", "page.route", "abort", "mock API error", "no data found".
+description: >-
+  Patterns for testing error UI states in Playwright — HTTP errors (4xx/5xx), network failures,
+  empty states, error boundaries. Use when writing tests for "what happens when things go wrong"
+  scenarios: API failures, offline states, empty data, React/Vue error boundaries. Triggers on:
+  "error state", "5xx", "4xx", "network error", "empty state", "error boundary", "page.route",
+  "abort", "mock API error", "no data found".
 ---
 
 # Error State UI Testing

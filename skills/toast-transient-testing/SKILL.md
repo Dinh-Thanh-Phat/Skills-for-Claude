@@ -1,6 +1,11 @@
-﻿---
+---
 name: toast-transient-testing
-description: Patterns for testing toast notifications and transient UI elements in Playwright — elements that auto-disappear. Use when writing tests that assert on toasts, snackbars, banners, or any notification that auto-dismisses. Prevents race condition where toast disappears before assertion runs. Triggers on: "toast", "snackbar", "notification", "alert message", "auto-dismiss", "transient element", "success message", "error message appears briefly".
+description: >-
+  Patterns for testing toast notifications and transient UI elements in Playwright — elements
+  that auto-disappear. Use when writing tests that assert on toasts, snackbars, banners, or any
+  notification that auto-dismisses. Prevents race condition where toast disappears before
+  assertion runs. Triggers on: "toast", "snackbar", "notification", "alert message",
+  "auto-dismiss", "transient element", "success message", "error message appears briefly".
 triggers:
   - "toast"
   - "snackbar"

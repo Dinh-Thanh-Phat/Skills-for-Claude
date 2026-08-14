@@ -1,6 +1,15 @@
 ---
 name: strands-agent-evals
-description: Evaluation SDK for agents built on AWS's Strands Agents framework — deterministic tool-fault chaos injection (Timeout/NetworkError/TruncateFields/CorruptValues), OpenTelemetry trace-based evaluators (HelpfulnessEvaluator, TrajectoryEvaluator) against Session objects, and ExperimentGenerator for auto-synthesizing test cases from a tool-context description. Use when testing a Strands-framework agent's resilience to tool failures or scoring its multi-turn trajectory. Distinct from the framework-agnostic ai-chaos-testing (prompt/context-level behavioral chaos) and llm-agent-trajectory-eval (LangChain agentevals). Triggers on: "strands agents evals", "strands-agents-evals", "ChaosPlugin", "ChaosExperiment", "strands chaos testing", "strands trace evaluator", "ExperimentGenerator strands".
+description: >-
+  Evaluation SDK for agents built on AWS's Strands Agents framework — deterministic tool-fault
+  chaos injection (Timeout/NetworkError/TruncateFields/CorruptValues), OpenTelemetry trace-based
+  evaluators (HelpfulnessEvaluator, TrajectoryEvaluator) against Session objects, and
+  ExperimentGenerator for auto-synthesizing test cases from a tool-context description. Use when
+  testing a Strands-framework agent's resilience to tool failures or scoring its multi-turn
+  trajectory. Distinct from the framework-agnostic ai-chaos-testing (prompt/context-level
+  behavioral chaos) and llm-agent-trajectory-eval (LangChain agentevals). Triggers on: "strands
+  agents evals", "strands-agents-evals", "ChaosPlugin", "ChaosExperiment", "strands chaos
+  testing", "strands trace evaluator", "ExperimentGenerator strands".
 ---
 
 # Strands Agent Evals SDK

@@ -1,6 +1,11 @@
 ---
 name: mutation-testing-stryker
-description: Mutation testing for JavaScript/TypeScript with StrykerJS — validates that tests actually catch bugs (not just cover lines). Use when you want to measure test suite quality beyond code coverage, find tests that pass but never fail, set up incremental mutation CI for PRs, or use an AI agent to kill surviving mutants. Triggers on: "mutation testing", "Stryker", "mutation score", "surviving mutants", "test quality beyond coverage", "kill mutants", "StrykerJS".
+description: >-
+  Mutation testing for JavaScript/TypeScript with StrykerJS — validates that tests actually catch
+  bugs (not just cover lines). Use when you want to measure test suite quality beyond code
+  coverage, find tests that pass but never fail, set up incremental mutation CI for PRs, or use
+  an AI agent to kill surviving mutants. Triggers on: "mutation testing", "Stryker", "mutation
+  score", "surviving mutants", "test quality beyond coverage", "kill mutants", "StrykerJS".
 ---
 
 # Mutation Testing with StrykerJS

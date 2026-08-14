@@ -1,6 +1,10 @@
 ---
 name: qa-test-coverage-max
-description: Maximum coverage test case generation from multi-source inputs (scope docs, Q&A docs, Figma UI, user stories). Invoke when user provides any combination of: scope document, Figma link/screenshots, Q&A document, PRD, or says "đảm bảo coverage toàn bộ" / "coverage đầy đủ" / "không thiếu case nào".
+description: >-
+  Maximum coverage test case generation from multi-source inputs (scope docs, Q&A docs, Figma UI,
+  user stories). Invoke when user provides any combination of: scope document, Figma
+  link/screenshots, Q&A document, PRD, or says "đảm bảo coverage toàn bộ" / "coverage đầy đủ" /
+  "không thiếu case nào".
 triggers:
   - user provides scope document + asks for test cases
   - user provides Figma URL or screenshots + asks for test cases

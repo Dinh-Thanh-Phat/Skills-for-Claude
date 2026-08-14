@@ -1,6 +1,12 @@
 ---
 name: llm-guardrail-testing
-description: QA methodology for validating LLM safety guardrail layers — measuring bypass rate, false positive rate, and latency overhead, with Promptfoo test datasets, NeMo Guardrails evaluation, and CI gates. Use when you need to verify that your content-safety or prompt-injection guardrail correctly blocks attacks without over-blocking legitimate traffic. Triggers on: guardrail testing, guardrail evaluation, bypass rate, false positive rate, NeMo Guardrails, Promptfoo guardrails, content safety testing, prompt injection defense, SEU framework.
+description: >-
+  QA methodology for validating LLM safety guardrail layers — measuring bypass rate, false
+  positive rate, and latency overhead, with Promptfoo test datasets, NeMo Guardrails evaluation,
+  and CI gates. Use when you need to verify that your content-safety or prompt-injection
+  guardrail correctly blocks attacks without over-blocking legitimate traffic. Triggers on:
+  guardrail testing, guardrail evaluation, bypass rate, false positive rate, NeMo Guardrails,
+  Promptfoo guardrails, content safety testing, prompt injection defense, SEU framework.
 ---
 
 # LLM Guardrail Testing

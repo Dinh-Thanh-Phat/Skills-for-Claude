@@ -1,6 +1,10 @@
 ---
 name: api-network-mocking
-description: Playwright network interception and API mocking patterns. Use when mocking API responses in E2E tests, testing error states, simulating network failures, or verifying API contracts. Triggers on: "mock API", "mock response", "intercept request", "network mock", "page.route", "MSW", "giả lập API", "mock dữ liệu".
+description: >-
+  Playwright network interception and API mocking patterns. Use when mocking API responses in E2E
+  tests, testing error states, simulating network failures, or verifying API contracts. Triggers
+  on: "mock API", "mock response", "intercept request", "network mock", "page.route", "MSW", "giả
+  lập API", "mock dữ liệu".
 triggers:
   - "mock API"
   - "mock response"

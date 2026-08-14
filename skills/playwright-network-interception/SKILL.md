@@ -1,6 +1,11 @@
 ---
 name: playwright-network-interception
-description: Use when writing Playwright tests that need to mock API responses, intercept HTTP requests, simulate network conditions (slow/offline), block third-party requests, or make flaky API-dependent tests deterministic. Triggers on: "mock API response", "intercept request", "stub network", "fake backend", "test without real API", "block analytics", "simulate slow network", "network mocking".
+description: >-
+  Use when writing Playwright tests that need to mock API responses, intercept HTTP requests,
+  simulate network conditions (slow/offline), block third-party requests, or make flaky
+  API-dependent tests deterministic. Triggers on: "mock API response", "intercept request", "stub
+  network", "fake backend", "test without real API", "block analytics", "simulate slow network",
+  "network mocking".
 ---
 
 # Playwright Network Interception

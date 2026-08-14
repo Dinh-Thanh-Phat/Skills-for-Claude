@@ -1,6 +1,12 @@
-﻿---
+---
 name: form-validation-testing
-description: Patterns for testing form validation UI in Playwright — inline error messages, required fields, submit button states, async server-side validation, multi-field dependencies. Use when writing tests for any form with validation: login, registration, settings, or any form that shows inline error messages or disables the submit button. Triggers on: "form validation", "inline error", "required field", "submit button disabled", "validation message", "async validation", "email already taken", "field error".
+description: >-
+  Patterns for testing form validation UI in Playwright — inline error messages, required fields,
+  submit button states, async server-side validation, multi-field dependencies. Use when writing
+  tests for any form with validation: login, registration, settings, or any form that shows
+  inline error messages or disables the submit button. Triggers on: "form validation", "inline
+  error", "required field", "submit button disabled", "validation message", "async validation",
+  "email already taken", "field error".
 ---
 
 # Form Validation Testing

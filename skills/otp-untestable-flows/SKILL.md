@@ -1,6 +1,11 @@
 ---
 name: otp-untestable-flows
-description: Plan OTP and email verification test infrastructure BEFORE writing auth tests to avoid permanently-skipped tests. Use when writing tests involving OTP, email verification, magic links, forgot password, or 2FA. Triggers on: "OTP", "email verification", "forgot password test", "reset password", "email link", "magic link", "2FA", "untestable flow", "email interception".
+description: >-
+  Plan OTP and email verification test infrastructure BEFORE writing auth tests to avoid
+  permanently-skipped tests. Use when writing tests involving OTP, email verification, magic
+  links, forgot password, or 2FA. Triggers on: "OTP", "email verification", "forgot password
+  test", "reset password", "email link", "magic link", "2FA", "untestable flow", "email
+  interception".
 ---
 
 # OTP / Untestable Flows Skill

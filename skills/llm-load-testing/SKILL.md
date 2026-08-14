@@ -1,6 +1,12 @@
 ---
 name: llm-load-testing
-description: Load testing LLM APIs for streaming performance — TTFT, inter-token latency, throughput SLOs. Use when you need to verify an AI chatbot or LLM API can handle concurrent users within latency targets, or before production launch of a streaming AI feature. Triggers on: "LLM load test", "chatbot performance test", "TTFT benchmark", "streaming API load", "time to first token", "LLM throughput", "SSE load test", "concurrent LLM users", "k6 LLM", "locust LLM", "LLM performance SLO".
+description: >-
+  Load testing LLM APIs for streaming performance — TTFT, inter-token latency, throughput SLOs.
+  Use when you need to verify an AI chatbot or LLM API can handle concurrent users within latency
+  targets, or before production launch of a streaming AI feature. Triggers on: "LLM load test",
+  "chatbot performance test", "TTFT benchmark", "streaming API load", "time to first token", "LLM
+  throughput", "SSE load test", "concurrent LLM users", "k6 LLM", "locust LLM", "LLM performance
+  SLO".
 ---
 
 # LLM Load Testing

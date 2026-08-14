@@ -20,6 +20,50 @@ The `qa-test-coverage-max` skill runs BEFORE this skill's Phase 1 and defines th
 
 ---
 
+## 🔴 FORMAT DELIVERABLE — CHUẨN MẶC ĐỊNH (đã được user xác nhận)
+
+Khi sinh bộ test cases từ **spec / PRD / scope doc** (nhiều module, nhiều requirement),
+**BẮT BUỘC** theo `~/.claude/skills/qa-excel-export/references/deliverable-format.md`.
+User đã xác nhận format này (TetherTails, 697 cases, 05-08-2026) → **áp dụng mặc định, không cần hỏi lại.**
+
+Tóm tắt cấu trúc output:
+
+```
+<output-dir>/
+├── README.md                        ← điều hướng + 3 điều quan trọng nhất + bảng rủi ro 🔴/🟠
+├── 00_COVERAGE_MATRIX.md            ← source inventory (kể cả nguồn THIẾU) + feature→case map
+│                                       + 8-category gap + CROSS-MODULE RIPPLE MAP + wave ưu tiên
+├── NN_<module>.md                   ← 1 file / module, số khớp section của spec
+├── 99_OPEN_ITEMS_AND_QUESTIONS.md   ← A: spec tự nói NOT CONFIRMED · B: MÂU THUẪN giữa tài liệu
+│                                       · C: gap spec xếp 🔴🟠🟡 · D: điều kiện môi trường · E: thứ tự gỡ
+├── export_test_cases.py             ← parse markdown → Excel (KHÔNG gõ case 2 lần)
+└── <Project>_TestCases_manual_YYYYMMDD.xlsx   ← MỖI MODULE 1 SHEET
+```
+
+Format 1 case trong markdown — nhiều case liên tiếp **chia sẻ 1 bullet block**:
+
+```markdown
+| ID | Cat | Pri | Title |
+|---|---|---|---|
+| AUTH-001 | POS | critical | Signup thành công với name + DOB + phone + OTP |
+
+- **Pre:** app state + data phải có + user role + tier + platform
+- **Steps:** 1) ... 2) ... 3) ...
+- **Test data:** giá trị CỤ THỂ
+- **Expected:** 1) ... 2) ...  ← verifiable, con số chính xác
+```
+
+Kỷ luật bắt buộc (chi tiết ở PHẦN 5 của file format):
+1. Mọi ràng buộc **"server-side"** trong spec → 1 case **gọi API trực tiếp bypass UI**
+2. **Không test module đơn lẻ ở nơi có ripple** — lập ripple map trước
+3. Case cần **chờ thời gian thật** → ghi rõ phải chờ thật, không nhìn UI kết luận
+4. Feature **out-of-scope** → viết NEG case xác nhận KHÔNG truy cập được (UI **và** API)
+5. Spec chưa chốt → `⛔BLOCKED`, **KHÔNG viết Expected** (viết = QA tự quyết thay PO)
+6. Mâu thuẫn giữa tài liệu → **nêu trích dẫn cả 2 bên**
+7. Đọc spec để **tìm rủi ro**, không chỉ liệt kê requirement — mục C của file 99 thường là phần giá trị nhất
+
+---
+
 ## ⚠️ TWO-PHASE WORKFLOW — MANDATORY
 
 **ALWAYS follow this two-phase approach. No exceptions.**

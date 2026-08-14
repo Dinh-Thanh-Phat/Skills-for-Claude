@@ -1,6 +1,9 @@
 ---
 name: playwright-diagnosis-first
-description: Systematic Playwright test failure diagnosis workflow — diagnose before fixing, avoid premature fixes. Use when any test fails or is flaky. Triggers on: "test fail", "test flaky", "debug test", "why test failing", "test timeout", any test failure scenario.
+description: >-
+  Systematic Playwright test failure diagnosis workflow — diagnose before fixing, avoid premature
+  fixes. Use when any test fails or is flaky. Triggers on: "test fail", "test flaky", "debug
+  test", "why test failing", "test timeout", any test failure scenario.
 ---
 
 # Playwright Test Diagnosis-First Workflow

@@ -1,6 +1,10 @@
 ---
 name: test-data-lifecycle
-description: Enforce test data cleanup strategy to prevent DB accumulation and flaky tests. Use when writing tests that create any persistent data (accounts, lists, records). Triggers on: "test data cleanup", "generateTestEmail", "random email", "test data accumulate", "cleanup strategy", "leftover data", "database cleanup", any test creating real data.
+description: >-
+  Enforce test data cleanup strategy to prevent DB accumulation and flaky tests. Use when writing
+  tests that create any persistent data (accounts, lists, records). Triggers on: "test data
+  cleanup", "generateTestEmail", "random email", "test data accumulate", "cleanup strategy",
+  "leftover data", "database cleanup", any test creating real data.
 ---
 
 # Test Data Lifecycle Skill

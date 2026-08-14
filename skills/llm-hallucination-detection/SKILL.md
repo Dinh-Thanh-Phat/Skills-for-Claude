@@ -1,6 +1,11 @@
 ---
 name: llm-hallucination-detection
-description: Use when adding hallucination detection to an LLM application, choosing between NLI, consistency sampling, or LLM-as-judge methods, or setting CI gates on hallucination rates. Triggers on: "hallucination detection", "groundedness check", "faithfulness check", "SelfCheckGPT", "consistency sampling", "NLI entailment", "LLM makes up facts", "reduce hallucinations in production".
+description: >-
+  Use when adding hallucination detection to an LLM application, choosing between NLI,
+  consistency sampling, or LLM-as-judge methods, or setting CI gates on hallucination rates.
+  Triggers on: "hallucination detection", "groundedness check", "faithfulness check",
+  "SelfCheckGPT", "consistency sampling", "NLI entailment", "LLM makes up facts", "reduce
+  hallucinations in production".
 ---
 
 # LLM Hallucination Detection

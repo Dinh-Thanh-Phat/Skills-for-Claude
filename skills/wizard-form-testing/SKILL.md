@@ -1,6 +1,12 @@
-﻿---
+---
 name: wizard-form-testing
-description: Patterns for testing multi-step forms and wizards in Playwright — step navigation, per-step validation, back-button state preservation, step indicator assertions, completion redirect. Use when writing tests for any wizard, stepper, multi-step form, onboarding flow, or checkout process with multiple discrete steps. Triggers on: "wizard", "stepper", "multi-step form", "onboarding", "checkout steps", "step navigation", "back button preserves", "step indicator", "step validation".
+description: >-
+  Patterns for testing multi-step forms and wizards in Playwright — step navigation, per-step
+  validation, back-button state preservation, step indicator assertions, completion redirect. Use
+  when writing tests for any wizard, stepper, multi-step form, onboarding flow, or checkout
+  process with multiple discrete steps. Triggers on: "wizard", "stepper", "multi-step form",
+  "onboarding", "checkout steps", "step navigation", "back button preserves", "step indicator",
+  "step validation".
 ---
 
 # Multi-Step Wizard / Form Testing
