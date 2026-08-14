@@ -6,7 +6,8 @@ description: |
   flows live against a connected emulator or device from Claude Code, inspect the UI hierarchy to fix
   broken selectors, or automate mobile exploratory testing via conversational commands.
   Triggers on: "maestro mcp", "generate maestro flow", "run maestro from claude", "ai mobile testing",
-  "maestro claude", "natural language mobile test", "maestro mcp server".
+  "maestro claude", "natural language mobile test", "maestro mcp server", "luxury-labs maestro-mcp",
+  "npx maestro-mcp".
 ---
 
 # Maestro MCP Workflow
@@ -41,6 +42,32 @@ Maestro CLI itself is installed automatically on first use if not present.
 
 **Prerequisites:** Node.js 18+, Android SDK (for Android) or Xcode (for iOS), a running
 emulator/simulator or connected device.
+
+### Alternative: npm-installable server (luxury-labs/maestro-mcp)
+
+If you'd rather skip the clone-and-build step, `@luxurylabs/maestro-mcp` (MIT, npm) installs and
+runs with no build:
+
+```json
+{
+  "mcpServers": {
+    "maestro": { "command": "npx", "args": ["-y", "@luxurylabs/maestro-mcp"] }
+  }
+}
+```
+
+It's a separate, independently maintained community project (32 tools vs. slapglif's 47+), but
+covers ground slapglif's doesn't:
+- **Virtual device lifecycle** (8 tools) — create/boot/manage simulators and emulators directly,
+  not just control an already-running one.
+- **Code analysis** (3 tools) — scans native source (Swift, Kotlin, XML layouts) for code-aware
+  flow generation instead of relying solely on the live UI hierarchy.
+- **Environment setup diagnostics** — auto-detects and installs missing prerequisites (Maestro
+  CLI, SDKs) rather than assuming they're present.
+
+Still requires Maestro CLI and platform SDKs (Android SDK/ADB, Xcode/simctl) on the host — the npm
+package doesn't bundle them, it just skips the MCP server's own build step. Pick whichever tool set
+better matches your workflow; both speak the same Maestro YAML underneath.
 
 ## Core Workflow
 
@@ -131,3 +158,5 @@ The approach that produced 30+ flows in three afternoons (real-world report):
 - [Maestro MCP + Claude: AI-Powered Mobile UI Test Automation — Very Good Ventures](https://verygood.ventures/blog/maestro-mcp-claude-mobile-ui-test-automation/)
 - [Stop Manual Testing! Claude Code + Maestro MCP — Medium/@tentenco](https://medium.com/@tentenco/stop-manual-testing-how-claude-code-maestro-mcp-disrupt-app-dev-dfd1a2d6425c)
 - [Maestro MCP For Mobile Test Automation — getpanto.ai](https://www.getpanto.ai/blog/maestro-mcp-mobile-test-automation)
+- [luxury-labs/maestro-mcp — GitHub README](https://raw.githubusercontent.com/luxury-labs/maestro-mcp/main/README.md)
+- [@luxurylabs/maestro-mcp — npm registry](https://registry.npmjs.org/@luxurylabs/maestro-mcp)
