@@ -6,10 +6,11 @@ description: >-
   mode for CI, schema-drift checks against tool contracts, and the MCP-specific security surface
   (token passthrough, confused deputy, tool poisoning). Distinct from
   playwright-mcp-server/maestro-mcp-workflow (those document consuming an MCP server as a tool);
-  this is for verifying an MCP server you build or integrate is correct and safe. Triggers on:
-  "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp
+  this is for verifying an MCP server you build or integrate is correct and safe. Covers Inspector
+  v2's CLI breaking changes from v1 (target ordering, exit codes, --catalog vs --config). Triggers
+  on: "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp
   tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP
-  server CI".
+  server CI", "MCP Inspector v2", "inspector v1 to v2".
 ---
 
 # Testing MCP Servers
@@ -31,7 +32,7 @@ async with Client(mcp) as client:
 
 ## Layer 2 — MCP Inspector: Interactive + Scriptable CLI
 
-`@modelcontextprotocol/inspector` is the official dev tool for exercising a server end-to-end, over its real transport (stdio or HTTP), as three interfaces from one package:
+`@modelcontextprotocol/inspector` is the official dev tool for exercising a server end-to-end, over its real transport (stdio or HTTP), as three interfaces from one package. **As of v2.0.0 (July 28, 2026) this is a ground-up rewrite** — same package name and `npx` entry point, but the CLI surface changed in ways that silently break naive CI scripts (see "V2 CLI Gotchas" below). v1 is deprecated (security fixes only); pin `npx @modelcontextprotocol/inspector@v1-latest` if you must stay on it. v2 requires Node `>=22.19.0`.
 
 ```bash
 npx @modelcontextprotocol/inspector          # web UI — manual exploration
@@ -87,7 +88,16 @@ npx @modelcontextprotocol/inspector --cli node build/index.js \
 
 Non-zero exits also write a JSON error envelope to stderr (`code`, `message`, `status`, `url`) — assert on that envelope rather than screen-scraping human text.
 
-For a fleet of servers or repeatable presets (fixtures for tools/resources/prompts/OAuth flows), use `--config path/to/config.json --server <name>` instead of ad-hoc args — this is how you turn a manual Inspector session into a versioned, CI-checked-in test fixture.
+For a fleet of servers or repeatable presets (fixtures for tools/resources/prompts/OAuth flows), use `--config path/to/config.json --server <name>` instead of ad-hoc args — this is how you turn a manual Inspector session into a versioned, CI-checked-in test fixture. **`--config` is read-only** in v2 — it errors if the file is missing and the Inspector never writes to it, which is what you want for a checked-in CI fixture. `--catalog <path>` is the separate, writable-by-the-Inspector variant (auto-created/seeded if missing, editable from the web UI) — reach for it only when you want the Inspector itself to manage the server list. The two flags are mutually exclusive with each other and with an ad-hoc target.
+
+### V2 CLI Gotchas for CI (breaking changes from v1, verified against the v1→v2 migration guide)
+
+- **The target must come first, with no flags in between, or it's silently dropped.** v2 reads the leading run of non-dash tokens as the server target; the first `--flag` ends that run. `--cli node build/index.js --method tools/list` works; `--cli --method tools/list node build/index.js` does **not** error — it silently discards the target and falls back to your default catalog, so the check appears to pass while quietly running against the wrong server. Always put the target (command or URL) immediately after `--cli`, before any other flag.
+- **`--` reverses meaning under `--cli`.** On the web/TUI clients, everything after `--` goes to the target (same as v1). Under `--cli` it's the opposite: everything *before* `--` is the target (and its own flags), everything *after* is the Inspector's own options — e.g. `mcp-inspector --cli node build/index.js --server-flag -- --method tools/list`. Needed only when the target itself takes dash-prefixed flags.
+- **A failing tool call now exits non-zero.** v1 exited `0` even when a `tools/call` came back `isError: true` (the RPC succeeded even though the tool failed). v2 exits `5` for `isError: true` or a not-found tool. A CI step chaining `inspector --cli … --method tools/call … && next-step` that silently continued past a failing tool in v1 will now correctly stop in v2 — expect this to surface as "v2 broke my pipeline" the first time it catches a real, previously-masked failure. Parse the failure via `2>&1 | tail -1 | jq .error`, not by matching stdout prose.
+- **Ambiguous URLs no longer guess a transport.** With no `--transport`, v2 infers it *only* from an exact `/mcp` or `/sse` URL path suffix; anything else (including a trailing slash) now errors with `Transport type not specified and could not be determined from URL`, where v1 silently fell back to SSE. Pass `--transport http` or `--transport sse` explicitly for any server whose URL doesn't end in one of those two suffixes.
+- **New CLI-only methods**: `initialize` (connect-only probe returning `serverInfo`/`protocolVersion`/`capabilities`/`instructions` — a cheap connectivity smoke test), `servers/list` / `servers/show` (read the catalog/config without connecting to anything, redacting secret-bearing fields).
+- **OAuth for CI**: v1's CLI had no OAuth support at all. v2 adds `--stored-auth-only` — never opens a browser or waits on the interactive loopback callback, fails fast with `auth_required` if no token is already in the shared store (`~/.mcp-inspector/storage/oauth.json`). This is the flag to reach for when a fixture server requires auth in a headless pipeline.
 
 ## Layer 3 — Schema-Drift and Security Checks
 
@@ -110,5 +120,7 @@ Token handling additionally requires expiration/rotation enforcement on the serv
 ## Sources
 - https://github.com/modelcontextprotocol/inspector
 - https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/clients/cli/README.md
+- https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/docs/v1-to-v2-migration.md
+- https://github.com/modelcontextprotocol/inspector/releases
 - https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md
 - https://labs.cloudsecurityalliance.org/agentic/agentic-mcp-security-best-practices-v1/
