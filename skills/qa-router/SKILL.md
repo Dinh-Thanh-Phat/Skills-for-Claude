@@ -198,8 +198,16 @@ User nói: "test mobile", "maestro", "test app"
                     ↓
          qa-preflight (device check trước)
                     ↓
+    ⚠️ VERSION GATE — check TRƯỚC khi đổ lỗi cho test/app:
+    Android targetSdk 36 / device API 36 → android-16-qa-gate
+    iOS 26 + Xcode 26.x            → ios-26-test-gotchas
+                    ↓
          maestro-mobile (viết/chạy flow)
 ```
+
+> **Version gate là hard block khi có dấu hiệu.** Element-not-found sau khi update Xcode,
+> hoặc "nội dung bị che status bar / back không chạy" sau khi bump targetSdk = lỗi PLATFORM,
+> không phải lỗi locator. Sửa selector lần 3 là sai hướng — đọc skill version gate trước.
 
 ### "Đánh giá UX / trải nghiệm / workflow"
 
