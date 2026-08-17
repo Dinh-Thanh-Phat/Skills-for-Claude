@@ -313,4 +313,25 @@ Lý do per-flow tệ hơn:
 - **Wireless ADB:** ~58s/test (524s/9 tests) — kể cả khi đã disable animations
 - **USB:** ~28s/test (252s/9 tests)
 
-Maestro gọi adb HÀNG TRĂM lần/test (dump hierarchy, tap, query). Wireless trễ ~2x mỗi call → triệt tiêu mọi tối ưu khác. **Muốn đạt x5 thật: BẮT BUỘC USB.** Nếu user chọn wireless cho tiện, nói rõ trade-off: tiện ≠ nhanh. Xem [[maestro-android-windows-gotchas]] §1.
+Maestro gọi adb HÀNG TRĂM lần/test (dump hierarchy, tap, query). Wireless trễ ~2x mỗi call → triệt tiêu mọi tối ưu khác. **Muốn đạt x5 thật: BẮT BUỘC USB.** Nếu user chọn wireless cho tiện, nói rõ trade-off: tiện ≠ nhanh.
+
+Chi tiết 8 pitfall Maestro+ADB trên Windows: `d:/HK8/Learning/DQ/phat/phat/skills/maestro-android-windows-gotchas.md` §1
+(file kiến thức phẳng, **chưa** là skill invoke được — phải đọc thủ công, không tự load).
+
+---
+
+## Trước khi tin bất kỳ tối ưu nào — ĐO
+
+Hai giả định "hiển nhiên" trong file này đều đã được đo và **sai**: `adb pm clear` per-flow chậm hơn
+`clearState`+folder-run, và wireless ADB tiện nhưng chậm gấp đôi. Quy tắc rút ra:
+
+```bash
+# Baseline TRƯỚC khi đổi bất cứ thứ gì — không có baseline thì không có "nhanh hơn"
+maestro test flows/ 2>&1 | tail -5      # ghi lại tổng thời gian + pass/fail
+
+# Đổi ĐÚNG MỘT biến, đo lại, so cùng điều kiện (cùng cable, cùng device, cùng số flow)
+```
+
+Đổi 2 biến cùng lúc thì con số thu được vô nghĩa — không quy được cải thiện cho biến nào, và một
+biến làm chậm có thể che mất một biến làm nhanh. Cũng đừng so pass-rate khác nhau: 9/9 trong 358s
+tốt hơn 2/9 trong 424s, nhưng nếu chỉ nhìn "thời gian/test" thì bản flaky trông có vẻ ngang ngửa.
