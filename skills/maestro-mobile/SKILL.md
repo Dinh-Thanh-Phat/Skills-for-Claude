@@ -52,6 +52,51 @@ appId: com.example.app          # required — bundle ID (iOS) or package (Andro
 - assertVisible: "Welcome"      # hard assertion — fails immediately if not found
 ```
 
+## launchApp & Permissions
+
+Permission dialogs are the most common cause of "the flow worked yesterday" failures — a single
+unhandled OS prompt blocks every subsequent step. Decide permissions at launch instead of tapping
+system dialogs:
+
+```yaml
+- launchApp:
+    appId: "com.example.app"
+    clearState: true            # wipe app data — fresh user every run
+    clearKeychain: true         # iOS: also drop stored credentials
+    stopApp: false              # skip the kill+restart when you only need a foreground
+    permissions:
+      all: deny                 # deny everything, then grant what the flow needs
+      notifications: allow
+      android.permission.ACCESS_FINE_LOCATION: allow
+    arguments:
+      featureFlagX: true        # passed to the app at launch
+```
+
+Values are `allow`, `deny`, or `unset`. `all` sets a baseline that the more specific keys override.
+
+**Test the denied path too.** `all: deny` is the more valuable default: it exercises what users who
+refuse permissions actually see. A suite that only ever grants everything never covers the
+permission-denied branch — and that branch is where crashes hide.
+
+### Variables in permission values (Maestro 2.8.0+)
+
+```yaml
+env:
+  LOCATION_PERM: deny
+---
+- launchApp:
+    appId: "com.example.app"
+    permissions:
+      android.permission.ACCESS_FINE_LOCATION: ${LOCATION_PERM}
+```
+
+This lets one flow cover both branches from CI instead of duplicating the file — run it twice with
+`LOCATION_PERM=allow` and `LOCATION_PERM=deny`.
+
+> `clearState: true` also clears the login session. If a flow assumes a logged-in user, either log
+> in inside the flow or omit `clearState` — see the auth-state grouping strategy in the
+> `maestro-auth-state-strategy` notes rather than paying a full login on every flow.
+
 ## Element Selection (Priority Order)
 
 Use the most stable selector available, in this order:
