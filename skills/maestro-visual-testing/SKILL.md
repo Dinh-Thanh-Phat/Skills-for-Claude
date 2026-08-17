@@ -126,25 +126,33 @@ appId: com.example.app
 - launchApp
 - tapOn: "Cart"
 - assertScreenshot:
-    thresholdPercentage: 1    # strict — pixel-perfect checkout UI matters
+    path: cart
+    thresholdPercentage: 99   # strict — pixel-perfect checkout UI matters
 
 - tapOn: "Proceed to Payment"
 - assertScreenshot:
-    thresholdPercentage: 3
+    path: payment-form
+    thresholdPercentage: 97
     cropOn:
-      element: "payment-form"
+      id: "payment-form"
 ```
 
-### Conditional (only run on release builds)
+### Tuning strictness per environment
+
+Drive the threshold from an env var rather than hardcoding it, so CI can run stricter than local:
 
 ```yaml
 env:
-  VISUAL_CHECKS: false    # override to true in release CI pipeline
-
+  VISUAL_THRESHOLD: 95      # CI overrides to 99 for release builds
 ---
 - assertScreenshot:
-    enabled: ${VISUAL_CHECKS}
+    path: home
+    thresholdPercentage: ${VISUAL_THRESHOLD}
 ```
+
+> Prefer this over trying to switch the assertion off. If a screen genuinely cannot be checked in
+> some environment, skip it with a documented reason rather than lowering the threshold to a value
+> that passes everything — a disabled check is honest, a 10% threshold is a lie.
 
 ## When to Use Which Visual Command
 
