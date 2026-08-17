@@ -192,6 +192,34 @@ git commit -m "update visual baselines: new product card design"
     path: .maestro/screenshots/
 ```
 
+## Audit existing flows for the inversion trap
+
+Any flow written against the "lower = stricter" misreading is silently passing. Find them:
+
+```bash
+# List every threshold in the repo
+grep -rn "thresholdPercentage" .maestro/ flows/ 2>/dev/null
+
+# Flag suspicious low values (<50 is almost certainly the inverted misreading)
+grep -rn "thresholdPercentage" .maestro/ flows/ 2>/dev/null \
+  | grep -E "thresholdPercentage:\s*([0-9]|[1-4][0-9])\s*$"
+```
+
+For each hit: raise the value, then **prove the assertion can fail** (change something visible and
+confirm a red run) before accepting the new baseline.
+
+## Anti-patterns
+
+| Anti-pattern | Why it fails | Do instead |
+|---|---|---|
+| `thresholdPercentage: 1` meaning "strict" | It means 1% match required → never fails | Higher = stricter; use 98/99 |
+| Trusting a baseline that has never failed | An unproven assertion may be asserting nothing | Break it on purpose once, confirm red |
+| Lowering the threshold to stop a flaky failure | Converts a real signal into a permanent blind spot | Use `cropOn` to exclude the volatile region |
+| Full-screen assertions on screens with clocks/avatars/ads | Guaranteed false positives | `cropOn` a stable element |
+| Re-recording baselines to make CI green | Erases the regression you were meant to catch | Re-record only for *intentional* UI changes, in a separate commit |
+| Committing baselines from a different device/OS/density | Pixel output differs per device | Pin the baseline device; record and compare on the same profile |
+
 ## Sources
-- https://maestro.dev/blog/visual-testing
-- https://docs.maestro.dev/reference/commands-available/assertscreenshot
+- https://maestro.dev/blog/visual-testing — `thresholdPercentage` is the percentage match required to pass; default `95.0`; raise to 98/99 for pixel-sensitive components like charts and custom illustrations
+- https://docs.maestro.dev/reference/commands-available/assertscreenshot — params `path`, `cropOn`, `thresholdPercentage`, `label`; threshold accepts a variable or JS expression resolving to a number; invalid resolution raises `Invalid thresholdPercentage for assertScreenshot` instead of using the default
+- https://maestro.dev/blog — CLI 2.8.0 (Aug 6, 2026): variables in permissions and screenshot thresholds
