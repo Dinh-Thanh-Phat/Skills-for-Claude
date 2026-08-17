@@ -5,6 +5,60 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-17 (GMT+7)
+
+Process note (third occurrence of the pattern first flagged 2026-08-08/re-flagged 2026-08-15):
+this session started on a fresh clone with no local `skill-evolution` branch, so its initial
+inventory (`Glob skills/**/SKILL.md`, read of `evolution-log.md`) was taken from `main`, which
+was 19 days stale (last synced 2026-07-29 — the user merges `skill-evolution` into `main`
+manually and hadn't since). Working from that stale inventory, this run independently
+re-discovered and drafted three "new" findings that turned out to already be shipped on
+`skill-evolution`: Maestro 2.8.0's element-relative `swipe.point` / `setPermissions` variable
+support / `assertScreenshot` threshold variable support (documented 2026-08-01), and DeepEval's
+`flaky` flag on `LLMTestCase`/metrics (documented 2026-07-30/07-31, v4.1.4). This surfaced only
+at the `git checkout skill-evolution` step, via a "would be overwritten" conflict on files this
+run had already edited in place on `main`. Stashed the draft edits, checked out
+`skill-evolution` fresh, confirmed via direct file read that both were already covered (in more
+depth than this run's independent drafts — e.g. `setPermissions`/`assertScreenshot` were already
+included, which this run's Maestro draft also happened to have, but the DeepEval draft mis-cited
+the version as v4.1.7 instead of the correct v4.1.4), and dropped the stash entirely rather than
+merge or reconcile. A fourth drafted item — a Promptfoo Node.js `>=22.22.0` engines-requirement
+note for `llm-red-teaming` — was not a duplicate (`skill-evolution` has no such note) but matches
+what every run since 2026-08-04 has explicitly evaluated and skipped as "a breaking change/
+dependency requirement, not a testing technique"; deferred to that standing judgment rather than
+re-litigating it solo.
+
+**Reinforcing the standing lesson**: step 1 of this runbook must resolve against
+`origin/skill-evolution`'s actual HEAD before any research or drafting begins — `git fetch origin`
++ `git checkout skill-evolution` (creating it from `origin/skill-evolution` if the local clone
+has never seen it) — never against whatever branch a fresh session happens to start on. Doing
+the inventory read against `main` cost this run four WebFetch/WebSearch round trips re-deriving
+already-shipped content; doing it against `skill-evolution` first would have caught all three
+duplicates and the one non-actionable item before any drafting.
+
+With the near-miss cleared, re-verified all primary sources directly against the same first-party
+endpoints the 2026-08-16 run used, to confirm nothing shipped in the one day since: Playwright
+(`release-notes-js.md` — 1.62 remains the latest `## Version` heading), Maestro core CLI
+(`CHANGELOG.md` — 2.8.0 remains latest, "Unreleased" section still empty), DeepEval (GitHub tags
+— v4.1.8/python-v4.1.8, Aug 12, remains latest), Promptfoo (`CHANGELOG.md` — 0.122.0, Aug 4,
+remains latest), axe-core (`CHANGELOG.md` — 4.13.0, Aug 5, remains latest), MCP Inspector
+(GitHub releases — 2.2.0, Aug 12, remains latest, already fully documented by the 2026-08-16
+`mcp-server-testing` update). QA test design (general "QA test design technique new tool August
+2026" sweep — only error-guessing/pairwise-tooling/AI-augmented-QA/CI-integration trend framing,
+already covered by existing skills, no new reproducible technique). AI chatbot/LLM testing
+(general "AI chatbot LLM testing new tool release August 17 2026" sweep — surfaced only new
+*model* releases, not testing-tool releases, plus already-covered Cekura/Promptfoo/DeepEval/
+Giskard/Deepchecks/Ragas/LangSmith framing, no new reproducible technique).
+
+- No changes — every version check (Playwright, Maestro core + community `maestro-runner`
+  implied unchanged via core CLI's empty "Unreleased" section, DeepEval, Promptfoo, axe-core, MCP
+  Inspector) confirmed the same latest releases as 2026-08-16, and both general-technique sweeps
+  (QA test design, AI chatbot/LLM testing) returned only trend framing or already-covered tools.
+  Three findings drafted before switching to the correct branch were confirmed already-shipped
+  and discarded without editing any skill file; a fourth (Promptfoo's Node.js engines bump) was
+  deferred to the existing multi-run judgment that it's not a testing technique. Quality-over-
+  quantity guardrail applied — see the process note above for the branch-inventory root cause.
+
 ## 2026-08-16 (GMT+7)
 
 Domains researched: AI chatbot/LLM testing (**new finding**: MCP Inspector — the CLI tool `skills/mcp-server-testing` is built around — shipped a **v2.0.0 ground-up rewrite on 2026-07-28**, confirmed via direct fetch of `github.com/modelcontextprotocol/inspector/releases` (2.0.0 "major release", followed by 2.1.0 Aug 5 and 2.2.0 Aug 12, both bug-fix/doc-restoration only); a first-pass `WebFetch` of the CLI README and the v1→v2 migration guide returned lossy paraphrases as usual, so both were re-fetched **verbatim via `curl`** per this log's standing practice — confirmed the existing skill's basic command syntax (`--cli <target> --method <method>`) still works, but the skill was silently missing four real CI-breaking behavior changes: (1) the server target must be the *first* thing after `--cli` with no flags before it, or it's silently discarded in favor of the default catalog — no error, just a wrong-server pass; (2) `--` now splits the opposite way under `--cli` vs. web/TUI; (3) a `tools/call` returning `isError: true` now exits `5` instead of v1's `0`, so `&&`-chained CI steps that silently continued past a failing tool in v1 will now correctly (and, on first upgrade, surprisingly) stop; (4) URL transport is now only inferred from an exact `/mcp`/`/sse` path suffix, erroring rather than silently defaulting to SSE like v1 did. Also confirmed a real `--config`/`--catalog` semantic split the skill's existing "fixtures" guidance didn't distinguish (`--config` is now strictly read-only, `--catalog` is the new writable-by-the-Inspector file), two new read-only-catalog methods (`servers/list`/`servers/show`) and a connect-only `initialize` probe, and a CI-relevant OAuth flag (`--stored-auth-only`) the v1-only CLI never had. Grepped the target skill file before writing to confirm zero prior mention of "v2", "catalog", "migration", or any of the four gotchas — genuine gap, not a duplicate), Playwright/web E2E (release-notes re-check via direct fetch of `release-notes-js.md` — 1.62 confirmed still the latest **minor**, but `registry.npmjs.org/@playwright/test` showed a **1.62.1 patch** (July 30) not present as its own `## Version` heading in the release notes; fetched its GitHub release body directly — five items, all regression/bug fixes (tsconfig `extends` resolution, directory-form tsconfig project refs, an accessibility-snapshot button-name-loss bug, a TS branded-primitive typecheck regression, image-actionable-element snapshot bug) — no new testing technique, command, or flag, skipped per the bug-fix-only precedent (e.g. 2026-07-21's Maestro path-traversal skip); `1.63.0-alpha-2026-08-15` confirmed still an unshipped alpha via the npm `next` dist-tag, too speculative to document, same conclusion as every prior run's alpha check; `playwright-mcp` releases re-check — v0.0.79 confirmed still latest, unchanged since 2026-08-09), Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct fetch — 2.8.0 confirmed still latest, "Unreleased" section still empty, same as every run since 2026-08-02; community `maestro-runner` `CHANGELOG.md` re-check — v1.1.23 confirmed still latest, already fully documented), AI chatbot/LLM testing remainder (DeepEval GitHub tags re-check — v4.1.8/python-v4.1.8 (Aug 12) confirmed still latest, already fully documented; Promptfoo `CHANGELOG.md` re-check — 0.122.0 confirmed still latest; axe-core `CHANGELOG.md` re-check — 4.13.0 confirmed still latest; Garak/PyRIT sweep — both confirmed still mature/stable tools in active use, no new release surfaced), QA test design (general "QA test design new technique test plan August 2026" sweep, plus a secondary "new open source testing tool August 2026" sweep — only EP/error-guessing/shift-left-shift-right/AI-augmented trend framing and already-known tools (Playwright, Robot Framework), all already covered by existing skills, no new reproducible technique).
