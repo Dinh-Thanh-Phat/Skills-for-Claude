@@ -1,11 +1,6 @@
 ---
 name: maestro-visual-testing
-description: >-
-  Use when you need pixel-level visual regression testing in Maestro mobile flows to catch
-  unintended UI changes across releases, React Native / Flutter library upgrades, or theme
-  changes. Triggers on: "maestro assertScreenshot", "maestro visual regression", "maestro
-  screenshot comparison", "maestro visual testing", "mobile visual diff", "maestro baseline
-  screenshot", "catch UI changes maestro".
+description: Use when you need pixel-level visual regression testing in Maestro mobile flows to catch unintended UI changes across releases, React Native / Flutter library upgrades, or theme changes. Triggers on: "maestro assertScreenshot", "maestro visual regression", "maestro screenshot comparison", "maestro visual testing", "mobile visual diff", "maestro baseline screenshot", "catch UI changes maestro".
 ---
 
 # Maestro Visual Testing
@@ -26,15 +21,62 @@ On the first execution Maestro saves the screenshot as the baseline. Subsequent 
 
 ## Configuration Options
 
+> 🚨 **`thresholdPercentage` is a MATCH percentage, not a difference percentage.**
+> It is the *percentage match required to pass*, default **`95`**. **Higher = stricter.**
+> This reads backwards from most diffing tools, and getting it wrong does not produce an error —
+> it produces a test that silently passes on everything.
+
 ```yaml
 - assertScreenshot:
-    thresholdPercentage: 2    # fail if >2% of pixels differ (default: 5)
-    enabled: true             # set to false to disable in env-specific flows
+    path: checkout-screen        # baseline filename, no extension
+    thresholdPercentage: 98      # require 98% pixel match — STRICTER than the 95 default
+    cropOn:
+      id: "payment-form"
+    label: "Checkout screen visual check"
 ```
 
-| Option | Default | Notes |
+| Option | Type | Default | Notes |
+|---|---|---|---|
+| `path` | string | — | Baseline filename without extension; may include subdirectories. Supports JS expressions |
+| `thresholdPercentage` | number | `95` | **Percentage match required to pass.** Higher = stricter. Accepts a variable or JS expression that resolves to a number |
+| `cropOn` | selector | — | Compare only this element's bounds |
+| `label` | string | — | Message displayed when the assertion runs |
+
+### Picking a threshold
+
+| Value | Meaning | Use for |
 |---|---|---|
-| `thresholdPercentage` | `5` | Percentage of differing pixels that triggers failure |
+| `99` / `98` | Near pixel-perfect | Charts, custom illustrations, brand/logo areas, payment UI |
+| `95` (default) | Up to 5% of pixels may differ | Most screens — practical starting point |
+| `90` | Loose | Screens with mild anti-aliasing or font-rendering variance |
+| `50` or below | **Effectively disabled** | Never — this passes almost any screen |
+
+**The inversion trap.** `thresholdPercentage: 1` does *not* mean "fail if >1% differs". It means
+"pass if ≥1% of pixels match" — i.e. the assertion can never realistically fail. A suite full of
+low values looks green while testing nothing.
+
+Sanity-check a new baseline before trusting it: deliberately change something visible (swap a
+string, change a colour) and confirm the assertion **fails**. An assertion that has never failed
+has not been proven to work.
+
+### Variables in the threshold (Maestro 2.8.0+)
+
+`thresholdPercentage` accepts variables and JS expressions, so strictness can be tuned per
+environment:
+
+```yaml
+env:
+  VISUAL_THRESHOLD: 98
+---
+- assertScreenshot:
+    path: home
+    thresholdPercentage: ${VISUAL_THRESHOLD}
+```
+
+> ⚠️ **Unset variables fail loudly, not silently — but read the message.** If the value resolves to
+> something invalid (e.g. an empty string from an unset variable), Maestro raises
+> `Invalid thresholdPercentage for assertScreenshot` rather than falling back to the default.
+> Treat that error as a *harness* misconfiguration, not a visual regression.
 
 ## Isolating Volatile Regions with `cropOn`
 
@@ -42,8 +84,9 @@ Dynamic areas (clocks, user avatars, ad banners, timestamps) change every run an
 
 ```yaml
 - assertScreenshot:
+    path: product-grid
     cropOn:
-      element: "product-grid-container"   # crop to this element's bounds only
+      id: "product-grid-container"   # any standard selector: id, text, ...
 ```
 
 This ignores everything outside the cropped region — status bars, system UI, and dynamic content stay out of the comparison.
