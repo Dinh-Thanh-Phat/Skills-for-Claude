@@ -386,10 +386,25 @@ appId: ${APP_ID}
     direction: UP        # UP / DOWN / LEFT / RIGHT
     duration: 500        # ms, default 400
 
-# Precise swipe (coordinates)
+# Swipe anchored to an element (PREFERRED — survives layout changes)
 - swipe:
-    start: { x: 50%, y: 80% }
-    end: { x: 50%, y: 20% }
+    from:
+      id: "feeditem_identifier"
+    direction: LEFT
+
+# Swipe from a specific point INSIDE an element (Maestro 2.8.0+)
+- swipe:
+    from:
+      text: "Desired card text"
+      point: "50%, 85%"    # % of the ELEMENT's own bounds, not the screen
+    direction: LEFT
+# Omit `point` and the swipe starts from the element's CENTER.
+# Absolute pixel offsets from the element's top-left also work: point: "25, 75"
+
+# Precise swipe (screen coordinates) — brittle across devices, last resort
+- swipe:
+    start: 90%, 50%
+    end: 10%, 50%
 
 # Long press
 - longPressOn: "Delete"
