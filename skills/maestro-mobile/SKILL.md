@@ -422,6 +422,33 @@ appId: ${APP_ID}
     end: { x: 300, y: 400 }
 ```
 
+### Choosing a swipe form
+
+Prefer in this order — each step down trades reliability for control:
+
+1. `direction` alone — whole-screen scroll
+2. `from: <selector>` — anchored to an element, survives layout shifts
+3. `from: <selector>` + `point` — anchored *and* precise (2.8.0+)
+4. `start`/`end` screen coordinates — **last resort**, breaks on any other screen size
+
+**When `point` is the fix.** Element-anchored swipes start at the element's center. That silently
+fails when the center sits on top of something that swallows the gesture — a nested scroll view, an
+embedded map, an image carousel inside a card, or a button. The classic symptom is a swipe-to-delete
+or carousel test that "does nothing" while the selector clearly matched. Before 2.8.0 the only
+escape was screen coordinates; now anchor to the element and move the start point into a dead zone:
+
+```yaml
+# Swipe-to-delete on a card whose centre hosts a nested carousel
+- swipe:
+    from:
+      id: "order-card"
+      point: "50%, 90%"   # bottom strip of the card — below the carousel
+    direction: LEFT
+```
+
+> Don't reach for `point` first. If a plain `from:` swipe works, adding a point only makes the flow
+> sensitive to the element's internal layout.
+
 ## Scripts (JavaScript for Dynamic Logic)
 
 ```yaml
