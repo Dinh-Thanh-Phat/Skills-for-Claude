@@ -754,7 +754,27 @@ simulators at the same time.
 - inputText: ${TEST_EMAIL}
 ```
 
+## Version timeline (CLI)
+
+| Version | Date | What it added that changes how you write flows |
+|---|---|---|
+| **2.8.0** | 6 Aug 2026 | `point` inside a `from:` selector for swipes; variables/JS expressions in `permissions` values and in `thresholdPercentage`; Cloud upload + report fixes |
+| 2.7.0 | 27 Jul 2026 | Redesigned per-flow debug bundle for AI-agent debugging of failing Cloud runs; automatic per-step screenshots + failure hierarchy; leaner artifacts; Android native SIGSEGV crash detection; `maestro chat` discontinued |
+| 2.6.1 | 12 Jun 2026 | Fixes |
+| 2.6.0 | 25 May 2026 | Maestro Viewer + built-in MCP server; parallel local iOS simulator fix; `--driver-host-port`; cleaner output |
+| 2.5.x | Apr 2026 | Android 15/16 support, new Pixel 9 device profiles |
+
+Check what you actually have before assuming a feature exists — a flow using `point` fails to parse
+on 2.7.x:
+
+```bash
+maestro --version
+maestro check-syntax flows/            # catches unsupported keys before a device run
+```
+
 ## Sources
+- https://maestro.dev/blog — CLI 2.8.0 (6 Aug 2026): swipe from any point inside an element, variables in permissions and screenshot thresholds, Cloud upload/report reliability fixes; CLI 2.7.0 (27 Jul 2026): debug failing Cloud runs with your AI agent
+- https://docs.maestro.dev/reference/commands-available/swipe — `from.point` accepts `"50%, 85%"` (relative to the element's own bounds) or `"25, 75"` (pixel offset from its top-left); omitted → swipe starts at element centre; `direction` cannot be combined with `start`/`end`
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0)
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
