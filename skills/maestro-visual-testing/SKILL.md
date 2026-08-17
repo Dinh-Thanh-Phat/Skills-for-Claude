@@ -112,8 +112,9 @@ appId: com.example.app
 
 - tapOn: "Add to Cart"
 - assertScreenshot:
+    path: cart-badge
     cropOn:
-      element: "cart-badge"   # Only check the cart counter, not full screen
+      id: "cart-badge"        # Only check the cart counter, not full screen
 ```
 
 ### Per-screen visual suite
