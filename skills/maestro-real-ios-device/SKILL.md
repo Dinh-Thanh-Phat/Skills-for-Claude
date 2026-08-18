@@ -10,7 +10,8 @@ description: |
   device maestro", "maestro iPhone", "maestro runner", "maestro-runner", "devicelab maestro",
   "maestro real device", "maestro-runner react native", "maestro-runner flutter",
   "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot",
-  "maestro-runner dark mode", "maestro-runner lint", "maestro-runner setDarkMode".
+  "maestro-runner dark mode", "maestro-runner lint", "maestro-runner setDarkMode",
+  "maestro-runner retry-failed", "maestro-runner record", "maestro-runner assertVisible count".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -209,6 +210,53 @@ on-screen keyboard and still report success (an occlusion guard now checks after
 fails instead); DeviceLab swipes were inconsistent run-to-run because they shelled out to
 `adb shell input swipe` — now routed through the on-device agent for consistent distance (re-record
 any DeviceLab swipe-distance screenshot baselines, since this changes actual swipe distance).
+
+## v1.1.24: `--retry-failed`, `--record`, `assertVisible: count:` (August 2026)
+
+- **`--retry-failed`** — re-runs only the flows that failed in the previous run, reading the last
+  report under the same `--output` directory (flattened or timestamped layout). A run that was cut
+  short counts its unfinished flows as failed too, so nothing is silently dropped from the retry set.
+  A clean previous run exits `0` without touching a device; if none of the previous failures are in
+  the current flow selection, the run errors instead of silently running nothing:
+  ```bash
+  maestro-runner test --output ./reports flows/                 # 2 of 40 fail
+  maestro-runner test --output ./reports --retry-failed flows/  # runs just those 2
+  ```
+- **`--record`** — saves a screen recording of every flow into its report assets, played inline in
+  the HTML report. Android records on-device via `screenrecord` (3-minute clip cap per flow) and pulls
+  the file to the host; iOS simulators record host-side via `simctl`. Physical iOS, Web, and Appium
+  drivers aren't supported — the run warns once and continues without recording.
+- **`assertVisible` with `count:`** — asserts a selector matches exactly N visible elements; fewer or
+  more both fail, and the error reports the count actually observed. Runs through the same
+  multi-match machinery `index:` selection already uses, so count semantics stay consistent across
+  drivers. Supports `${VAR}`; rejects `count: 0` (use `assertNotVisible` instead) and cannot be
+  combined with `index:`:
+  ```yaml
+  - assertVisible:
+      css: .cart-item
+      count: 3
+  ```
+- **Dark mode now covers Web and physical iOS** — `setDarkMode`/`toggleDarkMode`/`assertDarkMode`/
+  `assertLightMode` (v1.1.23, above) now also work on the browser driver, emulated via CDP's
+  `prefers-color-scheme` (heads-up: headless Chromium defaults to dark, so set an explicit mode before
+  asserting), and on `--driver devicelab_ios` via `XCUIDevice.appearance` (iOS 15+), which works on
+  real hardware and replaces the simulator-only `simctl` path from v1.1.23; the set is read back and
+  the step fails if it didn't take effect.
+- **App build number in reports** — reports now show the build behind the version (`versionCode` on
+  Android, `CFBundleVersion` on iOS) alongside it, e.g. `v1.16.0 (10009107)`, in `report.json`, the
+  HTML header/title, and Allure's environment.
+
+Notable fixes: flow text reaching the device shell is now shell-quoted (an apostrophe in
+`openBrowser: "https://example.com/s?q=it's"` was a device-side shell parse error, and `addMedia`
+paths with spaces silently registered nothing — fixed across all six call sites on the Android
+drivers); WDA `inputText` no longer rejects React Native fields whose accessibility tree merges the
+`TextInput` into its parent container (the v1.1.23 focus gate required an active element, which React
+Native never reports in this case — it now also accepts a visible keyboard as evidence, and falls
+back to tap-and-type on a failed send-keys); iOS text-entry verification now polls for keystrokes to
+commit instead of one-shot re-reading, which could previously report text that hadn't landed yet;
+`startRecording` on real Android devices now detaches from the adb shell session so a backgrounded
+`screenrecord` survives instead of dying with it; Web runs no longer misreport their driver as
+`uiautomator2` in reports (now correctly `cdp`).
 
 ## Key Caveats
 

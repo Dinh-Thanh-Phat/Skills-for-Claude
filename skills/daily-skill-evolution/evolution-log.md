@@ -5,6 +5,76 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-18 (GMT+7)
+
+Orientation done correctly this run: `git fetch origin` + `git checkout skill-evolution` (branch
+already existed locally, tracking `origin/skill-evolution`) before any inventory/research, per the
+process fix reinforced on 2026-08-08/08-15/08-17. `git merge --ff-only origin/main` diverged as
+expected (the user merges manually and hasn't since 2026-07-29) and was skipped per the runbook's
+`|| true`.
+
+Domains researched: Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct `curl` — 2.8.0
+confirmed still latest, "Unreleased" section still empty, same as every run since 2026-08-02;
+**new finding**: community `maestro-runner` `CHANGELOG.md` re-check via direct `curl` — found a
+genuinely new **v1.1.24** (2026-08-16), one day after the 2026-08-16 run's confirmed-latest v1.1.23
+and not caught by the 2026-08-17 run, whose domain-research paragraph covered Playwright/Maestro-core/
+DeepEval/Promptfoo/axe-core/MCP-Inspector but did not re-check `maestro-runner` specifically; grepped
+`skills/maestro-real-ios-device/SKILL.md` for "1.1.24"/"retry-failed"/"--record"/"assertVisible.*count"
+before writing — zero hits, confirming a genuine gap, not a duplicate), Playwright/web E2E
+(`release-notes-js.md` re-check via direct `curl` — 1.62 remains the latest `## Version` heading;
+npm `@playwright/test` dist-tags confirm `latest: 1.62.1` (already documented, bug-fix-only patch)
+and `next: 1.63.0-alpha-2026-08-17`, still an unshipped alpha; npm `@playwright/mcp` dist-tags confirm
+`latest: 0.0.79`, unchanged since 2026-08-09), AI chatbot/LLM testing (DeepEval — PyPI JSON API +
+`_version.py` both confirm v4.1.8 (Aug 12) remains latest, already fully documented; Promptfoo — npm
+dist-tag and direct `CHANGELOG.md` `curl` both confirm 0.122.0 (Aug 4) remains latest; axe-core — npm
+dist-tag and direct `CHANGELOG.md` `curl` both confirm 4.13.0 (Aug 5) remains latest; MCP Inspector —
+npm dist-tags confirm `latest: 2.2.0`, unchanged since 2026-08-12, already fully documented; general
+"AI chatbot LLM testing new tool release August 2026" WebSearch sweep — surfaced only new *model*
+releases (Gemini 3.7 Flash, Grok 4.6, etc., not testing tools) plus already-covered Cekura/Promptfoo/
+DeepEval/Giskard/Deepchecks/Ragas/LangSmith/Botium framing, no new reproducible technique), QA test
+design (general "QA test design new technique tool August 2026" WebSearch sweep — only AI-first-QA/
+augmented-QA-role/TestRail-Sembi-rebrand trend framing, all either already covered by existing skills
+or vendor-product naming with no reproducible technique, no new actionable finding).
+
+Note: `api.github.com` requests for repos outside this session's GitHub MCP scope
+(`confident-ai/deepeval`, `modelcontextprotocol/inspector`) returned a scope-restriction error from
+the environment's GitHub access layer rather than real GitHub data ("GitHub access to this repository
+is not enabled for this session") — this is a session-environment change from prior runs, which used
+`api.github.com`/`github.com` release pages freely. Worked around it by using each project's PyPI/npm
+registry `dist-tags`/`json` endpoints (unaffected by the restriction, since they're not proxied through
+the GitHub-scoped access layer) as the version-of-record check instead, cross-checked against
+`raw.githubusercontent.com` for changelog content — both remain fully accessible. Flagging for future
+runs: prefer `registry.npmjs.org`/`pypi.org` + `raw.githubusercontent.com` over `api.github.com`/
+`github.com/.../releases` for any repo not already in this session's GitHub scope.
+
+- UPDATED: skills/maestro-real-ios-device — Added a "v1.1.24: `--retry-failed`, `--record`,
+  `assertVisible: count:` (August 2026)" section: `--retry-failed` (re-runs only previously-failed
+  flows by reading the last report in `--output`, treating a cut-short run's unfinished flows as
+  failed, erroring rather than silently no-op-ing if none of the prior failures are in the current
+  selection); `--record` (per-flow screen recording embedded in the HTML report — on-device
+  `screenrecord` pulled to host on Android with a 3-minute cap, host-side `simctl` on iOS simulators,
+  unsupported on physical iOS/Web/Appium); `assertVisible: count:` (exact visible-match-count
+  assertion using the same multi-match machinery as `index:`, rejects `count: 0` and combination with
+  `index:`); dark mode support extended to the Web driver (CDP `prefers-color-scheme` emulation) and
+  to physical iOS devices (`XCUIDevice.appearance`, replacing the v1.1.23 simulator-only `simctl`
+  path); and build numbers now shown alongside version strings in reports. Also documented five fixes:
+  shell-quoting of flow text reaching the device shell (apostrophes/spaces in `openBrowser`/`addMedia`
+  args), WDA `inputText`'s focus gate now accepting a visible keyboard as evidence for
+  accessibility-merged React Native fields, polling (not one-shot) iOS text-entry verification,
+  detached `startRecording` on real Android devices so it survives the adb shell session, and
+  Web runs no longer misreporting their driver as `uiautomator2`. Verified verbatim against the tool's
+  own `CHANGELOG.md` `[1.1.24]` entry (fetched via direct `curl`, not a WebFetch summary). Updated
+  frontmatter trigger keywords. Sources: https://raw.githubusercontent.com/devicelab-dev/maestro-runner/main/CHANGELOG.md, https://github.com/devicelab-dev/maestro-runner
+- SKIPPED Maestro/mobile (core CLI) — 2.8.0 remains latest with an empty "Unreleased" section, same
+  as every run since 2026-08-02.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable; the known 1.62.1 patch and unshipped
+  1.63.0-alpha are unchanged from prior runs; `playwright-mcp` v0.0.79 remains latest.
+- SKIPPED AI chatbot/LLM testing (remainder) — DeepEval v4.1.8, Promptfoo 0.122.0, axe-core 4.13.0,
+  and MCP Inspector 2.2.0 all confirmed still latest and already fully documented; general tool-release
+  sweep returned only new model releases and already-covered testing-platform framing.
+- SKIPPED QA test design — general sweep returned only AI-first-QA/augmented-QA-role/vendor-rebrand
+  trend framing already covered by existing skills or lacking a reproducible technique.
+
 ## 2026-08-17 (GMT+7)
 
 Process note (third occurrence of the pattern first flagged 2026-08-08/re-flagged 2026-08-15):
