@@ -11,7 +11,8 @@ description: |
   "maestro real device", "maestro-runner react native", "maestro-runner flutter",
   "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot",
   "maestro-runner dark mode", "maestro-runner lint", "maestro-runner setDarkMode",
-  "maestro-runner retry-failed", "maestro-runner record", "maestro-runner assertVisible count".
+  "maestro-runner retry-failed", "maestro-runner record", "maestro-runner assertVisible count",
+  "maestro-runner dragAndDrop", "maestro-runner step-delay".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -257,6 +258,49 @@ commit instead of one-shot re-reading, which could previously report text that h
 `startRecording` on real Android devices now detaches from the adb shell session so a backgrounded
 `screenrecord` survives instead of dying with it; Web runs no longer misreport their driver as
 `uiautomator2` in reports (now correctly `cdp`).
+
+## v1.1.25: `dragAndDrop`, `--step-delay`, JUnit Failure Artifacts (August 2026)
+
+- **`dragAndDrop`** — long-press an element (or point) and drag it to another, for reorder UIs.
+  `from:`/`to:` each take a selector or a `point:`; `holdDuration` (ms, default 1000) is the press
+  before movement, `duration` (ms, default 1000) the movement itself. Works on every driver
+  (UIAutomator2, DeviceLab Android's `input draganddrop`, WDA, DeviceLab iOS, web CDP mouse
+  sequence, Appium):
+  ```yaml
+  - dragAndDrop:
+      from:
+        id: "item-3"
+      to:
+        point: "50%, 20%"
+      holdDuration: 800
+  ```
+  Heads-up for web: pages using native HTML5 `draggable` ignore synthetic mouse events by design —
+  only mouse/touch/pointer-event drag implementations work.
+- **`--step-delay <ms>`** — pace a pause between top-level steps, for demos and apps whose
+  animations outrun the assertions. Also `MAESTRO_STEP_DELAY` env var, and per-flow `stepDelay:`.
+- **JUnit `properties:` and failure artifacts** — a flow's `properties:` map now lands as
+  `<property>` entries on its JUnit testcase, so flows can carry test-tracking IDs (e.g. `testID:
+  Test-1234`) into CI. Failed testcases attach the failing step's screenshot and any `--record`
+  video via the `[[ATTACHMENT|path]]` convention Jenkins-style tooling reads; a green run attaches
+  only the video.
+- **Negation globs in `config.yaml`** — a `flows:` pattern prefixed with `!` subtracts files an
+  earlier pattern selected, so a workspace can take everything and carve out fixtures:
+  `flows: ["**", "!fixtures/**"]`.
+- **DeviceLab iOS now targets the app actually on screen** — a step with no `appId` used to
+  activate the runner's own placeholder host app instead (XCUITest's public API can't address "the
+  app in front"), blanking whatever was being tested. It now resolves the frontmost app through
+  active-application PIDs and targets it directly, falling back to the host app only when that
+  fails.
+
+**Fix worth knowing about — `scrollUntilVisible` was accepting a sliver as "visible".** Every
+driver previously stopped scrolling on any 1px viewport overlap, and the documented
+`visibilityPercentage` option was parsed but never wired to anything. It's now a real check —
+fully visible by default, honoring `visibilityPercentage` when set — so a flow that relied on a
+tiny corner of an element counting as "found" may now scroll one step further than before; re-run
+flows using `scrollUntilVisible` after upgrading. The same release also fixed four stacked causes
+that made Flutter apps largely undrivable on the DeviceLab iOS driver (missing coordinate-tap
+support, timeout leakage into XCUITest calls, scrolls releasing mid-motion); the driver went from
+9/19 to 17/19 on the project's Flutter issue-repro suite, ahead of WDA-with-fallback at 14/19.
 
 ## Key Caveats
 

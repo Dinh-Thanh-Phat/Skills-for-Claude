@@ -5,6 +5,76 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-19 (GMT+7)
+
+Orientation done correctly this run: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research — same fix reinforced on 2026-08-08/08-15/08-17. Note for anyone auditing
+cadence: `main` is still stale at 2026-07-29 (the user hasn't merged `skill-evolution` since),
+which is expected per the runbook (the user merges manually) and not something this run can fix.
+
+Near-miss caught before writing anything (third occurrence of the exact pattern logged
+2026-08-08/08-15/08-17): this session's first tool calls happened before the branch checkout and
+read `main`'s stale `evolution-log.md`/skill inventory, leading to drafted (uncommitted) edits for
+a "new" DeepEval `flaky` flag finding and a Maestro 2.8.0 `assertScreenshot`/`setPermissions`
+variables finding. Both turned out to already be shipped on `skill-evolution` (DeepEval's `flaky`
+field documented 2026-07-30/07-31 as v4.1.4, correctly — this session's draft had mis-cited it as
+v4.1.7; Maestro 2.8.0 content documented 2026-08-01). Caught via a merge conflict at the
+`git checkout skill-evolution` step (the runbook's own `git merge --ff-only origin/main` step),
+resolved by `git merge --abort`, `git reset --hard origin/skill-evolution`, and dropping the stash
+entirely rather than reconciling — matching the standing lesson from 08-17 to re-verify against
+`origin/skill-evolution`'s actual HEAD, not `main`, before drafting anything.
+
+Domains researched (re-verified fresh against `skill-evolution`'s actual state, not the stale
+draft): Playwright/web E2E (`release-notes-js.md` re-check via direct `curl` — 1.62 remains the
+latest `## Version` heading; npm `@playwright/test` dist-tags confirm `latest: 1.62.1` unchanged,
+`next: 1.63.0-alpha-2026-08-18` still an unshipped alpha; npm `@playwright/mcp` dist-tags confirm
+`latest: 0.0.79` unchanged since 2026-08-09), Maestro/mobile (core CLI `CHANGELOG.md` re-check via
+direct `curl` — 2.8.0 confirmed still latest, "Unreleased" section still empty, same as every run
+since 2026-08-02; **new finding**: community `maestro-runner` `CHANGELOG.md` re-check via direct
+`curl` — found genuinely new **v1.1.25** (2026-08-18), one day after the 2026-08-18 run's
+documented v1.1.24; grepped `skills/maestro-real-ios-device/SKILL.md` for "1.1.25"/"dragAndDrop"/
+"step-delay"/"negation glob" before writing — zero hits, confirming a genuine gap), AI chatbot/LLM
+testing (DeepEval PyPI JSON API confirms v4.1.8 remains latest, unchanged since 2026-08-12, already
+fully documented; Promptfoo `CHANGELOG.md` direct `curl` confirms 0.122.0 (Aug 4) remains latest;
+axe-core `CHANGELOG.md` direct `curl` confirms 4.13.0 (Aug 5) remains latest; MCP Inspector npm
+dist-tags confirm `latest: 2.2.0` unchanged since 2026-08-12; general "AI chatbot LLM testing new
+tool technique August 19 2026" WebSearch sweep — only already-covered Cekura/DeepEval/Promptfoo/
+Giskard/Deepchecks/Ragas/LangSmith/Langfuse layered-testing framing, no new reproducible technique),
+QA test design (general "QA test design new technique tool August 2026" WebSearch sweep — only
+AI-first-QA/AI-generated-test-case/shift-left-shift-right/IoT-blockchain trend framing, all already
+covered by existing skills or vendor-tool naming with no reproducible technique).
+
+- UPDATED: skills/maestro-real-ios-device — Added a "v1.1.25: `dragAndDrop`, `--step-delay`, JUnit
+  Failure Artifacts (August 2026)" section: `dragAndDrop` (long-press-and-drag for reorder UIs,
+  `from:`/`to:` as selector or `point:`, `holdDuration`/`duration` ms options, implemented on every
+  driver — UIAutomator2 W3C actions, DeviceLab Android's `input draganddrop`, WDA
+  `press(forDuration:thenDragTo:)`, DeviceLab iOS, paced CDP mouse sequence on web, Appium W3C
+  actions — with a heads-up that native HTML5 `draggable` pages ignore synthetic mouse events);
+  `--step-delay <ms>` / `MAESTRO_STEP_DELAY` / per-flow `stepDelay:` to pace top-level steps for
+  demos and animation-heavy apps; JUnit reports now carry a flow's `properties:` map as
+  `<property>` entries (test-tracking IDs into CI) and attach failure screenshots/`--record` video
+  via the `[[ATTACHMENT|path]]` convention; negation globs (`!pattern`) in `config.yaml`'s `flows:`
+  list to carve fixtures out of a broad selection; DeviceLab iOS no longer hijacks the screen with
+  its placeholder host app on an `appId`-less step, instead resolving and targeting the actual
+  frontmost app. Also flagged a behavior-changing fix worth knowing about:
+  `scrollUntilVisible` previously accepted any 1px overlap as "visible" (the documented
+  `visibilityPercentage` option was parsed but never wired to anything) — it's now a real
+  visibility check, so flows relying on a sliver of an element counting as found may scroll one
+  step further after upgrading; the same release also fixed four stacked causes of Flutter apps
+  being largely undrivable on the DeviceLab iOS driver (9/19 → 17/19 on the project's own
+  Flutter issue-repro suite, ahead of WDA-with-fallback's 14/19). Verified verbatim against the
+  tool's own `CHANGELOG.md` `[1.1.25]` entry (direct `curl`, not a WebFetch summary). Updated
+  frontmatter trigger keywords. Sources: https://raw.githubusercontent.com/devicelab-dev/maestro-runner/main/CHANGELOG.md, https://github.com/devicelab-dev/maestro-runner
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable; 1.62.1 patch and unshipped
+  1.63.0-alpha-2026-08-18 unchanged from the 2026-08-18 run; `playwright-mcp` v0.0.79 unchanged.
+- SKIPPED Maestro/mobile (core CLI) — 2.8.0 remains latest with an empty "Unreleased" section, same
+  as every run since 2026-08-02.
+- SKIPPED AI chatbot/LLM testing — DeepEval v4.1.8, Promptfoo 0.122.0, axe-core 4.13.0, and MCP
+  Inspector 2.2.0 all confirmed still latest and already fully documented; general sweep returned
+  only already-covered testing-platform/layered-testing framing.
+- SKIPPED QA test design — general sweep returned only AI-first-QA/AI-generated-test-case trend
+  framing already covered by existing skills, no new reproducible technique.
+
 ## 2026-08-18 (GMT+7)
 
 Orientation done correctly this run: `git fetch origin` + `git checkout skill-evolution` (branch
