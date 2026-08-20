@@ -5,6 +5,76 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-20 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any inventory/
+research (branch already existed locally). Read this branch's HEAD `evolution-log.md`
+(2026-08-19 entry, not `main`'s stale 2026-07-29), per the standing lesson reinforced on
+2026-08-08/08-15/08-17/08-18/08-19.
+
+Domains researched: AI chatbot/LLM testing (**new finding**: MCP Inspector npm dist-tags show
+**v2.3.0** (2026-08-19T16:01 UTC), one minor version past the v2.2.0 this branch's `mcp-server-testing`
+skill documents — genuinely shipped after the 2026-08-19 run's own version check, not a stale re-find;
+`github.com/.../releases/tag/2.3.0` 403'd to direct `curl` as usual for this domain, so used `WebFetch`
+to read the rendered release page — mostly CI/dependency/Windows-test-stability bug fixes and a few
+Server-Settings-UI-only OAuth items (custom per-server auth params, decoded `id_token` display, Auth/Token
+URL overrides) not relevant to the CLI this skill documents; but re-fetching the CLI's own
+`clients/cli/README.md` verbatim (not trusting the terse PR-title release notes) surfaced that the skill's
+existing "OAuth for CI" coverage was a single sentence covering only `--stored-auth-only`, while the
+current README documents a full stored-token-reuse/refresh/remote-handoff flag set
+(`--use-stored-auth`, `--wait-for-auth`, `--list-stored-auth`, `--print-handoff`, `--client-id`/
+`--client-secret`/`--client-metadata-url`, `--callback-url`) plus four distinct sub-reasons for exit
+code 3 (`auth_required`/`no_stored_token`/`auth_wait_timeout`/`refresh_failed`) and a step-up
+mid-session auth prompt — grepped the skill file for each flag name before writing, zero hits,
+confirming a genuine gap rather than a duplicate; unclear whether this flag set is new in 2.3.0 or
+pre-existing and simply never fully captured by the 2026-08-16 update that only added
+`--stored-auth-only` — documented honestly as a coverage gap-fill against the current CLI, not claimed
+as a 2.3.0-exclusive feature), Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct `curl` — 2.8.0
+confirmed still latest, "Unreleased" section still empty, same as every run since 2026-08-02; community
+`maestro-runner` `CHANGELOG.md` re-check via direct `curl` — v1.1.25 (Aug 18) confirmed still latest,
+"Unreleased" section also empty, already fully documented by the 2026-08-19 `maestro-real-ios-device`
+update), Playwright/web E2E (`release-notes-js.md` re-check via direct `curl` — 1.62 remains the latest
+`## Version` heading, verbatim bullet list unchanged; npm `@playwright/test` dist-tags confirm
+`latest: 1.62.1` unchanged, `next: 1.63.0-alpha-2026-08-19` still an unshipped alpha; npm
+`@playwright/mcp` dist-tags confirm `latest: 0.0.79` unchanged since 2026-08-09; general "Playwright
+testing best practices new feature August 2026" WebSearch sweep — only getByRole/web-first-assertions/
+fixtures/trace-viewer/composable-fixtures-over-POM framing, all already covered by
+`playwright-page-object-model`/`flaky-test-prevention`/`playwright-diagnosis-first`, no new reproducible
+technique), AI chatbot/LLM testing remainder (DeepEval PyPI JSON API confirms v4.1.8 remains latest,
+unchanged since 2026-08-12, already fully documented; Promptfoo `CHANGELOG.md` direct `curl` confirms
+0.122.0 (Aug 4) remains latest; axe-core `CHANGELOG.md` direct `curl` confirms 4.13.0 (Aug 5) remains
+latest), QA test design (general "QA test design new technique tool August 2026" WebSearch sweep — only
+AI-first-QA/TestRail-Sembi-IQ-rebrand/shift-left-shift-right/IoT-blockchain trend framing, all already
+covered by existing skills or vendor-product naming with no reproducible technique, no new actionable
+finding).
+
+- UPDATED: skills/mcp-server-testing — Expanded the single-sentence "OAuth for CI" bullet into a full
+  "OAuth-Protected Fixture Servers in CI" section: the stored-token-reuse/refresh flag set
+  (`--use-stored-auth` with automatic refresh-token rotation on read, `--wait-for-auth <sec>` for a
+  human-hands-off-then-pipeline-resumes pattern, `--list-stored-auth` for a CI pre-check, `--print-handoff`
+  for a remote/headless-VM deep-link handoff), the client-override flags (`--client-id`/`--client-secret`/
+  `--client-metadata-url`/`--callback-url`), the OAuth state-file resolution order shared between the CLI
+  and the web Inspector, a remote-VM handoff code example, the four distinct sub-reasons that all share
+  exit code 3 (`auth_required`/`no_stored_token`/`auth_wait_timeout`/`refresh_failed`, distinguished via
+  the stderr `ErrorEnvelope`'s `error.code`, not the exit code alone), and the mid-session step-up
+  authorization prompt's piped-answer gotcha (needs a newline or the prompt times out). All verified
+  verbatim against the CLI's own `clients/cli/README.md` (fetched via `curl`, not a lossy WebFetch
+  summary — the terse PR-title-only release notes for the triggering v2.3.0 bump were WebFetched but
+  turned out to be mostly unrelated CI/UI/dependency items, so the actual finding came from re-reading
+  the CLI doc itself rather than the release notes). Updated frontmatter trigger keywords and the CLI
+  README source line to note the verification date/version context. Sources:
+  https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/clients/cli/README.md,
+  https://registry.npmjs.org/@modelcontextprotocol/inspector,
+  https://github.com/modelcontextprotocol/inspector/releases/tag/2.3.0
+- SKIPPED Maestro/mobile — core CLI 2.8.0 and community `maestro-runner` v1.1.25 both confirmed still
+  latest and already fully documented.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable; 1.62.1 and unshipped 1.63.0-alpha unchanged;
+  `playwright-mcp` v0.0.79 unchanged; general best-practices sweep returned only already-covered framing.
+- SKIPPED AI chatbot/LLM testing (remainder) — DeepEval v4.1.8, Promptfoo 0.122.0, and axe-core 4.13.0
+  all confirmed still latest and already fully documented.
+- SKIPPED QA test design — general sweep returned only AI-first-QA/vendor-rebrand trend framing already
+  covered by existing skills, no new reproducible technique.
+
 ## 2026-08-19 (GMT+7)
 
 Orientation done correctly this run: `git fetch origin` + `git checkout skill-evolution` before any

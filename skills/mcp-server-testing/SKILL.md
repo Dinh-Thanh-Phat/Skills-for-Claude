@@ -10,7 +10,8 @@ description: >-
   v2's CLI breaking changes from v1 (target ordering, exit codes, --catalog vs --config). Triggers
   on: "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp
   tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP
-  server CI", "MCP Inspector v2", "inspector v1 to v2".
+  server CI", "MCP Inspector v2", "inspector v1 to v2", "mcp oauth ci", "--use-stored-auth",
+  "--wait-for-auth", "mcp inspector oauth fixture".
 ---
 
 # Testing MCP Servers
@@ -97,7 +98,34 @@ For a fleet of servers or repeatable presets (fixtures for tools/resources/promp
 - **A failing tool call now exits non-zero.** v1 exited `0` even when a `tools/call` came back `isError: true` (the RPC succeeded even though the tool failed). v2 exits `5` for `isError: true` or a not-found tool. A CI step chaining `inspector --cli … --method tools/call … && next-step` that silently continued past a failing tool in v1 will now correctly stop in v2 — expect this to surface as "v2 broke my pipeline" the first time it catches a real, previously-masked failure. Parse the failure via `2>&1 | tail -1 | jq .error`, not by matching stdout prose.
 - **Ambiguous URLs no longer guess a transport.** With no `--transport`, v2 infers it *only* from an exact `/mcp` or `/sse` URL path suffix; anything else (including a trailing slash) now errors with `Transport type not specified and could not be determined from URL`, where v1 silently fell back to SSE. Pass `--transport http` or `--transport sse` explicitly for any server whose URL doesn't end in one of those two suffixes.
 - **New CLI-only methods**: `initialize` (connect-only probe returning `serverInfo`/`protocolVersion`/`capabilities`/`instructions` — a cheap connectivity smoke test), `servers/list` / `servers/show` (read the catalog/config without connecting to anything, redacting secret-bearing fields).
-- **OAuth for CI**: v1's CLI had no OAuth support at all. v2 adds `--stored-auth-only` — never opens a browser or waits on the interactive loopback callback, fails fast with `auth_required` if no token is already in the shared store (`~/.mcp-inspector/storage/oauth.json`). This is the flag to reach for when a fixture server requires auth in a headless pipeline.
+- **OAuth for CI**: v1's CLI had no OAuth support at all. v2 adds `--stored-auth-only` — never opens a browser or waits on the interactive loopback callback, fails fast with `auth_required` if no token is already in the shared store (`~/.mcp-inspector/storage/oauth.json`). This is the flag to reach for when a fixture server requires auth in a headless pipeline. See "OAuth-Protected Fixture Servers in CI" below for the fuller flag set (stored-token reuse, refresh, remote-VM handoff) beyond this one flag.
+
+### OAuth-Protected Fixture Servers in CI
+
+Beyond `--stored-auth-only` (fail fast if no token is cached), the CLI has a full flag set for consuming OAuth tokens that were obtained elsewhere rather than performing an interactive login itself — the pattern for a fixture server that requires auth in a pipeline with no browser:
+
+| Flag | Purpose |
+|------|---------|
+| `--use-stored-auth` | Read the stored token for `--server-url` and inject `Authorization: Bearer`. Runs the OAuth refresh grant first if a `refresh_token` is on file (persisting the rotated token back to the store), else injects the access token as-is. Exits `3`/`no_stored_token` if nothing matches. |
+| `--wait-for-auth <sec>` | Poll the OAuth state file every 500ms until a token for `--server-url` lands, then inject it — for a "hand off to a human, then resume the pipeline" pattern. Times out at `3`/`auth_wait_timeout`. Does not run the refresh grant (a token that just landed isn't expired). |
+| `--list-stored-auth` | Print `{ oauthStatePath, storedServerUrls }` and exit; no connection made. Useful for a CI pre-check ("is this fixture server already authenticated?"). |
+| `--print-handoff` | Print `{ deepLink, portForwardCmd, oauthStatePath, apiToken }` for `--server-url` and exit — everything a script needs to hand a human the browser-side OAuth step from a remote/headless VM. |
+| `--client-id` / `--client-secret` / `--client-metadata-url` | Override the install-level `client.json` for a static OAuth client or CIMD metadata URL, per-invocation. |
+| `--callback-url` (or `MCP_OAUTH_CALLBACK_URL`) | Override the loopback redirect URI (`http://127.0.0.1:6276/oauth/callback` default) — must stay loopback, no opt-out (the listener speaks plaintext HTTP). Register this URI with enterprise IdPs that require pre-registered redirects. |
+
+State-file resolution: `MCP_INSPECTOR_OAUTH_STATE_PATH` → `<MCP_STORAGE_DIR>/oauth.json` → `~/.mcp-inspector/storage/oauth.json` — the CLI and the web Inspector share this file, so completing OAuth once in the web UI on the same machine is enough for every subsequent `--use-stored-auth`/`--stored-auth-only` CLI run.
+
+**Remote-VM pattern** (no browser on the CI runner): print the handoff, complete OAuth on a human's machine, then resume the pipeline once the token lands:
+```bash
+mcp-inspector --cli --server-url https://api.example/mcp --print-handoff
+# … human opens deepLink or port-forwards and completes OAuth …
+mcp-inspector --cli --transport http --server-url https://api.example/mcp \
+  --wait-for-auth 120 --method tools/list
+```
+
+**Exit code 3 has more than one cause** — don't treat every auth-related exit the same in CI: `auth_required` (no credential at all / interactive login not permitted), `no_stored_token` (`--use-stored-auth` found nothing for that URL), `auth_wait_timeout` (`--wait-for-auth` gave up), `refresh_failed` (a stored `refresh_token` was rejected and no fallback access token existed). All four share exit code `3`; distinguish them via the stderr `ErrorEnvelope`'s `error.code` field (`2>&1 | tail -1 | jq -r .error.code`), not the exit code alone.
+
+**Step-up mid-session**: when a tool call needs broader scope than the current token grants, the CLI prompts on stderr (`Proceed with step-up authorization? [y/N]`) rather than failing outright — a piped `echo y |` answers it, but the line must be newline-terminated or the prompt times out waiting for a flush. For unattended CI, prefer having the required scopes already on the stored token over relying on an automated step-up answer.
 
 ## Layer 3 — Schema-Drift and Security Checks
 
@@ -119,7 +147,7 @@ Token handling additionally requires expiration/rotation enforcement on the serv
 
 ## Sources
 - https://github.com/modelcontextprotocol/inspector
-- https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/clients/cli/README.md
+- https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/clients/cli/README.md (verified verbatim via curl, August 2026, v2.3.0-era CLI OAuth flag set)
 - https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/docs/v1-to-v2-migration.md
 - https://github.com/modelcontextprotocol/inspector/releases
 - https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md
