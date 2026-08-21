@@ -5,6 +5,74 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-21 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research (branch already existed locally, tracking `origin/skill-evolution`); read this
+branch's HEAD `evolution-log.md` (2026-08-20 entry, not `main`'s stale 2026-07-29), per the
+standing lesson reinforced on 2026-08-08/08-15/08-17/08-18/08-19/08-20.
+
+Domains researched: AI chatbot/LLM testing (**new finding**: DeepEval PyPI JSON API shows
+**v4.1.9** (2026-08-20T12:29 UTC), one patch past the v4.1.8 this branch's `deepeval-llm-cicd`
+skill already documents — genuinely shipped after the 2026-08-20 run's own version check; direct
+`curl`/WebFetch of the GitHub releases page and release-tag pages 403'd or 404'd as usual for
+repos outside this session's GitHub scope (`api.github.com` and `github.com/confident-ai/deepeval`
+release/tag/compare pages all blocked), but the `releases.atom` feed and the `/commits/<tag>` page
+both rendered through WebFetch and surfaced merged PR #3062
+("feat/mcp-vs-function-tool-calls") as the substantive change behind the version bump; verified
+the actual behavior directly against source on the `python-v4.1.9` tag via `raw.githubusercontent.com`
+(unaffected by the scope restriction) rather than trusting the WebFetch PR summary alone —
+`deepeval/test_case/llm_test_case.py` confirms `ToolCall.type: ToolCallType` (`FUNCTION`/`MCP`,
+default `FUNCTION`) already existed since v4.1.8, but `deepeval/metrics/tool_correctness/tool_correctness.py`
+confirms `ToolCorrectnessMetric` only started requiring `type` equality (not just `name`) as a
+match precondition in 4.1.9, across all three scoring modes (exact match, ordering-aware weighted
+LCS, and default non-exact match), with mismatches now surfaced in `.reason` via a new
+`_get_type_mismatches()` helper; grepped `skills/deepeval-llm-cicd/SKILL.md` for
+"_get_type_mismatches"/"type-aware"/"type equality" before writing — zero hits, confirming the
+existing v4.1.8 MCPUseMetric section (which does mention `ToolCall.type` and its auto-classification
+via `evaluate(mcp_servers=...)`) never covered that `ToolCorrectnessMetric`'s scoring itself changed
+to consider `type` — a genuine, narrowly-scoped gap, not a duplicate), Playwright/web E2E (npm
+`@playwright/test` dist-tags re-check — `latest: 1.62.1` unchanged, `next: 1.63.0-alpha-2026-08-20`
+still an unshipped alpha; `@playwright/mcp` dist-tags confirm `latest: 0.0.79` unchanged since
+2026-08-09), Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct `curl` — 2.8.0 confirmed
+still latest, "Unreleased" section still empty, same as every run since 2026-08-02; community
+`maestro-runner` `CHANGELOG.md` re-check via direct `curl` — v1.1.25 (Aug 19) confirmed still
+latest, already fully documented by the 2026-08-19 `maestro-real-ios-device` update), AI
+chatbot/LLM testing remainder (Promptfoo npm dist-tag confirms `latest: 0.122.0` unchanged since
+Aug 4; axe-core npm dist-tag confirms `latest: 4.13.0` unchanged since Aug 5; MCP Inspector npm
+dist-tag confirms `latest: 2.3.0` unchanged since Aug 19, already fully documented by the
+2026-08-20 `mcp-server-testing` update), QA test design (general "QA test design new technique
+tool August 2026" WebSearch sweep — only AI-first-QA/pairwise-tool/test-management-vendor-refresh/
+shift-left-shift-right/IoT-blockchain trend framing, all already covered by existing skills or
+vendor-product naming with no reproducible technique, no new actionable finding).
+
+- UPDATED: skills/deepeval-llm-cicd — Added a "Tool-Type-Aware Scoring in `ToolCorrectnessMetric`
+  (v4.1.9, August 2026)" subsection under "Agent Evaluation Metrics": `ToolCorrectnessMetric` now
+  requires `ToolCall.type` equality (`ToolCallType.FUNCTION` vs `ToolCallType.MCP`) alongside
+  `name` as a match precondition across exact-match, ordering-aware, and default non-exact-match
+  scoring, with type mismatches now named explicitly in `.reason`. Documented the practical gotcha
+  this creates for existing suites: `type` auto-classification (`process_mcp_servers()`) only fires
+  through `evaluate(mcp_servers=...)`, classifying both `expected_tools` and `tools_called`
+  consistently — but `assert_test()` still has no `mcp_servers` param, so a manually-typed
+  `expected_tools` entry (e.g. set to `ToolCallType.MCP`) checked via `assert_test()` against an
+  untyped `tools_called` (defaults to `FUNCTION`) now fails on type alone even when `name` matches,
+  a regression trap for anyone upgrading from pre-4.1.9 where `type` was ignored by this metric.
+  Updated frontmatter trigger keywords and Sources. All verified directly against source on the
+  `python-v4.1.9` tag (`llm_test_case.py`, `tool_correctness.py`, `utils.py`) via
+  `raw.githubusercontent.com`, not the (blocked) GitHub releases/tag pages. Sources:
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/llm_test_case.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/metrics/tool_correctness/tool_correctness.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/utils.py,
+  https://github.com/confident-ai/deepeval/pull/3062
+- SKIPPED Playwright/web E2E — 1.62.1 remains latest stable; 1.63.0-alpha-2026-08-20 remains an
+  unshipped alpha; `playwright-mcp` v0.0.79 unchanged.
+- SKIPPED Maestro/mobile — core CLI 2.8.0 and community `maestro-runner` v1.1.25 both confirmed
+  still latest and already fully documented.
+- SKIPPED AI chatbot/LLM testing (remainder) — Promptfoo 0.122.0, axe-core 4.13.0, and MCP
+  Inspector 2.3.0 all confirmed still latest and already fully documented.
+- SKIPPED QA test design — general sweep returned only AI-first-QA/vendor-tool/trend framing
+  already covered by existing skills, no new reproducible technique.
+
 ## 2026-08-20 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any inventory/

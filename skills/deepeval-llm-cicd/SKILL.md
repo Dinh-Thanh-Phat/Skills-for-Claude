@@ -9,7 +9,8 @@ description: |
   "regression test LLM", "assert_test deepeval", "agent loop detection", "tool permission metric",
   "flaky metric deepeval", "deepeval flaky test case", "deepeval typescript", "deepeval npm",
   "deepeval-ts", "deepeval vitest", "toPass matcher", "MCPUseMetric", "MCPTaskCompletionMetric",
-  "MultiTurnMCPUseMetric", "deepeval mcp evaluation", "test agent mcp tool use".
+  "MultiTurnMCPUseMetric", "deepeval mcp evaluation", "test agent mcp tool use",
+  "ToolCallType", "tool type mismatch deepeval", "ToolCorrectnessMetric mcp vs function".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -233,6 +234,34 @@ assert_test(agent_case, [
     ToolCorrectnessMetric(threshold=0.9),    # were the right tools called in the right order?
 ])
 ```
+
+### Tool-Type-Aware Scoring in `ToolCorrectnessMetric` (v4.1.9, August 2026)
+
+`ToolCall` gained a `type: ToolCallType` field back in v4.1.8 (`ToolCallType.FUNCTION` default,
+`ToolCallType.MCP` for MCP-classified calls — see the `MCPUseMetric` v4.1.8 section below), but
+until 4.1.9 that field was informational only for `ToolCorrectnessMetric`. As of 4.1.9,
+`ToolCorrectnessMetric` requires `type` equality alongside `name` as a match precondition in
+**all three** scoring modes — exact match (`should_exact_match=True`), the ordering-aware
+weighted-LCS mode (`should_consider_ordering=True`), and the default order-independent mode. A
+`tools_called` entry with the right `name` but the wrong `type` no longer counts as a match; it's
+scored the same as if the wrong tool had been called outright, and `.reason` now names the
+mismatch explicitly (`"{name} (expected {expected_type}, called {called_type})"`, appended as
+`"Tool type mismatches: [...]"` for exact match or `"tool type mismatches [...]"` for the other
+two modes).
+
+Practical gotcha this creates: `type` only gets auto-classified on both `expected_tools` *and*
+`tools_called` when tests run through `evaluate(mcp_servers=...)` (`process_mcp_servers()`
+classifies both sides consistently). `assert_test()` still has no `mcp_servers` param, so if you
+hand-set `expected_tools=[ToolCall(name="get_weather", type=ToolCallType.MCP)]` but assert via
+`assert_test()` against an untyped `tools_called` (which defaults to `ToolCallType.FUNCTION`),
+`ToolCorrectnessMetric` now fails that pair on type alone even though the name matched — a
+regression trap for suites upgrading from pre-4.1.9 where `type` was ignored. Either classify both
+sides the same way (both through `mcp_servers=` auto-classification, or both manually set to the
+same `ToolCallType`), or route MCP-aware `ToolCorrectnessMetric` runs through `evaluate()` instead
+of `assert_test()`. Verified against `deepeval/test_case/llm_test_case.py` (`ToolCallType`,
+`ToolCall.type`) and `deepeval/metrics/tool_correctness/tool_correctness.py`
+(`_get_type_mismatches`, `_calculate_exact_match_score`, `_calculate_non_exact_match_score`,
+`_compute_weighted_lcs`), tag `python-v4.1.9`.
 
 ## Loop Detection & Tool Permission Metrics (v4.1.3, July 2026)
 
@@ -552,6 +581,10 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/metrics/answer-relevancy/answer-relevancy.ts (imports `DeepEvalBaseLLM`/`initializeModel`/`generateWithSchema` — proof of local judge execution)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/models/index.ts (13 judge providers + OpenRouter/Portkey gateways)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/integrations/vitest/index.mts and `matchers.mts` (`expect().toPass()` — the `assert_test()` analogue)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/llm_test_case.py (`ToolCallType` enum, `ToolCall.type` field, v4.1.9)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/metrics/tool_correctness/tool_correctness.py (`_get_type_mismatches`, type-aware exact/non-exact/ordering scoring, v4.1.9)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/utils.py (`classify_tool_call_types`, `process_mcp_servers` classifying both `tools_called` and `expected_tools`)
+- https://github.com/confident-ai/deepeval/pull/3062 (PR introducing tool-call type distinction, merged into v4.1.9)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/dataset/dataset.ts (push/pull/queue method signatures)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/README.md — ⚠️ STALE, do not scope the package from it: claims local metrics are Python-only, which `typescript/src/metrics/` contradicts
 - https://deepeval.com/docs/getting-started-llm-arena
