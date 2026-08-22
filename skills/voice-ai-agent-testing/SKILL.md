@@ -6,7 +6,8 @@ description: >-
   and turn-detection regression testing. Use when validating a voice agent before production or
   diagnosing "feels laggy"/"talks over me"/"cuts me off" complaints. Triggers on: "voice agent
   testing", "voice AI evaluation", "barge-in testing", "turn detection", "IVR testing", "speech
-  agent QA", "WER benchmark", "voice latency test", "interruption handling test".
+  agent QA", "WER benchmark", "voice latency test", "interruption handling test",
+  "deepeval voice metrics".
 ---
 
 # Voice AI Agent Testing
@@ -95,6 +96,13 @@ Test these explicitly — they cover the cases that pass in a quiet demo and fai
 Commercial/OSS platforms purpose-built for this (2026): Hamming, Cekura, Coval, Bluejay, Braintrust,
 Cyara, Evalion, Roark, TestZeus — most combine replay corpora, synthetic noise injection, and
 LLM-judge scoring out of the box, useful if building the harness in-house isn't worth the investment.
+
+Already on DeepEval for other CI gates (see `skills/deepeval-llm-cicd`)? Its v4.1.10 voice metrics
+(`VoiceNaturalnessMetric`, `SpeechIntelligibilityMetric`, `VoiceConsistencyMetric`,
+`TurnTakingNaturalnessMetric`, `AgentResponsivenessMetric`, `AudioIntegrityMetric`,
+`VoiceReliabilityMetric`) score recorded audio turns as a pytest-native `assert_test()` gate —
+dependency-free acoustic analysis, not a WER/latency benchmark. Use them as the CI layer on top of
+this skill's replay-corpus/noise-injection methodology, not a replacement for it.
 
 ## Sources
 

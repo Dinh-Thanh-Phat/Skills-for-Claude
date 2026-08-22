@@ -10,7 +10,10 @@ description: |
   "flaky metric deepeval", "deepeval flaky test case", "deepeval typescript", "deepeval npm",
   "deepeval-ts", "deepeval vitest", "toPass matcher", "MCPUseMetric", "MCPTaskCompletionMetric",
   "MultiTurnMCPUseMetric", "deepeval mcp evaluation", "test agent mcp tool use",
-  "ToolCallType", "tool type mismatch deepeval", "ToolCorrectnessMetric mcp vs function".
+  "ToolCallType", "tool type mismatch deepeval", "ToolCorrectnessMetric mcp vs function",
+  "deepeval voice metrics", "VoiceNaturalnessMetric", "SpeechIntelligibilityMetric",
+  "VoiceConsistencyMetric", "TurnTakingNaturalnessMetric", "AgentResponsivenessMetric",
+  "AudioIntegrityMetric", "VoiceReliabilityMetric", "test voice agent CI deepeval".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -439,6 +442,84 @@ route MCP-classified runs through `evaluate()`. Verified against `deepeval/test_
 (`classify_tool_call_types`, `process_mcp_servers`), and the `evaluate()`/`assert_test()`
 signatures in `deepeval/evaluate/evaluate.py`.
 
+## Voice Metrics (v4.1.10, August 2026)
+
+DeepEval 4.1.10 adds seven audio-channel metrics for testing voice agents (IVR bots, phone-call
+assistants, TTS/voice-connector pipelines) directly in a pytest CI gate — the same
+`assert_test()`/threshold pattern as every other metric here, applied to `ConversationalTestCase`
+turns that carry audio. Unlike the judge-based metrics above, all seven are **dependency-free
+acoustic analysis** (PCM decoding, RMS/pitch/zero-crossing math) — no LLM call, no judge cost, and
+deterministic given the same WAV bytes:
+
+```python
+from deepeval.metrics import (
+    VoiceNaturalnessMetric,      # clipping, dropouts, pacing, pitch variation → does it sound robotic?
+    SpeechIntelligibilityMetric, # SNR, volume, clipping, dropouts → can a listener understand it?
+    VoiceConsistencyMetric,      # pitch/loudness/timbre stability across turns → same voice throughout?
+    TurnTakingNaturalnessMetric, # gap/overlap timing between speaker turns → natural back-and-forth?
+    AgentResponsivenessMetric,   # did every user turn that needed a reply get one, with audio?
+    AudioIntegrityMetric,        # missing/undecodable audio, abrupt cutoffs, loops
+    VoiceReliabilityMetric,      # composite: 0.5 * responsiveness + 0.5 * audio integrity
+)
+```
+
+Audio lives on `Turn.audio` (a `deepeval.test_case.Audio`), built from a file/URL or in-memory
+bytes — e.g. straight from a TTS or voice-connector call:
+
+```python
+from deepeval.test_case import ConversationalTestCase, Turn, Audio
+
+test_case = ConversationalTestCase(
+    turns=[
+        Turn(role="user", content="What's my account balance?",
+             audio=Audio(url="fixtures/user_turn1.wav", start_time=0.0)),
+        Turn(role="assistant", content="Your balance is $1,240.",
+             audio=Audio.from_bytes(tts_output_bytes, mimeType="audio/wav", start_time=2.1)),
+    ],
+)
+
+assert_test(test_case, [
+    VoiceNaturalnessMetric(threshold=0.7),
+    AudioIntegrityMetric(threshold=0.9),
+])
+```
+
+Gotchas verified directly against source (`deepeval/metrics/voice/`, tag `python-v4.1.10`):
+- Audio must be **16-bit PCM WAV**; anything else raises inside `analyze_audio()` and that turn is
+  skipped (or, for `AudioIntegrityMetric`/`VoiceReliabilityMetric`, counted as a critical failure)
+  rather than silently scored — check `.score_breakdown["turns"]` for per-turn `"error"` entries
+  before trusting a suspiciously high score on a run with encoding problems.
+- `TurnTakingNaturalnessMetric` needs `start_time` set on **every** audio turn's `Audio` object
+  (it's a field on `Audio`, not `Turn`) — the metric derives gaps/overlaps from real timestamps
+  and returns `None` rather than guessing sequential timing if any is missing.
+- `VoiceConsistencyMetric` needs at least 2 decodable assistant-audio turns; single-turn test
+  cases return `None`, not a score.
+- All seven return `None` (not 0.0) when there isn't enough eligible audio to evaluate —
+  distinguish "nothing to measure" from "measured and failed" when reading results in CI.
+- Metric-level `flaky` (see the v4.1.4 section above) still applies — useful for
+  `VoiceConsistencyMetric`/`TurnTakingNaturalnessMetric` against real (not synthesized) recordings
+  where acoustic noise is expected to vary run-to-run.
+
+Complements — not a replacement for — `skills/voice-ai-agent-testing`'s WER/latency/barge-in
+methodology: these metrics score the *audio artifact itself* (clarity, naturalness, integrity)
+from recorded turns, they don't measure transcription accuracy or wall-clock response latency.
+Run both: `voice-ai-agent-testing`'s replay-corpus + synthetic-noise-injection harness to generate
+the audio, these metrics as the pytest-native CI gate on top of it.
+
+Sources: https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/base_metric.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/naturalness.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/intelligibility.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/consistency.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/turn_taking.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/reliability.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/integrity.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/responsiveness.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/_analysis.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/__init__.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/voice/timeline.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/test_case/llm_test_case.py (`Audio` class),
+https://pypi.org/pypi/deepeval/json (confirmed v4.1.10 latest, Aug 21 2026)
+
 ## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
 
 Standard metrics score one output in isolation. `ArenaGEval` instead picks a **winner** between
@@ -606,3 +687,4 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://github.com/confident-ai/deepeval/compare/v4.1.7...v4.1.8.diff
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/utils.py (`classify_tool_call_types`/`process_mcp_servers`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/evaluate/evaluate.py (`evaluate()`/`assert_test()` signatures — `mcp_servers` param on `evaluate()` only)
+- https://github.com/confident-ai/deepeval/compare/python-v4.1.9...python-v4.1.10.diff (voice metrics package introduced, 32 commits)

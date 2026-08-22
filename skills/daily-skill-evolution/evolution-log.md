@@ -5,6 +5,92 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-22 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research (branch already existed locally, tracking `origin/skill-evolution`, 5 commits
+ahead of `main`'s stale 2026-07-29 checkpoint); read this branch's HEAD `evolution-log.md`
+(2026-08-21 entry), per the standing lesson reinforced on every run since 2026-08-08.
+
+Domains researched: AI chatbot/LLM testing (**new finding**: DeepEval PyPI JSON API shows
+**v4.1.10** (2026-08-21T19:24 UTC), one patch past the v4.1.9 this branch's `deepeval-llm-cicd`
+skill already documents; `github.com/confident-ai/deepeval/compare/python-v4.1.9...python-v4.1.10`
+and the release page both failed to render their dynamic content (GitHub's own "error while
+loading"/"taking too long to generate" banners) via both direct `curl` — blocked outright with the
+standing "GitHub access to this repository is not enabled for this session" message, since this
+repo is outside this session's GitHub scope — and `WebFetch`'s default rendering; retried with the
+`.diff` URL suffix (raw unified diff, no JS) via `WebFetch`, which rendered successfully and
+surfaced a genuinely new `deepeval/metrics/voice/` package (7 new files) among 32 commits/198 files
+changed; fetched all 7 new metric source files plus `deepeval/voice/timeline.py` and
+`deepeval/voice/connectors/audio_utils.py` directly via `raw.githubusercontent.com` (unaffected by
+the scope restriction) to verify the exact API rather than trusting the diff summary alone —
+confirmed `deepeval/metrics/__init__.py` exports all 7 (`VoiceNaturalnessMetric`,
+`SpeechIntelligibilityMetric`, `VoiceConsistencyMetric`, `TurnTakingNaturalnessMetric`,
+`AgentResponsivenessMetric`, `AudioIntegrityMetric`, `VoiceReliabilityMetric`) at the top level;
+grepped `skills/deepeval-llm-cicd/SKILL.md` and `skills/voice-ai-agent-testing/SKILL.md` for
+"Audio"/"voice"/"Voice" before writing — zero hits in either, confirming a genuine gap rather than
+a duplicate (the existing `voice-ai-agent-testing` skill covers WER/latency/barge-in generically
+and never mentions DeepEval; `deepeval-llm-cicd` had no audio-channel content at all); `deepeval.com`
+itself remains hard-blocked by this session's network egress proxy (not a 403, an outright
+`EGRESS_BLOCKED`), same as every prior run's notes on this domain), Playwright/web E2E (npm
+`@playwright/test` dist-tags re-check via direct `curl` — `latest: 1.62.1` unchanged, `next:
+1.63.0-alpha-2026-08-21` still an unshipped alpha; `@playwright/mcp` dist-tags confirm `latest:
+0.0.79` unchanged since 2026-08-09), Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct
+`curl` — 2.8.0 confirmed still latest, "Unreleased" section still empty, same as every run since
+2026-08-02; community `maestro-runner` `CHANGELOG.md` re-check via direct `curl` — v1.1.25 (Aug 19)
+confirmed still latest, "Unreleased" section also empty, already fully documented by the
+2026-08-19 update), AI chatbot/LLM testing remainder (Promptfoo npm dist-tag confirms `latest:
+0.122.0` unchanged since Aug 4; axe-core npm dist-tag confirms `latest: 4.13.0` unchanged since Aug
+5; MCP Inspector npm dist-tag confirms `latest: 2.3.0` unchanged since Aug 19, already fully
+documented), QA test design (general "QA test design new technique tool August 2026" WebSearch
+sweep — only AI-first-QA/test-management-vendor-refresh/shift-left-shift-right/IoT-blockchain trend
+framing, all already covered by existing skills or vendor-product naming with no reproducible
+technique, no new actionable finding).
+
+- UPDATED: skills/deepeval-llm-cicd — Added a "Voice Metrics (v4.1.10, August 2026)" section
+  documenting the seven new `deepeval.metrics.voice` metrics (`VoiceNaturalnessMetric`,
+  `SpeechIntelligibilityMetric`, `VoiceConsistencyMetric`, `TurnTakingNaturalnessMetric`,
+  `AgentResponsivenessMetric`, `AudioIntegrityMetric`, `VoiceReliabilityMetric`): all
+  dependency-free acoustic analysis (no LLM judge), scored from `Turn.audio` (`Audio` objects —
+  16-bit PCM WAV, built via `url=` or `Audio.from_bytes()`) on a `ConversationalTestCase`, usable
+  in the same `assert_test()` CI-gate pattern as every other metric in the skill. Documented the
+  construction pattern, the `start_time`-lives-on-`Audio`-not-`Turn` gotcha,
+  `TurnTakingNaturalnessMetric`'s hard requirement for `start_time` on every audio turn,
+  `VoiceConsistencyMetric`'s 2-turn minimum, and that all seven return `None` (not 0.0) rather than
+  guessing when there isn't enough eligible audio. Cross-referenced against `voice-ai-agent-testing`
+  (complementary, not overlapping — that skill's WER/latency/barge-in methodology generates and
+  regression-tests the audio; these metrics are the pytest-native CI gate scoring the audio artifact
+  itself). Updated frontmatter trigger keywords and Sources. All verified directly against the 7
+  new source files, `deepeval/voice/timeline.py`, `deepeval/voice/connectors/audio_utils.py`, and
+  `deepeval/metrics/__init__.py`'s export list on the `python-v4.1.10` tag via
+  `raw.githubusercontent.com` (not the GitHub compare/release pages, which failed to render their
+  dynamic content to both `curl` and `WebFetch`'s default mode — the `.diff` URL suffix was the one
+  that worked). Sources:
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/base_metric.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/naturalness.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/intelligibility.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/consistency.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/turn_taking.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/reliability.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/integrity.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/responsiveness.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/metrics/voice/_analysis.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/voice/timeline.py,
+  https://github.com/confident-ai/deepeval/compare/python-v4.1.9...python-v4.1.10.diff,
+  https://pypi.org/pypi/deepeval/json
+- UPDATED: skills/voice-ai-agent-testing — Added a short cross-reference paragraph pointing to
+  `deepeval-llm-cicd`'s new v4.1.10 voice metrics as the pytest-native CI-gate layer to pair with
+  this skill's replay-corpus/synthetic-noise-injection methodology; updated frontmatter trigger
+  keywords. Same sources as the `deepeval-llm-cicd` update above.
+- SKIPPED Playwright/web E2E — 1.62.1 remains latest stable; 1.63.0-alpha-2026-08-21 remains an
+  unshipped alpha; `playwright-mcp` v0.0.79 unchanged.
+- SKIPPED Maestro/mobile — core CLI 2.8.0 and community `maestro-runner` v1.1.25 both confirmed
+  still latest and already fully documented.
+- SKIPPED AI chatbot/LLM testing (remainder) — Promptfoo 0.122.0, axe-core 4.13.0, and MCP
+  Inspector 2.3.0 all confirmed still latest and already fully documented.
+- SKIPPED QA test design — general sweep returned only AI-first-QA/vendor-tool/trend framing
+  already covered by existing skills, no new reproducible technique.
+
 ## 2026-08-21 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
