@@ -10,7 +10,8 @@ description: >-
   testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override",
   "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin",
   "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP
-  agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
+  agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team",
+  "promptfoo websocket target", "red team websocket chatbot".
 ---
 
 # LLM Red Teaming
@@ -176,6 +177,34 @@ npx promptfoo redteam generate   # generate attack prompts
 npx promptfoo redteam run        # execute and score
 npx promptfoo redteam report     # HTML report
 ```
+
+### Targeting a WebSocket-Based Chatbot (not just an LLM API)
+
+Every example above targets a hosted LLM API (`openai:chat:gpt-4o`). To red-team a self-hosted
+chatbot that only exposes a WebSocket endpoint (e.g. a custom support widget), use the
+`websocket`/`wss` provider instead of an LLM-API `id` — attack payloads still flow through the
+same `redteam.plugins`/`strategies` pipeline, only the transport under test changes:
+
+```yaml
+targets:
+  - id: 'wss://staging.example.com/ws/chat'
+    config:
+      messageTemplate: '{"prompt": "{{prompt}}", "sessionId": "{{sessionId}}"}'  # Nunjucks
+      transformResponse: 'data.output'   # extract the reply field from the JSON response
+      timeoutMs: 300000                  # default 5 min per connection
+      headers:
+        Authorization: 'Bearer {{env.STAGING_TOKEN}}'
+
+redteam:
+  plugins: [prompt-injection, jailbreak, harmful:hate]
+  strategies: [jailbreak:composite, multi-turn]
+```
+
+For endpoints that stream multiple messages before completing, `streamResponse` replaces
+`transformResponse` — a function `(accumulator, data, context) => [nextAccumulator, complete]`
+that returns `complete: true` once a terminal message (e.g. `{"type":"done"}`) arrives. The
+WebSocket URL is derived automatically from `https`↔`wss`/`http`↔`ws` if you point `id` at an
+HTTP(S) URL instead, useful when the same origin serves both a REST and a realtime endpoint.
 
 ### Newer Multi-Turn Strategies (2026): `mischievous-user` and `custom`
 
@@ -378,6 +407,8 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Garak vs PyRIT comparison 2026: https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/
 - LLM Red Teaming Guide 2026 (tools + methodology): https://appsecsanta.com/ai-security-tools/llm-red-teaming
 - IEEE 2026: Prompt injection in third-party chatbot plugins: https://arxiv.org/html/2511.05797v1
+- Promptfoo WebSocket provider config (targets, messageTemplate, streamResponse): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/websocket.md
+- Promptfoo 0.121.20 release (WebSocket URL templating support, July 30 2026): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - PyRIT orchestrators (Crescendo, TAP, Skeleton Key): https://www.bestaiweb.ai/how-to-red-team-an-llm-with-promptfoo-pyrit-and-garak-in-2026/
 - DeepTeam framework (confident-ai): https://github.com/confident-ai/deepteam
 - Red-Teaming LLMs: A Practitioner's Guide 2026: https://datavlab.ai/post/red-teaming-llms-practitioner-guide-2026

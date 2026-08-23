@@ -5,6 +5,64 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-23 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research (branch tracking `origin/skill-evolution`, already 9 commits ahead of `main`'s
+stale 2026-07-29 checkpoint); read this branch's HEAD `evolution-log.md` (2026-08-22 entry) before
+starting. Note for future runs: this session's initial orientation checked out `main` first and
+did real research/edits there (DeepEval flaky flag, TypeScript SDK, Promptfoo WebSocket target)
+before discovering `main` was 3.5 weeks stale relative to `skill-evolution` — the flaky-flag and
+TypeScript-SDK findings turned out to already be documented here (2026-08-08 and earlier runs,
+per grep), so that work was discarded unmerged rather than committed as a duplicate. Re-affirming
+the standing lesson: always orient from `skill-evolution`, never `main`, before researching.
+
+Domains researched: AI chatbot/LLM testing (DeepEval PyPI JSON re-check via direct `curl` —
+`4.1.10` confirmed still latest, unchanged since the 2026-08-22 voice-metrics update; Promptfoo npm
+dist-tag re-check via direct `curl` — `0.122.0` confirmed still latest, unchanged since Aug 4;
+**new finding**: while re-reading the 0.121.20 changelog entry (WebSocket URL templating, July 30)
+to confirm no newer Promptfoo release had shipped, grepped `skills/llm-red-teaming/SKILL.md` for
+"websocket"/"wss" and found zero hits — every existing `targets:` example in that skill points at
+an LLM-API-style provider (`openai:chat:gpt-4o`), with no documented way to red-team a self-hosted
+chatbot that only exposes a WebSocket endpoint; verified the exact provider config fields
+(`messageTemplate` Nunjucks template, `transformResponse`, `streamResponse` for multi-message
+streams, `timeoutMs`, `headers`) directly against the first-party
+`site/docs/providers/websocket.md` source rather than trusting a WebSearch summary), Playwright/web
+E2E (`@playwright/test` npm dist-tags re-check via direct `curl` — `latest: 1.62.1` unchanged,
+`next: 1.63.0-alpha-2026-08-22` still an unshipped alpha, one day newer than the 2026-08-22 log's
+`-08-21` alpha tag but still not a stable release, same conclusion as every run since 2026-08-09),
+Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct `curl` — 2.8.0 confirmed still latest,
+"Unreleased" section still empty, same as every run since 2026-08-02; community `maestro-runner`
+package no longer resolves on the npm registry (`curl` returned `"Not Found"` for
+`-/package/maestro-runner/dist-tags`, a change from the 2026-08-22 log's confirmed `v1.1.25` —
+flagged as an observation, not investigated further since it's a packaging/distribution question,
+not a testing technique, and this skill's coverage of `maestro-runner` content is unaffected either
+way), AI chatbot/LLM testing remainder (axe-core npm dist-tag re-check via direct `curl` —
+`latest: 4.13.0` unchanged since Aug 5, already fully documented), QA test design (general
+"software test design technique new 2026 QA" WebSearch sweep — only EP/BVA/exploratory/AI-driven/
+shift-left-shift-right/IoT-blockchain trend framing, all already covered by existing skills, no new
+reproducible technique, same conclusion as every prior run).
+
+- UPDATED: skills/llm-red-teaming — Added "Targeting a WebSocket-Based Chatbot (not just an LLM
+  API)" under the Promptfoo section: exact `targets` config for a `wss://`/`websocket` provider
+  (`messageTemplate` Nunjucks template, `transformResponse`, `streamResponse` for multi-message
+  streams, `timeoutMs`, `headers`) so the same `redteam.plugins`/`strategies` pipeline documented
+  above it can attack a self-hosted WebSocket chatbot instead of only a hosted LLM API —
+  grep-confirmed this skill had no existing example of a non-LLM-API Promptfoo target. Updated
+  frontmatter trigger keywords. Sources:
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/websocket.md,
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
+- SKIPPED Playwright/web E2E — 1.62.1 remains latest stable per npm dist-tags; 1.63.0-alpha still
+  unshipped (now dated 2026-08-22, one day newer than yesterday's check, still an alpha).
+- SKIPPED Maestro/mobile — 2.8.0 remains latest with an empty "Unreleased" section. Noted the
+  community `maestro-runner` npm package now 404s where it resolved yesterday — a distribution
+  change, not a testing-technique gap, not investigated further.
+- SKIPPED AI chatbot/LLM testing (DeepEval/Promptfoo/axe-core core) — all three confirmed still at
+  their already-documented latest versions (4.1.10 / 0.122.0 / 4.13.0) via direct npm/PyPI checks.
+- SKIPPED QA test design — general 2026 sweep returned only trend-level framing already covered by
+  `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/`metamorphic-testing`. Same
+  conclusion as every prior run.
+
 ## 2026-08-22 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
