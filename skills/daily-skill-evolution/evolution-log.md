@@ -5,6 +5,64 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-25 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research (branch already existed locally, tracking `origin/skill-evolution`, 11 commits
+ahead of `main`'s stale 2026-07-29 checkpoint); read this branch's HEAD `evolution-log.md`
+(2026-08-24 entry) before starting.
+
+Domains researched: AI chatbot/LLM testing (DeepEval PyPI JSON re-check via direct `curl` — a
+genuinely new **4.2.0** (Aug 24, one release past 4.1.10) found; rather than trust WebSearch, which
+returned nothing for "DeepEval 4.2.0" and GitHub's own release/changelog pages 403'd/404'd to the
+fetcher as usual (`deepeval.com` is now fully egress-blocked at the proxy level, a new restriction
+vs. prior runs' plain 403s), downloaded and diffed the official PyPI sdists for `deepeval` 4.1.10
+vs 4.2.0 directly — the only files that changed were `bias.py`, `toxicity.py`, `hallucination.py`,
+`misuse.py`, and `metrics/utils.py`; confirmed a genuine, undocumented **breaking change**: those
+four metrics' score direction flipped from "proportion of violations, lower=better,
+`is_successful()` = `score <= threshold`" to "1=clean/higher=better, `score >= threshold`" (matching
+every other deepeval metric), with a one-time `DeprecationWarning` via the new
+`warn_score_direction_flipped()` helper but no threshold auto-migration — an old `threshold=0.2`
+config silently passes almost everything after upgrading instead of erroring or warning loudly;
+also confirmed via the same diff that `PlanAdherenceMetric`/`PlanQualityMetric`/
+`StepEfficiencyMetric`/`GoalAccuracyMetric`/`ArgumentCorrectnessMetric`/`TopicAdherenceMetric`/
+`ToolUseMetric` — an undocumented gap surfaced while investigating — already existed unchanged in
+4.1.10, so **not** a 4.2.0 finding and left for a future run to evaluate as a standalone
+agent-planning-metrics gap rather than folded in here as if new; Promptfoo npm dist-tag re-check —
+`0.122.0` confirmed still latest, unchanged since Aug 4/re-read Aug 24; axe-core `4.13.0` and MCP
+Inspector `2.3.0` both confirmed unchanged via npm dist-tags), Playwright/web E2E (`@playwright/test`
+npm dist-tags re-check via direct `curl` — `latest: 1.62.1` unchanged, `next:
+1.63.0-alpha-2026-08-24` still an unshipped alpha, same conclusion as every run since 2026-08-09),
+Maestro/mobile (core CLI `CHANGELOG.md` re-check via direct `curl` — 2.8.0 confirmed still latest,
+"Unreleased" section still empty, same as every run since 2026-08-02), QA test design (general "QA
+test design technique August 2026" sweep — only AI-first/shift-left-shift-right/autonomous-testing/
+data-driven trend framing, all already covered by existing skills, no new reproducible technique,
+same conclusion as the majority of prior runs).
+
+- UPDATED: skills/deepeval-llm-cicd — Added a "Safety Metric Score-Direction Flip: Bias/Toxicity/
+  Hallucination/Misuse (v4.2.0, August 2026)" section documenting DeepEval 4.2.0's breaking change
+  to those four metrics' scoring direction and `threshold` semantics (old: proportion-of-violations,
+  lower=better, `threshold` = maximum; new: 1=clean, higher=better, `threshold` = minimum, matching
+  every other metric), with the exact before/after `threshold=` inversion formula (`new = 1 - old`),
+  what DeepEval does and doesn't warn about (one-time `DeprecationWarning` per metric name, no
+  threshold rewrite, CI stays green on the old inverted config), and an explicit note that
+  `PIILeakageMetric`/`RoleViolationMetric`/`NonAdviceMetric` were unaffected. Also fixed the existing
+  "Recommended Thresholds" table's Hallucination row, which stated the pre-4.2.0 direction
+  (`≤ 0.2`) as an unqualified default — now split into version-conditional rows pointing at the new
+  section. Verified via a direct diff of the official PyPI sdists for `deepeval` 4.1.10 and 4.2.0
+  (not a changelog or blog summary — first-party source code, since every deepeval.com/GitHub
+  changelog page 403'd or was egress-blocked to the fetcher). Updated frontmatter trigger keywords
+  and Sources. Sources: https://pypi.org/pypi/deepeval/json, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/bias/bias.py, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/toxicity/toxicity.py, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/hallucination/hallucination.py, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/misuse/misuse.py, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/utils.py, https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/base_metric.py
+- SKIPPED Playwright/web E2E — 1.62.1 remains latest stable; 1.63.0-alpha-2026-08-24 still an
+  unshipped alpha, same conclusion as every run since 2026-08-09.
+- SKIPPED Maestro/mobile — 2.8.0 remains latest with an empty "Unreleased" section, same as every
+  run since 2026-08-02.
+- SKIPPED QA test design — general August 2026 sweep returned only AI-first/shift-left-shift-right/
+  autonomous-testing trend framing already covered by `behavioral-coverage-matrix`/
+  `pairwise-combinatorial-testing`/`metamorphic-testing`. No new reproducible technique found.
+- SKIPPED Promptfoo / axe-core / MCP Inspector (AI chatbot/LLM testing, secondary checks) — all
+  three confirmed unchanged at their already-documented latest versions (0.122.0 / 4.13.0 / 2.3.0).
+
 ## 2026-08-24 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any

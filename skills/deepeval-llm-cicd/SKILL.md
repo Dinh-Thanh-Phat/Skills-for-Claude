@@ -13,7 +13,10 @@ description: |
   "ToolCallType", "tool type mismatch deepeval", "ToolCorrectnessMetric mcp vs function",
   "deepeval voice metrics", "VoiceNaturalnessMetric", "SpeechIntelligibilityMetric",
   "VoiceConsistencyMetric", "TurnTakingNaturalnessMetric", "AgentResponsivenessMetric",
-  "AudioIntegrityMetric", "VoiceReliabilityMetric", "test voice agent CI deepeval".
+  "AudioIntegrityMetric", "VoiceReliabilityMetric", "test voice agent CI deepeval",
+  "deepeval score direction flip", "BiasMetric threshold", "ToxicityMetric threshold",
+  "HallucinationMetric threshold", "MisuseMetric threshold", "warn_score_direction_flipped",
+  "deepeval 4.2.0".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -185,10 +188,51 @@ assert_test(rag_case, [
 |---|---|---|
 | AnswerRelevancy | ≥ 0.6 | ≥ 0.75 |
 | Faithfulness (RAG) | ≥ 0.7 | ≥ 0.85 |
-| Hallucination | ≤ 0.2 (lower = better) | ≤ 0.1 |
+| Hallucination (deepeval ≥ 4.2.0) | ≥ 0.8 (higher = better) | ≥ 0.9 |
+| Hallucination (deepeval < 4.2.0) | ≤ 0.2 (lower = better) | ≤ 0.1 |
 | ContextualRecall | ≥ 0.65 | ≥ 0.80 |
 
-Tighten after baseline runs; never set thresholds before collecting data on your system.
+Tighten after baseline runs; never set thresholds before collecting data on your system. The
+Hallucination row's direction depends on your installed version — see the score-direction flip
+below before picking a threshold for Hallucination/Bias/Toxicity/Misuse.
+
+## Safety Metric Score-Direction Flip: Bias/Toxicity/Hallucination/Misuse (v4.2.0, August 2026)
+
+DeepEval 4.2.0 flipped the scoring direction of four metrics — `BiasMetric`, `ToxicityMetric`,
+`HallucinationMetric`, `MisuseMetric` — to match every other metric in the library. This is a
+**silent breaking change for any threshold you already have configured**, not an opt-in migration:
+
+- **Before 4.2.0**: score was the *proportion of violations found* (0 = clean, 1 = fully biased/
+  toxic/hallucinated/misused). `threshold` acted as a *maximum* — `is_successful()` passed when
+  `score <= threshold`. `strict_mode` set the effective threshold to `0`.
+- **From 4.2.0**: score is now *1 minus that proportion* (1 = clean, 0 = fully bad), consistent
+  with `AnswerRelevancyMetric`/`FaithfulnessMetric`/every other metric. `threshold` is now a
+  *minimum* — the base class's default `score >= threshold` applies (each metric's own
+  `is_successful()` override was deleted). `strict_mode` now sets the effective threshold to `1`.
+
+A `threshold=0.2` that used to mean "pass if at most 20% of statements are biased" now means
+"pass only if the bias score is at least 0.2" — i.e. it passes almost everything, the opposite of
+the old intent. DeepEval emits a one-time-per-metric-name `DeprecationWarning` (via
+`warn_score_direction_flipped`, shown in pytest's warnings summary) the first time each of these
+four metrics is instantiated, but it does **not** fail the run or rewrite your threshold — CI keeps
+going green on the old, now-inverted, config unless you fix it by hand:
+
+```python
+# Before 4.2.0
+BiasMetric(threshold=0.2)        # pass if <=20% biased
+
+# From 4.2.0 — same intent, flipped number
+BiasMetric(threshold=0.8)        # pass if >=80% unbiased
+```
+
+Action when upgrading across 4.2.0: grep your suite for `BiasMetric(`, `ToxicityMetric(`,
+`HallucinationMetric(`, `MisuseMetric(` and invert every explicit `threshold=` (`new = 1 - old`);
+re-baseline rather than guess, since the underlying judge behavior is unchanged, only the number
+reported is inverted. **Not affected**: `PIILeakageMetric`, `RoleViolationMetric`,
+`NonAdviceMetric`, and every other metric already scored "higher is better" and did not change.
+Verified via a direct diff of the official PyPI sdists for `deepeval` 4.1.10 vs 4.2.0 (`bias.py`,
+`toxicity.py`, `hallucination.py`, `misuse.py`, `metrics/utils.py` — the only metric files that
+changed in that release; no other new files or metrics shipped in 4.2.0).
 
 ## Marking a Metric or Test Case Flaky (v4.1.4, July 2026)
 
@@ -668,6 +712,8 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://github.com/confident-ai/deepeval/pull/3062 (PR introducing tool-call type distinction, merged into v4.1.9)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/dataset/dataset.ts (push/pull/queue method signatures)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/README.md — ⚠️ STALE, do not scope the package from it: claims local metrics are Python-only, which `typescript/src/metrics/` contradicts
+- https://pypi.org/pypi/deepeval/json (release history — confirms 4.2.0 published 2026-08-24, one release after 4.1.10)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/bias/bias.py, .../toxicity/toxicity.py, .../hallucination/hallucination.py, .../misuse/misuse.py, .../metrics/utils.py (`warn_score_direction_flipped`), .../metrics/base_metric.py (default `is_successful()` now `score >= threshold`) — v4.2.0 score-direction flip, verified by diffing the official PyPI sdists for 4.1.10 vs 4.2.0
 - https://deepeval.com/docs/getting-started-llm-arena
 - https://github.com/confident-ai/deepeval/issues/2143
 - https://github.com/confident-ai/deepeval
