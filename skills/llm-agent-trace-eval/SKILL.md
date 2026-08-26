@@ -7,7 +7,8 @@ description: >-
   multi-step reasoning where the final answer alone doesn't reveal what broke. Triggers on:
   "evaluate agent tool calls", "agent trace evaluation", "DeepEval agent", "span evaluation",
   "tool correctness metric", "component-level LLM eval", "agent step scoring", "trace-based
-  evaluation".
+  evaluation", "PlanAdherenceMetric", "PlanQualityMetric", "agent plan evaluation", "plan
+  adherence deepeval".
 ---
 
 # LLM Agent Trace Evaluation — DeepEval Component-Level Evals
@@ -125,6 +126,27 @@ evaluate(traces=traces)
 | `AnswerRelevancyMetric` | Trace / Span (llm) | Is the output relevant to the input? |
 | `FaithfulnessMetric` | Trace | Is the answer grounded in retrieved context? |
 | `StepEfficiencyMetric` | Trace | Did the agent solve with minimal steps? |
+| `PlanAdherenceMetric` | Trace | Did execution follow the plan the agent itself stated? |
+| `PlanQualityMetric` | Trace | Was the stated plan itself a good one for the task? |
+
+`PlanAdherenceMetric` and `PlanQualityMetric` both take a plain `LLMTestCase` (input +
+actual_output) but require `requires_trace=True` under the hood — DeepEval pulls the agent's
+stated plan out of the trace's attributes (reasoning/thinking/planning spans), not from the test
+case itself. If the agent never records a plan anywhere in the trace, `PlanAdherenceMetric`
+auto-scores 1.0 with a reason explaining nothing was found — a silent free pass, so confirm your
+agent actually surfaces its plan in an observed span/attribute before trusting a low score as a
+real finding. Adherence and quality are separate concerns: an agent can adhere perfectly to a bad
+plan (high adherence, low quality) or write a great plan and abandon it mid-run (low adherence,
+high quality) — use both together to tell which failure mode you're looking at.
+
+```python
+from deepeval.metrics import PlanAdherenceMetric, PlanQualityMetric
+
+evaluate(
+    test_cases=[test_case],
+    metrics=[PlanAdherenceMetric(threshold=0.7), PlanQualityMetric(threshold=0.7)],
+)
+```
 
 ## CI Integration (pytest)
 
@@ -174,4 +196,6 @@ def test_agent_tool_selection(query, expected_tool):
 - [Component-Level LLM Evaluation — DeepEval](https://deepeval.com/docs/evaluation-component-level-llm-evals)
 - [LLM Tracing — DeepEval](https://deepeval.com/docs/evaluation-llm-tracing)
 - [AI Agent Evaluation Metrics — DeepEval](https://deepeval.com/guides/guides-ai-agent-evaluation-metrics)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/plan_adherence/plan_adherence.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/plan_quality/plan_quality.py
 - [Best LLM Evaluation Tools for AI Agents 2026 — Confident AI](https://www.confident-ai.com/knowledge-base/compare/best-llm-evaluation-tools-for-ai-agents)

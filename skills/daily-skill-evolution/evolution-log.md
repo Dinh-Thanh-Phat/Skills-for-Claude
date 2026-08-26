@@ -5,6 +5,84 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-26 (GMT+7)
+
+Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any
+inventory/research (branch tracking `origin/skill-evolution`, 12 commits ahead of `main`'s stale
+2026-07-29 checkpoint); read this branch's HEAD `evolution-log.md` (2026-08-25 entry) before
+starting.
+
+Domains researched: AI chatbot/LLM testing (DeepEval PyPI JSON re-check via direct `curl` —
+`4.2.0` confirmed still latest, unchanged since the 2026-08-25 score-direction-flip update;
+followed up on that entry's explicit lead — `PlanAdherenceMetric`/`PlanQualityMetric`/
+`StepEfficiencyMetric`/`GoalAccuracyMetric`/`ArgumentCorrectnessMetric`/`TopicAdherenceMetric`/
+`ToolUseMetric` "already existed unchanged in 4.1.10 ... left for a future run to evaluate as a
+standalone agent-planning-metrics gap" — grepped the full repo and confirmed
+`ArgumentCorrectnessMetric`/`ToolCorrectnessMetric`/`StepEfficiencyMetric` were already documented
+(`llm-agent-trace-eval` trace/span table), but `PlanAdherenceMetric`, `PlanQualityMetric`,
+`ToolUseMetric`, `GoalAccuracyMetric`, and `TopicAdherenceMetric` had zero coverage anywhere in
+`skills/`; fetched and read each metric's `measure()` body and pydantic schema directly from the
+official `confident-ai/deepeval` GitHub source at the `python-v4.2.0` tag (not a changelog or
+blog, since `deepeval.com` is egress-blocked and GitHub's changelog/release pages 403/404 to the
+fetcher as every prior run has noted) to confirm exact semantics — `PlanAdherenceMetric`/
+`PlanQualityMetric` are trace-based (`requires_trace=True`, pull the agent's stated plan out of
+trace attributes, auto-score 1.0 with no error if no plan is found in the trace — a silent
+free-pass worth flagging), while `ToolUseMetric`/`GoalAccuracyMetric`/`TopicAdherenceMetric` are
+`ConversationalTestCase`/multi-turn metrics distinct from the already-documented
+`KnowledgeRetentionMetric`/`RoleAdherenceMetric`/`ConversationCompletenessMetric` trio; Promptfoo
+npm dist-tag re-check — `0.122.0` confirmed still latest, unchanged since Aug 4; axe-core `4.13.0`
+and MCP Inspector `2.3.0` both confirmed unchanged via npm dist-tags), Playwright/web E2E
+(`@playwright/test` npm dist-tags re-check via direct `curl` — `latest: 1.62.1` unchanged, `next:
+1.63.0-alpha-2026-08-25` still an unshipped alpha, same conclusion as every run since 2026-08-09;
+cross-checked against a WebSearch that only surfaced an older `-07-24` alpha tag, confirming the
+direct npm check is the more current source), Maestro/mobile (core CLI `CHANGELOG.md` re-check via
+direct `curl` — 2.8.0 confirmed still latest, "Unreleased" section still empty, same as every run
+since 2026-08-02), QA test design (general "QA test design technique best practice August 2026"
+sweep — only EP/BVA/shift-left/risk-based-coverage/test-suite-maintenance trend framing, all
+already covered by existing skills, no new reproducible technique, same conclusion as every prior
+run).
+
+- UPDATED: skills/llm-agent-trace-eval — Added `PlanAdherenceMetric` and `PlanQualityMetric` to the
+  "Key Agent Metrics" table plus a new explanatory paragraph and code sample: both are trace-based
+  DeepEval metrics (`requires_trace=True`) that extract the agent's stated plan from the trace
+  rather than the test case, scoring whether execution *followed* the plan vs. whether the plan
+  itself was *good* — two genuinely separate failure modes (perfect adherence to a bad plan vs. a
+  good plan abandoned mid-run). Flagged the silent-free-pass behavior: if no plan is found anywhere
+  in the trace, `PlanAdherenceMetric` auto-scores 1.0 rather than erroring, so a suspiciously
+  perfect score means "nothing to evaluate," not "adherence confirmed." Verified via direct
+  `python-v4.2.0`-tag source (`plan_adherence.py`/`plan_quality.py` + their pydantic schemas), not
+  a changelog. Updated frontmatter trigger keywords and Sources. Sources:
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/plan_adherence/plan_adherence.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/plan_quality/plan_quality.py
+- UPDATED: skills/deepeval-llm-cicd — Added `ToolUseMetric`, `GoalAccuracyMetric`, and
+  `TopicAdherenceMetric` to the "Multi-Turn (Conversational) Evaluation" section (grep-confirmed
+  zero prior mentions of any of the three anywhere in the repo, distinct from the already-documented
+  `KnowledgeRetentionMetric`/`RoleAdherenceMetric`/`ConversationCompletenessMetric` trio):
+  `ToolUseMetric` (requires `available_tools: List[ToolCall]`) scores tool selection + argument
+  correctness across a conversation's tool-using turns — distinct from `llm-agent-trace-eval`'s
+  span-level `ToolCorrectnessMetric`/`ArgumentCorrectnessMetric`, which score one isolated call
+  rather than tool use as it plays out across turns; `GoalAccuracyMetric` (no extra args) scores
+  whether the user's goal was achieved and whether the steps taken were sound, per unit
+  interaction; `TopicAdherenceMetric` (requires `relevant_topics: List[str]`) builds a TP/TN/FP/FN
+  confusion matrix over question/response pairs to catch scope creep (a narrow-domain bot drifting
+  into out-of-scope advice). Verified constructor signatures, required fields, and `measure()`
+  scoring logic directly against the `python-v4.2.0`-tag source files (not the changelog, which
+  doesn't cover these — they already existed unchanged in 4.1.10 per the 2026-08-25 entry's
+  investigation, this run's contribution is documenting them, not a new-release finding). Updated
+  frontmatter trigger keywords and Sources. Sources:
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/tool_use/tool_use.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/goal_accuracy/goal_accuracy.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/topic_adherence/topic_adherence.py
+- SKIPPED Playwright/web E2E — 1.62.1 remains latest stable per npm dist-tags; 1.63.0-alpha
+  (now dated 2026-08-25) still an unshipped alpha, same conclusion as every run since 2026-08-09.
+- SKIPPED Maestro/mobile — 2.8.0 remains latest with an empty "Unreleased" section, same as every
+  run since 2026-08-02.
+- SKIPPED QA test design — general August 2026 sweep returned only EP/BVA/shift-left/risk-based
+  trend framing already covered by `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/
+  `metamorphic-testing`. No new reproducible technique found.
+- SKIPPED Promptfoo / axe-core / MCP Inspector (AI chatbot/LLM testing, secondary checks) — all
+  three confirmed unchanged at their already-documented latest versions (0.122.0 / 4.13.0 / 2.3.0).
+
 ## 2026-08-25 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any

@@ -16,7 +16,8 @@ description: |
   "AudioIntegrityMetric", "VoiceReliabilityMetric", "test voice agent CI deepeval",
   "deepeval score direction flip", "BiasMetric threshold", "ToxicityMetric threshold",
   "HallucinationMetric threshold", "MisuseMetric threshold", "warn_score_direction_flipped",
-  "deepeval 4.2.0".
+  "deepeval 4.2.0", "ToolUseMetric", "GoalAccuracyMetric", "TopicAdherenceMetric",
+  "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -392,6 +393,39 @@ def test_support_conversation():
     ])
 ```
 
+Three more conversational metrics (present since at least 4.1.10, undocumented here until now)
+cover ground `KnowledgeRetentionMetric`/`RoleAdherenceMetric`/`ConversationCompletenessMetric`
+don't:
+
+- **`ToolUseMetric`** — requires `available_tools: List[ToolCall]` at construction. Groups the
+  conversation into "unit interactions" (one user request through its resolution) and scores two
+  things per interaction where a tool was used — was the *right* tool selected, and were its
+  *arguments* correct — then combines both into one score with a two-part reason string. Distinct
+  from the trace-level `ToolCorrectnessMetric`/`ArgumentCorrectnessMetric` in
+  `llm-agent-trace-eval`: those score one isolated span; this scores tool use *as it plays out
+  across a conversation*.
+- **`GoalAccuracyMetric`** — no extra constructor args. Extracts `(user_goal, steps_taken)` per
+  unit interaction and scores both whether the goal was achieved and whether the steps taken were
+  a sound plan for it, combining into one score. Use for task-oriented bots (booking, support
+  resolution) where "did the conversation actually get the user what they wanted" matters more
+  than any single turn's wording.
+- **`TopicAdherenceMetric`** — requires `relevant_topics: List[str]` at construction. Builds a
+  TP/TN/FP/FN confusion matrix over the conversation's question/response pairs (did the bot answer
+  in-scope questions and correctly refuse/deflect out-of-scope ones) and scores accuracy from that
+  matrix. Use to catch scope creep — a support bot that starts giving medical or legal advice, or
+  a narrow-domain bot that a user has walked off-topic.
+
+```python
+from deepeval.metrics import ToolUseMetric, GoalAccuracyMetric, TopicAdherenceMetric
+from deepeval.test_case import ToolCall
+
+assert_test(test_case, [
+    ToolUseMetric(available_tools=[ToolCall(name="check_order_status"), ToolCall(name="escalate_to_human")], threshold=0.7),
+    GoalAccuracyMetric(threshold=0.7),
+    TopicAdherenceMetric(relevant_topics=["order status", "shipping", "returns"], threshold=0.8),
+])
+```
+
 Multi-turn simulation (auto-generate the user turns using an LLM):
 ```python
 from deepeval.synthesizer import ConversationalSynthesizer
@@ -702,6 +736,9 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/docs/metrics-arena-g-eval
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/package.json (npm package name; version `0.9.10` at time of writing, up from `0.1.32`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/index.ts (exported API surface — exports `metrics` and `evaluate`)
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/tool_use/tool_use.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/goal_accuracy/goal_accuracy.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.2.0/deepeval/metrics/topic_adherence/topic_adherence.py
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/metrics/index.ts and the ~40 metric dirs under `typescript/src/metrics/` — local judge metrics DO exist in TypeScript
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/metrics/answer-relevancy/answer-relevancy.ts (imports `DeepEvalBaseLLM`/`initializeModel`/`generateWithSchema` — proof of local judge execution)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/models/index.ts (13 judge providers + OpenRouter/Portkey gateways)
