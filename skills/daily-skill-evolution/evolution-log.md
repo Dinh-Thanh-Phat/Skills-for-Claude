@@ -5,6 +5,86 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-27 (GMT+7)
+
+Correction to orientation: initially checked out `main` and read `main`'s copy of this log, which
+is stale at the 2026-07-29 checkpoint and does not reflect the ~4 weeks of runs already committed
+to `skill-evolution` (last entry there: 2026-08-26). Discovered this only after finishing research
+and hitting merge conflicts on `skills/llm-red-teaming/SKILL.md` and
+`skills/maestro-visual-testing/SKILL.md` when switching to `skill-evolution` — both files had
+already been updated by more recent runs on this branch with content absent from `main` (a
+WebSocket-target section in `llm-red-teaming`, and a different `thresholdPercentage`
+config/example style in `maestro-visual-testing`). Reset to `skill-evolution`'s actual HEAD and
+re-verified both of today's findings against it: neither was a duplicate of anything already on
+this branch (grepped for "dark mode"/"setDarkMode" and "tracing"/"grafana tempo" across every
+`SKILL.md` on `skill-evolution` — zero hits before this run), so both stand as written below,
+just re-applied onto the correct base and cross-referenced against the branch's existing content
+where it touches the same product. Future runs: orient against `skill-evolution`, not `main`, per
+the runbook's own step 1 — `main` is a month behind because the user hasn't merged yet, not
+because the routine stopped running.
+
+Domains researched: Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md`, re-verified verbatim after the correction above — found a genuinely new **2.9.0**
+beyond the 2.8.0 this branch's 2026-08-26 run confirmed as latest: `setDarkMode`/`toggleDarkMode`/
+`assertDarkMode`/`assertLightMode` theme-control commands, core CLI, iOS + Android; cross-checked
+against `skills/maestro-real-ios-device`'s existing v1.1.23 dark-mode section for the *unrelated*
+community `maestro-runner` fork — same command names, different project, confirmed via that
+skill's own Sources this is `devicelab-dev/maestro-runner` not `mobile-dev-inc/maestro`, so this is
+new information for the core-CLI skill rather than a duplicate), AI chatbot/LLM testing (Promptfoo
+CHANGELOG.md re-check via direct fetch — now at **0.122.1** (Aug 26), beyond the 0.122.0 this
+branch's 2026-08-26 run had as latest: a substantial new **tracing subsystem** — OpenTelemetry-
+aligned spans, a local OTLP receiver, and external-trace fetching from Grafana Tempo/Braintrust/
+Langfuse via the `traceparent`-correlation mechanism, plus subprocess telemetry for Claude/Codex/
+OpenAI Agents/Vercel AI SDK and multi-turn attacker/grading token accounting in red-team reports;
+grepped every `SKILL.md` on this branch for "tracing"/"grafana tempo" — zero prior coverage;
+verified exact YAML config syntax via direct fetch of the first-party `site/docs/tracing.md`, not
+a WebSearch summary; DeepEval PyPI/GitHub re-check — now at v4.2.0 (Aug 24), attempted to verify
+the changelog's "DAG metrics revamped with top-down construction" claim against first-party source
+but GitHub API/releases-page access is blocked from this session's repo scope and WebSearch
+couldn't pin down concrete new syntax beyond documentation already implicit in existing DAG-metric
+coverage, so left undocumented per the verify-before-writing guardrail), Playwright/web E2E
+(direct fetch of the pinned `release-notes-js.md` — 1.62 confirmed still latest stable, matching
+this branch's repeated confirmations since 2026-07-24), QA test design (general 2026 technique
+sweep — only AI-driven/shift-left-shift-right/emerging-testing-type trend framing, already covered
+by existing skills, no new reproducible technique — same conclusion as every prior run).
+
+- UPDATED: skills/maestro-visual-testing — Added a "Dark Mode / Light Mode Testing (Core CLI
+  2.9.0+)" section documenting the new `setDarkMode`/`toggleDarkMode`/`assertDarkMode`/
+  `assertLightMode` commands (iOS + Android) and a pattern for pairing them with `assertScreenshot`
+  to record separate light/dark baselines per screen, since a screen's default-theme baseline
+  passing tells you nothing about its other theme. Added a note distinguishing this from the
+  community `maestro-runner` fork's own same-named v1.1.23 dark-mode commands (already documented
+  in `skills/maestro-real-ios-device`) — same command names, different projects and underlying
+  implementations. Verified command names and platform support via direct fetch of the official
+  Maestro `CHANGELOG.md`'s 2.9.0 entry (verbatim quote, not a first-pass summary). Updated
+  frontmatter trigger keywords and Sources. Sources:
+  https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/CHANGELOG.md
+- UPDATED: skills/llm-red-teaming — Added a "Tracing Red-Team Runs (Promptfoo 0.122+)" section
+  under the existing Cloud Agentic Strategies subsection: how to enable Promptfoo's local OTLP
+  receiver (`tracing.enabled: true` + `otlp.http`) to see a target's actual tool calls/reasoning
+  inside the web UI's new "Trace Timeline" per red-team transcript, plus how to instead point at an
+  already-instrumented target's external tracing backend (Grafana Tempo, Braintrust, or Langfuse
+  config blocks, with the exact `provider.id`/`auth`/`queryDelay` fields) so a red-team scan's
+  traces correlate with the same observability stack production already uses. Explains why this
+  matters for jailbreak triage specifically: it turns "the model said something unsafe" into "the
+  model executed tool X with attacker-controlled arguments," which changes the fix from
+  prompt-hardening to a tool-permission boundary. Verified exact YAML syntax and the `traceparent`
+  correlation mechanism via direct fetch of the first-party `site/docs/tracing.md`; verified the
+  version/feature list via direct fetch of the project's `CHANGELOG.md` (0.122.1, Aug 26 2026).
+  Updated frontmatter trigger keywords and Sources. Sources:
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/tracing.md,
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, matching every prior run since
+  2026-07-24.
+- SKIPPED AI chatbot/LLM testing (DeepEval 4.2.0 DAGMetric/MCP-server/voice items) — real
+  release-note line items, but could not verify concrete new syntax/parameters for the "revamped
+  DAGMetric" claim against a first-party source (GitHub API/releases page access blocked from this
+  session's repo scope), and MCP-server/voice support are provider-integration additions rather
+  than a new testing technique. Left undocumented per the verify-before-writing guardrail.
+- SKIPPED QA test design — general 2026 sweep returned only AI-driven/shift-left-shift-right/
+  emerging-testing-type trend framing already covered by `behavioral-coverage-matrix`/
+  `pairwise-combinatorial-testing`/`metamorphic-testing`. No new reproducible technique found.
+
 ## 2026-08-26 (GMT+7)
 
 Orientation done correctly: `git fetch origin` + `git checkout skill-evolution` before any

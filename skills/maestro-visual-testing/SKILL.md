@@ -5,7 +5,8 @@ description: >-
   unintended UI changes across releases, React Native / Flutter library upgrades, or theme
   changes. Triggers on: "maestro assertScreenshot", "maestro visual regression", "maestro
   screenshot comparison", "maestro visual testing", "mobile visual diff", "maestro baseline
-  screenshot", "catch UI changes maestro".
+  screenshot", "catch UI changes maestro", "maestro dark mode test", "maestro setDarkMode",
+  "maestro assertDarkMode", "maestro theme testing".
 ---
 
 # Maestro Visual Testing
@@ -127,6 +128,48 @@ env:
 | Assert that a screen "looks correct" in plain English | `assertWithAI` |
 | Verify specific text content is present | `assertVisible` / `assertWithAI` |
 
+## Dark Mode / Light Mode Testing (Core CLI 2.9.0+)
+
+Theme bugs (unreadable text, a light-mode-only icon, a modal that keeps a white background in dark
+mode) only show up when the screen is actually rendered in that theme. The core Maestro CLI's
+2.9.0 release added explicit theme control so a flow can force each mode instead of depending on
+the test device's OS setting:
+
+```yaml
+- setDarkMode          # force dark theme (iOS + Android)
+- assertDarkMode       # fails if the OS-reported theme isn't dark
+- toggleDarkMode       # flip whatever the current theme is
+- setDarkMode: false   # back to light
+- assertLightMode
+```
+
+> Not to be confused with the separate dark-mode support the community `maestro-runner` project
+> shipped in its own v1.1.23 (see `maestro-real-ios-device`) — same command names, different
+> projects/implementations (core CLI here uses `cmd uimode night`/`simctl ui appearance`
+> internally; `maestro-runner` adds physical-device and Web-driver support on top).
+
+Combine with `assertScreenshot` to get a baseline **per theme**, not just per screen — a screen
+that passes its light-mode baseline can still be broken in dark mode, and a single baseline set
+recorded under the device's default theme will never catch that:
+
+```yaml
+# flows/visual-theme-smoke.yaml
+appId: com.example.app
+---
+- launchApp
+- setDarkMode: false
+- assertLightMode
+- assertScreenshot: home-light
+
+- setDarkMode
+- assertDarkMode
+- assertScreenshot: home-dark
+```
+
+Keep light and dark baselines as separate `path` values (e.g. `home-light` / `home-dark`) in the
+same `.maestro/screenshots/` tree — treat a theme switch as a distinct screen state, not a variant
+of the same baseline.
+
 ## Managing Baselines
 
 Baselines are stored in `.maestro/screenshots/` by default. Commit them to source control so CI comparisons are deterministic:
@@ -160,3 +203,4 @@ git commit -m "update visual baselines: new product card design"
 - https://maestro.dev/blog/visual-testing
 - https://docs.maestro.dev/reference/commands-available/assertscreenshot
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `thresholdPercentage` variable support (2.8.0), verified against the `034_assertScreenshot_threshold_env.yaml` test fixture in the `mobile-dev-inc/maestro` source repo
+- https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/CHANGELOG.md — core CLI 2.9.0: `setDarkMode`/`toggleDarkMode`/`assertDarkMode`/`assertLightMode` commands, iOS + Android

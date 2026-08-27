@@ -11,7 +11,9 @@ description: >-
   "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin",
   "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP
   agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team",
-  "promptfoo websocket target", "red team websocket chatbot".
+  "promptfoo websocket target", "red team websocket chatbot", "promptfoo tracing", "red team
+  trace timeline", "promptfoo grafana tempo", "promptfoo braintrust tracing", "promptfoo
+  langfuse tracing".
 ---
 
 # LLM Red Teaming
@@ -311,6 +313,55 @@ redteam:
 
 All three stop early once a vulnerability is confirmed, a security determination is reached, or `maxTurns`/iteration limits are hit — budget for the worst case (full limit, no early stop) when estimating scan cost.
 
+### Tracing Red-Team Runs (Promptfoo 0.122+)
+
+A pass/fail verdict from `hydra`/`goblin` tells you a jailbreak succeeded but not *how* — which
+tool call leaked the data, which subprocess the target spawned, which turn the guardrail actually
+broke on. Promptfoo 0.122 added an OpenTelemetry-aligned tracing subsystem that captures this:
+
+```yaml
+# promptfooconfig.yaml
+tracing:
+  enabled: true
+  otlp:
+    http:
+      enabled: true   # local OTLP receiver, defaults to 127.0.0.1:4318
+```
+
+Promptfoo sends a `traceparent` header on every call to your target; if your app is instrumented
+(OpenTelemetry, OpenAI Agents SDK, Vercel AI SDK, or a Claude/Codex subprocess) it appends spans to
+that same trace and forwards them to its usual backend. After the response, Promptfoo pulls the
+matching trace back in — so a red-team run's web UI (`promptfoo eval && promptfoo view`, then the
+🔎 icon → "Trace Timeline") shows the target's actual tool calls and reasoning steps alongside the
+attack transcript, not just the final message.
+
+For a target already wired to an external tracing backend, point Promptfoo at it directly instead
+of running the local OTLP receiver:
+
+```yaml
+tracing:
+  enabled: true
+  queryDelay: 3000   # ms to wait for spans to propagate before querying
+  provider:
+    id: tempo        # or braintrust / langfuse
+    endpoint: 'http://tempo:3200'
+    auth:
+      token: '{{ env.TEMPO_API_TOKEN }}'
+```
+
+Braintrust and Langfuse work the same way (`provider.id: braintrust` / `langfuse`, with
+`auth.token` or `auth.username`/`auth.password` respectively) — Promptfoo queries Langfuse's v2
+Observations API and Braintrust's span API using the OpenTelemetry trace ID from `traceparent`,
+which your app must copy into its own span metadata (`trace_id`, `promptfoo_trace_id`, or
+`promptfoo.trace_id` for Braintrust). Each result also carries `traceId`/`evaluationId` for scripted
+correlation via `GET /api/traces/:traceId` or `GET /api/traces/evaluation/:evaluationId`.
+
+**Why this matters for red-teaming specifically:** `jailbreak:hydra`/`goblin` already track
+per-turn token cost (0.122 also added attacker/grading token accounting to the scan report), but
+tracing is what lets you see *inside* a turn — e.g. confirming a `jailbreak:meta` attack succeeded
+via a tool call with attacker-controlled arguments (excessive agency) rather than the model just
+saying something unsafe, which changes the fix from prompt-hardening to a tool-permission boundary.
+
 ## DeepTeam — Responsibility Testing (Bias, Toxicity, PII)
 
 DeepTeam (`pip install deepteam`) covers vulnerability categories that Garak/PyRIT/Promptfoo don't emphasize: **bias**, **toxicity**, and **PII leakage**. Required for EU AI Act high-risk applications.
@@ -425,3 +476,5 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - promptmap (utkusen) — black-box LLM security scanner: https://github.com/utkusen/promptmap
 - OWASP Top 10 for Agentic Applications 2026 (released 2025-12-09, ASI01-ASI10): https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
 - Promptfoo's ASI-to-plugin mapping table (ASI01-ASI10 → plugin names, verbatim source for the table above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-agentic-ai.md
+- Promptfoo tracing docs (OTLP setup, Grafana Tempo/Braintrust/Langfuse external providers, trace correlation API): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/tracing.md
+- Promptfoo 0.122.1 CHANGELOG (tracing subsystem, multi-turn attacker/grading token accounting): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
