@@ -5,6 +5,72 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-28 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research (branch tracking `origin/skill-evolution`, HEAD at
+the 2026-08-27 commit); read this branch's HEAD `evolution-log.md` before starting, not `main`'s
+stale copy.
+
+Domains researched: Maestro/mobile (direct `curl` of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md` — 2.9.0 confirmed still latest, matching the 2026-08-27 run's finding, but that run
+only documented the `setDarkMode`/`assertDarkMode` theme commands from the 2.9.0 entry; re-read the
+full 2.9.0 bullet list and found two more items from the same release with zero prior coverage
+anywhere in `skills/` (grepped `maestro-mobile`, `maestro-mobile/references/ci-cd.md`, and
+`maestro-real-ios-device` for "negation glob"/"config.yaml" exclude patterns and for
+"error property"/text-selector-matching — no hits): (1) `!`-prefixed negation globs in the `flows`
+key of `config.yaml`, verified with the exact YAML syntax and the "at least one non-`!` pattern
+required" constraint via direct fetch of the first-party `mobile-dev-inc/maestro-docs`
+`api-reference/workspace-configuration.md` (the `docs.maestro.dev` rendered site itself is
+proxy-egress-blocked, same recurring pattern noted by prior runs — the GitBook-sourced GitHub
+markdown mirror was used instead); (2) "match text selectors against an element's `error`
+property" — attempted to verify exact semantics (which platforms, what populates the `error`
+property, whether it's usable from `assertVisible`/`tapOn` selectors) via GitHub commit history,
+PR search, and targeted WebSearch, but found no first-party documentation or source diff beyond the
+one-line CHANGELOG bullet — left undocumented per the verify-before-writing guardrail rather than
+guess at the selector semantics), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md` re-check via
+direct `curl` — 0.122.1 (Aug 26) confirmed still latest, already fully documented by the
+2026-08-27 tracing-subsystem update, no newer version; DeepEval PyPI JSON re-check via direct
+`curl` — 4.2.0 (Aug 24, 21:54 UTC) confirmed still latest, matching the 2026-08-27 run's version
+and its noted inability to verify the "DAG metrics revamped" claim against a first-party source;
+axe-core npm dist-tag re-check — 4.13.0 confirmed unchanged; MCP Inspector npm dist-tag re-check —
+found a genuinely new **2.4.0** (Aug 26) beyond the 2.3.0 the 2026-08-26 run had as latest, but
+its release notes (app-rendered form elicitations, file-backed secret storage, enhanced OAuth
+handling) are web/TUI-only interactive features — grepped the CLI's own `clients/cli/README.md`
+for "elicit" and found zero matches, confirming the `--cli` scriptable mode this skill's Layer 2
+targets doesn't expose elicitation handling, so there is no new CI-relevant technique to document;
+the GitHub releases API 404'd on the specific tag so the release body itself couldn't be
+double-checked, reinforcing the decision to skip rather than guess), Playwright/web E2E (direct
+fetch of the pinned `release-notes-js.md` — 1.62 confirmed still latest stable, same conclusion as
+every run since 2026-07-24), QA test design (general "QA test design best practice technique
+August 2026" sweep — only EP/BVA/risk-based/shift-left/test-suite-maintenance trend framing, all
+already covered by existing skills, no new reproducible technique — same conclusion as every prior
+run).
+
+- UPDATED: skills/maestro-mobile — Added a "Flow Selection: Negation Globs (2.9.0+)" section to
+  `references/ci-cd.md`: the `flows` key in `config.yaml` now accepts `!`-prefixed glob patterns to
+  exclude specific files/folders from a CI run (at least one non-`!` pattern still required),
+  distinct from the already-documented `includeTags`/`excludeTags` metadata-based filtering —
+  negation excludes by file path, tags exclude by flow metadata regardless of location. Verified
+  exact YAML syntax via direct fetch of the first-party `mobile-dev-inc/maestro-docs`
+  `api-reference/workspace-configuration.md` (the rendered `docs.maestro.dev` site is
+  proxy-egress-blocked). Sources:
+  https://raw.githubusercontent.com/mobile-dev-inc/maestro-docs/main/api-reference/workspace-configuration.md,
+  https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/CHANGELOG.md
+- SKIPPED Maestro/mobile (text-selector-matches-`error`-property, 2.9.0) — real CHANGELOG line item
+  but no first-party source (docs, PR, or commit diff) surfaced beyond the one-line bullet; left
+  undocumented rather than guess at which platforms/selector commands it applies to.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, same as every run since 2026-07-24.
+- SKIPPED AI chatbot/LLM testing (DeepEval 4.2.0, Promptfoo 0.122.1, axe-core 4.13.0) — all three
+  confirmed unchanged at their already-documented latest versions.
+- SKIPPED AI chatbot/LLM testing (MCP Inspector 2.4.0) — genuinely new release, but its features
+  (app-rendered form elicitations, file-backed secrets, OAuth UX) are web/TUI-only; confirmed via
+  the CLI README that `--cli` scriptable mode (this skill's CI-relevant layer) exposes none of
+  them, so nothing new to document for testing purposes.
+- SKIPPED QA test design — general August 2026 sweep returned only EP/BVA/risk-based/shift-left
+  trend framing already covered by `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/
+  `metamorphic-testing`. No new reproducible technique found.
+
 ## 2026-08-27 (GMT+7)
 
 Correction to orientation: initially checked out `main` and read `main`'s copy of this log, which

@@ -249,6 +249,29 @@ maestro cloud \
   maestro/flows/
 ```
 
+## Flow Selection: Negation Globs (2.9.0+)
+
+The `flows` key in `config.yaml` accepts glob patterns and, as of Maestro 2.9.0, a `!`-prefixed
+pattern to exclude matching files — useful for running a broad CI sweep while carving out one
+known-flaky or environment-specific flow without maintaining a separate tag:
+
+```yaml
+# .maestro/config.yaml
+flows:
+  - 'subFolder/*'
+  - 'anotherSubfolder/**'
+  - '!anotherSubfolder/helper.yaml'   # exclude — at least one non-'!' pattern is still required
+includeTags:
+  - smoke
+excludeTags:
+  - flaky
+```
+
+Negation and tags solve different problems: `!pattern` excludes by *file path* (a helper/shared
+flow that shouldn't run standalone, a suite that lives in a subfolder but isn't ready for CI),
+while `includeTags`/`excludeTags` excludes by *flow metadata* regardless of location. Prefer tags
+for "skip this category everywhere"; prefer negation globs for "skip this specific file/folder".
+
 ## Environment Management
 
 ```bash
