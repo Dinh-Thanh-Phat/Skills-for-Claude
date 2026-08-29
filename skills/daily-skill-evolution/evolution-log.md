@@ -5,6 +5,54 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-29 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research (branch tracking `origin/skill-evolution`, HEAD at
+the 2026-08-28 commit); read this branch's HEAD `evolution-log.md`, not `main`'s stale copy.
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — 1.62
+confirmed still latest stable, same conclusion as every run since 2026-07-24, over a month with no
+new stable release), Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md` — 2.9.0 confirmed still latest, matching every run since 2026-08-27; the summarized
+bullet list surfaced the same negation-globs/dark-mode/error-property items already
+documented-or-explicitly-skipped by the 2026-08-27/08-28 runs, nothing beyond that), AI
+chatbot/LLM testing (Promptfoo `CHANGELOG.md` re-check via direct `curl` — found a genuinely new
+**0.122.2** (Aug 28) beyond the 0.122.1 documented on 2026-08-27/08-28: two Features-section items,
+`auth: support configurable Cloud auth header name` (an authentication/infra config option, not a
+testing technique) and `providers: add Codex Security SDK provider` (a new LLM-provider integration
+— same pattern as the 0.122.1 "add Gemini 3.7 Flash" item and every prior provider-addition entry
+this log has skipped as not-a-testing-technique); DeepEval PyPI JSON re-check — 4.2.0 confirmed
+unchanged; axe-core npm dist-tag re-check — 4.13.0 confirmed unchanged (latest publish
+2026-08-05); MCP Inspector npm dist-tag re-check — 2.4.0 confirmed unchanged (latest publish
+2026-08-26, matching the 2026-08-28 run's finding and its already-verified conclusion that `--cli`
+scriptable mode exposes none of that release's web/TUI-only features), general "LLM chatbot testing
+evaluation new tool technique August 2026" sweep — only Agent-as-Judge/behavioral-eval/golden-dataset
+framing already covered by `chatbot-tester`/`deepeval-llm-cicd`/`llm-golden-dataset-construction`/
+`llm-judge-bias`), QA test design (general "QA test design technique best practice August 2026"
+sweep — only EP/BVA/shift-left/test-suite-maintenance/risk-based-automation trend framing, all
+already covered by `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/
+`metamorphic-testing`/`qa-test-plan`, same conclusion as every prior run).
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design; every finding either duplicated content already documented or explicitly skipped by the
+  2026-08-27/08-28 runs, or was a version bump whose only new items were infra config / a new
+  LLM-provider integration rather than a testing technique. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, unchanged since 2026-07-24.
+- SKIPPED Maestro/mobile — 2.9.0 remains latest; nothing beyond what 2026-08-27/08-28 already
+  documented (`setDarkMode`/negation globs) or explicitly left unverified (`error`-property text
+  selector matching, still no first-party source beyond the one-line CHANGELOG bullet).
+- SKIPPED AI chatbot/LLM testing (Promptfoo 0.122.2) — genuinely new version, but both Features items
+  (configurable Cloud auth header name; Codex Security SDK provider) are infra/provider additions,
+  not a testing technique — consistent with this log's standing practice of not documenting new
+  provider integrations.
+- SKIPPED AI chatbot/LLM testing (DeepEval 4.2.0, axe-core 4.13.0, MCP Inspector 2.4.0) — all three
+  confirmed unchanged at their already-documented latest versions.
+- SKIPPED AI chatbot/LLM testing (general technique sweep) — Agent-as-Judge/behavioral-eval/golden-
+  dataset framing already fully covered by existing skills.
+- SKIPPED QA test design — general August 2026 sweep returned only trend framing already covered by
+  existing skills. No new reproducible technique found.
+
 ## 2026-08-28 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
