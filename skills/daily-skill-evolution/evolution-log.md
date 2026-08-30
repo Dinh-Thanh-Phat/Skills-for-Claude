@@ -5,6 +5,44 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-30 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-08-29 commit, read this branch's
+own `evolution-log.md`. (This run initially made the same mistake the 2026-08-27 entry warns
+about — started from `main`, drafted a "Dark Mode / Theme Testing" section for
+`skills/maestro-mobile` and a "flaky flag" section for `skills/deepeval-llm-cicd`, then discovered
+on `git checkout skill-evolution` that both had already been documented in more depth by the
+2026-08-27 and prior runs — `maestro-visual-testing`'s existing "Dark Mode / Light Mode Testing
+(Core CLI 2.9.0+)" section and `deepeval-llm-cicd`'s existing v4.1.4 `flaky` section with the
+TypeScript-parity caveat. Reset to `skill-evolution`'s actual HEAD and discarded the draft rather
+than re-adding duplicate content. Re-emphasizing for future runs: `main` is stale by design — the
+user merges `skill-evolution` manually — so step 1's "fresh checkout" must mean `skill-evolution`,
+never `main`.)
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — 1.62
+confirmed still latest stable, unchanged since 2026-07-24), Maestro/mobile (direct fetch of the
+official `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.9.0 confirmed still latest, matching every run
+since 2026-08-27), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md` re-check via direct `curl` —
+0.122.2 (Aug 28) confirmed still latest, already fully documented/explicitly-skipped by the
+2026-08-29 run; DeepEval PyPI JSON re-check — 4.2.0 confirmed unchanged; axe-core npm dist-tag
+re-check — 4.13.0 confirmed unchanged; MCP Inspector npm dist-tag re-check — 2.4.0 confirmed
+unchanged), QA test design (general "QA test design technique August 2026" sweep — only
+AI-driven/agentic-testing/shift-left-shift-right/risk-based/exploratory-testing trend framing, all
+already covered by existing skills, no new reproducible technique).
+
+- No changes — every pinned source (Playwright, Maestro, Promptfoo, DeepEval, axe-core, MCP
+  Inspector) confirmed unchanged from the 2026-08-29 run's versions; QA test design sweep returned
+  only trend framing already covered by existing skills. Quality-over-quantity guardrail applied —
+  fourth day in a row of stable pinned versions.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, unchanged since 2026-07-24.
+- SKIPPED Maestro/mobile — 2.9.0 remains latest; nothing beyond what 2026-08-27/08-28 already
+  documented or explicitly left unverified.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2, DeepEval 4.2.0, axe-core 4.13.0, and MCP
+  Inspector 2.4.0 all confirmed unchanged at their already-documented latest versions.
+- SKIPPED QA test design — general August 2026 sweep returned only trend framing already covered
+  by existing skills. No new reproducible technique found.
+
 ## 2026-08-29 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
