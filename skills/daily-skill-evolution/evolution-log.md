@@ -5,6 +5,46 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-08-31 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-08-30 commit, read this branch's
+own `evolution-log.md` (not `main`'s stale copy).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — 1.62
+confirmed still the latest `## Version` heading, unchanged since 2026-07-24; npm `playwright`
+dist-tags re-check via direct fetch — `latest: 1.62.1` unchanged (known bug-fix-only patch,
+documented as a skip since 2026-08-16), `next: 1.63.0-alpha-2026-08-30`, one day newer than the
+`-08-25` alpha the 2026-08-30 run last saw but still an unshipped alpha, same conclusion as every
+run since 2026-08-09), Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md` — 2.9.0 confirmed still latest with an empty "Unreleased" section, matching every
+run since 2026-08-27), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md` re-check via direct fetch
+— 0.122.2 (Aug 28) confirmed still latest, already fully documented/explicitly-skipped by the
+2026-08-29 run (Cloud auth header config + Codex Security SDK provider — infra/provider additions,
+not a testing technique); DeepEval PyPI re-check — 4.2.0 confirmed unchanged; axe-core npm
+dist-tag re-check — 4.13.0 confirmed unchanged; MCP Inspector npm dist-tag re-check — 2.4.0
+confirmed unchanged; general "LLM chatbot evaluation testing new technique August 2026" sweep —
+only Agent-as-Judge/simulation-based-evaluation/LLM-as-judge framing already covered by
+`chatbot-tester`/`ai-agent-eval-platforms`/`llm-judge-bias`/`deepeval-llm-cicd`), QA test design
+(general "QA test design AI agentic testing best practices August 2026" sweep — only
+agentic-testing/prompt-engineering-for-QA-agents/hybrid-testing-model/guardrails-for-agents trend
+framing, all already covered by existing skills — the "limit agent to read-only actions, log
+execution paths" guardrail framing overlaps `expensive-irreversible-ops`/`ai-chaos-testing`, no new
+reproducible technique).
+
+- No changes — every pinned source (Playwright, Maestro, Promptfoo, DeepEval, axe-core, MCP
+  Inspector) confirmed unchanged from the 2026-08-30 run's versions; QA test design and general
+  LLM-chatbot-testing sweeps returned only trend framing already covered by existing skills.
+  Quality-over-quantity guardrail applied — fifth day in a row of stable pinned versions.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable; 1.62.1 patch remains bug-fix-only
+  (already documented as a skip); 1.63.0-alpha-2026-08-30 remains an unshipped alpha.
+- SKIPPED Maestro/mobile — 2.9.0 remains latest with an empty "Unreleased" section.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2, DeepEval 4.2.0, axe-core 4.13.0, and MCP
+  Inspector 2.4.0 all confirmed unchanged at their already-documented latest versions; general
+  technique sweep returned only already-covered framing.
+- SKIPPED QA test design — general August 2026 sweep returned only agentic-testing trend framing
+  already covered by existing skills. No new reproducible technique found.
+
 ## 2026-08-30 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
