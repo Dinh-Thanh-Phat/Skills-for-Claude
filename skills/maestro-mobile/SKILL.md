@@ -718,6 +718,17 @@ maestro test --device-os "17.4" --device-model "iPhone 15" flows/
 maestro hierarchy --compact
 ```
 
+> **CLI 2.10.0:** on Android, `--device-os` also accepts a full system image path
+> (`system-images;<os>;<tag>;<abi>`), not just a bare version like `android-34`. This overloads
+> the same flag rather than adding a new one — Maestro detects whether the value is a version or
+> a full path. Use it to pin the exact emulator image in CI instead of trusting whatever tag the
+> version alias resolves to on the runner:
+> ```bash
+> maestro test --device-os "system-images;android-34;google_apis;x86_64" flows/
+> ```
+> Match the `abi` segment to the CI runner's host architecture (`x86_64` on Intel/AMD runners,
+> `arm64-v8a` on Apple Silicon/ARM runners) — a mismatched ABI fails to boot the emulator.
+
 ```yaml
 # MAESTRO_FILENAME — built-in env var exposing the current flow's filename inside the flow itself
 # Useful for tagging screenshots/artifacts with the source file without hardcoding it per flow
@@ -779,3 +790,4 @@ simulators at the same time.
 - https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/e2e/demo_app/.maestro/permission_interpolation.yaml — permission-value variable interpolation fixture (issue #2416); also documents Android's silent revoke on unrecognised/empty values vs iOS throwing
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
+- https://github.com/mobile-dev-inc/maestro/pull/3543 — `--device-os` accepts a full Android system image path (`system-images;<os>;<tag>;<abi>`), overloading the existing flag rather than adding a new one (2.10.0)

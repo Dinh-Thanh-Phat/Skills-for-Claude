@@ -5,6 +5,50 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-01 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-08-31 commit, read this branch's
+own `evolution-log.md` (not `main`'s stale copy, which is behind by design).
+
+Domains researched: Maestro/mobile (direct `curl` of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md` — found a genuinely new **2.10.0** beyond the 2.9.0 pinned since 2026-08-27, with one
+substantive CLI item: `--device-os` now also accepts a full Android system image path
+(`system-images;<os>;<tag>;<abi>`, e.g. `system-images;android-34;google_apis;x86_64`) instead of
+only a bare version alias like `android-34` — verified against the shipping PR
+`mobile-dev-inc/maestro#3543` directly via WebFetch on the GitHub PR page, since `docs.maestro.dev`
+403's the fetcher as usual for this domain; found a related follow-up PR `#3544` (Aug 28, friendlier
+error on an ABI mismatch between the requested system image and the host) but it is not yet present
+in the `CHANGELOG.md`'s empty "Unreleased" section, so left undocumented per the verify-before-writing
+guardrail — only the shipped 2.10.0 item was written up), Playwright/web E2E (direct fetch of the
+pinned `release-notes-js.md` — 1.62 confirmed still the latest `## Version` heading, unchanged since
+2026-07-24; WebSearch for a 1.63 stable release returned nothing concrete), AI chatbot/LLM testing
+(Promptfoo `CHANGELOG.md` re-check via direct fetch — 0.122.2 confirmed still latest, unchanged since
+2026-08-28 and already fully documented/explicitly-skipped by the 2026-08-29 run; DeepEval PyPI JSON
+re-check — 4.2.0 confirmed unchanged; general "AI chatbot LLM testing best practices September 2026"
+sweep — only multi-layer-pipeline/two-layer-validation/behavioral-eval/LLM-as-judge-calibration
+framing, all already covered by `chatbot-tester`/`deepeval-llm-cicd`/`llm-judge-bias`), QA test design
+(general "QA test design agentic AI testing best practices September 2026" sweep — only agentic-QA/
+natural-language-test-authoring/human-in-the-loop-governance trend framing, all already covered by
+existing skills, no new reproducible technique).
+
+- UPDATED: skills/maestro-mobile — Added a callout under the existing `--device-os`/`--device-model`
+  example in "More CLI Utility Commands & Flags" documenting CLI 2.10.0's Android full-system-image
+  support: `--device-os "system-images;android-34;google_apis;x86_64"` to pin the exact emulator
+  image in CI rather than trusting whatever tag a version alias resolves to on the runner, plus a
+  note to match the `abi` segment to the CI runner's host architecture (`x86_64` vs `arm64-v8a`) since
+  a mismatch fails to boot the emulator. Grep confirmed zero prior mention of "device-os" beyond the
+  existing iOS-version example. Sources: https://raw.githubusercontent.com/mobile-dev-inc/maestro/main/CHANGELOG.md, https://github.com/mobile-dev-inc/maestro/pull/3543
+- SKIPPED Maestro/mobile (PR #3544, ABI-mismatch error message) — not yet present in the released
+  CHANGELOG's "Unreleased" section as of this run; left undocumented until it actually ships.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, unchanged since 2026-07-24; no concrete
+  1.63 stable found.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2 and DeepEval 4.2.0 both confirmed unchanged at
+  their already-documented latest versions; general September 2026 technique sweep returned only
+  framing already covered by existing skills.
+- SKIPPED QA test design — general September 2026 sweep returned only agentic-QA/HITL-governance
+  trend framing already covered by existing skills. No new reproducible technique found.
+
 ## 2026-08-31 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
