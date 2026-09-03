@@ -5,6 +5,55 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-03 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-09-02 commit, read this branch's
+own `evolution-log.md` (not `main`'s stale copy, which is behind by design).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — 1.62
+confirmed still the latest `## Version` heading, unchanged since 2026-07-24; npm `playwright`
+dist-tags re-check via direct fetch — `latest: 1.62.1` unchanged (known bug-fix-only patch,
+documented as a skip since 2026-08-16), `next: 1.63.0-alpha-2026-09-02`, still an unshipped
+alpha, same conclusion as every run since 2026-08-09), Maestro/mobile (direct fetch of the
+official `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest with an empty
+"Unreleased" section, matching every run since 2026-09-01), AI chatbot/LLM testing (Promptfoo
+`CHANGELOG.md` re-check via direct fetch — 0.122.2 confirmed still latest, unchanged since
+2026-08-28; DeepEval PyPI JSON re-check — 4.2.0 confirmed unchanged; axe-core `CHANGELOG.md`
+re-check via direct fetch — 4.13.0 (Aug 5) confirmed unchanged, its full feature list (including
+`element-internals: enable ElementInternals by default`) re-verified as already present in
+`accessibility-testing`'s "axe-core 4.13.0" section; MCP Inspector npm dist-tag re-check —
+**genuinely new `latest: 2.5.0`** (published 2026-09-02, one day old), up from the 2.4.0 pinned
+since 2026-08-26 — fetched the GitHub release notes directly and found the release is entirely
+internal refactoring and client-security hardening: Ace JSON editor + raw-JSON toggle in the web
+UI, RFC 7009 OAuth token revocation on logout, RFC 8414 OIDC metadata fix, schema
+anyOf/oneOf rendering fix, resource-subscription error reporting, streamable-HTTP stream
+cancellation fix, and a React-hooks/state-management refactor — none of it touches the `--cli`
+surface (`tools/list`/`tools/call`/`--tool-arg`/`--format json`/exit codes) that
+`mcp-server-testing` documents, so nothing to update per the "CLI testing surface only" scope of
+that skill; general "AI chatbot LLM testing new tool technique September 2026" sweep — only
+already-covered Cekura/Confident-AI/multi-layer-pipeline/LLM-as-judge framing, no new reproducible
+technique), QA test design (general "QA test design best practices September 2026" sweep — only
+shift-left/risk-based-prioritization/test-suite-maintenance/AI-human-collaboration trend framing,
+all already covered by existing skills, no new reproducible technique).
+
+- No changes — every pinned source (Playwright, Maestro, Promptfoo, DeepEval, axe-core) confirmed
+  unchanged from the 2026-09-02 run's versions; the one genuinely new release found (MCP Inspector
+  2.5.0) is web-UI/OAuth-security/internal-refactoring only and doesn't touch the CLI testing
+  surface `mcp-server-testing` documents; QA test design and general AI-chatbot-testing sweeps
+  returned only trend framing already covered by existing skills. Quality-over-quantity guardrail
+  applied.
+- SKIPPED Playwright/web E2E — 1.62 remains latest stable, unchanged since 2026-07-24; 1.62.1 is a
+  known bug-fix-only patch; 1.63.0-alpha remains unshipped.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2, DeepEval 4.2.0, and axe-core 4.13.0 all
+  confirmed unchanged at their already-documented latest versions. MCP Inspector's new 2.5.0
+  release verified via first-party GitHub release notes to be web-UI/OAuth/refactoring only, no
+  CLI testing-surface change to document.
+- SKIPPED QA test design — general September 2026 sweep returned only shift-left/risk-based/
+  AI-human-collaboration trend framing already covered by existing skills. No new reproducible
+  technique found.
+
 ## 2026-09-02 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
