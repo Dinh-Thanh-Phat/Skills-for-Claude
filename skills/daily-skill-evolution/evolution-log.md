@@ -5,6 +5,63 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-04 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-09-03 commit, read this branch's
+own `evolution-log.md` (not `main`'s stale copy, which is behind by design).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — 1.62
+confirmed still the latest `## Version` heading, unchanged since 2026-07-24; WebSearch for a
+stable 1.63 found nothing beyond the official release-notes page itself, still unshipped;
+secondary angle — `playwright-mcp` releases re-check found a **genuinely new v0.0.80** (published
+Sep 1), one version past the v0.0.79 pinned in `playwright-mcp-server` since 2026-08-06: added
+`browser_start_recording`/`browser_stop_recording` (opt-in via `--caps=devtools`) to record a
+human's manual actions in the launched browser and return them as generated Playwright code — the
+reverse direction of the server's usual agent-drives-browser flow. Verified via the GitHub
+release-tag page directly after `api.github.com` 403'd the fetcher (same recurring block noted in
+prior runs) — the rest of v0.0.80 is bug fixes only (codegen language inference, extension-mode
+user-data-dir, orphaned-extension detection, screenshot byte-downscaling fix, shared-context cache
+clearing, remote browserInfo accuracy, chromiumSandbox config preservation, HTTP heartbeat gating,
+`/killkillkill` test-only restriction) — not documented, consistent with this routine's standing
+practice of skipping bug-fix-only line items), Maestro/mobile (direct fetch of the official
+`mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest with an empty "Unreleased"
+section, matching every run since 2026-09-01; secondary WebSearch sweep on "Maestro MCP new
+feature 2026" surfaced only the already-documented Feb 2026 MCP launch, the May 2026 Maestro
+Viewer (`maestro-viewer`), and general 32-tool/self-healing framing already covered by
+`maestro-mcp-workflow`/`maestro-ai-assertions`, no new reproducible technique), AI chatbot/LLM
+testing (Promptfoo `CHANGELOG.md` re-check via direct fetch — 0.122.2 confirmed unchanged since
+2026-08-28; DeepEval GitHub releases re-check — 4.2.0 (Aug 24) confirmed unchanged, already fully
+documented; a PyPI JSON fetch briefly suggested a stale/inconsistent "4.2.1" with a nonsensical
+2024 upload timestamp — cross-checked directly against `github.com/confident-ai/deepeval/releases`
+and discarded as an unreliable summarization artifact, consistent with this log's standing
+practice of trusting the first-party releases page over a fetched-and-summarized secondary source;
+axe-core `CHANGELOG.md` re-check via direct fetch — 4.13.0 (Aug 5) confirmed unchanged; general
+"AI chatbot LLM testing new technique tool September 2026" sweep — only already-covered
+Cekura/Promptfoo/Maxim AI/DeepEval platform framing, no new reproducible technique), QA test
+design (general "QA test design best practices September 2026" sweep — only shift-left/
+risk-based-prioritization/test-suite-maintenance/AI-human-collaboration/error-guessing/
+production-driven-test-design trend framing, all already covered by existing skills, no new
+reproducible technique).
+
+- UPDATED: skills/playwright-mcp-server — Added `browser_start_recording`/`browser_stop_recording`
+  (v0.0.80, Sep 1, opt-in via `--caps=devtools`) to the "2026 Updates" section: records a human's
+  manual browser actions and returns them as generated Playwright code, the reverse of the
+  server's default agent-drives-browser direction. Updated the section heading's version range
+  (v0.0.71 → v0.0.80), frontmatter trigger keywords, and Sources (replaced the dead
+  `api.github.com` tag-lookup link, which 403'd, with the working `github.com/.../releases/tag/`
+  page). Sources: https://github.com/microsoft/playwright-mcp/releases,
+  https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.80
+- SKIPPED Playwright/web E2E (core) — 1.62 remains latest stable, unchanged since 2026-07-24; no
+  stable 1.63 found.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section; MCP sweep
+  surfaced only already-documented launches and general framing.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2, DeepEval 4.2.0 (verified via GitHub releases
+  after a PyPI JSON summary gave an inconsistent, discarded "4.2.1"/2024-timestamp result), and
+  axe-core 4.13.0 all confirmed unchanged at their already-documented latest versions.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already
+  covered by existing skills. No new reproducible technique found.
+
 ## 2026-09-03 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
