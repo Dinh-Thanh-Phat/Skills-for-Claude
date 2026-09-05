@@ -5,6 +5,74 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-05 (GMT+7)
+
+Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
+skill-evolution` before any inventory/research, HEAD at the 2026-09-04 commit, read this branch's
+own `evolution-log.md` (not `main`'s stale copy, which is behind by design — `main` was last
+touched 2026-08-17).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` —
+**genuinely new `## Version 1.63` heading**, one minor version past the 1.62 documented since
+2026-07-24; a WebSearch pass claimed 1.62.1 was still latest and found "no information about a
+1.63 release", which would have been a false negative — cross-checked directly via `curl` against
+the raw file rather than trusting the WebSearch summary, confirming `## Version 1.63` genuinely
+precedes `## Version 1.62` in the document, consistent with this log's standing practice of
+trusting a direct fetch of the pinned first-party source over a WebSearch synthesis; secondary
+angle — `playwright-mcp` GitHub releases re-check confirmed v0.0.80/Sep 1 still latest, unchanged
+since 2026-09-04), Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro`
+`CHANGELOG.md` — 2.10.0 confirmed still latest with an empty "Unreleased" section, matching every
+run since 2026-09-01; WebSearch sweep for 2.10.1/2.11.0 found nothing beyond general
+already-covered framing), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md` re-check via direct
+fetch — 0.122.2 confirmed unchanged since 2026-08-28; DeepEval GitHub releases re-check — 4.2.0
+(Aug 24) confirmed unchanged, already fully documented; axe-core `CHANGELOG.md` re-check via
+direct fetch — 4.13.0 (Aug 5) confirmed unchanged; general "LLM agent evaluation new benchmark
+framework September 2026" sweep — only already-covered AgentEval/DeepEval TrajectoryAccuracy/
+ToolCorrectnessJudge/TaskCompletionJudge framing and vendor-benchmark-ranking marketing (BenchLM,
+Scale's MCP Atlas/Tool-Decathlon), no new reproducible technique), QA test design (general "QA
+test design best practices September 2026" sweep plus a targeted "flaky test detection new tool
+technique 2026" sweep — only shift-left/AI-human-collaboration/error-guessing/preview-environment
+trend framing and flaky-test SaaS vendor comparisons (Mergify, BuildPulse, TestDino, Panto AI),
+all either already covered by existing skills or too vendor-marketing-framed (no concrete
+reproducible config) to encode).
+
+- CREATED: skills/playwright-1.63-new-apis — Documents Playwright 1.63 (September 2026), a
+  genuinely new release not previously in the repo (grep confirmed only `playwright-1.60/1.61/
+  1.62-new-apis` existed). Covers: named test **locks** (`{ lock: 'name' }` on a test or
+  `describe` group — tests sharing a lock name never run concurrently across files/workers/
+  projects while everything else stays parallel, distinct from `test.describe.serial()` which is
+  about ordering, not contention); frame-agnostic `frameLocator()` (called with no selector,
+  searches any frame in the subtree, throws if the locator matches in more than one frame);
+  `Locator.visible()` as the recommended replacement for the `:visible` CSS pseudo-class;
+  structured step `subtitle`/`params` on `test.step()` (plus Playwright's own API steps now
+  auto-reporting a subtitle — the locator for actions, the URL for navigations); the `snapshots:
+  { dom, aria, screen }` trace option and the trace viewer's new **Display Aria** side-by-side
+  mode; plus a condensed New APIs list (`httpCredentials` array, `storageState({ opfs })`,
+  `dialogClosed` event, `ariaSnapshotJSON()`, typed `APIRequestContext` responses, standalone
+  `TestOptions.reducedMotion`/`forcedColors`/`contrast`, `install --no-remove`, `codegen
+  --http-credentials`, `--add-reporter`, `omitTags`, the built-in `perfetto` reporter, HTML
+  report duration waterfall) and Announcements (experimental component-testing packages frozen,
+  Ubuntu 20.04 dropped, Linux arm64 now uses the Chrome for Testing Chromium build). Verified
+  against the full verbatim 1.63 section of the official `release-notes-js.md` via direct `curl`
+  fetch (grep-counted `## Version` headings to confirm 1.63 precedes 1.62 in the document, since
+  an initial WebSearch pass had wrongly reported 1.62.1 as still latest). Cross-checked that none
+  of the new APIs (test locks, frame-agnostic locators, aria/screen trace snapshots,
+  `reducedMotion`/`forcedColors`/`contrast` test options) were already covered elsewhere in the
+  repo (`accessibility-testing`'s existing `forcedColors`/`contrast` coverage is about
+  `newContext()`/`emulateMedia()`, a different, already-distinguished code path from the new
+  standalone `TestOptions` — left untouched rather than merged, since the two are already
+  cross-referenced by design). Sources: https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
+- SKIPPED Playwright/web E2E (companion) — `playwright-mcp` v0.0.80 (Sep 1) and axe-core 4.13.0
+  (Aug 5) both confirmed unchanged and already fully documented.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section; no
+  2.10.1/2.11.0 found.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.122.2 and DeepEval 4.2.0 confirmed unchanged at
+  their already-documented latest versions; LLM-agent-evaluation-benchmark sweep returned only
+  already-covered metric taxonomy and vendor benchmark-ranking marketing.
+- SKIPPED QA test design — general September 2026 sweep and a targeted flaky-test-tooling sweep
+  both returned only trend framing or vendor SaaS comparisons already covered by existing skills
+  or lacking a concrete reproducible technique.
+
 ## 2026-09-04 (GMT+7)
 
 Orientation done correctly per the 2026-08-27 correction: `git fetch origin` + `git checkout
