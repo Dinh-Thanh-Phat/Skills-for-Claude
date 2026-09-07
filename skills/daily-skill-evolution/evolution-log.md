@@ -5,6 +5,60 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-07 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-06 commit,
+read this branch's own `evolution-log.md` (not `main`'s stale copy, which is behind by design —
+`main` was last touched 2026-08-17).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` —
+`## Version 1.63` confirmed still the topmost heading, full section content re-verified verbatim
+against what `playwright-1.63-new-apis` already documents (test locks, frame-agnostic locators,
+visible-only locator, step subtitle/params, aria/screen trace snapshots, the New APIs/
+Announcements lists) — no drift found; secondary angle — a WebSearch summary repeated the
+"`browser.bind()`" MCP-client-connect claim last investigated and discarded on 2026-07-19 as
+tracing to a stale April-2026/v1.59-era blog post, not an official release-notes item; re-checked
+against the freshly-fetched full verbatim 1.63 section again today — `browser.bind()` is absent
+from it, so the claim is skipped again, and grepping the repo's own vendored `playwright-core`
+node_modules (pinned at v1.59.1 inside `playwright-test-workflow/scripts/`) turned up only the
+unrelated `exposeBinding()` API, confirming this is not a documented `browser.bind()` API bleeding
+through — WebSearch's claim remains unverified against first-party release notes; `playwright-mcp`
+GitHub releases re-check confirmed v0.0.80/Sep 1 still latest, unchanged; axe-core `CHANGELOG.md`
+re-check via direct fetch — 4.13.0 (Aug 5) confirmed unchanged, already fully documented),
+Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0
+confirmed still latest with an empty "Unreleased" section, matching every run since 2026-09-01;
+secondary "Maestro MCP new feature September 2026" sweep — returned only already-documented
+launches (Maestro Viewer/v2.6.0, MaestroGPT, the Feb-2026 MCP launch, Android 15/16 + iOS 26
+device-cloud expansion), no new reproducible technique), AI chatbot/LLM testing (DeepEval GitHub
+releases re-check — 4.2.0 (Aug 24) confirmed unchanged, already fully documented; Promptfoo
+`CHANGELOG.md` re-check via direct fetch — 0.122.2 (Aug 28) confirmed unchanged, already fully
+documented; general "AI chatbot LLM agent testing framework new release September 2026" sweep —
+returned only already-covered DeepEval/Promptfoo/TestMu AI framing and unrelated LLM
+model-release news (GPT-6 Astra, Muse Spark 1.3, Fable 5.1 GA), no new reproducible testing
+technique), QA test design (general "QA test design best practices September 2026" sweep —
+only shift-left/risk-based/AI-adoption-rate(43%-experimenting-vs-15%-deployed per World Quality
+Report 2025-26)/preview-environment trend framing, all already covered by existing skills or too
+high-level to encode as a concrete technique, no new reproducible technique).
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design across primary release/changelog re-checks (all via direct fetch of first-party sources,
+  not WebSearch summaries) plus companion-tool and general-technique secondary sweeps; every
+  finding either duplicated an existing skill (verified by reading the actual skill section) or
+  was trend-level framing / an already-discarded unverified claim with no concrete, reproducible,
+  not-yet-documented technique. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 remains latest (topmost heading in `release-notes-js.md`),
+  full section re-verified verbatim against `playwright-1.63-new-apis` with no drift;
+  `playwright-mcp` v0.0.80 and axe-core 4.13.0 both unchanged. The recurring "`browser.bind()`"
+  WebSearch claim was re-checked against today's freshly-fetched verbatim release notes and is
+  still absent from them — re-confirmed as unverified/stale, not documented.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section; MCP sweep
+  surfaced only already-documented launches.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.0 and Promptfoo 0.122.2 both confirmed unchanged
+  at their already-documented latest versions; agent-testing-framework sweep returned only
+  already-covered tools and unrelated model-release news.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already
+  covered by existing skills.
+
 ## 2026-09-06 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-05 commit,
