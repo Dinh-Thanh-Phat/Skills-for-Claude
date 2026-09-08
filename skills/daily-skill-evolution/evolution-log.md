@@ -5,6 +5,57 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-08 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-07 commit,
+read this branch's own `evolution-log.md` (not `main`'s stale copy, which is behind by design —
+`main` was last touched 2026-08-17).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` —
+`## Version 1.63` confirmed still the topmost heading; re-verified the full Main Features list
+(test locks, locate-across-frames, visible-only `Locator.visible()`, step subtitle/params, aria/
+screen trace snapshots) plus the entire New APIs list — `httpCredentials` credential arrays,
+`storageState.opfs`, `dialogClosed` events, `Locator.ariaSnapshotJSON()`, typed
+`APIRequestContext.get()`, standalone `reducedMotion`/`forcedColors`/`contrast` options,
+`--add-reporter` CLI flag, `omitTags` reporter option, `--no-remove` install flag,
+`--http-credentials` for codegen, the built-in Perfetto reporter, and the HTML report duration
+waterfall — against `playwright-1.63-new-apis` via targeted grep for each API name: all present,
+zero drift; `playwright-mcp` GitHub releases re-check confirmed v0.0.80 still latest and unchanged,
+already fully documented (new `browser_start_recording`/`browser_stop_recording` tools, all listed
+bug fixes)), Maestro/mobile (direct fetch of the official `mobile-dev-inc/maestro` `CHANGELOG.md`
+— topmost "Unreleased" heading confirmed still empty (zero bullets), `2.10.0` remains the latest
+released version with its `--device-os` full-system-image-path bullet already documented in
+`maestro-mobile`, matching every run since 2026-09-01; secondary "Maestro mobile testing new
+feature September 2026" sweep — returned only general platform-overview/AI-assisted-testing
+framing already covered, no new reproducible technique), AI chatbot/LLM testing (DeepEval GitHub
+releases re-check — 4.2.0 (Aug 24) confirmed still the topmost/latest release, already fully
+documented; Promptfoo `CHANGELOG.md` re-check via direct fetch — 0.122.2 (Aug 28) confirmed still
+topmost, already fully documented; general "AI chatbot LLM testing new technique September 2026"
+sweep — returned only multi-layer-pipeline/Promptfoo-DeepEval-Giskard-Ragas framing already
+covered by `chatbot-tester`/`deepeval-llm-cicd`/`llm-red-teaming`/`rag-evaluation-ragas`, plus
+unrelated LLM model-release news (GPT-6 Astra, Fable 5.1 GA) with no testing-technique content),
+QA test design (general "QA test design best practices September 2026" sweep — only
+shift-left/risk-based/test-suite-maintenance/error-guessing/continuous-E2E trend framing, all
+already covered by `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/
+`metamorphic-testing`/`flaky-test-prevention`, no new reproducible technique).
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design across primary release/changelog re-checks (all via direct fetch of first-party sources)
+  plus companion-tool and general-technique secondary sweeps; every finding either duplicated an
+  existing skill (verified via targeted grep against the actual skill content, not just
+  recollection) or was trend-level framing with no concrete, reproducible, not-yet-documented
+  technique. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 remains latest (topmost heading in `release-notes-js.md`);
+  every Main Feature and New API item re-verified present in `playwright-1.63-new-apis` via
+  per-item grep, zero drift; `playwright-mcp` v0.0.80 unchanged.
+- SKIPPED Maestro/mobile — "Unreleased" section confirmed still empty; 2.10.0 remains latest and
+  fully documented; general feature sweep surfaced only already-covered framing.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.0 and Promptfoo 0.122.2 both confirmed unchanged
+  at their already-documented latest versions; general technique sweep returned only
+  already-covered tools and unrelated model-release news.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already
+  covered by existing skills.
+
 ## 2026-09-07 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-06 commit,
