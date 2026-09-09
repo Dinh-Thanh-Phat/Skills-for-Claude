@@ -26,6 +26,10 @@ triggers:
   - "workflow ổn không"
   - "feature bất tiện"
   - "usability review"
+  - "chạy full case"
+  - "full cases"
+  - "test full"
+  - "full flow"
 ---
 
 # QA Router — Entry Point cho Mọi Task QA
