@@ -66,6 +66,23 @@ Override: pass `priority` explicitly if needed.
 
 ---
 
+## Screenshots — ALWAYS embed inline in description (default, not opt-in)
+
+Whenever a screenshot/image is available for a task or bug (user provided a file, or one was captured during repro), it goes **inline in the description**, not just as a chatter attachment. An attachment-only image is easy to miss — the dev opens the ticket and should see the picture immediately, in context, next to the claim it supports.
+
+**Order of operations matters** — the image has to exist as an `ir.attachment` before the description can reference it:
+
+1. Create (or already have) the task, get its `id`.
+2. Create the `ir.attachment`: `res_model='project.task'`, `res_id=<task_id>`, `type='binary'`, `datas=<base64>` — via `mcp__odoo__preview_write`/`validate_write`/`execute_approved_write` (do NOT pass `mimetype`, it's server-computed and rejected as readonly). Note the returned attachment id.
+   - If the base64 is too large to pass through the tool call cleanly, downscale first (resize to ~300–500px wide JPEG, quality ~55–70) until the base64 text is small enough to read/pass in full — never truncate or guess at a partial base64 string.
+3. Insert `<img src="/web/image/ir.attachment/{attachment_id}/datas" style="max-width:340px;border:1px solid #ccc"/>` directly in the description HTML, at the point it's most relevant (e.g. right after the "Actual" paragraph for a bug), with a bold caption line above it (`Actual - ...`, `Expected - ...`, `Reference - ...`).
+4. Update the task's `description` field (write) to include this HTML — via the same preview → validate → execute_approved_write flow.
+5. Optionally also post the same attachment to chatter (`chatter_post` with `attachment_ids`) so it shows in the activity log too — but the inline embed in the description is the required part, not a substitute for it.
+
+This applies to every task/bug created or updated through this skill when an image is involved — treat it as the default, not something the user has to ask for each time. See `feedback_odoo-bug-embed-images-inline` memory for the original incident this fixes (images left attachment-only get scrolled past).
+
+---
+
 ## Understanding Task Types
 
 ### Bug
