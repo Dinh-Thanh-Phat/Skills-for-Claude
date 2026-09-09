@@ -51,8 +51,15 @@ triggers:
 | Claim "X gây Y" / gán severity / log bug → `bug-repro-isolation` (cô lập 1 biến) TRƯỚC | Hard block |
 | Viết bộ test cases từ spec/PRD → theo `qa-excel-export/references/deliverable-format.md` | Hard block |
 | Xuất Excel test cases → **MỖI MODULE 1 SHEET**, 14 cột, parse từ markdown (không gõ tay 2 lần) | Hard block |
+| User nói "full case(s)"/"test full"/"full flow" — **cho MỌI hình thức test, kể cả manual/exploratory trên device thật, không chỉ automation code** — → PHẢI build behavior inventory + 8-category matrix (POS/NEG/EDGE/SEC/A11Y/BOUNDARY/STATE/ERROR) làm checklist TRƯỚC KHI chạy case đầu tiên, và KHÔNG được report/dừng lại cho tới khi mọi dòng trong checklist có status PASS/FAIL/BLOCKED (kèm lý do) — không được tự ý dừng giữa chừng rồi liệt kê phần còn thiếu như "gap" sau khi đã báo "xong" | Hard block |
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
+
+> **Recurring failure đã xảy ra nhiều lần (xem `[[feedback_automation-must-cover-all-cases-not-happy-path]]`):**
+> user nói "chạy full cases" → Claude tự làm một lượt walkthrough thủ công vài case dễ thấy nhất rồi
+> report như xong, để lộ phần thiếu chỉ khi user hỏi lại "sao ít vậy". Đây là lỗi ÁP DỤNG lặp lại
+> (đã có skill mà không dùng để tự chặn mình TRƯỚC khi báo cáo), không phải thiếu quy trình.
+> Fix: liệt kê matrix TRƯỚC (kể cả khi giao cho subagent), rồi mới chạy — không đảo ngược thứ tự.
 
 > **UX evaluation là FLOW RIÊNG — KHÔNG bám đuôi test run.** Chạy `ux-heuristic-evaluation`
 > chỉ khi user yêu cầu đánh giá trải nghiệm/workflow (xem nhánh "Đánh giá UX" bên dưới).
