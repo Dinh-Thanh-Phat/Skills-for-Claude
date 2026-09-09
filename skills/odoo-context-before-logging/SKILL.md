@@ -60,7 +60,7 @@ Skip to Step 5 for tasks/features. For a bug, assemble what a developer needs to
 - **Expected vs Actual** — Expected from Step 2 (how the code says it should behave); Actual = observed, not assumed cause.
 - **Isolate the cause** before writing any "X breaks Y" claim — change one variable, run a control. A symptom is not a root cause.
 - **Technical context** for AI-assisted fixing (these map directly onto `odoo-project-automation` fields): `page_url`, `element_selector`, `error_message`, `network_request`, `stack_trace`.
-- **Visual evidence** — reference a native-resolution screenshot you've actually viewed for any layout/visual claim.
+- **Visual evidence** — reference a native-resolution screenshot you've actually viewed for any layout/visual claim. Any screenshot goes **inline in the description** (not just a chatter attachment) — see `odoo-project-automation`'s "Screenshots — ALWAYS embed inline" section for the attach-then-`<img src="/web/image/ir.attachment/{id}/datas">` flow. This is the default for every ticket with an image, not something to do only when asked.
 
 If you can't reproduce or can't isolate after a couple of tries, stop and ask the user rather than logging a shaky theory (see `ask-when-stuck`).
 
