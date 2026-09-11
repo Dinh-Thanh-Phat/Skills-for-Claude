@@ -7,7 +7,7 @@ description: >-
   diagnosing "feels laggy"/"talks over me"/"cuts me off" complaints. Triggers on: "voice agent
   testing", "voice AI evaluation", "barge-in testing", "turn detection", "IVR testing", "speech
   agent QA", "WER benchmark", "voice latency test", "interruption handling test",
-  "deepeval voice metrics".
+  "deepeval voice metrics", "promptfoo audio grading", "llm-rubric audio", "grade native audio".
 ---
 
 # Voice AI Agent Testing
@@ -104,6 +104,40 @@ Already on DeepEval for other CI gates (see `skills/deepeval-llm-cicd`)? Its v4.
 dependency-free acoustic analysis, not a WER/latency benchmark. Use them as the CI layer on top of
 this skill's replay-corpus/noise-injection methodology, not a replacement for it.
 
+## Promptfoo `llm-rubric` Audio Grading (v0.123, September 2026)
+
+Already on Promptfoo for other evals (see `skills/llm-red-teaming`)? It can now grade the actual
+**audio** a voice agent/TTS pipeline produces — tone, pacing, pronunciation — not just its
+transcript, as a YAML-config assertion (the config-driven equivalent of the DeepEval pytest voice
+metrics above):
+
+```yaml
+assert:
+  - type: llm-rubric
+    value: The speaker sounds calm and speaks at a steady pace.
+    provider:
+      id: openai:chat:gpt-audio-1.5
+      config:
+        modalities: [text]
+```
+
+Promptfoo attaches the target provider's `response.audio` to the grading request. `modalities:
+[text]` tells the audio-capable grader to return its JSON verdict as text — it listens to the
+attached audio and uses the transcript only as *supporting context*, so this judges delivery (tone/
+pacing/pronunciation), not just transcript content the way a text-only judge would. Gotchas verified
+against the source docs:
+- Target must return inline base64 audio, `format: wav` or `format: mp3`, ≤ 20 MiB — blob
+  references or other formats produce a grading error.
+- Works with OpenAI Realtime, audio chat, TTS, or any custom provider returning the same audio-field
+  shape; the built-in Realtime provider auto-converts its default PCM16 to WAV — use
+  `output_audio_format: pcm16` if you need PCM16 preserved for grading in a persistent conversation.
+- An assertion with a `transform` grades the transformed *text* and drops the original audio — don't
+  pair `transform` with audio grading if you need tone/pacing scored, not just transcript content.
+- Debug via assertion metadata: `renderedGradingPromptAudio: true` confirms audio was actually
+  attached; `renderedGradingPrompt` shows the text prompt sent, without the audio bytes.
+
+Shipped in Promptfoo 0.123.0 (Sep 10, 2026, PR #10814).
+
 ## Sources
 
 - https://hamming.ai/resources/voice-agent-evaluation-metrics-guide
@@ -113,3 +147,5 @@ this skill's replay-corpus/noise-injection methodology, not a replacement for it
 - https://www.cekura.ai/blogs/voice-ai-evaluation-metrics
 - https://www.getmaxim.ai/articles/best-voice-agent-evaluation-tools-in-2026/
 - https://www.speechmatics.com/company/articles-and-news/de-risk-your-voice-agent-11-best-voice-agent-testing-platforms
+- https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/configuration/expected-outputs/model-graded/llm-rubric.md (Audio output section — `llm-rubric` audio grading config, requirements)
+- https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md (0.123.0, Sep 10 2026, PR #10814)

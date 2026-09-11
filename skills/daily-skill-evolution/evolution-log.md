@@ -5,6 +5,69 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-11 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-10 commit,
+read this branch's own `evolution-log.md` (not `main`'s stale copy, which trails via unrelated
+`sync:` commits outside this routine's scope).
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` —
+`## Version 1.63` confirmed still the topmost heading, full Highlights/New APIs/Announcements list
+verbatim-matches `playwright-1.63-new-apis` (Test Locks, frame-agnostic `frameLocator()`,
+`Locator.visible()`, step `subtitle`/`params`, aria+screen trace snapshots, `httpCredentials`
+arrays, `storageState.opfs`, `dialogClosed`, `ariaSnapshotJSON()`, typed `APIRequestContext`,
+`reducedMotion`/`forcedColors`/`contrast` options, `--add-reporter`, `omitTags`, `perfetto`
+reporter) — unchanged; `playwright-mcp` GitHub releases re-check — v0.0.80 (Sep 1) confirmed still
+latest and unchanged, already fully documented), Maestro/mobile (direct fetch of the official
+`mobile-dev-inc/maestro` `CHANGELOG.md` — "Unreleased" heading confirmed still empty, `2.10.0`
+remains latest and fully documented; secondary "Maestro new feature September 2026" sweep — only
+already-covered parallel-device execution, HTML reports, and MaestroGPT natural-language-to-YAML
+assistant, no new reproducible technique), AI chatbot/LLM testing (DeepEval GitHub releases
+re-check — 4.2.0 (Aug 24) confirmed still latest and unchanged, its score-direction-flip and
+`ToolUseMetric`/`GoalAccuracyMetric`/`TopicAdherenceMetric` already fully documented in
+`deepeval-llm-cicd`; **Promptfoo CHANGELOG.md re-check via direct fetch — found a genuinely new
+release, 0.123.0 (Sep 10 2026)**, up from the 0.122.2 pinned by every run since 2026-08-28 — most
+items are provider additions (Claude Fable/Mythos 5.1, GPT-6 Astra, Grok 4.6, Gemini 3.8 Flash) or a
+breaking provider-routing default change (GPT-5.6+ → Responses API), not testing techniques, but one
+genuinely new assertion capability stood out: `llm-rubric` can now grade a voice agent's **actual
+audio output** (tone/pacing/pronunciation), not just its transcript — grepped
+`skills/voice-ai-agent-testing/SKILL.md` and `skills/multimodal-chatbot-testing/SKILL.md`, confirmed
+zero prior mention of promptfoo/llm-rubric audio grading in either; verified the exact YAML syntax,
+field requirements (`response.audio`, inline base64 `wav`/`mp3` ≤ 20 MiB), and gotchas
+(`transform` drops the audio, `renderedGradingPromptAudio` debug flag) directly against the
+first-party `llm-rubric.md` docs page and the `CHANGELOG.md`'s PR #10814 entry — reproducible and
+config-driven, a natural companion to this skill's already-documented DeepEval pytest-native voice
+metrics; re-attempted verifying the 2026-09-10 run's flagged "reasoning models as autonomous
+jailbreak agents" (arXiv 2508.04039 / Nature Communications) finding — `arxiv.org` is still
+`EGRESS_BLOCKED` in this session, so it remains unverified and un-actioned, flagged again for a
+future run), QA test design (general "QA test design technique September 2026" sweep — only
+AI-augmentation/EP-BVA/risk-based-coverage trend framing, all already covered by
+`behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/`metamorphic-testing`, no new
+reproducible technique).
+
+- UPDATED: skills/voice-ai-agent-testing — Added a "Promptfoo `llm-rubric` Audio Grading (v0.123,
+  September 2026)" section documenting the new config-driven way to grade a voice agent's raw audio
+  output (tone/pacing/pronunciation) via `assert: type: llm-rubric` with an audio-capable grader
+  provider (`openai:chat:gpt-audio-1.5`, `modalities: [text]`) — Promptfoo attaches the target's
+  `response.audio` to the grading request and the grader uses the transcript only as supporting
+  context, so it judges delivery, not just transcript content. Documented the field requirements
+  (inline base64 `wav`/`mp3`, ≤ 20 MiB, no blob refs), the `transform`-drops-audio gotcha, and the
+  `renderedGradingPromptAudio` debug flag. Positioned as the config/CI-YAML companion to this
+  skill's existing DeepEval pytest-native voice-metrics paragraph, not a replacement. Updated
+  frontmatter trigger keywords. Sources:
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/configuration/expected-outputs/model-graded/llm-rubric.md,
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md (0.123.0, PR #10814)
+- SKIPPED Playwright/web E2E — 1.63 remains latest (topmost heading), verbatim-unchanged from
+  `playwright-1.63-new-apis`; `playwright-mcp` v0.0.80 unchanged.
+- SKIPPED Maestro/mobile — "Unreleased" section confirmed still empty; 2.10.0 remains latest and
+  fully documented; feature sweep surfaced only already-covered items.
+- SKIPPED AI chatbot/LLM testing (DeepEval, Promptfoo provider/breaking-change items) — DeepEval
+  4.2.0 confirmed unchanged; Promptfoo's new provider additions and GPT-5.6+ routing default are not
+  testing techniques. Reasoning-model-jailbreak-attacker finding remains unverifiable
+  (`arxiv.org` still `EGRESS_BLOCKED`), flagged again for a future run.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already covered
+  by existing skills.
+
 ## 2026-09-10 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-09 commit,
