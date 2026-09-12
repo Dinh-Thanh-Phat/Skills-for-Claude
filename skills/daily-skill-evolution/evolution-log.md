@@ -5,6 +5,87 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-12 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-11 commit.
+Note for future runs: this run initially (incorrectly) started from a fresh checkout of `main`
+per a literal reading of step 1, spent significant effort re-deriving Playwright
+1.63/Maestro 2.8-2.10/DeepEval 4.2.0 content from scratch, and only discovered on
+`git stash pop` (attempting the branch switch onto `skill-evolution`) that all of it was already
+present and more thoroughly documented on this branch — `main` genuinely lags `skill-evolution`
+by design (per every prior entry's orientation note) and must never be used as the "current
+state" baseline. That draft work was discarded entirely (`git stash drop`) rather than merged, to
+avoid duplicating/regressing the branch's existing content. Re-orienting from `skill-evolution`'s
+actual tip, only two genuinely new-since-09-11 findings survived verification.
+
+Domains researched: AI chatbot/LLM testing (DeepEval — wheel-diffed `4.2.0` against the current
+`4.2.2` (PyPI confirms 4.2.2/Sep 6 remains latest; GitHub's release-tag pages for `python-v4.2.1`/
+`python-v4.2.2` failed to render dynamic content via WebFetch both today and, per the 09-11 log,
+in prior runs — wheel diffing was used as a reliable alternative to a blocked-rendering release
+page) — found a genuinely new, previously-undocumented feature surviving the diff: `deepeval.voice`
+gained `PipecatConnector`/`VapiConnector` (new) alongside the existing `ElevenLabsConnector`/
+`LiveKitConnector` (restructured onto the same interface), all wired into `ConversationSimulator`
+via a new `VoiceConfig` for **live, automated voice-agent simulation** — driving a real voice
+agent end-to-end (TTS → connector → STT) to generate the `ConversationalTestCase`/`Turn.audio`
+objects that the already-documented Voice Metrics (v4.1.10) score, instead of building them by
+hand; verified the exact import paths, `VoiceConfig`/`ConversationSimulator` constructor
+signatures, and per-provider caveats directly against source and each connector's bundled
+contributor `README.md` on `raw.githubusercontent.com` (`deepeval.com` remains fully
+`EGRESS_BLOCKED` to this session, not just 403, consistent with every run since at least 09-10);
+Promptfoo (direct fetch of `CHANGELOG.md` confirms 0.123.0/Sep 10 remains latest, matching 09-11 —
+but re-examined the full feature list against this skill's actual current content rather than
+trusting the 09-11 summary, and found one item the 09-11 run's Promptfoo pass had not covered:
+"expose MCP tool calls in response metadata" (PR #10516) — verified via the commit's own summary
+and the first-party `providers/mcp.md` doc's "Asserting on Executed Tool Calls" section: MCP-enabled
+`anthropic:messages`/`openai:chat` providers now publish every executed tool call on
+`metadata.toolCalls` (`{id, name, input, output, is_error}`), letting a red-team/eval assertion
+check *which* tool actually ran without standing up the 0.122 tracing subsystem), Playwright/web
+E2E (direct fetch of `release-notes-js.md` re-confirms 1.63 unchanged, matching 09-11), Maestro/
+mobile (direct fetch of `CHANGELOG.md` re-confirms 2.10.0 unchanged, matching 09-11), QA test
+design (general September 2026 sweep — only AI-first/shift-left-shift-right/DevTestOps trend
+framing, all already covered by existing skills).
+
+- UPDATED: skills/deepeval-llm-cicd — Added "Automated Live Voice-Agent Simulation via Connectors
+  (v4.2.1–4.2.2)" as a subsection under the existing Voice Metrics section: `ConversationSimulator(voice_config=VoiceConfig(connector=VapiConnector(...)))` drives a live voice
+  agent through TTS→connector→STT to auto-generate audio-bearing `ConversationalTestCase`s, ready
+  for the already-documented `VoiceNaturalnessMetric`/etc. with no manual `Turn.audio` plumbing.
+  Documented that `PipecatConnector`/`VapiConnector` are new in 4.2.1/4.2.2 (confirmed via wheel
+  diff against 4.2.0, since neither release's GitHub tag page would render) while
+  `ElevenLabsConnector`/`LiveKitConnector` existed earlier; flagged the per-connector contributor
+  `README.md` (e.g. Vapi's own gaps list) as the source of truth for protocol-feature parity
+  rather than assuming full parity with each vendor's own SDK. Updated frontmatter triggers.
+  Sources: https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/__init__.py, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/vapi/connector.py, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/vapi/README.md, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/config.py, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/simulator/conversation_simulator.py, https://pypi.org/pypi/deepeval/4.2.0/json, https://pypi.org/pypi/deepeval/4.2.2/json
+- UPDATED: skills/llm-red-teaming — Added "Asserting on Executed MCP Tool Calls (Promptfoo
+  0.123.0)" as a subsection right after the existing "Tracing Red-Team Runs (Promptfoo 0.122+)"
+  section: `metadata.toolCalls` on an MCP-enabled `anthropic:messages`/`openai:chat` provider
+  publishes each executed tool call (`{id, name, input, output, is_error}`) for a plain
+  `type: javascript` assertion — e.g. failing a test if a prompt-injection attempt actually
+  reached a destructive tool — without the OTel instrumentation the existing tracing section
+  requires. Cross-referenced against `deepeval-llm-cicd`'s `MCPUseMetric`/`MCPTaskCompletionMetric`
+  (LLM-judged tool-selection quality) as the complementary judge-based option vs. this deterministic
+  occurrence check. Grep confirmed zero prior mention of `metadata.toolCalls`/`mcp.enabled` anywhere
+  in the repo. Updated frontmatter triggers and Sources.
+  Sources: https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md (0.123.0, PR #10516), https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/mcp.md
+- SKIPPED Playwright/web E2E — 1.63 remains latest, unchanged since 09-11's verbatim re-check.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest, unchanged since 09-11's verbatim re-check.
+- SKIPPED AI chatbot/LLM testing (DeepEval core metrics, Promptfoo provider/breaking-change items) — DeepEval 4.2.2's non-voice changes could not be verified beyond what the wheel diff's file-list
+  surfaced (no source-line-level detail on non-voice files was reviewed this run); nothing beyond
+  the voice-connector finding above was confirmed net-new. Promptfoo's GPT-5.6+ Responses-API
+  default and provider additions remain out of scope as non-testing-technique items.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already
+  covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09/09-10): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` confirmed `EGRESS_BLOCKED` again this run (not
+  a site-side 403), so the per-model attack-success-rate statistics remain unconfirmed against a
+  first-party source. Not re-attempted via WebSearch-only synthesis, consistent with this log's
+  standing practice of not encoding unverified statistics. Flagged again for a future run with
+  unblocked arXiv/Nature access.
+- PROCESS NOTE for future runs: always `git checkout skill-evolution` and read **this branch's**
+  `evolution-log.md` before researching anything — `main` trails behind by design (the user merges
+  manually) and can look weeks stale even when `skill-evolution` was updated yesterday. Treat any
+  large apparent "gap" since `main`'s last entry as a signal to double check which branch you're
+  actually orienting from, not as license to re-research everything from scratch.
+
 ## 2026-09-11 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-10 commit,

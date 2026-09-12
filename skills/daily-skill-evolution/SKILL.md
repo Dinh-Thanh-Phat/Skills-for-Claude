@@ -40,7 +40,7 @@ Rotate emphasis day to day so domains get fresh coverage over the week — use t
 
 ## Workflow (execute every step in order)
 
-1. **Orient.** Confirm you are on a fresh checkout of `main`. `Glob` `skills/**/SKILL.md` and `.claude/skills/**/SKILL.md` to inventory existing skills. Read `skills/daily-skill-evolution/evolution-log.md` to see recent changes and which domain to rotate to.
+1. **Orient — on `skill-evolution`, not `main`.** `git fetch origin`, then `git checkout skill-evolution` (create it from `origin/skill-evolution` if it doesn't exist locally yet) — this branch, not `main`, holds this routine's actual current state, since the user merges to `main` manually and on their own schedule. `main` can look weeks stale even the day after `skill-evolution` was updated; that gap is expected, not a signal that research is overdue. `Glob` `skills/**/SKILL.md` and `.claude/skills/**/SKILL.md` **on this checkout** to inventory existing skills. Read `skills/daily-skill-evolution/evolution-log.md` **from this branch** (never `main`'s copy) to see recent changes and which domain to rotate to.
 
 2. **Research.** Pick 1–3 focus domains for today (rotate; don't repeat yesterday). Run `WebSearch` for the **current month/year** — e.g. "Playwright best practices <month> <year>", "Maestro flaky test 2026". Prefer official docs, changelogs, reputable engineering blogs. Capture concrete, actionable findings + source URLs.
 

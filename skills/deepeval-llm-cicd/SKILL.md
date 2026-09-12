@@ -17,7 +17,9 @@ description: |
   "deepeval score direction flip", "BiasMetric threshold", "ToxicityMetric threshold",
   "HallucinationMetric threshold", "MisuseMetric threshold", "warn_score_direction_flipped",
   "deepeval 4.2.0", "ToolUseMetric", "GoalAccuracyMetric", "TopicAdherenceMetric",
-  "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric".
+  "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric",
+  "VoiceConfig ConversationSimulator", "VapiConnector", "PipecatConnector deepeval",
+  "deepeval voice connector", "live voice agent simulation deepeval".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -597,6 +599,52 @@ https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/
 https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/voice/timeline.py,
 https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.10/deepeval/test_case/llm_test_case.py (`Audio` class),
 https://pypi.org/pypi/deepeval/json (confirmed v4.1.10 latest, Aug 21 2026)
+
+### Automated Live Voice-Agent Simulation via Connectors (v4.2.1–4.2.2, Sep 2026)
+
+The Voice Metrics above score a `ConversationalTestCase` you already built by hand (recorded/TTS
+audio dropped onto `Turn.audio`). `ConversationSimulator` can now generate those test cases itself
+by driving a **live** voice agent through a `VoiceConfig`, instead of you wiring up TTS/STT and
+turn objects manually:
+
+```python
+from deepeval.simulator import ConversationSimulator
+from deepeval.voice import VoiceConfig
+from deepeval.voice.connectors import VapiConnector  # also: ElevenLabsConnector, LiveKitConnector, PipecatConnector
+
+simulator = ConversationSimulator(
+    voice_config=VoiceConfig(
+        connector=VapiConnector(assistant_id="...", api_key="..."),
+        # tts_model / stt_model default to OpenAI via env vars (DEEPEVAL_TTS_MODEL/DEEPEVAL_STT_MODEL)
+    ),
+    async_mode=True,  # required for voice mode
+)
+
+test_cases = simulator.simulate(conversational_goldens=goldens, max_user_simulations=10)
+assert_test(test_cases[0], [VoiceNaturalnessMetric(threshold=0.7)])
+```
+
+The simulator speaks each simulated user turn (TTS), sends it to the agent over the connector,
+transcribes the agent's spoken reply (STT), and assembles the resulting `ConversationalTestCase`
+with real `Turn.audio` already attached — ready for the Voice Metrics above with no manual audio
+plumbing. `PipecatConnector` and `VapiConnector` are new in 4.2.1/4.2.2; `ElevenLabsConnector` and
+`LiveKitConnector` existed earlier and were restructured onto the same connector interface. A
+`ConversationSimulator` takes exactly one of `model_callback` (text agents, the existing pattern)
+or `voice_config` (voice agents) — passing both or neither raises `TypeError`.
+
+Caveats verified directly against source, not docs (`deepeval.com` is blocked to this session's
+fetcher entirely): each provider's own connector module ships a contributor-facing `README.md`
+listing exactly which of that vendor's protocol features are/aren't wired up yet (e.g. Vapi's
+notes it doesn't yet surface the agent-side ASR transcript of *your* synthesized audio, only the
+agent's spoken reply) — read the connector's own README before assuming full parity with driving
+that platform's SDK directly.
+
+Sources: https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/__init__.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/vapi/connector.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/providers/vapi/README.md,
+https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/config.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/simulator/conversation_simulator.py,
+https://pypi.org/pypi/deepeval/4.2.0/json, https://pypi.org/pypi/deepeval/4.2.2/json (wheel diff confirming Pipecat/Vapi are new between these two releases)
 
 ## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
 
