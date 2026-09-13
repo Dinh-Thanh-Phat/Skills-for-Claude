@@ -5,6 +5,64 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-13 (GMT+7)
+
+Orientation: made the exact mistake the 09-12 entry warned about — started from a fresh `main`
+checkout per a literal reading of step 1, spent a full research pass re-deriving Playwright 1.63,
+Maestro 2.8-2.10 (including drafting a new dark-mode section for `maestro-mobile`), and a DeepEval
+`flaky`-flag section from scratch, before `git checkout skill-evolution` failed on the
+still-`main`-based working tree and forced a proper look. Stashed, checked out `skill-evolution`,
+found all of that content already present (dark mode already lives in `maestro-visual-testing`,
+not `maestro-mobile`; negation globs already in `maestro-mobile`'s `references/ci-cd.md`; the
+`flaky` flag already in `deepeval-llm-cicd` since v4.1.4) — `git stash drop`, per the 09-12 run's
+own precedent, rather than merging draft duplicates. Re-read the 09-12 process note itself before
+re-orienting properly this time. **Suggest updating step 1 of `SKILL.md` itself** (out of scope for
+this run's own edit budget, flagging for a future run or the user) to say explicitly
+"checkout/orient from `skill-evolution`, not `main`" rather than the current generic "confirm a
+fresh checkout of `main`", since two runs in a row have now lost real effort to this exact
+misreading.
+
+Domains researched, from `skill-evolution`'s actual tip: Playwright/web E2E (direct fetch of
+`release-notes-js.md` — 1.63 confirmed still the topmost/latest version, unchanged since 09-11),
+Maestro/mobile (direct fetch of `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased"
+section still empty, unchanged since 09-11), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md`
+direct fetch — 0.123.0 confirmed still latest, unchanged since 09-11/09-12; DeepEval PyPI/GitHub
+re-check — 4.2.2 (Sep 6) confirmed still latest, unchanged since 09-12; **while re-reading
+`deepeval-llm-cicd`'s existing "Marking a Metric or Test Case Flaky (v4.1.4)" section as part of
+orienting on this domain, independently re-verified its central claim against source** — fetched
+`deepeval/evaluate/evaluate.py` and `deepeval/evaluate/utils.py` twice, from two differently-phrased
+prompts, and both times got the same answer: `_is_metric_successful()` and the `failed_metrics_data`
+loop in `assert_test()` check only `metric_data.error`/`metric_data.success`, never `.flaky`; the
+raise-vs-`warnings.warn()` branch checks only `test_case.flaky`. The existing section's claim that
+"a failure on a flaky metric never fails the test case" is incorrect — metric-level `flaky` is
+recorded into `MetricData` for reporting/dashboard purposes only and has no effect on pass/fail;
+only test-case-level `flaky` gates `assert_test()`), QA test design (general September 2026
+sweep — only agentic-QA-tool/AI-self-healing vendor-marketing framing, already covered by existing
+skills, no new reproducible technique), attempted a re-check of the carried-over "Large Reasoning
+Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) citation — `arxiv.org` still
+`EGRESS_BLOCKED` to this session, same as every run since 09-09; still flagged for a future run.
+
+- UPDATED: skills/deepeval-llm-cicd — Corrected the "Marking a Metric or Test Case Flaky (v4.1.4)"
+  section: it previously stated metric-level `flaky=True` alone stops that metric's failure from
+  failing the test case. Re-verified against source (`evaluate/utils.py`, `evaluate/evaluate.py`)
+  and found this is only true of **test-case**-level `flaky` — the metric-level flag is stored in
+  `MetricData` for dashboard/reporting visibility but is never read when deciding pass/fail.
+  Rewrote the section's prose and code comments to state this precisely, and fixed a downstream
+  cross-reference in the Voice Metrics section (`VoiceConsistencyMetric`/`TurnTakingNaturalnessMetric`
+  guidance) that repeated the same inaccurate claim, redirecting it to set `flaky` on the test case
+  instead. No frontmatter/Sources change needed — the correction cites the same source files
+  already listed. Sources: https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/evaluate/evaluate.py, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/evaluate/utils.py, https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/base_metric.py
+- SKIPPED Playwright/web E2E — 1.63 remains latest, unchanged since 09-11.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest, unchanged since 09-11.
+- SKIPPED AI chatbot/LLM testing (new content) — Promptfoo 0.123.0 and DeepEval 4.2.2 both
+  confirmed still latest and already fully documented; today's only AI-chatbot/LLM-testing finding
+  was the flaky-flag correction above, which isn't new content so much as fixing existing content.
+- SKIPPED QA test design — general September 2026 sweep returned only agentic-QA-tool/self-healing
+  vendor framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-12): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains `EGRESS_BLOCKED` this run too. Flagged
+  again for a future run with unblocked arXiv access; not encoded from WebSearch-only synthesis.
+
 ## 2026-09-12 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution`, HEAD at the 2026-09-11 commit.

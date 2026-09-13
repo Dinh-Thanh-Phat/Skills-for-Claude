@@ -241,30 +241,35 @@ changed in that release; no other new files or metrics shipped in 4.2.0).
 
 Some checks are flaky for reasons outside your system's control (a judge model's own
 inconsistency, an unstable third-party dependency in the test fixture) but you still want the
-result tracked, not silently deleted. DeepEval 4.1.4 added a `flaky` boolean — on a `Metric` or
-on the `LLMTestCase` itself — that changes `assert_test()`'s failure handling without changing
-scoring: the metric still runs and its score is still recorded/reported as normal, but a failure
-on a flaky metric never fails the test case, and a failing flaky test case makes `assert_test()`
-emit a `warnings.warn(...)` (shows up in pytest's warnings summary) instead of raising
-`AssertionError` — so it can't block CI.
+result tracked, not silently deleted. DeepEval 4.1.4 added a `flaky` boolean on both `Metric` and
+`LLMTestCase`, but **only the test-case-level flag changes `assert_test()`'s pass/fail behavior**
+— re-verified directly against source (`evaluate/utils.py`'s `_is_metric_successful()` and
+`assert_test()`'s own raise/warn branch in `evaluate/evaluate.py`) after an earlier version of
+this section overstated the metric-level flag's effect:
 
 ```python
 from deepeval.metrics import FaithfulnessMetric
 from deepeval.test_case import LLMTestCase
 
-# Mark one metric as flaky — its failure alone won't fail the test case
+# Metric-level flaky: recorded into MetricData (visible in reports / the Confident AI dashboard)
+# for your own filtering, but it does NOT stop this metric's failure from failing the test case —
+# _is_metric_successful() only checks metric_data.error / metric_data.success, never .flaky.
 flaky_metric = FaithfulnessMetric(threshold=0.85, flaky=True)
 
-# Or mark the whole test case flaky — any failing metric warns instead of raising
+# Test-case-level flaky is what actually gates CI: any failing metric on this test case makes
+# assert_test() emit warnings.warn(...) (shows up in pytest's warnings summary) instead of
+# raising AssertionError — so a flaky *test case* can't block CI, but a flaky *metric* alone can.
 test_case = LLMTestCase(
     input="...", actual_output="...", retrieval_context=[...],
     flaky=True,
 )
 ```
 
-Prefer this over deleting or skipping a known-unstable eval outright — the run still shows up in
-`deepeval test run` output and the Confident AI dashboard (if connected), so you can watch its
-trend and un-flake it later instead of losing visibility into it.
+Set `flaky=True` on the **test case**, not just the metric, if the goal is to stop a known-unstable
+eval from blocking CI — the metric-level flag alone won't do it. Prefer this over deleting or
+skipping a known-unstable eval outright either way — the run still shows up in `deepeval test run`
+output and the Confident AI dashboard (if connected), so you can watch its trend and un-flake it
+later instead of losing visibility into it.
 
 ## Agent Evaluation Metrics
 
@@ -576,9 +581,10 @@ Gotchas verified directly against source (`deepeval/metrics/voice/`, tag `python
   cases return `None`, not a score.
 - All seven return `None` (not 0.0) when there isn't enough eligible audio to evaluate —
   distinguish "nothing to measure" from "measured and failed" when reading results in CI.
-- Metric-level `flaky` (see the v4.1.4 section above) still applies — useful for
-  `VoiceConsistencyMetric`/`TurnTakingNaturalnessMetric` against real (not synthesized) recordings
-  where acoustic noise is expected to vary run-to-run.
+- Metric-level `flaky` does *not* stop a bad score from failing the test case (see the corrected
+  v4.1.4 section above) — for real (not synthesized) recordings where acoustic noise is expected
+  to vary run-to-run, set `flaky=True` on the **test case** wrapping
+  `VoiceConsistencyMetric`/`TurnTakingNaturalnessMetric` if you don't want that variance blocking CI.
 
 Complements — not a replacement for — `skills/voice-ai-agent-testing`'s WER/latency/barge-in
 methodology: these metrics score the *audio artifact itself* (clarity, naturalness, integrity)
