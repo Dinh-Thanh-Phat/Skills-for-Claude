@@ -15,12 +15,16 @@ still-`main`-based working tree and forced a proper look. Stashed, checked out `
 found all of that content already present (dark mode already lives in `maestro-visual-testing`,
 not `maestro-mobile`; negation globs already in `maestro-mobile`'s `references/ci-cd.md`; the
 `flaky` flag already in `deepeval-llm-cicd` since v4.1.4) — `git stash drop`, per the 09-12 run's
-own precedent, rather than merging draft duplicates. Re-read the 09-12 process note itself before
-re-orienting properly this time. **Suggest updating step 1 of `SKILL.md` itself** (out of scope for
-this run's own edit budget, flagging for a future run or the user) to say explicitly
-"checkout/orient from `skill-evolution`, not `main`" rather than the current generic "confirm a
-fresh checkout of `main`", since two runs in a row have now lost real effort to this exact
-misreading.
+own precedent, rather than merging draft duplicates. Re-read the 09-12 process note itself before re-orienting properly this time. **Correction to this
+run's own initial write-up**: on first drafting this entry, assumed step 1 of `SKILL.md` still had
+the old generic "confirm a fresh checkout of `main`" wording and proposed fixing it — checked
+after the fact and found the 09-12 run had *already* patched step 1 on this branch to say
+"Orient — on `skill-evolution`, not `main`" in explicit terms. The mistake this run made wasn't a
+runbook gap: it was reading `SKILL.md` from a stale `main` checkout at the very start of the
+session (before ever running `git checkout skill-evolution`) instead of re-reading it from this
+branch. **Actual lesson for future runs**: re-read `skills/daily-skill-evolution/SKILL.md` itself
+from the `skill-evolution` checkout, not just the log — don't trust an in-context copy of the
+runbook that was loaded before the branch switch.
 
 Domains researched, from `skill-evolution`'s actual tip: Playwright/web E2E (direct fetch of
 `release-notes-js.md` — 1.63 confirmed still the topmost/latest version, unchanged since 09-11),
