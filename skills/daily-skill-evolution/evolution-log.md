@@ -5,6 +5,73 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-14 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-13
+`79a2f92` commit), read this branch's own `SKILL.md` and `evolution-log.md` from this checkout
+(not `main`'s stale copy) per the 09-12/09-13 process notes.
+
+Domains researched: Playwright/web E2E (direct fetch of the pinned `release-notes-js.md` — `##
+Version 1.63` confirmed still the topmost heading, full Highlights/New APIs/Announcements list
+verbatim-matches `playwright-1.63-new-apis`, unchanged since 09-11; `playwright-mcp` GitHub
+releases re-check — v0.0.80 (Sep 1) confirmed still latest, `browser_start_recording`/
+`browser_stop_recording` already documented per the 09-10 update), Maestro/mobile (direct fetch
+of `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" empty; its own top bullet,
+`--device-os` accepting a full Android system-image path, was already documented back on 09-01 —
+confirmed via grep of `maestro-mobile/SKILL.md`, not just recollection; secondary WebSearch found
+a "Maestro Cloud: Android 15/16 device profiles (pixel_2/pixel_9/pixel_9_pro_xl/pixel_tablet/
+pixel_6_stock)" blog post, but `maestro.dev` is fully `EGRESS_BLOCKED` to this session (not just
+403), so its exact config syntax and whether it's Cloud-only or also applies to local CLI runs
+could not be verified firsthand — left undocumented per the verify-before-writing guardrail
+rather than encoding a WebSearch-only summary; flagged below for a future run with unblocked
+`maestro.dev` access), AI chatbot/LLM testing (DeepEval — GitHub's release-tag page still won't
+render past 4.2.0/Aug 24 (same dynamic-content limitation noted every run since 09-10), so
+cross-checked PyPI's JSON API directly via `curl` rather than trusting a WebFetch summary of it
+(a first WebFetch pass of the same JSON hallucinated an upload date of "December 19, 2024" for a
+version that didn't exist until 2026 — discarded, consistent with this log's standing practice of
+never trusting a small-model summary over the raw data) — confirmed 4.2.2 (Sep 6) remains latest,
+unchanged since 09-12, no 4.2.3+ in the full release-date list; Promptfoo `CHANGELOG.md` direct
+fetch — 0.123.0 confirmed still latest, unchanged since 09-11/09-12, its `llm-rubric` audio-grading
+and `metadata.toolCalls` items already documented; secondary sweep of "LLM chatbot guardrail
+testing September 2026" — only four-metric-family/offline-eval-plus-runtime-guardrail-plus-tracing
+framing, already covered by `chatbot-tester`/`llm-guardrail-testing`/`llm-production-observability`),
+QA test design (general September 2026 sweep — only AI-first/shift-left-shift-right/combined-
+methodology trend framing, already covered by existing skills; targeted Playwright flaky-test-tool
+sweep — TestDino/Trunk.io/Datadog/BrowserStack Test Observability, all third-party vendor-platform
+marketing already superseded by what `playwright-flaky-test-detection`/`flaky-test-prevention`
+document as concrete, tool-agnostic technique; accessibility-testing sweep — WCAG 2.2 AA/
+axe-core/`AxeBuilder` framing, all already covered by `accessibility-testing`, including its
+already-corrected ~57% automated-coverage figure), attempted a re-check of the carried-over "Large
+Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) citation — `arxiv.org`
+confirmed `EGRESS_BLOCKED` again this run, same as every run since 09-09; still flagged for a
+future run.
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design; every finding either duplicated an existing skill (verified via grep/direct re-read, not
+  recollection) or was vendor-marketing/trend framing with no concrete, reproducible,
+  not-yet-documented technique. One genuinely new-looking Maestro Cloud device-profile item was
+  found but could not be verified against a first-party source (`maestro.dev` fully
+  `EGRESS_BLOCKED`), so it was left out per the verify-before-writing guardrail rather than encoded
+  from a WebSearch summary alone. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 remains latest, unchanged since 09-11; `playwright-mcp` v0.0.80
+  remains latest, already documented.
+- SKIPPED Maestro/mobile (core CLI) — 2.10.0 remains latest with an empty "Unreleased" section; its
+  top bullet was already documented on 09-01.
+- SKIPPED AI chatbot/LLM testing — Promptfoo 0.123.0 and DeepEval 4.2.2 (re-confirmed via raw PyPI
+  JSON, not a WebFetch summary) both remain latest and are already fully documented; guardrail-testing
+  sweep returned only framing already covered by existing skills.
+- SKIPPED QA test design — general sweep, flaky-test-tool sweep, and accessibility sweep all
+  returned only vendor-marketing framing or content already covered by existing skills.
+- NEW — STILL UNVERIFIED: Maestro Cloud Android 15/16 device profiles
+  (`pixel_2`/`pixel_9`/`pixel_9_pro_xl`/`pixel_tablet`/`pixel_6_stock`) — WebSearch-only finding,
+  `maestro.dev/blog/android-15-and-16-on-maestro-cloud` is `EGRESS_BLOCKED` (not a site 403) so its
+  exact config syntax and CLI-vs-Cloud-only scope are unconfirmed. Flagged for a future run with
+  unblocked `maestro.dev` access.
+- STILL UNVERIFIED (carried over from 09-09 through 09-13): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains `EGRESS_BLOCKED` this run too. Not
+  re-attempted via WebSearch-only synthesis. Flagged again for a future run with unblocked
+  arXiv access.
+
 ## 2026-09-13 (GMT+7)
 
 Orientation: made the exact mistake the 09-12 entry warned about — started from a fresh `main`
