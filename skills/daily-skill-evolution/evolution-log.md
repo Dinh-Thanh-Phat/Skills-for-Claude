@@ -5,6 +5,95 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-15 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-14 commit),
+read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout per the
+09-12/09-13 process notes (not `main`'s stale copy).
+
+Domains researched: Playwright/web E2E (direct fetch of `release-notes-js.md` — 1.63 confirmed
+still topmost/latest, unchanged since 09-11; `playwright-mcp` re-check via **npm registry**
+instead of the GitHub releases page this time, since GitHub API access is scoped to this session's
+one assigned repo (`Dinh-Thanh-Phat/Skills-for-Claude`) and `api.github.com` returns 403 for any
+other repo — `registry.npmjs.org/@playwright/mcp` shows **v0.0.81 published 2026-09-14**, one day
+after the already-documented v0.0.80; its own GitHub release page didn't render via WebFetch (same
+dynamic-content limitation noted for other repos every run since 09-10), so downloaded both the
+`0.0.80` and `0.0.81` npm tarballs directly and diffed `config.d.ts` byte-for-byte — found three
+genuinely new, previously-undocumented config changes), Maestro/mobile (direct fetch of
+`CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" section still empty, unchanged since
+09-11; re-attempted the still-`EGRESS_BLOCKED` `maestro.dev/blog/android-15-and-16-on-maestro-cloud`
+Cloud-device-profile item carried over since 09-14 — still blocked, still undocumented), AI chatbot/
+LLM testing (DeepEval — a first WebFetch pass of `pypi.org/pypi/deepeval/json` returned "4.2.3,
+uploaded December 20, 2024", the exact hallucination pattern this log has flagged and discarded on
+prior runs (a real 2026 version stamped with a 2024 date) — discarded and re-verified with a direct
+`curl | python3 -m json` parse of the same endpoint instead of trusting the WebFetch summary,
+which correctly showed **4.2.3 uploaded 2026-09-14T13:38:32**, a genuinely new release one day
+after the already-documented 4.2.2; downloaded and diffed the `4.2.2`/`4.2.3` wheels file-list,
+found two changed areas: a new `deepeval/sqlite_store/` module plus matching `cli/inspect.py`/
+`test_run/test_run.py` changes for storing/inspecting local eval runs in a SQLite file instead of
+`test_run_*.json` files (CLI/tooling internals, not a testing technique — left undocumented per
+scope), and a new `deepeval/voice/connectors/transports/webrtc.py` — read the full new
+`WebRTCConnector` class source directly (not summarized) to confirm it's a genuine protocol-level
+addition to the Sep-12-documented live-voice-simulation connectors, not a rename/refactor of an
+existing one; Promptfoo `CHANGELOG.md` direct fetch — 0.123.0 confirmed still latest, unchanged
+since 09-11/09-12/09-13/09-14), QA test design (general September 2026 sweep — only AI-first/
+shift-left-shift-right trend framing, already covered by existing skills; no targeted sub-sweep
+found anything new beyond what Playwright/DeepEval findings above already touch), re-attempted the
+carried-over "Large Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) citation —
+`arxiv.org` confirmed `EGRESS_BLOCKED` again this run, same as every run since 09-09.
+
+- UPDATED: skills/playwright-mcp-server — Extended the "2026 Updates" section from v0.0.80 to
+  v0.0.81 (published 2026-09-14, one day after the already-documented v0.0.80): new `browser.idle`
+  config option (auto-closes/relaunches the browser after N idle ms; CLI mode shuts down instead
+  of relaunching), `imageResponses` gained a third `"only"` value (image-only response, no text
+  part) and its default changed from `"auto"` to `"allow"`, and `outputDir` now scopes only to
+  auto-named output files rather than every output file (explicitly-named files resolve against
+  the workspace root instead). Verified via a direct byte-diff of `config.d.ts` between the
+  `0.0.80`/`0.0.81` npm tarballs, since the v0.0.81 GitHub release page would not render via
+  WebFetch and this session has no GitHub API access to a repo other than the one it's scoped to.
+  Sources: https://registry.npmjs.org/@playwright/mcp (version/publish-date listing),
+  https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.80.tgz,
+  https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.81.tgz (config.d.ts diff)
+- UPDATED: skills/deepeval-llm-cicd — Added "Protocol-Agnostic `WebRTCConnector` (v4.2.3, Sep
+  2026)" as a new subsection right after the existing Sep-12 "Automated Live Voice-Agent Simulation
+  via Connectors" section: `WebRTCConnector` (needs optional `aiortc`/`av` deps) drives any voice
+  agent that speaks plain WebRTC — http(s) SDP-offer/answer signaling or ws(s) JSON offer/answer/
+  candidate exchange — rather than one vendor's SDK, for self-hosted or unsupported-vendor voice
+  agents. Verified by reading the new `deepeval/voice/connectors/transports/webrtc.py` source
+  directly (not a WebFetch summary) and confirming it's newly exported in `4.2.3`'s
+  `transports/__init__.py` versus `4.2.2` via wheel diff. Also re-verified `4.2.3`'s PyPI upload
+  date via a direct `curl`+JSON parse after a first WebFetch pass hallucinated a "December 2024"
+  date for it — same known WebFetch failure mode this log has flagged before, not a new issue.
+  Updated frontmatter triggers. Left the same release's new `sqlite_store`/`cli/inspect.py` local
+  test-run storage change undocumented — verified it's real but it's a CLI/tooling implementation
+  detail, not a testing technique, per this routine's scope guardrail.
+  Sources: https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/transports/webrtc.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/transports/__init__.py,
+  https://pypi.org/pypi/deepeval/json
+- SKIPPED Playwright/web E2E (core 1.63) — remains latest, unchanged since 09-11; only the
+  `playwright-mcp` companion package had new content this run (documented above).
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section, unchanged
+  since 09-11.
+- SKIPPED AI chatbot/LLM testing (DeepEval `sqlite_store`, Promptfoo) — the SQLite local-store
+  change is real (verified via wheel diff) but out of scope as CLI tooling, not a testing
+  technique; Promptfoo 0.123.0 remains latest and already fully documented.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already
+  covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-14): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains `EGRESS_BLOCKED` this run too. Not
+  re-attempted via WebSearch-only synthesis. Flagged again for a future run with unblocked arXiv
+  access.
+- STILL UNVERIFIED (carried over from 09-14): Maestro Cloud Android 15/16 device profiles
+  (`pixel_2`/`pixel_9`/`pixel_9_pro_xl`/`pixel_tablet`/`pixel_6_stock`) —
+  `maestro.dev/blog/android-15-and-16-on-maestro-cloud` remains `EGRESS_BLOCKED` this run too.
+  Flagged again for a future run with unblocked `maestro.dev` access.
+- PROCESS NOTE for future runs: when a GitHub repo's release-tag page won't render via WebFetch
+  and it isn't the one repo this session has API access to, check the package's own registry
+  (`registry.npmjs.org` for npm packages, `pypi.org/pypi/<pkg>/json` for PyPI) for the latest
+  version/date first, then diff two tarballs directly if the registry doesn't carry a changelog —
+  this worked cleanly for `@playwright/mcp` 0.0.81 this run and avoids ever needing GitHub API
+  access to a third-party repo at all.
+
 ## 2026-09-14 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-13

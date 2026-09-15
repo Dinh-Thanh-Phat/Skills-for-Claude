@@ -19,7 +19,8 @@ description: |
   "deepeval 4.2.0", "ToolUseMetric", "GoalAccuracyMetric", "TopicAdherenceMetric",
   "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric",
   "VoiceConfig ConversationSimulator", "VapiConnector", "PipecatConnector deepeval",
-  "deepeval voice connector", "live voice agent simulation deepeval".
+  "deepeval voice connector", "live voice agent simulation deepeval", "WebRTCConnector",
+  "deepeval webrtc voice testing", "aiortc voice agent test".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -651,6 +652,38 @@ https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/conn
 https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/config.py,
 https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/simulator/conversation_simulator.py,
 https://pypi.org/pypi/deepeval/4.2.0/json, https://pypi.org/pypi/deepeval/4.2.2/json (wheel diff confirming Pipecat/Vapi are new between these two releases)
+
+### Protocol-Agnostic `WebRTCConnector` (v4.2.3, Sep 2026)
+
+The connectors above are each wired to one vendor's SDK/API. `WebRTCConnector` instead speaks
+plain WebRTC, so it works against **any** voice agent that exposes a raw WebRTC signaling
+endpoint — a self-hosted agent, or a vendor with no dedicated connector yet — without waiting for
+a provider-specific integration:
+
+```python
+from deepeval.voice import VoiceConfig
+from deepeval.voice.connectors import WebRTCConnector  # requires: pip install aiortc av
+
+connector = WebRTCConnector(
+    signaling_url="https://agent.example.com/webrtc/offer",  # http(s):// POSTs the SDP offer, gets an SDP answer back
+    # or ws(s):// — exchanges {"type": "offer"/"answer"/"candidate", ...} JSON messages instead
+    data_channel="text",       # optional: agent transcripts arrive over this WebRTC data channel
+    ice_servers=["stun:stun.l.google.com:19302"],
+    turn_detection="balanced", # same turn-detection knob as the other connectors
+)
+simulator = ConversationSimulator(voice_config=VoiceConfig(connector=connector), async_mode=True)
+```
+
+Needs the optional `aiortc`/`av` dependencies (not installed with base `deepeval`). Two signaling
+modes only: an `http(s)://` URL is POSTed the SDP offer and must answer with the SDP (raw or
+`{"sdp": "..."}` JSON); a `ws(s)://` URL exchanges `offer`/`answer`/`candidate` JSON messages over
+the socket for full ICE trickle support. Use this connector, not a vendor-specific one, for a
+homegrown or self-hosted voice agent — anything speaking standard WebRTC rather than a supported
+platform's proprietary transport.
+
+Sources: https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/transports/webrtc.py,
+https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/voice/connectors/transports/__init__.py,
+https://pypi.org/pypi/deepeval/json (raw PyPI JSON confirms 4.2.3 uploaded 2026-09-14, one day after 4.2.2 — cross-checked against a WebFetch summary of the same endpoint that hallucinated "December 2024" upload dates for these same version numbers, discarded per this log's standing practice; wheel diff of 4.2.2 vs 4.2.3 confirms `transports/webrtc.py` and the `WebRTCConnector` export are new in 4.2.3)
 
 ## Arena Evaluation (`ArenaGEval`) — Pairwise Prompt/Model Comparison
 

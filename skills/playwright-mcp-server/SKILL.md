@@ -129,10 +129,13 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 
 ---
 
-## 2026 Updates (v0.0.71 → v0.0.80)
+## 2026 Updates (v0.0.71 → v0.0.81)
 
-Verified against the official `microsoft/playwright-mcp` GitHub releases page — none of these were previously documented here:
+Verified against the official `microsoft/playwright-mcp` GitHub releases page (v0.0.71–v0.0.80) and, for v0.0.81 (whose GitHub release page does not render via automated fetch), a direct diff of `config.d.ts` between the `0.0.80` and `0.0.81` npm tarballs — none of these were previously documented here:
 
+- **`browser.idle` config option (v0.0.81, Sep 14)** — closes the browser after this many milliseconds pass with no tool call, then relaunches it on the next one. Defaults to one hour for headless browsers the server launched itself; no timeout for headed or `--cdp-endpoint`-attached browsers. Pass `0` to disable. Running via the `npx @playwright/mcp` CLI (rather than embedded), an idle timeout shuts the whole process down instead of relaunching — set this low in a long-lived agent session to free browser resources between bursts of tool calls, and raise or zero it if idle gaps between calls are expected and reconnect latency matters.
+- **`imageResponses: "only"` (v0.0.81)** — third value alongside `allow`/`omit` (the option's default also changed from `"auto"` to `"allow"` in this release): a response carrying an image returns the image part alone, with no accompanying text part. Use it for clients/pipelines that consume the screenshot directly and would otherwise have to discard a redundant text description on every image-returning call.
+- **`outputDir` scope narrowed (v0.0.81)** — now governs only *auto-named* output files (e.g. a screenshot taken without an explicit filename); a file saved with an explicit name resolves against the workspace root instead, not `outputDir`. Re-check any config that relied on `outputDir` catching every output file — explicitly-named saves need their own path handling now.
 - **`browser_start_recording` / `browser_stop_recording` (v0.0.80, Sep 1, opt-in via `--caps=devtools`)** — records the actions a human performs manually in the launched browser (clicks, fills, navigations) and returns them back as generated Playwright code, the reverse direction of the agent-drives-browser flow: a person drives, the server produces the script. Not enabled by default — add `devtools` to `--caps` (alongside e.g. `vision`) to expose the two tools.
 - **`browser_take_screenshot` gains a `type` option (v0.0.79, Aug 6)** — pick `png`, `jpeg`, or `webp` explicitly; when unset, the format is inferred from the filename extension, mirroring the WebP support Playwright 1.62 added to `page.screenshot()`.
 - **`--codegen` supports more languages (v0.0.79)** — generated code can now target `python`, `java`, and `csharp` in addition to `typescript`.
@@ -184,3 +187,4 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 - [6 Most Popular Playwright MCP Servers for AI Testing in 2026 — Bug0](https://bug0.com/blog/playwright-mcp-servers-ai-testing)
 - [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.80)](https://github.com/microsoft/playwright-mcp/releases)
 - https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.80
+- https://registry.npmjs.org/@playwright/mcp (v0.0.81 config.d.ts / package.json diff against v0.0.80, verified directly since the v0.0.81 GitHub release page would not render via automated fetch)
