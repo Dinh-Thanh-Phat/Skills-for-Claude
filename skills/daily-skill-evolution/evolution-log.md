@@ -5,6 +5,74 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-17 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-16 `d08384c`
+commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout,
+not `main`'s stale copy (`main` is still pinned at its pre-2026-07-30 snapshot; the user merges
+`skill-evolution` manually per the runbook).
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily
+since 09-11: Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, full Test-locks/frame-agnostic-`frameLocator()`/`Locator.visible()`/
+step-`subtitle`+`params` content byte-for-byte matches `playwright-1.63-new-apis`, unchanged since
+09-11; `playwright-mcp` via `registry.npmjs.org/@playwright/mcp` version/time listing — 0.0.81
+(2026-09-14) confirmed still latest, unchanged since 09-15, already documented), Maestro/mobile
+(direct fetch of `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" section still empty,
+unchanged since 09-11), AI chatbot/LLM testing (DeepEval — direct `curl | python3 -m json` parse
+of `pypi.org/pypi/deepeval/json` per this log's standing practice of never trusting a WebFetch
+summary of that endpoint — 4.2.3 (2026-09-14T13:38:32) confirmed still latest, unchanged since
+09-15; Promptfoo `CHANGELOG.md` direct fetch — 0.123.0 (2026-09-10) confirmed still latest,
+unchanged since 09-11, its listed items are provider additions (Claude Fable/Mythos 5.1, GPT-6
+Astra, Grok 4.6, Gemini 3.8 Flash) and dependency bumps, not a testing technique), QA test design
+(general September 2026 sweep — only self-healing-locator/predictive-testing/AI-first trend
+framing, already covered by `flaky-test-prevention`/`playwright-flaky-test-detection`/
+`behavioral-coverage-matrix`), targeted sweeps for Playwright accessibility technique (getByRole
+priority order, `@axe-core/playwright`, WCAG 2.2 AA — all already documented in
+`accessibility-testing`/`playwright-page-object-model`, confirmed via read not recollection),
+Maestro feature sweep (search surfaced only the already-carried-over, already-old — May 21, 2026 —
+Android 15/16 Cloud device-profile post, plus the already-covered `maestro-studio` April 2026
+redesign and `maestro-ai-assertions`-covered AI-command features; no September 2026 item), and AI
+chatbot/LLM testing tooling sweep (Agent-as-Judge regression flagging, Giskard/Deepchecks/Ragas/
+TestMu landscape — all already covered as a category by existing `llm-*`/`ai-agent-eval-platforms`/
+`rag-evaluation-ragas`/`chatbot-tester` skills, no concrete new reproducible technique); re-attempted
+both carried-over blocked sources via both `curl` and `WebFetch` this run (not just `curl` as prior
+runs did): "Large Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) —
+`arxiv.org` still `EGRESS_BLOCKED`/`connect_rejected` on both paths, same as every run since 09-09;
+Maestro Cloud Android 15/16 device-profile blog (`maestro.dev/blog/android-15-and-16-on-maestro-cloud`)
+— `maestro.dev` still `EGRESS_BLOCKED`/`connect_rejected` on both paths too, same as every run
+since 09-14, and now separately confirmed low-priority even if unblocked (the post is dated May 21,
+2026, four months old, not a September finding — its only content per WebSearch snippets is a list
+of device-profile identifiers, not a testing technique).
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design. Every pinned upstream source (Playwright core, `playwright-mcp`, Maestro, DeepEval,
+  Promptfoo) is unchanged since its last-documented date, and every fresh sweep (accessibility
+  technique, Maestro feature landscape, chatbot-tooling landscape, general QA design) returned only
+  content already covered by existing skills or vendor/trend framing with no concrete, reproducible,
+  not-yet-documented technique. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 and `playwright-mcp` 0.0.81 both remain latest, unchanged since
+  09-11/09-15 respectively; accessibility-technique sweep (getByRole priority, axe-core, WCAG 2.2)
+  returned only content already documented.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section, unchanged
+  since 09-11; feature-landscape sweep surfaced nothing from September 2026, only already-covered
+  or already-old (May/April 2026) items.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.3 and Promptfoo 0.123.0 both remain latest and
+  already fully documented (Promptfoo's 0.123.0 items are provider/dependency additions, not
+  testing technique); chatbot-tooling-landscape sweep (Agent-as-Judge, Giskard/Deepchecks/Ragas)
+  returned only category-level framing already covered by existing skills.
+- SKIPPED QA test design — general September 2026 sweep returned only self-healing-locator/
+  predictive-testing/AI-first trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-16): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains blocked this run too, tried via both
+  `curl` and `WebFetch`. Flagged again for a future run with unblocked arXiv access.
+- STILL UNVERIFIED (carried over from 09-14 through 09-16): Maestro Cloud Android 15/16 device
+  profiles (`pixel_2`/`pixel_9`/`pixel_9_pro_xl`/`pixel_tablet`/`pixel_6_stock`) — `maestro.dev`
+  remains blocked this run too, tried via both `curl` and `WebFetch`. Now separately confirmed
+  low-priority: the source post is dated May 21, 2026 (four months old) and, per WebSearch
+  snippets, contains only device-profile identifiers, not a testing technique — deprioritizing
+  further re-attempts of this specific item unless a higher-value angle on it surfaces.
+
 ## 2026-09-16 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-15 commit),
