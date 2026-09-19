@@ -5,6 +5,75 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-19 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-18 `81f9a70`
+commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout,
+not `main`'s stale pre-2026-07-30 copy.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily
+since 09-11: Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, byte-for-byte matches `playwright-1.63-new-apis`, unchanged since 09-11;
+`playwright-mcp` via `registry.npmjs.org/@playwright/mcp` version/time listing — **new release**
+0.0.82 (2026-09-18), up from 0.0.81 (09-14)), Maestro/mobile (direct fetch of `CHANGELOG.md` —
+2.10.0 confirmed still latest, "Unreleased" section still empty, unchanged since 09-11), AI
+chatbot/LLM testing (DeepEval — direct `curl | python3 -m json` parse of `pypi.org/pypi/deepeval/json`
+— 4.2.3 (2026-09-14T13:38:32) confirmed still latest, unchanged since 09-15, already documented;
+Promptfoo `CHANGELOG.md` direct fetch — new patch release 0.123.1 (2026-09-18) found, up from
+0.123.0 (09-10); read the full changelog entry — Features are all provider/config additions
+(Bedrock auth refresh, Gemini 3.8 + Vertex Live, GPT-Live voice sessions, OpenAI Agents API
+provider, "portable HTTP/MCP config schemas"), Bug Fixes are assertion/CLI/db hardening; fetched
+the "portable MCP config schemas" PR (#10965) directly to check for a testing-technique angle —
+it is Zod/JSON-Schema validation tightening for MCP provider configs (malformed fields now caught
+pre-connection, schemas exported via `promptfoo/contracts` for external tooling), not a new
+config syntax or red-team technique, so left undocumented per the quality-over-quantity guardrail),
+axe-core (npm registry re-check — 4.13.0 confirmed still latest, already fully documented in
+`accessibility-testing`), QA test design (general September 2026 sweep — AI-first/shift-left-plus-
+shift-right/quality-engineering trend framing, all already covered by `qa-test-plan`/
+`behavioral-coverage-matrix`), AI chatbot/LLM testing tooling sweep (multi-layer pipeline,
+Promptfoo/DeepEval/Giskard/Deepchecks/Ragas/TestMu landscape — already covered as a category by
+existing `llm-*`/`ai-agent-eval-platforms`/`rag-evaluation-ragas`/`chatbot-tester` skills); re-
+attempted both carried-over blocked sources: "Large Reasoning Models Are Autonomous Jailbreak
+Agents" (arXiv 2508.04039) — `arxiv.org` still `connect_rejected` (organization policy), same as
+every run since 09-09; Maestro Cloud Android 15/16 device-profile blog (`maestro.dev/blog/...`) —
+`maestro.dev` still `connect_rejected` too, same as every run since 09-14, still low-priority per
+the 09-17 assessment.
+
+For the genuine `playwright-mcp` 0.0.82 release, fetched the GitHub release notes directly
+(`github.com/microsoft/playwright-mcp/releases/tag/v0.0.82`) and cross-checked against
+`playwright-mcp-server`'s existing "2026 Updates" section (grep confirmed only through v0.0.81)
+before writing.
+
+- UPDATED: skills/playwright-mcp-server — Added a "v0.0.82 (Sep 18)" set of entries to the "2026
+  Updates" section: WebMCP tools integration (a page's own WebMCP-exposed tools now surface in the
+  server's tool list as `webmcp_<tool>` with the page's input schema attached, disable via
+  `--no-webmcp`); `browser_emulate_media` (runtime light/dark color-scheme, reduced-motion,
+  forced-colors, contrast, and media-type emulation); `browser_start_video` gaining `fps` and
+  `cursor: true` options plus CSS-stylable `browser_video_show_actions` markers; and
+  `--file-paths=absolute` for clients with no defined workspace root. None previously documented
+  (skill's own changelog section only went through v0.0.81). Sources:
+  https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.82,
+  https://registry.npmjs.org/@playwright/mcp
+- SKIPPED Playwright/web E2E core — 1.63 remains latest, unchanged since 09-11, already fully
+  documented in `playwright-1.63-new-apis`.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section, unchanged
+  since 09-11.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.3 and axe-core 4.13.0 both remain latest and
+  already documented; Promptfoo's new 0.123.1 patch is provider additions and internal
+  config-validation/assertion bug fixes only — the one item with a testing-adjacent name
+  ("portable MCP config schemas") was read directly from its source PR and confirmed to be schema
+  validation hardening, not a new documentable technique or syntax.
+- SKIPPED QA test design — general September 2026 sweep returned only AI-first/shift-left-plus-
+  shift-right/quality-engineering trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-18): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains blocked this run too
+  (`connect_rejected`, organization policy). Flagged again for a future run with unblocked arXiv
+  access.
+- STILL UNVERIFIED (carried over from 09-14 through 09-18): Maestro Cloud Android 15/16 device
+  profiles — `maestro.dev` remains blocked this run too. Remains low-priority per the 09-17
+  assessment (source post is four months old and, per WebSearch snippets, contains only
+  device-profile identifiers, not a testing technique).
+
 ## 2026-09-18 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-17 `a67c362`

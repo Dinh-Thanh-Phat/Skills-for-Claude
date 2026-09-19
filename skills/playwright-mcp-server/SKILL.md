@@ -129,10 +129,14 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 
 ---
 
-## 2026 Updates (v0.0.71 → v0.0.81)
+## 2026 Updates (v0.0.71 → v0.0.82)
 
-Verified against the official `microsoft/playwright-mcp` GitHub releases page (v0.0.71–v0.0.80) and, for v0.0.81 (whose GitHub release page does not render via automated fetch), a direct diff of `config.d.ts` between the `0.0.80` and `0.0.81` npm tarballs — none of these were previously documented here:
+Verified against the official `microsoft/playwright-mcp` GitHub releases page (v0.0.71–v0.0.80, and v0.0.82) and, for v0.0.81 (whose GitHub release page does not render via automated fetch), a direct diff of `config.d.ts` between the `0.0.80` and `0.0.81` npm tarballs — none of these were previously documented here:
 
+- **WebMCP tools integration (v0.0.82, Sep 18)** — a page that exposes tools via the browser-native WebMCP API now surfaces them directly in the server's own tool list, namespaced as `webmcp_<tool>`, with the page's own input schema attached. An agent calls the page's tools the same way it calls `browser_*` tools, without a separate bridge; disable the bridge with `--no-webmcp` when testing a page's *own* MCP surface would otherwise be confusing to distinguish from Playwright's browser-automation tools.
+- **`browser_emulate_media` (v0.0.82)** — toggles light/dark color-scheme emulation at runtime, plus `prefers-reduced-motion`, forced-colors, and contrast settings, and the emulated media type (`screen`/`print`). Useful for testing dark-mode and reduced-motion UI states without restarting the browser context.
+- **`browser_start_video` gains `fps` and `cursor` (v0.0.82)** — `fps` raises recording smoothness beyond the previous fixed rate; `cursor: true` overlays an animated mouse cursor on the recording. `browser_video_show_actions` now also accepts CSS to restyle its action markers/highlights.
+- **`--file-paths=absolute` (v0.0.82)** — tool results that reference a saved screenshot/snapshot file return an absolute path instead of one relative to the workspace root; use it for clients with no defined workspace root (config/env-var equivalents also added).
 - **`browser.idle` config option (v0.0.81, Sep 14)** — closes the browser after this many milliseconds pass with no tool call, then relaunches it on the next one. Defaults to one hour for headless browsers the server launched itself; no timeout for headed or `--cdp-endpoint`-attached browsers. Pass `0` to disable. Running via the `npx @playwright/mcp` CLI (rather than embedded), an idle timeout shuts the whole process down instead of relaunching — set this low in a long-lived agent session to free browser resources between bursts of tool calls, and raise or zero it if idle gaps between calls are expected and reconnect latency matters.
 - **`imageResponses: "only"` (v0.0.81)** — third value alongside `allow`/`omit` (the option's default also changed from `"auto"` to `"allow"` in this release): a response carrying an image returns the image part alone, with no accompanying text part. Use it for clients/pipelines that consume the screenshot directly and would otherwise have to discard a redundant text description on every image-returning call.
 - **`outputDir` scope narrowed (v0.0.81)** — now governs only *auto-named* output files (e.g. a screenshot taken without an explicit filename); a file saved with an explicit name resolves against the workspace root instead, not `outputDir`. Re-check any config that relied on `outputDir` catching every output file — explicitly-named saves need their own path handling now.
@@ -188,3 +192,4 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page (v
 - [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.80)](https://github.com/microsoft/playwright-mcp/releases)
 - https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.80
 - https://registry.npmjs.org/@playwright/mcp (v0.0.81 config.d.ts / package.json diff against v0.0.80, verified directly since the v0.0.81 GitHub release page would not render via automated fetch)
+- https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.82
