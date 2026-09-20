@@ -5,6 +5,78 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-20 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-19 `471d677`
+commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout,
+not `main`'s stale pre-2026-07-30 copy.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily
+since 09-11: Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, unchanged since 09-11; `playwright-mcp` via
+`registry.npmjs.org/@playwright/mcp` version/time listing — 0.0.82 (2026-09-18) confirmed still
+latest, already documented by the 09-19 `playwright-mcp-server` update), Maestro/mobile (direct
+fetch of `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" section still empty,
+unchanged since 09-11), AI chatbot/LLM testing (DeepEval — direct `curl | python3 -m json` parse of
+`pypi.org/pypi/deepeval/json` — 4.2.3 (2026-09-14T13:38:32) confirmed still latest, unchanged since
+09-15; Promptfoo `CHANGELOG.md` direct fetch — 0.123.1 (2026-09-18) confirmed still latest,
+unchanged since 09-19, its items remain provider/config additions (Gemini 3.8 + Vertex Live via
+`google:live:`/`vertex:live:`) and bug fixes, not testing technique — cross-checked via WebSearch
+of the Gemini 3.8/Vertex Live PR and confirmed it's the same provider-addition already read and
+dismissed on 09-19, nothing new), axe-core (npm registry re-check — 4.13.0 confirmed still latest,
+already fully documented in `accessibility-testing`), QA test design (general September 2026
+sweep — AI-driven test generation, self-healing tests, shift-left/shift-right, intelligent failure
+triage, EP/error-guessing trend framing, all already covered by `qa-test-plan`/
+`behavioral-coverage-matrix`/`flaky-test-prevention`/`playwright-flaky-test-detection`), AI
+chatbot/LLM testing tooling sweep (multi-layer offline-eval/guardrail/production-tracing pipeline,
+LLM-as-judge, Promptfoo/DeepEval/Giskard/Deepchecks/Ragas/TestMu landscape — already covered as a
+category by existing `llm-*`/`ai-agent-eval-platforms`/`rag-evaluation-ragas`/`chatbot-tester`
+skills); one candidate finding investigated in depth and ultimately not documented: a JMIR Nursing
+peer-reviewed "3-bot evaluation system" for clinical chatbot validation (provider bot + persona-based
+"digitally simulated patient" bot with frustrated/anxious/depressed personas + evaluator bot scoring
+against a rubric, statistically validated near-identical to human evaluators) — read past the
+WebSearch summary via a second targeted search since the primary source (`ncbi.nlm.nih.gov`) is
+`EGRESS_BLOCKED`; the architecture (persona-grounded user simulator + LLM judge) is already the core
+pattern in `llm-simulation-flywheel`, and the human-correlation validation step (Pearson r / Cohen's
+Kappa) is already documented in more rigorous detail in `llm-judge-bias`'s "Human Calibration
+Baseline" section — the only genuinely distinct detail (emotionally-vulnerable personas, e.g.
+frustrated/anxious/depressed, for high-stakes-domain simulation) judged too narrow a persona-list
+addition to justify a skill edit on its own, so skipped per the quality-over-quantity guardrail
+rather than padding an existing section; re-attempted both carried-over blocked sources: "Large
+Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) — tried both `arxiv.org/abs/`
+and `arxiv.org/pdf/` paths this run, both still `403`/`EGRESS_BLOCKED`, same as every run since
+09-09; Maestro Cloud Android 15/16 device-profile blog (`maestro.dev/blog/...`) — `maestro.dev`
+still `403`/`EGRESS_BLOCKED` too, same as every run since 09-14, still low-priority per the 09-17
+assessment.
+
+- No changes — researched Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and QA test
+  design. Every pinned upstream source (Playwright core, `playwright-mcp`, Maestro, DeepEval,
+  Promptfoo, axe-core) is unchanged since its last-documented date, and every fresh sweep (QA design
+  trends, chatbot-tooling landscape, a peer-reviewed "3-bot" clinical-chatbot-validation study) either
+  duplicated an existing skill (in the 3-bot case, across two skills at once — `llm-simulation-flywheel`
+  and `llm-judge-bias`) or was trend-level framing with no concrete, reproducible, not-yet-documented
+  technique. Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 and `playwright-mcp` 0.0.82 both remain latest, unchanged since
+  09-11/09-18 respectively, both already fully documented.
+- SKIPPED Maestro/mobile — 2.10.0 remains latest with an empty "Unreleased" section, unchanged
+  since 09-11.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.3, Promptfoo 0.123.1, and axe-core 4.13.0 all remain
+  latest and already documented; the Gemini 3.8/Vertex Live provider addition and the JMIR "3-bot"
+  clinical-chatbot-validation study were both read in full and found to duplicate existing skill
+  content (provider additions aren't testing technique; the 3-bot architecture and its human-judge
+  correlation validation are both already documented, in `llm-simulation-flywheel` and
+  `llm-judge-bias` respectively).
+- SKIPPED QA test design — general September 2026 sweep returned only AI-driven-generation/
+  self-healing/shift-left-plus-shift-right/failure-triage trend framing already covered by existing
+  skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-19): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains blocked this run too, tried both
+  `/abs/` and `/pdf/` paths. Flagged again for a future run with unblocked arXiv access.
+- STILL UNVERIFIED (carried over from 09-14 through 09-19): Maestro Cloud Android 15/16 device
+  profiles — `maestro.dev` remains blocked this run too. Remains low-priority per the 09-17
+  assessment (source post is four months old and, per WebSearch snippets, contains only
+  device-profile identifiers, not a testing technique).
+
 ## 2026-09-19 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-18 `81f9a70`
