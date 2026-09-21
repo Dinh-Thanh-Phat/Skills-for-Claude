@@ -118,3 +118,18 @@ Lịch sử thay đổi các skills — được ghi tự động bởi skill-up
 | Playwright | Playwright 1.63 released 2026-09-04: test locks, cross-frame locators (no-selector `frameLocator()`), `Locator.visible()`, `test.step()` subtitle/params, selective trace snapshots + aria trace viewer mode, `ariaSnapshotJSON()`, `--add-reporter` | **CREATED** `playwright-1.63-new-apis` — theo đúng format của 1.60/1.61/1.62 |
 | Maestro mobile | MCP server, MaestroGPT self-healing, Studio redesign (contextual autocomplete Apr 2026), Android 15/16, iOS 26 | **SKIP** — đã cover đủ bởi `maestro-mcp-workflow`, `maestro-studio`, `android-16-qa-gate`, `ios-26-test-gotchas` |
 | LLM agent testing | Trace/span-level eval, tool-calling correctness, 5-10 run semantic-similarity distribution testing | **SKIP** — đã cover bởi `llm-agent-trace-eval`, `llm-agent-trajectory-eval`; ngưỡng "nhiều lượt đo" đã khớp `feedback_chatbot-measure-8-runs-not-3` |
+
+## 2026-09-21 (session 3) — Outdated-skill audit (~150 skills scanned)
+
+**Method:** general-purpose agent grep'd toàn bộ `~/.claude/skills` cho version pin / "as of" claim / tên model cụ thể, đọc kỹ các skill nghi ngờ.
+
+**UPDATED (model-name pins đã lỗi thời, thay bằng "current frontier/cross-family" thay vì tên cứng):**
+
+| Skill | Chỗ sửa | Thay đổi |
+|---|---|---|
+| `llm-judge-bias` | Bảng "Cross-Family Judge Selection" + "Frontier vs Small Judge" + bias table | Xoá hard-code "GPT-4o/GPT-4", "Gemini 1.5 Pro/Ultra", "Claude Haiku" cụ thể → thay bằng mô tả theo family ("model đời hiện tại của family khác"). Nguyên tắc cross-family vẫn giữ nguyên, chỉ tên model là lỗi thời |
+| `deepeval-llm-cicd` | "Controlling the Judge Model" | "DeepEval defaults to GPT-4o" → "defaults to whichever OpenAI model current version ships — check deepeval docs/version thay vì assume tên cố định" |
+| `qa-preflight` | Checklist API/Chatbot Pipeline | "Model version đúng không? (GPT-4 vs GPT-3.5)" → ví dụ generic "model đời mới/mắc hơn vs đời rẻ hơn" |
+| `multimodal-chatbot-testing` | Layer 1 MLLM-as-a-Judge | "GPT-4V/GPT-4o" (GPT-4V đã deprecated/merge vào GPT-4o) → "current vision-capable model (OpenAI/Gemini/Claude)" |
+
+**Checked, KHÔNG stale (để khỏi re-flag lần sau):** `playwright-1.60/61/62/63-new-apis` (mỗi bản scope đúng version của nó, không mâu thuẫn nhau), `playwright-cli-agent`/`playwright-mcp-server` (claim "1.62+ bundles CLI/MCP" vẫn đúng dưới 1.63), `playwright-deprecated-selectors` vs `safe-locators` (bổ trợ, không mâu thuẫn), `ios-26-test-gotchas`, `android-16-qa-gate`, `maestro-mobile`.
