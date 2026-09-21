@@ -52,6 +52,7 @@ triggers:
 | Viết bộ test cases từ spec/PRD → theo `qa-excel-export/references/deliverable-format.md` | Hard block |
 | Xuất Excel test cases → **MỖI MODULE 1 SHEET**, 14 cột, parse từ markdown (không gõ tay 2 lần) | Hard block |
 | User nói "full case(s)"/"test full"/"full flow" — **cho MỌI hình thức test, kể cả manual/exploratory trên device thật, không chỉ automation code** — → PHẢI build behavior inventory + 8-category matrix (POS/NEG/EDGE/SEC/A11Y/BOUNDARY/STATE/ERROR) làm checklist TRƯỚC KHI chạy case đầu tiên, và KHÔNG được report/dừng lại cho tới khi mọi dòng trong checklist có status PASS/FAIL/BLOCKED (kèm lý do) — không được tự ý dừng giữa chừng rồi liệt kê phần còn thiếu như "gap" sau khi đã báo "xong" | Hard block |
+| Checklist ở trên phải là **1 bd issue/task riêng cho từng category** (`bd create` mỗi POS/NEG/EDGE/SEC/A11Y/BOUNDARY/STATE/ERROR), tạo TRƯỚC khi chạy case đầu tiên — KHÔNG chỉ để checklist "trong đầu"/trong prose. Lý do: prose có thể tự thấy "đủ để báo cáo có vẻ ổn" rồi dừng mà không ai check lại được; issue còn mở (`bd list --status=open`) là bằng chứng cơ học không thể lờ đi. Áp dụng CẢ khi giao việc cho subagent — subagent nhận đúng issue ID để close, không phải mô tả chung chung | Hard block |
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
 
