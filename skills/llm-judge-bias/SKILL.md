@@ -1,12 +1,6 @@
 ---
 name: llm-judge-bias
-description: >-
-  Identify, measure, and mitigate the five key biases that corrupt LLM-as-a-Judge evaluation
-  pipelines: verbosity/length bias, self-preference/family bias, position bias, format bias, and
-  calibration drift. Use when building or auditing an LLM judge pipeline, selecting the judge
-  model, calibrating against humans, or controlling eval cost. Triggers on: "LLM judge bias",
-  "judge model selection", "self-preference bias", "verbosity bias", "family bias LLM",
-  "calibrate LLM judge", "cross-family judge", "LLM eval reliability", "judge drift".
+description: Identify, measure, and mitigate the five key biases that corrupt LLM-as-a-Judge evaluation pipelines: verbosity/length bias, self-preference/family bias, position bias, format bias, and calibration drift. Use when building or auditing an LLM judge pipeline, selecting the judge model, calibrating against humans, or controlling eval cost. Triggers on: "LLM judge bias", "judge model selection", "self-preference bias", "verbosity bias", "family bias LLM", "calibrate LLM judge", "cross-family judge", "LLM eval reliability", "judge drift".
 ---
 
 # LLM-as-a-Judge Bias Mitigation
@@ -16,7 +10,7 @@ description: >-
 | Bias | What it does | Measured impact |
 |------|-------------|----------------|
 | **Verbosity / length bias** | Over-rewards longer responses regardless of quality | +15–30 score points for verbose answers (Wang et al. 2023) |
-| **Self-preference / family bias** | Same model-family outputs scored 10–25% higher | GPT-4 judging GPT-4o output → inflated scores |
+| **Self-preference / family bias** | Same model-family outputs scored 10–25% higher | A judge scoring output from its own model family → inflated scores |
 | **Position bias** | In pairwise A-vs-B, option A preferred ~60% of the time regardless of quality | Systematic first-position advantage |
 | **Format bias** | Bulleted/headered responses rated higher than identical prose | Unstructured outputs unfairly penalized |
 | **Calibration drift** | Score thresholds shift across domains/topics without recalibration | 80/100 in domain A ≠ 80/100 in domain B |
