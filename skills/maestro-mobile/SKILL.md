@@ -95,6 +95,24 @@ suite**, on every project, no exception:
 If a task looks like it'll produce more than ~5 flows or touch more than 1 account, this gate is not
 skippable — say explicitly which of the 4 you applied before starting.
 
+## Tap says COMPLETED but nothing changed / "element not found" right after launch — check for an overlay FIRST
+
+Measured on TetherTails (2026-09-21): 0/3 pass -> 3/3 after one fix. A cold-start **announcement/promo
+overlay** appeared 1-3s AFTER `launchApp` returned and covered the tab bar. `tapOn` reported COMPLETED
+(Maestro tapped the right bounds — the overlay swallowed it), and a later `assertVisible` failed.
+Upgrading Maestro did not help; the selector was never the problem. Diagnose in this order, don't
+retry-loop:
+1. Screenshot at t=1s/3s/10s after `adb shell am force-stop <pkg>` + launch — look at what is actually
+   on screen (a popup that is still there at 10s is not an animation).
+2. Isolate the tool: `adb shell input tap <x> <y>` on the same spot. If that works, the app and the
+   target are fine and something is covering/swallowing Maestro's tap.
+3. Fix with ONE reusable helper (`_setup/dismiss-popups.yaml`) called right after `launchApp` (or after
+   login when the popup only shows post-login): `extendedWaitUntil visible: <overlay label>, optional`
+   (it arrives late), then `runFlow: when: visible: <overlay label>` -> tap its close by point. Key the
+   guard on the overlay's own semantic label found via `maestro hierarchy` (e.g. a View labelled
+   "Announcements"), not on decorative text like a badge ("PROMO" vs "UPDATE" differ per announcement),
+   and confirm that label appears on no normal screen so the guarded tap can never hit real UI.
+
 ## Quick Start
 
 ```bash
