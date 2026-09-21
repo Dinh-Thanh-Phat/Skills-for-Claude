@@ -221,3 +221,9 @@ User yêu cầu đọc lại conversation lúc làm TetherTails + Soundwise, t�
 | Brand list thiếu Herr Professor/Arika/Relax Change | Thêm vào `project_soundwise-whitelabel-qa.md` (low priority, chỉ backfill fact) |
 
 **Không tìm thấy pattern mới nào khác sau khi loại các finding đã biết** (happy-path-only, partial-run, per-flow relogin, ad-hoc dump, full-section rerun, prod-no-delete, two-pass-verify) — 2 agent confirm rõ ràng, không manufacture finding để lấp chỗ trống.
+
+## 2026-09-21 (session 10) — Fix nốt root cause CƠ HỌC của "chạy full mà dừng giữa chừng"
+
+User yêu cầu "fix lại các issues đang mắc phải trong automation testing workflow". Rà lại toàn bộ fix trong ngày, phát hiện 1 lỗ hổng còn sót: "chạy full nhưng dừng giữa chừng" (issue 2 từ session 8) trước đó chỉ được xử lý ở góc độ HÀNH VI (tự ý dừng sớm rồi báo xong → bd-issue-per-category gate ở `qa-router`), nhưng còn 1 nguyên nhân CƠ HỌC khác chưa fix: lệnh Bash/PowerShell chạy đồng bộ có timeout mặc định 120s (tối đa 600s) — 1 suite "full" thường chạy lâu hơn mức đó, nên bị cắt ngang bởi chính giới hạn tool chứ không phải do tôi tự dừng. `qa-preflight`/`playwright-test-workflow` trước đó KHÔNG có hướng dẫn nào về `run_in_background`.
+
+**Fix:** thêm "Rule P0 #3" vào `qa-preflight` — bắt buộc ước lượng thời gian trước khi chạy, nếu >90s hoặc gắn nhãn "full" → PHẢI `run_in_background: true`, không chạy đồng bộ mặc định. Ghi rõ đây là nguyên nhân KHÁC (mechanical, không phải self-restraint) gây cùng 1 triệu chứng — cả 2 phải fix song song, không thay thế nhau.
