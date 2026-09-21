@@ -175,6 +175,10 @@ User nói: "test fail", "tại sao fail", "fix test", "debug"
                     ↓
               ask-when-stuck (hỏi user ngay)
          KHÔNG tự code thêm lần 3
+                    ↓
+         Đã fix xong → rerun CHỈ đúng case/file vừa fix (`--last-failed`
+         hoặc `--grep`), theo `feedback_test-rerun-discipline` —
+         KHÔNG full-rerun cả suite để confirm 1-2 case
 ```
 
 ### "Coverage"
