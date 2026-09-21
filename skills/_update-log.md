@@ -274,3 +274,14 @@ Thảo luận với user về việc có nên "lấy all element + logic app + n
 Tự đánh giá lại gate sau khi sửa nhiều lần trong ngày, tìm ra 3 vấn đề: (1) tên "Phase 0" trùng số với item #0 trong list gây rối, (2) điều kiện trigger "chưa có ELEMENT_MAP" mơ hồ per-project vs per-module, (3) business-logic quirk phát hiện lúc onboarding chỉ note vào ELEMENT_MAP (file cục bộ) thay vì `knowledge/[slug].md` — tái tạo đúng lỗ hổng "hỏi lại info đã có" vừa fix ở session trước. Đã sửa cả 3.
 
 User hỏi thêm "dài quá có ảnh hưởng không" — trả lời thật: không ảnh hưởng lookup/routing (skill chỉ load full khi trigger, không phải mọi turn như qa-router), NHƯNG có ảnh hưởng thật tới việc rule quan trọng bị chôn trong đoạn văn dài dễ bị đọc lướt bỏ sót — đúng root cause khiến qa-router từng bị bỏ qua. Thêm 1 bảng tóm tắt 4 dòng ngay đầu gate (mỗi dòng 1 hành động cốt lõi) — giữ nguyên phần prose chi tiết bên dưới cho ai cần đọc sâu, không xoá nội dung.
+
+## 2026-09-21 (session 15) — Verification pass: đọc lại full 3 file cùng lúc, tìm ra 2 lỗi thật
+
+User yêu cầu "check lại xem workflow đã thật sự ổn chưa" — đọc lại TOÀN BỘ `qa-router` + `qa-preflight` + `maestro-mobile` cùng lúc (không chỉ đọc từng phần vừa sửa) để tìm inconsistency giữa các lần sửa rải rác trong ngày. Tìm ra 2 lỗi thật:
+
+1. **`qa-preflight` "Perf gate" checklist bị lỗi thời** — vẫn là bản 3-item cũ, thiếu hẳn item #0 (check flow đã lưu) đã thêm vào `maestro-mobile` sau đó → 2 file không khớp. Fix: cập nhật checklist khớp với bản 4-item hiện tại, note rõ đây chỉ là bản rút gọn.
+2. **`qa-router` nhánh "Chạy test/run suite" rối ASCII art** — sau khi tách YES/NO, có 1 dòng "execute" đứng riêng không rõ là điểm hội tụ của 2 nhánh hay bị lặp với nhánh NO. Fix: vẽ lại rõ ràng điểm hội tụ.
+
+**Verify cơ học (không chỉ đọc):** `bd list --status=open --label qa-coverage` → rỗng (không còn issue test sót lại từ lúc pipe-test hook). Hook `qa-coverage-stop-gate.py` chạy lại → exit 0 sạch. `settings.json` parse lại bằng Python → Stop hook + UserPromptSubmit hook đều đúng cấu trúc.
+
+**Kết luận:** sau verification pass, workflow web+mobile hiện đã nhất quán giữa các file — không còn cross-reference gãy hay checklist lệch nhau. Vẫn còn 2 điều chưa verify được từ bên trong session này: (a) user chưa mở `/hooks` để nạp Stop hook mới, (b) chưa có lần chạy thật nào để confirm behavior thực tế khớp với những gì skill mô tả.
