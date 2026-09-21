@@ -148,16 +148,18 @@ Env vấn đề? → Báo user, fix env trước
 Env ok? → user nói "full"/"toàn bộ"?
     /                          \
   YES                          NO (chạy 1 spec/case cụ thể)
-    ↓                            ↓
-⚠️ Xem Hard-block "full case(s)"   execute trực tiếp, áp Rule P0 #3
-ở bảng CRITICAL RULES —          (`qa-preflight`) nếu ước lượng >90s
-KHÔNG chạy case đầu tiên trước
-khi có bd issue/category
-    ↓
-execute — áp Rule P0 #3 (`qa-preflight`): ước lượng thời gian,
->90s hoặc "full" → BẮT BUỘC `run_in_background: true`
-    ↓
-qa-quick-report (kết quả) → nếu có fail → sang nhánh "Debug / test fail"
+    ↓                            |
+Xem Hard-block "full case(s)"     |
+ở bảng CRITICAL RULES —          |
+tạo đủ bd issue/category          |
+TRƯỚC khi chạy case đầu tiên      |
+    ↓                            |
+    └──────────── cả 2 nhánh hội tụ ────────────┘
+                    ↓
+    execute — áp Rule P0 #3 (`qa-preflight`): ước lượng thời gian,
+    >90s hoặc "full" → BẮT BUỘC `run_in_background: true`
+                    ↓
+    qa-quick-report (kết quả) → nếu có fail → sang nhánh "Debug / test fail"
 ```
 
 > **KHÔNG phải `playwright-test-workflow`** — skill đó là orchestrator VIẾT test mới
