@@ -319,9 +319,10 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 
 ## Cross-references (flow thường dùng)
 
-- Viết test: `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` → `qa-e2e-complete`
-- Chạy test: `qa-router` → `qa-preflight` → `playwright-test-workflow`
+- Viết test (web): `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` → `qa-e2e-complete` → chạy thật (xem dưới) để confirm PASS
+- Chạy test có sẵn (web): `qa-router` → `qa-preflight` (Rule P0 #3: background nếu >90s/full) → execute → `qa-quick-report`
+- Viết/chạy test (mobile): `qa-router` → `qa-preflight` → version gate → `maestro-mobile` (MANDATORY gate trong skill)
 - Đánh giá UX (flow RIÊNG, chạy độc lập): `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)
-- Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck`
+- Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck` → fix xong → rerun canary-only (`feedback_test-rerun-discipline`)
 - Bug report: `qa-router` → `bug-repro-isolation` (cô lập nguyên nhân) → `qa-bug-report` → `odoo-project-automation`
 - Close: `qa-router` → `qa-session-close` → `beads`
