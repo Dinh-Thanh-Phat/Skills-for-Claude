@@ -34,6 +34,13 @@ Both projects hit exactly the failure modes these skills already exist to preven
 "remember better" — it's **stop and do these 4 checks before the first flow/dump of any new
 suite**, on every project, no exception:
 
+| # | Do this first | Detail below |
+|---|---|---|
+| 0 | `ls`/glob `flows/**/*.yaml` for an existing flow covering this scenario — extend/reuse it | ↓ |
+| 1 | For a module with no `ELEMENT_MAP_<module>.md` yet: one pass, nav + full hierarchy dump together, per screen. Reuse the saved map forever after — never re-dump a mapped screen "to be safe" | ↓ |
+| 2 | Group flows by auth state — one login/session via `runFlow` attach, not `launchApp+clearState` per flow | ↓ |
+| 3 | A failure → rerun only that flow/ID, never the whole suite/section | ↓ |
+
 0. **Check for already-saved flows FIRST, across sessions — not just within one.** TetherTails:
    user asked "have you saved the automation script so next time you just run it" **3 separate
    times** across different sessions (24-Aug, 27-Aug, 03-Sep) — meaning flows kept getting
