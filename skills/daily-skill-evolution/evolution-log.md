@@ -5,6 +5,84 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-21 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-20 commit),
+read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout, not
+`main`'s stale pre-2026-07-30 copy. (Initially oriented from `main` by mistake per a literal read
+of the task prompt's step 1 — caught it before writing anything by noticing `main`'s
+`daily-skill-evolution/SKILL.md` still says "confirm a fresh checkout of main" while this branch's
+copy already carries the 09-11-era correction; discarded that draft research entirely rather than
+merge stale findings, and restarted from this branch's actual state. Recording this so a future run
+reads this note first if the same mistake recurs.)
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily
+since 09-11: Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, unchanged since 09-11, byte-for-byte matches `playwright-1.63-new-apis`;
+`playwright-mcp` via `registry.npmjs.org/@playwright/mcp` — 0.0.82 confirmed still latest, unchanged
+since 09-18), Maestro/mobile (direct fetch of the core `mobile-dev-inc/maestro` `CHANGELOG.md` —
+2.10.0 confirmed still latest, "Unreleased" section still empty, unchanged since 09-11; **the
+community `devicelab-dev/maestro-runner` fork's own `CHANGELOG.md` — last checked/documented at
+v1.1.25 (per `maestro-real-ios-device`'s existing section headings) — had moved to v1.1.27**,
+two full releases with substantive testing-relevant content, not just fixes: v1.1.26 shipped npm
+distribution, `--window-size`/`--new-command-timeout`, and two selector-semantics changes explicitly
+flagged upstream as *breaking* — regex selectors are no longer case-insensitive by default, and a
+selector naming both `id:`/`text:` now requires one element to satisfy both instead of
+first-match-wins; v1.1.27 added document uploads via `addMedia` (PDF/Office files) and fixed a
+regression introduced by 1.1.26 that broke `inputText` with any selector — worth flagging since it
+would have silently broken login sub-flows for anyone who upgraded straight to 1.1.26 — plus a
+security-relevant fix where a password passed through a variable was leaking into
+`report.html`/JUnit/console output pre-fix), AI chatbot/LLM testing (DeepEval — direct
+`pypi.org/pypi/deepeval/json` fetch — 4.2.3 confirmed still latest, unchanged since 09-15; Promptfoo
+`CHANGELOG.md` direct fetch — 0.123.1 confirmed still latest, unchanged since 09-18), axe-core (npm
+registry re-check — 4.13.0 confirmed still latest), QA test design and AI chatbot tooling (general
+September 2026 sweeps on both — same AI-driven-generation/shift-left-plus-shift-right/multi-layer-
+eval-pipeline trend framing this log has dismissed on effectively every prior run, all already
+covered by existing skills, no new reproducible technique); re-attempted both carried-over blocked
+sources: "Large Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) —
+`arxiv.org` still `connect_rejected` (organization policy), same as every run since 09-09; Maestro
+Cloud Android 15/16 device-profile blog (`maestro.dev/blog/...`) — `maestro.dev` still
+`connect_rejected` too, same as every run since 09-14, still low-priority per the 09-17 assessment.
+
+- UPDATED: skills/maestro-real-ios-device — Added a "v1.1.26: npm Distribution, Stricter Selectors
+  — Breaking" section (npm/`npx` distribution with no postinstall network fetch; `--window-size`
+  for web-driver viewport testing; `--new-command-timeout` for Appium cloud `--parallel` runs; the
+  tap-validated-before-injection fix; and, called out with a warning callout since it can make a
+  previously-green suite start failing on upgrade, the two breaking selector changes — regex
+  selectors are case-sensitive by default now, and a selector naming both `id:` and `text:` must
+  match one element satisfying both instead of whichever query hit first) and a "v1.1.27: Document
+  Uploads, Password-Redaction Fix" section (`addMedia` accepting PDF/Word/Excel/PowerPoint/
+  txt/csv/rtf/json/zip, with the exact per-platform ceiling — works on Android and the iOS
+  simulator, refused outright on a physical iPhone since Apple exposes no Files-storage path from
+  outside the app; the password-redaction fix, called out as worth an explicit check on any
+  already-generated CI report/artifact retained from before the fix; the `inputText`-with-selector
+  regression introduced by 1.1.26 and fixed here, flagged with its own warning callout since it's
+  exactly the kind of silent breakage a suite could hit mid-upgrade; `speed:` on scroll finally
+  honored; Android's `error`-attribute text matching, relevant to `form-validation-testing`; and the
+  `value:`-spelling fix for `setAirplaneMode`/`setDarkMode` that was previously silently inverting
+  the setting). Updated frontmatter trigger keywords. Verified against the fork's own `CHANGELOG.md`
+  `[1.1.26]`/`[1.1.27]` entries directly (not a WebFetch summary), cross-checked against the
+  skill's existing section headings to confirm v1.1.25 was the true last-documented version before
+  writing. Sources:
+  https://raw.githubusercontent.com/devicelab-dev/maestro-runner/main/CHANGELOG.md,
+  https://github.com/devicelab-dev/maestro-runner
+- SKIPPED Playwright/web E2E — 1.63 and `playwright-mcp` 0.0.82 both remain latest, unchanged since
+  09-11/09-18 respectively, both already fully documented; general flaky-test-technique sweep
+  returned only locator/wait/CI-image advice already covered by `flaky-test-prevention`/
+  `playwright-flaky-test-detection`/`e2e-test-stability`.
+- SKIPPED Maestro/mobile core CLI — 2.10.0 remains latest with an empty "Unreleased" section,
+  unchanged since 09-11.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.3, Promptfoo 0.123.1, and axe-core 4.13.0 all remain
+  latest and already documented; general chatbot-testing-tooling sweep returned only the same
+  multi-layer-pipeline/tool-landscape framing already covered by existing `llm-*`/
+  `ai-agent-eval-platforms`/`chatbot-tester` skills.
+- SKIPPED QA test design — general September 2026 sweep returned only AI-driven-generation/
+  shift-left-plus-shift-right trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-20): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` remains blocked this run too.
+- STILL UNVERIFIED (carried over from 09-14 through 09-20): Maestro Cloud Android 15/16 device
+  profiles — `maestro.dev` remains blocked this run too. Still low-priority per the 09-17 assessment.
+
 ## 2026-09-20 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-19 `471d677`

@@ -12,7 +12,8 @@ description: |
   "maestro-runner hierarchy", "maestro-runner addMedia", "maestro-runner assertScreenshot",
   "maestro-runner dark mode", "maestro-runner lint", "maestro-runner setDarkMode",
   "maestro-runner retry-failed", "maestro-runner record", "maestro-runner assertVisible count",
-  "maestro-runner dragAndDrop", "maestro-runner step-delay".
+  "maestro-runner dragAndDrop", "maestro-runner step-delay", "maestro-runner addMedia document",
+  "maestro-runner regex case sensitive", "maestro-runner window-size", "maestro-runner npm".
 ---
 
 # Maestro on Real iOS Devices (maestro-runner)
@@ -301,6 +302,88 @@ flows using `scrollUntilVisible` after upgrading. The same release also fixed fo
 that made Flutter apps largely undrivable on the DeviceLab iOS driver (missing coordinate-tap
 support, timeout leakage into XCUITest calls, scrolls releasing mid-motion); the driver went from
 9/19 to 17/19 on the project's Flutter issue-repro suite, ahead of WDA-with-fallback at 14/19.
+
+## v1.1.26: npm Distribution, Stricter Selectors — Breaking (September 2026)
+
+> ⚠️ **Two selector behavior changes can make an existing flow start failing on upgrade — this is
+> intentional, not a regression.** Both close a gap where the selector matched more loosely than
+> what the flow actually asked for:
+>
+> - **Regex selectors are now case-sensitive.** Every regex was previously compiled with the
+>   case-insensitive flag, so `^SIGN OUT$` matched both "Sign out" and "SIGN OUT" and page order
+>   decided which got tapped. Plain (non-regex) text selectors are unaffected — still
+>   case-insensitive. Add `(?i)` explicitly to opt back into insensitivity:
+>   ```yaml
+>   - tapOn: "^SIGN OUT$"          # now matches only the uppercase button
+>   - tapOn: "(?i)^sign out$"      # opt back in
+>   ```
+> - **A selector naming both `id:` and `text:` must match one element carrying both.** Previously
+>   the two were queried separately and whichever matched first won — so an author-intended AND
+>   silently behaved as an OR, matching an element with the right id but unrelated text:
+>   ```yaml
+>   - assertVisible:
+>       id: "cart-button"
+>       text: "Checkout"          # now both must be true of the same element
+>   ```
+> Re-run any suite that relies on multi-field selectors or regex text matching after upgrading —
+> a previously-passing flow may now correctly fail on a selector that was never as specific as it
+> looked.
+
+- **npm distribution** — `npx maestro-runner test flows/`, or `npm install --save-dev
+  maestro-runner` to pin it in a React Native/Expo project's own `package.json`. No postinstall
+  network fetch — the binary is an ordinary optional dependency npm resolves by `os`/`cpu` — so it
+  installs offline, behind a proxy, or in CI that blocks postinstall network access.
+- **`--window-size <WxH>`** (env `MAESTRO_WINDOW_SIZE`) — sets the web driver's browser viewport,
+  so one suite can assert against phone/tablet/desktop breakpoints: `maestro-runner --platform web
+  --window-size 390x844 test flows/`.
+- **`--new-command-timeout <seconds>`** — raises `appium:newCommandTimeout` on the Appium session;
+  matters for cloud `--parallel` runs where early-created sessions idle through serial
+  pre-creation and get reaped at the server default, failing the first flow with `invalid session
+  id`.
+- Tap-then-validate ordering was inverted (a tap fired before the off-screen/occlusion guard
+  checked it, so a rejected tap on DeviceLab Android had already hit — and often navigated via — a
+  bottom tab bar underneath); taps are now validated against the resolved point *before* injection,
+  and a covering window (keyboard, system/permission dialog) is now named in the failure instead of
+  a bare geometry check.
+
+## v1.1.27: Document Uploads, Password-Redaction Fix (September 2026)
+
+> ⚠️ **If login flows started failing right after upgrading to 1.1.26, this is the fix.**
+> `inputText` with a selector (e.g. `inputText: {text: "user@example.com", id: "email"}`) silently
+> stopped matching its target field in 1.1.26 — the input value and the selector shared an
+> internal field, so the text-to-type got reused as a text *predicate*, demanding a field whose
+> hint equaled the typed value. Since that pattern usually lives in a shared login sub-flow, whole
+> suites went red on their first step. Fixed in 1.1.27; no flow-file changes needed.
+
+- **`addMedia` accepts documents** — PDF, Word, Excel, PowerPoint, plus txt/csv/rtf/json/zip,
+  alongside the photos/videos it already handled, for exercising a document-upload picker:
+  ```yaml
+  - addMedia:
+      - assets/contract.pdf
+  - tapOn: "Attach a file"        # opens the system document picker
+  - tapOn: "contract.pdf"
+  ```
+  Platform ceiling to know about: works on Android (seeds `Download/`, which the system document
+  picker reads directly) and the iOS **simulator** ("On My iPhone" storage); a **physical iPhone
+  refuses** — Apple exposes no path into Files storage from outside the app, and PhotoKit (used for
+  photos/videos) doesn't cover documents.
+- **Password values no longer leak into reports/logs.** A step inside a `runFlow` — where login
+  sub-flows live — was described *after* variable expansion, so `inputText: ${PASSWORD}` appeared
+  as the literal password in `flow-*.json`, `report.html`, the console, and the driver's request
+  log. Steps are now described pre-expansion and the send-keys request body is redacted in the
+  driver log too. **Worth an explicit check on any suite whose CI artifacts (HTML reports, JUnit
+  attachments) are retained or shared** — a report generated before this fix may already contain a
+  plaintext credential.
+- Text selectors now match Android's `error` attribute (a Compose field whose only visible content
+  is its validation-error text can now be matched by that text on UIAutomator2/Appium) — relevant
+  to `form-validation-testing`.
+- `speed:` on `scroll`/`scrollUntilVisible` is now honored on every driver (previously parsed and
+  silently ignored, so flows always got a driver's hardcoded swipe duration regardless of what the
+  YAML said).
+- The `value:` spelling of `setAirplaneMode`/`setDarkMode` (Maestro's own map form, `{value:
+  enabled, ...}`) was being silently read as *disabled* — a flow written against core Maestro's
+  YAML and run under maestro-runner would flip the setting the wrong way with no error. Both
+  spellings now work; an unrecognized value is a parse error instead of a silent wrong result.
 
 ## Key Caveats
 
