@@ -90,6 +90,11 @@ tags: [qa, pre-flight, environment, playwright, maestro, mobile]
 □ Network
   - Device và máy tính cùng network không? (wireless ADB)
   - Port 5037 available không?
+
+□ Perf gate (⚠️ P0, xem "MANDATORY gate" đầu skill `maestro-mobile` — bắt buộc nếu > ~5 flow hoặc > 1 account)
+  - Đã harvest element 1 LẦN trước khi viết flow chưa? (không dump xen kẽ khi viết) → maestro-element-harvest
+  - Flow đã group theo auth state (1 login/session, KHÔNG launchApp+clearState mỗi flow) chưa? → maestro-auth-state-strategy
+  - Nếu re-run vì có case fail: chỉ re-run ĐÚNG case đó, không re-run cả section/suite
 ```
 
 #### API / Chatbot Pipeline
