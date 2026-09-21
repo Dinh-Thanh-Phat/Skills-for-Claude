@@ -40,6 +40,9 @@ Skill này pull context từ session trước để Claude không bắt đầu m
 | Agentic, Chatbot | `agentic-chatbot.md` |
 | Agentic Social | `agentic-social.md` |
 | Skills | `skills-automation.md` |
+| TetherTails, TetherTails app | `tethertails.md` |
+| TetherTails Portal | `tethertails-portal.md` |
+| Soundwise | `soundwise.md` |
 
 Knowledge dir: `C:\Users\wi\.claude\shared-context\knowledge\`
 
