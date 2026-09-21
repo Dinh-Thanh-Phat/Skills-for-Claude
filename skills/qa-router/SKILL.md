@@ -243,7 +243,12 @@ User nói: "test mobile", "maestro", "test app"
     Android targetSdk 36 / device API 36 → android-16-qa-gate
     iOS 26 + Xcode 26.x            → ios-26-test-gotchas
                     ↓
-         maestro-mobile (viết/chạy flow)
+         maestro-mobile (viết/chạy flow) — đọc "🚦 MANDATORY gate" đầu skill
+         TRƯỚC khi viết/chạy flow đầu tiên (check flow đã lưu, harvest 1 lần,
+         group auth-state, canary-only rerun)
+                    ↓
+    User nói "full"/"toàn bộ" → xem thêm Hard-block "full case(s)" ở bảng
+    CRITICAL RULES — áp dụng CẢ cho manual/exploratory trên device thật
 ```
 
 > **Version gate là hard block khi có dấu hiệu.** Element-not-found sau khi update Xcode,
