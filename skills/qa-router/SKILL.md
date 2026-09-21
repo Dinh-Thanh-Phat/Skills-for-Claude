@@ -133,11 +133,32 @@ User nói: "viết test cases", "test cases cho X", "generate tests"
 ```
 User nói: "chạy test", "run", "npx playwright test..."
                     ↓
-             qa-preflight (check env trước)
-                    ↓
-         Env ok? → playwright-test-workflow
-         Env vấn đề? → Báo user, fix env trước
+         Test đã tồn tại (file .spec.ts có sẵn) hay cần viết mới?
+         /                                              \
+      ĐÃ CÓ                                          CHƯA CÓ
+        ↓                                                ↓
+qa-preflight (check env trước)                 → sang nhánh "Viết/generate test cases"
+        ↓                                          (viết xong quay lại nhánh này để chạy)
+Env vấn đề? → Báo user, fix env trước
+        ↓
+Env ok? → user nói "full"/"toàn bộ"?
+    /                          \
+  YES                          NO (chạy 1 spec/case cụ thể)
+    ↓                            ↓
+⚠️ Xem Hard-block "full case(s)"   execute trực tiếp, áp Rule P0 #3
+ở bảng CRITICAL RULES —          (`qa-preflight`) nếu ước lượng >90s
+KHÔNG chạy case đầu tiên trước
+khi có bd issue/category
+    ↓
+execute — áp Rule P0 #3 (`qa-preflight`): ước lượng thời gian,
+>90s hoặc "full" → BẮT BUỘC `run_in_background: true`
+    ↓
+qa-quick-report (kết quả) → nếu có fail → sang nhánh "Debug / test fail"
 ```
+
+> **KHÔNG phải `playwright-test-workflow`** — skill đó là orchestrator VIẾT test mới
+> (behavior inventory → manual cases → verified selectors → code), dùng cho nhánh
+> "Viết/generate test cases" bên trên, không phải để chạy suite đã có sẵn.
 
 ### "Debug / test fail"
 
