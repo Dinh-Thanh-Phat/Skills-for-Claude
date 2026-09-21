@@ -180,3 +180,22 @@ Grep xác nhận `maestro-mobile/SKILL.md` (skill chính, có version timeline t
 | `qa-preflight/SKILL.md` | Mirror checklist ngắn vào section Maestro Mobile — bắt case đi thẳng vào test execution mà bỏ qua `maestro-mobile` |
 
 **Meta-lesson lưu vào memory (`feedback_bake-fix-into-entry-skill-not-scatter`):** khi 1 lesson chỉ nằm ở skill vệ tinh → sẽ bị bỏ qua lặp lại nhiều project. Phải bake enforcement vào ENTRY-POINT skill (skill có trigger khớp cách task thực sự được gọi), viết ở đầu file với bằng chứng cụ thể, không chỉ "xem thêm X".
+
+## 2026-09-21 (session 8) — 3 issue thêm: root cause + fix mechanical (không phải thiếu skill)
+
+**User complaint:** (1) luôn viết POS-only dù đã có memory+skill nhắc full case, (2) chạy "full" nhưng dừng giữa chừng, (3) đã có creds/đã chạy được trước đó nhưng retest lại hỏi/claim blocked. Yêu cầu: tìm root cause áp dụng được trên MỌI project, không vá từng cái.
+
+**Root cause đã confirm bằng cách đọc lại memory cũ:**
+- (1)+(2) **CÙNG 1 root cause** — `feedback_automation-must-cover-all-cases-not-happy-path` đã ghi nhận đây là pattern tái diễn 01-Jul VÀ 09-Sep, ĐÃ có hard-block ở `qa-router` + `qa-coverage-gate.py` hook (deterministic, không skip được) — nhưng hook chỉ CHÈN cảnh báo vào context, không verify output thật. Tôi vẫn có thể đọc cảnh báo rồi tự quyết "đủ để báo cáo có vẻ ổn" và dừng sớm — đây là lỗi ÁP DỤNG, prose-level checklist không có bằng chứng cơ học.
+- (3) **Structural gap thật**: registry (`~/.claude/shared-context/registry.md`, 14 project) và knowledge system KHÔNG có TetherTails/TetherTails Portal/Soundwise — nên `qa-session-start` không lookup được, dù ACCOUNTS.md/ELEMENT_MAP*/matrix_run_*.log đã có sẵn trên đĩa.
+
+**Fix mechanical (khác lần trước — không chỉ thêm text nhắc):**
+| File | Thay đổi |
+|---|---|
+| `qa-router/SKILL.md` | Thêm hard-block MỚI: checklist 8-category phải là **bd issue riêng từng category** tạo TRƯỚC khi chạy case đầu — không chỉ để "trong đầu"/prose. `bd list --status=open` là bằng chứng cơ học không lờ được, khác cảnh báo hook (chỉ là text) |
+| `registry.md` | Thêm 3 slug: `tethertails`, `tethertails-portal`, `soundwise` |
+| `knowledge/tethertails.md`, `tethertails-portal.md`, `soundwise.md` | Tạo mới — trỏ thẳng ACCOUNTS.md/ELEMENT_MAP*/matrix_run_*.log/execution_results*.json đã có sẵn |
+| `qa-session-start/SKILL.md` | Thêm 3 dòng vào Project Name → Slug map |
+| `qa-preflight/SKILL.md` | Thêm "Rule P0 #2" — bắt buộc tra registry + grep ACCOUNTS/README/credentials/.env/ELEMENT_MAP TRƯỚC KHI hỏi user hoặc báo blocked |
+
+**Lưu ý cho lần sau:** (1)+(2) chưa có fix triệt để — hook + hard-block đã là mức mạnh nhất khả thi hiện có mà vẫn tái diễn; bd-issue-per-category là nỗ lực tiếp theo, cần theo dõi có còn tái diễn không sau fix này.
