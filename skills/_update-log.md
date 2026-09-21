@@ -155,3 +155,16 @@ Lịch sử thay đổi các skills — được ghi tự động bởi skill-up
 | AI-assisted failure triage / self-healing tools | **SKIP** — đã cover bởi `test-failure-triage`, `self-healing-test-automation` |
 
 **Kết luận full sweep hôm nay (4 domain: Playwright, Maestro, LLM/chatbot, QA process):** không còn skill mới nào đáng tạo thêm. Đã tạo `playwright-1.63-new-apis` + fix 5 skill outdated (4 QA catalog + 1 dev catalog) trong các session trước cùng ngày.
+
+## 2026-09-21 (session 6) — Maestro đào sâu lại: 2 version bị bỏ sót (2.9.0, 2.10.0)
+
+User hỏi lại riêng "Maestro có gì mới đặc biệt không" — lần trước chỉ check các tool-level feature (MCP, Studio, MaestroGPT) mà bỏ sót 2 bản CLI mới nhất chưa release lúc đó. Fetch trực tiếp `maestro.dev/blog/changelog` phát hiện:
+
+| Version | Date | Finding |
+|---|---|---|
+| 2.10.0 | 9 Sep 2026 | `--device-os` nhận full path `system-images;<api>;<tag>;<abi>` thay vì chỉ bare API level; `--android-api-level`/`--ios-version`/`--os-version` deprecated |
+| 2.9.0 | 31 Aug 2026 | 4 command mới: `setDarkMode`/`toggleDarkMode`/`assertDarkMode`/`assertLightMode` — switch+assert theme NGAY TRONG 1 flow (iOS/Android/Web) |
+
+Grep xác nhận `maestro-mobile/SKILL.md` (skill chính, có version timeline table) hoàn toàn không có 2 version này lẫn từ khóa "dark"/"device-os full path". **UPDATED `maestro-mobile`**: thêm section Dark Mode Testing + section Android system image targeting + 2 dòng vào version timeline table + nguồn.
+
+2.7.0/2.8.0 (AI-agent Cloud debug, swipe point-in-element) đã cover đầy đủ từ trước — không đổi gì thêm ở đó.
