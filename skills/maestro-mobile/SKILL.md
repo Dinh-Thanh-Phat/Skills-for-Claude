@@ -772,6 +772,45 @@ across N devices for a single `maestro test` invocation, while this fix targets 
 independent `maestro test` processes (e.g. different suites, different CI jobs) against local iOS
 simulators at the same time.
 
+## Dark Mode Testing (2.9.0)
+
+"One of the most requested authoring features since 2023" — a flow can now switch appearance
+mid-run and assert both themes without a separate flow/device profile per mode. Works on iOS,
+Android, and Web:
+
+```yaml
+- setDarkMode: enabled     # or: disabled
+- assertVisible: "Settings"
+- assertDarkMode           # fails the flow if the device isn't actually in dark mode right now
+- toggleDarkMode           # flips whichever mode is currently active
+- assertLightMode
+```
+
+Use this instead of the old workaround of duplicating a flow per theme or pre-setting device
+appearance outside Maestro (`adb shell cmd uimode night yes` / simulator defaults) — those still
+work but can't switch *within* a running flow to catch state that only breaks on the transition
+(e.g. a chart re-render, a cached-color flash).
+
+## Targeting a Specific Android System Image (2.10.0)
+
+`--device-os` (on `maestro cloud` and `maestro start-device`) now accepts a full system-image path,
+not just a bare API level — lets you pin the exact image (Play Store vs AOSP variant, specific ABI)
+instead of whatever the version-shaped value resolves to:
+
+```bash
+# Old form — still works unchanged, resolves to Maestro's default image for that API level
+maestro cloud --device-os "android-34" flows/
+
+# New in 2.10.0 — full path: system-images;<api-level>;<tag>;<abi>
+maestro cloud --device-os "system-images;android-34;google_apis_playstore;arm64-v8a" flows/
+maestro start-device --device-os "system-images;android-34;google_apis_playstore;arm64-v8a"
+```
+
+Maestro Cloud supports API levels 29/30/31/33/34/35/36, tags `google_apis` or
+`google_apis_playstore`, ABI `arm64-v8a`. Locally, any image `sdkmanager` can install is fair game
+(downloaded on demand). `--android-api-level`/`--ios-version`/`--os-version` still work but now emit
+a deprecation warning — migrate to `--device-os`.
+
 ## Anti-Patterns to Avoid
 
 ```yaml
