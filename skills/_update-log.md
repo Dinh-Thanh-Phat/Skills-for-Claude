@@ -227,3 +227,17 @@ User yêu cầu đọc lại conversation lúc làm TetherTails + Soundwise, t�
 User yêu cầu "fix lại các issues đang mắc phải trong automation testing workflow". Rà lại toàn bộ fix trong ngày, phát hiện 1 lỗ hổng còn sót: "chạy full nhưng dừng giữa chừng" (issue 2 từ session 8) trước đó chỉ được xử lý ở góc độ HÀNH VI (tự ý dừng sớm rồi báo xong → bd-issue-per-category gate ở `qa-router`), nhưng còn 1 nguyên nhân CƠ HỌC khác chưa fix: lệnh Bash/PowerShell chạy đồng bộ có timeout mặc định 120s (tối đa 600s) — 1 suite "full" thường chạy lâu hơn mức đó, nên bị cắt ngang bởi chính giới hạn tool chứ không phải do tôi tự dừng. `qa-preflight`/`playwright-test-workflow` trước đó KHÔNG có hướng dẫn nào về `run_in_background`.
 
 **Fix:** thêm "Rule P0 #3" vào `qa-preflight` — bắt buộc ước lượng thời gian trước khi chạy, nếu >90s hoặc gắn nhãn "full" → PHẢI `run_in_background: true`, không chạy đồng bộ mặc định. Ghi rõ đây là nguyên nhân KHÁC (mechanical, không phải self-restraint) gây cùng 1 triệu chứng — cả 2 phải fix song song, không thay thế nhau.
+
+## 2026-09-21 (session 11) — Rà lại logic thứ tự routing web+mobile trong qa-router, fix 5 lỗi
+
+User hỏi thứ tự chạy automation testing (web+mobile) có ổn/logic không. Đọc lại toàn bộ `qa-router` (entry point duy nhất cho mọi QA task), tìm ra 5 vấn đề:
+
+| # | Vấn đề | Fix |
+|---|---|---|
+| 1 | **Lỗi routing thật sự**: nhánh "Chạy test/run suite" trỏ tới `playwright-test-workflow` — skill đó là orchestrator VIẾT test mới, không phải để chạy suite có sẵn | Viết lại nhánh: tách "đã có test"/"chưa có test", route đúng — đã có → `qa-preflight` (áp Rule P0#3 background) → execute → `qa-quick-report`; chưa có → sang nhánh viết test |
+| 2 | Decision tree không cross-ref bảng Hard-block rules ("full case" → 8-category+bd-issue) — người theo sơ đồ cây (cách route tự nhiên) không thấy rule, có thể là lý do bug happy-path tái diễn dù rule tồn tại | Thêm inline pointer về Hard-block table vào CẢ nhánh "Chạy test" lẫn "Mobile testing" |
+| 3 | Nhánh "Viết test cases" kết thúc ở `qa-e2e-complete` (viết code) rồi dừng, không nói phải CHẠY để confirm pass | Thêm bước khép vòng: viết xong → quay lại nhánh "Chạy test" để chạy thật trước khi báo xong |
+| 4 | Nhánh Debug không link `feedback_test-rerun-discipline` — đúng lúc dễ full-rerun nhất (sau khi fix) lại thiếu nhắc canary-only | Thêm bước rerun canary-only sau "đã fix xong" trong nhánh Debug |
+| 5 | Mobile branch không nhắc đọc MANDATORY gate của `maestro-mobile` trước khi viết/chạy | Thêm pointer rõ ràng vào nhánh Mobile testing |
+
+Cập nhật section "Cross-references" cuối file cho khớp với routing mới (Chạy test có sẵn ≠ Viết test mới, đều explicit hơn).
