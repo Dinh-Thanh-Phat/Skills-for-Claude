@@ -241,3 +241,19 @@ User hỏi thứ tự chạy automation testing (web+mobile) có ổn/logic khô
 | 5 | Mobile branch không nhắc đọc MANDATORY gate của `maestro-mobile` trước khi viết/chạy | Thêm pointer rõ ràng vào nhánh Mobile testing |
 
 Cập nhật section "Cross-references" cuối file cho khớp với routing mới (Chạy test có sẵn ≠ Viết test mới, đều explicit hơn).
+
+## 2026-09-21 (session 12) — Đóng nốt lỗ hổng enforcement: Stop hook chặn khi còn bd issue mở
+
+User yêu cầu "fix full hoặc restructure nếu cần" sau khi nghe đánh giá thành thật: bd-issue-per-category (session 11) vẫn chỉ là prose rule trong skill — không có gì bắt tôi thực sự check `bd list --status=open` trước khi báo xong, cùng loại lỗ hổng với hook `qa-coverage-gate.py` cũ (chỉ chèn cảnh báo lúc prompt-submit, không verify compliance).
+
+**Fix — dùng skill `update-config` để tạo Stop hook mới:**
+
+| File | Nội dung |
+|---|---|
+| `C:/Users/wi/.claude/hooks/qa-coverage-stop-gate.py` (MỚI) | Stop hook: chạy `bd list --status=open --label qa-coverage --json`, nếu còn issue mở → `decision: block` kèm lý do + danh sách issue, bắt đóng hoặc giải thích trước khi kết thúc turn. Không có issue mở → exit 0 im lặng (zero friction) |
+| `C:/Users/wi/.claude/settings.json` | Đăng ký `hooks.Stop` mới, giữ nguyên `UserPromptSubmit` cũ — 2 hook giờ bọc CẢ 2 đầu: prompt-time reminder + completion-time enforcement |
+| `qa-router/SKILL.md` | Sửa rule bd-issue-per-category: bắt buộc `--labels qa-coverage,<category>` khi tạo issue — đây là marker Stop hook dùng để match, tránh false-positive với các bd issue khác (không phải QA) |
+
+**Verify đã làm:** pipe-test cả 2 case (không có issue mở → exit 0; tạo issue test có label qa-coverage → `decision:block` đúng nội dung, list đúng ID) trên `bd` thật của repo Duy, cleanup xong. Validate JSON schema settings.json bằng python (máy không có `jq`). Chưa live-fire được trong session (Stop hook chạy ngoài turn hiện tại) — cần user mở `/hooks` 1 lần hoặc restart để settings watcher pick up.
+
+**Khác biệt với fix trước:** đây là enforcement CƠ HỌC thật sự đầu tiên cho vấn đề happy-path-only/partial-run — harness (không phải tôi) chặn việc kết thúc turn, giống hệt tầm enforce của `qa-coverage-gate.py` nhưng ở đầu HOÀN THÀNH thay vì đầu BẮT ĐẦU.
