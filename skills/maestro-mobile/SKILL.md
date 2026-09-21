@@ -42,27 +42,36 @@ suite**, on every project, no exception:
    `*/automation/`) for one that already covers the scenario. Extend/re-run it; only author new when
    nothing already exists. This is a session-to-session persistence check, distinct from #1 below
    (which is about not re-discovering elements *within* one session).
-1. **Phase 0 onboarding (first time on a project, or no `ELEMENT_MAP*.md` exists yet): one single
-   pass that does navigation + FULL element harvest together, not two separate passes.** Walk every
-   main screen/tab once; at each screen, before moving on, dump the FULL hierarchy right there
-   (`maestro hierarchy` or Studio Inspector) and note any business-logic quirk you notice — don't
-   just note the nav path and move on. **Why merge them:** the expensive part is getting to that
-   screen (login/navigate, ~30-40s), not the dump itself (near-zero marginal cost once you're already
-   there) — so harvesting every element on every screen you naturally pass through costs almost
-   nothing extra over just mapping navigation, and skipping it means paying full login/navigate again
-   later just to get the elements you skipped. This does NOT mean recursively chasing every possible
-   modal/edge-state/permission×tier combination — that requires deliberately engineering a state, which
-   IS expensive; only harvest what you land on naturally while walking the main flows.
+1. **Onboarding a module you haven't harvested yet (check per-MODULE, not per-project — a project
+   having `ELEMENT_MAP_A.md` says nothing about whether module B is covered): one single pass that
+   does navigation + FULL element harvest together, not two separate passes.** Walk every screen/tab
+   of that module once; at each screen, before moving on, dump the FULL hierarchy right there
+   (`maestro hierarchy` or Studio Inspector) — don't just note the nav path and move on. **Why merge
+   them:** the expensive part is getting to that screen (login/navigate, ~30-40s), not the dump itself
+   (near-zero marginal cost once you're already there) — so harvesting every element on every screen
+   you naturally pass through costs almost nothing extra over just mapping navigation, and skipping it
+   means paying full login/navigate again later just to get the elements you skipped. This does NOT
+   mean recursively chasing every possible modal/edge-state/permission×tier combination — that
+   requires deliberately engineering a state, which IS expensive; only harvest what you land on
+   naturally while walking the module's main flows.
 
-   **The output MUST be saved to a durable, checkable file and reused on every future run — never
-   re-harvested from scratch.** Save each module's dump to `ELEMENT_MAP_<module>.md` (or one
-   `ELEMENT_MAP.md` for a small app) in the project's automation folder, committed to disk (not just
-   held in the conversation). Before writing or running ANY flow, on ANY session — including a brand
-   new session days later — `ls`/glob for `ELEMENT_MAP*.md`/`*AUTOMATION_MAP*.md` in the project dir
-   FIRST and read the relevant one; only dump again if the specific element you need genuinely isn't
-   in it (UI changed, or that screen wasn't covered in the original pass). Re-harvesting an already-
-   mapped screen "just to be safe" every run is exactly the waste this gate exists to prevent —
-   trust the saved file until it's proven stale (an element it documents no longer matches).
+   **Two different outputs go to two different places — don't conflate them:**
+   - Element/selector data → `ELEMENT_MAP_<module>.md` in the project's automation folder (project-
+     local; this is what flows are authored from).
+   - Any business-logic quirk you notice along the way (permission behavior, env facts like "staging
+     doesn't charge money," anything a human would otherwise have to re-explain) → append it to
+     `knowledge/[slug].md` (`~/.claude/shared-context/knowledge/`), NOT into the ELEMENT_MAP file —
+     that's the file `qa-session-start` actually reads at the top of a session; a quirk buried only in
+     an ELEMENT_MAP is invisible to that lookup and gets re-asked later (see the registry/knowledge
+     gap fixed earlier — don't recreate a second, undiscoverable copy of that same problem).
+
+   **The ELEMENT_MAP output MUST be reused on every future run — never re-harvested from scratch.**
+   Before writing or running ANY flow for a module, on ANY session — including a brand new session
+   days later — `ls`/glob for that module's `ELEMENT_MAP*.md`/`*AUTOMATION_MAP*.md` FIRST and read it;
+   only dump again if the specific element you need genuinely isn't in it (UI changed, or that screen
+   wasn't covered in the original pass). Re-harvesting an already-mapped screen "just to be safe"
+   every run is exactly the waste this gate exists to prevent — trust the saved file until it's proven
+   stale (an element it documents no longer matches).
 2. **Group flows by auth state before writing them** — `maestro-auth-state-strategy`. One login per
    account/session, chain everything that account needs via `runFlow` attach (no `launchApp`/
    `clearState`) instead of a fresh login per flow. If you're about to write a flow that starts with
