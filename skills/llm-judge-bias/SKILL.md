@@ -17,22 +17,22 @@ description: Identify, measure, and mitigate the five key biases that corrupt LL
 
 ## Cross-Family Judge Selection (Most Important Rule)
 
-**Never use the same model family to judge its own outputs.**
+**Never use the same model family to judge its own outputs.** Model names below are illustrative — always substitute the *current* generation for each family, not these specific ones (they will age; the family-separation rule won't).
 
 | Evaluated system | Use this judge |
 |-----------------|---------------|
-| GPT-4o / GPT-4 | Claude Sonnet or Gemini 1.5 Pro |
-| Claude Sonnet / Opus | GPT-4o or Gemini Ultra |
-| Llama 3 / Mistral / open-source | GPT-4o-mini or Claude Haiku (cost-effective) |
+| An OpenAI-family model | A Claude or Gemini-family model |
+| A Claude-family model | An OpenAI or Gemini-family model |
+| Llama / Mistral / open-source | A cheap cross-family model (cost-effective) |
 | Unknown / mixed | Rotate judges per eval run; flag consistency |
 
 ## Frontier vs Small Judge — Cost Tiers
 
 | Context | Judge model | Rationale |
 |---------|-------------|-----------|
-| Per-PR CI gate | GPT-4o-mini / Claude Haiku | 10–50× cheaper; adequate for regression detection |
-| Release / milestone eval | GPT-4o / Claude Opus | Highest fidelity; catches nuanced failures |
-| Production guardrail (real-time) | Claude Haiku (streaming) | <100ms latency; block before user sees output |
+| Per-PR CI gate | Current small/cheap tier of a cross-family model | 10–50× cheaper; adequate for regression detection |
+| Release / milestone eval | Current frontier tier of a cross-family model | Highest fidelity; catches nuanced failures |
+| Production guardrail (real-time) | Fastest cross-family model available (streaming) | <100ms latency; block before user sees output |
 
 > The judge must always be more capable than the evaluated model in the domain being assessed. Asking a weaker judge to grade a stronger model's domain output produces confident but wrong verdicts.
 
