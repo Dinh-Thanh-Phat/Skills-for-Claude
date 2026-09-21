@@ -19,6 +19,20 @@ tags: [qa, pre-flight, environment, playwright, maestro, mobile]
 >    này thường ĐÃ có creds/state từ lần chạy trước.
 > 3. Chỉ hỏi user hoặc báo blocked SAU KHI đã tìm và không thấy gì — không hỏi trước khi tìm.
 
+> **Rule P0 #3 — full/large suite PHẢI chạy `run_in_background: true` (hoặc tương đương), không
+> chạy đồng bộ mặc định.** Nguyên nhân cơ học của "chạy full nhưng dừng giữa chừng": lệnh chạy
+> đồng bộ (Bash/PowerShell) có timeout mặc định 120s (tối đa 600s) — một suite Playwright/Maestro
+> "full" thực tế thường CHẠY LÂU HƠN mức đó. Nếu không set `run_in_background`, lệnh bị cắt giữa
+> chừng khi hết timeout, và kết quả trả về trông giống "đã xong" (partial output) dù suite chưa
+> chạy hết — dễ bị hiểu nhầm/báo cáo nhầm là hoàn thành. Trước khi chạy:
+> 1. Ước lượng thời gian: số test case × thời gian trung bình 1 case (đo thực tế nếu chưa biết,
+>    xem [[feedback_timeout-discipline]] — không đoán).
+> 2. Nếu ước lượng > ~90s hoặc suite gắn nhãn "full"/"toàn bộ" → BẮT BUỘC `run_in_background: true`,
+>    chờ notification hoàn thành thay vì để timeout cắt ngang.
+> 3. Đây là nguyên nhân KHÁC với việc tự ý dừng sớm rồi báo "xong" (xem hard-block bd-issue-per-
+>    category ở `qa-router`) — cả 2 đều gây ra triệu chứng "chạy full mà dừng giữa chừng" nhưng
+>    root cause khác nhau, phải fix cả 2.
+
 ---
 
 ## Khi nào trigger
