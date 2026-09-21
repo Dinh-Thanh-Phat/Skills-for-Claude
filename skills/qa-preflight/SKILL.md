@@ -8,6 +8,17 @@ tags: [qa, pre-flight, environment, playwright, maestro, mobile]
 
 > **Rule P0:** Không chạy test khi chưa xác nhận môi trường. Mọi fail do môi trường đều lãng phí thời gian và tạo noise trong results.
 
+> **Rule P0 #2 — check file TRƯỚC KHI hỏi credentials hoặc nói "không chạy được".** Tái diễn:
+> project đã từng chạy được (có creds, có element map, có kết quả run trước) nhưng khi retest lại
+> hỏi lại từ đầu hoặc báo blocked — trong khi thông tin nằm sẵn trên đĩa. TRƯỚC khi hỏi user hoặc
+> báo "thiếu X":
+> 1. `qa-session-start` → tra project trong registry (`~/.claude/shared-context/registry.md`) +
+>    đọc `knowledge/[slug].md` nếu có.
+> 2. Nếu không có trong registry: grep thẳng project dir cho `ACCOUNTS.md`, `README.md`,
+>    `credentials/`, `.env`, `ELEMENT_MAP*.md`, `*_run_*.log`/`execution_results*.json` — các file
+>    này thường ĐÃ có creds/state từ lần chạy trước.
+> 3. Chỉ hỏi user hoặc báo blocked SAU KHI đã tìm và không thấy gì — không hỏi trước khi tìm.
+
 ---
 
 ## Khi nào trigger
