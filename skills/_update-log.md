@@ -133,3 +133,13 @@ Lịch sử thay đổi các skills — được ghi tự động bởi skill-up
 | `multimodal-chatbot-testing` | Layer 1 MLLM-as-a-Judge | "GPT-4V/GPT-4o" (GPT-4V đã deprecated/merge vào GPT-4o) → "current vision-capable model (OpenAI/Gemini/Claude)" |
 
 **Checked, KHÔNG stale (để khỏi re-flag lần sau):** `playwright-1.60/61/62/63-new-apis` (mỗi bản scope đúng version của nó, không mâu thuẫn nhau), `playwright-cli-agent`/`playwright-mcp-server` (claim "1.62+ bundles CLI/MCP" vẫn đúng dưới 1.63), `playwright-deprecated-selectors` vs `safe-locators` (bổ trợ, không mâu thuẫn), `ios-26-test-gotchas`, `android-16-qa-gate`, `maestro-mobile`.
+
+## 2026-09-21 (session 4) — Outdated-skill audit: generic dev catalog (D:\...\phat\phat\skills\, ~270 file)
+
+**Kết luận:** catalog này được maintain khá tốt — Next.js 16/Turbopack, React 19, Expo SDK 54, Swift 6.2, Laravel version table đều đúng/hiện hành. Chỉ 1 lỗi thật:
+
+| Skill | Vấn đề | Đã sửa |
+|---|---|---|
+| `expo-expo-api-routes.md:146` | Code example gọi OpenAI hard-code `model: "gpt-4"` (model đã deprecated) trong route mẫu duy nhất | Đổi thành `"gpt-4o"` + comment "illustrative — dùng model hiện hành, gpt-4 đã deprecated" |
+
+**User quyết định (đã hỏi):** KHÔNG set lịch tự động quét outdated 2 tháng/lần — chỉ chạy khi user yêu cầu trực tiếp ("quét skill"). Ghi nhớ preference này, đừng tự đề xuất lại lịch định kỳ trừ khi user đổi ý.
