@@ -123,6 +123,10 @@ User nói: "viết test cases", "test cases cho X", "generate tests"
          Chờ user confirm "ok viết automation"
                     ↓
               qa-e2e-complete (viết Playwright code)
+                    ↓
+         ⚠️ CHƯA XONG — quay lại nhánh "Chạy test / run suite" (nhánh ĐÃ CÓ)
+         để chạy thật + confirm PASS trước khi báo task hoàn thành. Viết code
+         xong mà chưa chạy qua lần nào = chưa biết code có chạy được hay không.
 ```
 
 > **Chuẩn deliverable là mặc định, không phải tuỳ chọn.** User đã xác nhận format này
