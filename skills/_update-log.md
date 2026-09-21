@@ -257,3 +257,14 @@ User yêu cầu "fix full hoặc restructure nếu cần" sau khi nghe đánh gi
 **Verify đã làm:** pipe-test cả 2 case (không có issue mở → exit 0; tạo issue test có label qa-coverage → `decision:block` đúng nội dung, list đúng ID) trên `bd` thật của repo Duy, cleanup xong. Validate JSON schema settings.json bằng python (máy không có `jq`). Chưa live-fire được trong session (Stop hook chạy ngoài turn hiện tại) — cần user mở `/hooks` 1 lần hoặc restart để settings watcher pick up.
 
 **Khác biệt với fix trước:** đây là enforcement CƠ HỌC thật sự đầu tiên cho vấn đề happy-path-only/partial-run — harness (không phải tôi) chặn việc kết thúc turn, giống hệt tầm enforce của `qa-coverage-gate.py` nhưng ở đầu HOÀN THÀNH thay vì đầu BẮT ĐẦU.
+
+## 2026-09-21 (session 13) — Gộp nav-map + element-harvest thành 1 lượt, ép reuse thay vì harvest lại
+
+Thảo luận với user về việc có nên "lấy all element + logic app + navigate trước" không. Ban đầu tôi đề xuất tách 2 lượt (nav map nhẹ trước, element-harvest chi tiết per-module sau) — user phản biện đúng: cái ĐẮT là login/navigate (~30-40s), không phải bản thân lệnh dump hierarchy (gần như miễn phí khi đã ở trên màn hình). Tách ra là lãng phí ngược — trả phí login/navigate 2 lần cho cùng 1 màn hình.
+
+**Sửa lại `maestro-mobile` MANDATORY gate (mục #1):**
+- Gộp "Phase 0 onboarding" thành **1 lượt duy nhất**: đi qua từng màn hình chính → dump full hierarchy NGAY tại đó (không tách lượt) → ghi cả business-logic quirk cùng lúc.
+- Giới hạn rõ: KHÔNG đệ quy chase mọi modal/edge-state/permission×tier combo (cái đó phải deliberately engineer state, mới thật sự đắt) — chỉ harvest những gì đi ngang qua tự nhiên.
+- **Yêu cầu mới của user, đã bake vào gate:** output PHẢI lưu file bền (`ELEMENT_MAP_<module>.md`) và **BẮT BUỘC check/reuse file đó ở MỌI session sau, kể cả session hoàn toàn mới vài ngày sau** — không harvest lại "cho chắc" mỗi lần chạy. Chỉ dump lại khi có bằng chứng cụ thể element trong map không còn đúng (UI đổi), không phải mặc định.
+
+`maestro-element-harvest` skill đã sẵn đúng nguyên tắc này ("harvest 1 lần → cache → không bao giờ dump lại") — không cần sửa, chỉ cần `maestro-mobile` trỏ đúng.
