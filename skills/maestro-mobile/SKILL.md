@@ -30,10 +30,18 @@ slow — evidence, not theory:
   round-trips, one screen at a time, instead of one `maestro hierarchy`/Studio harvest pass — and
   failing sections got **re-run whole** (3×, 3×, 2×) instead of retesting only the failed IDs.
 
-Both projects hit exactly the failure modes these 3 skills already exist to prevent. The fix isn't
-"remember better" — it's **stop and do these 3 checks before the first flow/dump of any new
+Both projects hit exactly the failure modes these skills already exist to prevent. The fix isn't
+"remember better" — it's **stop and do these 4 checks before the first flow/dump of any new
 suite**, on every project, no exception:
 
+0. **Check for already-saved flows FIRST, across sessions — not just within one.** TetherTails:
+   user asked "have you saved the automation script so next time you just run it" **3 separate
+   times** across different sessions (24-Aug, 27-Aug, 03-Sep) — meaning flows kept getting
+   re-authored/re-discovered from scratch instead of being found and reused. Before writing ANY new
+   flow: `ls`/glob the project's flows directory (e.g. `app-automation/flows/**/*.yaml`,
+   `*/automation/`) for one that already covers the scenario. Extend/re-run it; only author new when
+   nothing already exists. This is a session-to-session persistence check, distinct from #1 below
+   (which is about not re-discovering elements *within* one session).
 1. **Harvest elements ONCE, up front** — `maestro-element-harvest`. Never interleave ad-hoc dumps
    with flow-writing; that pays the login/navigate cost again every time you need one more element.
 2. **Group flows by auth state before writing them** — `maestro-auth-state-strategy`. One login per
@@ -47,7 +55,7 @@ suite**, on every project, no exception:
    already passed.
 
 If a task looks like it'll produce more than ~5 flows or touch more than 1 account, this gate is not
-skippable — say explicitly which of the 3 you applied before starting.
+skippable — say explicitly which of the 4 you applied before starting.
 
 ## Quick Start
 
