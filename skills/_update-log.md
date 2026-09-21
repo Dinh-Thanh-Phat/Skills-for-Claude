@@ -168,3 +168,15 @@ User hỏi lại riêng "Maestro có gì mới đặc biệt không" — lần t
 Grep xác nhận `maestro-mobile/SKILL.md` (skill chính, có version timeline table) hoàn toàn không có 2 version này lẫn từ khóa "dark"/"device-os full path". **UPDATED `maestro-mobile`**: thêm section Dark Mode Testing + section Android system image targeting + 2 dòng vào version timeline table + nguồn.
 
 2.7.0/2.8.0 (AI-agent Cloud debug, swipe point-in-element) đã cover đầy đủ từ trước — không đổi gì thêm ở đó.
+
+## 2026-09-21 (session 7) — Structural fix: lesson lặp lại vì rải rác, không phải vá từng project
+
+**User complaint:** đã diagnose đúng nguyên nhân slow (per-flow login/clearState, ad-hoc element dump, full-section rerun) trên TetherTails + Soundwise — nhưng đây là **lặp lại** của lesson đã tự rút ra 84 ngày trước (`feedback_maestro-element-discovery-efficiency`). Fix skill đã tồn tại (`maestro-element-harvest`, `maestro-auth-state-strategy`, `feedback_test-rerun-discipline`) nhưng không được áp dụng lại vì chúng là skill vệ tinh, không ai bắt buộc đọc trước khi bắt đầu project mới. User yêu cầu: đừng vá từng project, làm fix áp dụng TỰ ĐỘNG trên mọi project.
+
+**Fix structural:**
+| File | Thay đổi |
+|---|---|
+| `maestro-mobile/SKILL.md` | Thêm section "🚦 MANDATORY gate" NGAY ĐẦU file (trước Quick Start) — bắt buộc 3 bước (harvest 1 lần / group theo auth-state / canary-only rerun) kèm bằng chứng cụ thể từ TetherTails+Soundwise, không skip được nếu >5 flow hoặc >1 account |
+| `qa-preflight/SKILL.md` | Mirror checklist ngắn vào section Maestro Mobile — bắt case đi thẳng vào test execution mà bỏ qua `maestro-mobile` |
+
+**Meta-lesson lưu vào memory (`feedback_bake-fix-into-entry-skill-not-scatter`):** khi 1 lesson chỉ nằm ở skill vệ tinh → sẽ bị bỏ qua lặp lại nhiều project. Phải bake enforcement vào ENTRY-POINT skill (skill có trigger khớp cách task thực sự được gọi), viết ở đầu file với bằng chứng cụ thể, không chỉ "xem thêm X".
