@@ -143,3 +143,15 @@ Lịch sử thay đổi các skills — được ghi tự động bởi skill-up
 | `expo-expo-api-routes.md:146` | Code example gọi OpenAI hard-code `model: "gpt-4"` (model đã deprecated) trong route mẫu duy nhất | Đổi thành `"gpt-4o"` + comment "illustrative — dùng model hiện hành, gpt-4 đã deprecated" |
 
 **User quyết định (đã hỏi):** KHÔNG set lịch tự động quét outdated 2 tháng/lần — chỉ chạy khi user yêu cầu trực tiếp ("quét skill"). Ghi nhớ preference này, đừng tự đề xuất lại lịch định kỳ trừ khi user đổi ý.
+
+## 2026-09-21 (session 5) — Domain còn lại: Test design & QA process
+
+**Research:** test case design techniques 2026, QA metrics, test automation tool trends 2026.
+
+| Finding | Quyết định |
+|---|---|
+| 5 kỹ thuật thiết kế test (equivalence/boundary/state-transition/pairwise/error-guessing) | **SKIP** — đã cover bởi `behavioral-coverage-matrix`, `pairwise-combinatorial-testing` |
+| QA metrics (flake rate, defect escape rate, mean-time-to-detect, automation ROI) | **SKIP** — đã cover đủ bởi `qa-suite-health-metrics` (đúng 5 metric) |
+| AI-assisted failure triage / self-healing tools | **SKIP** — đã cover bởi `test-failure-triage`, `self-healing-test-automation` |
+
+**Kết luận full sweep hôm nay (4 domain: Playwright, Maestro, LLM/chatbot, QA process):** không còn skill mới nào đáng tạo thêm. Đã tạo `playwright-1.63-new-apis` + fix 5 skill outdated (4 QA catalog + 1 dev catalog) trong các session trước cùng ngày.
