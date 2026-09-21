@@ -42,8 +42,27 @@ suite**, on every project, no exception:
    `*/automation/`) for one that already covers the scenario. Extend/re-run it; only author new when
    nothing already exists. This is a session-to-session persistence check, distinct from #1 below
    (which is about not re-discovering elements *within* one session).
-1. **Harvest elements ONCE, up front** — `maestro-element-harvest`. Never interleave ad-hoc dumps
-   with flow-writing; that pays the login/navigate cost again every time you need one more element.
+1. **Phase 0 onboarding (first time on a project, or no `ELEMENT_MAP*.md` exists yet): one single
+   pass that does navigation + FULL element harvest together, not two separate passes.** Walk every
+   main screen/tab once; at each screen, before moving on, dump the FULL hierarchy right there
+   (`maestro hierarchy` or Studio Inspector) and note any business-logic quirk you notice — don't
+   just note the nav path and move on. **Why merge them:** the expensive part is getting to that
+   screen (login/navigate, ~30-40s), not the dump itself (near-zero marginal cost once you're already
+   there) — so harvesting every element on every screen you naturally pass through costs almost
+   nothing extra over just mapping navigation, and skipping it means paying full login/navigate again
+   later just to get the elements you skipped. This does NOT mean recursively chasing every possible
+   modal/edge-state/permission×tier combination — that requires deliberately engineering a state, which
+   IS expensive; only harvest what you land on naturally while walking the main flows.
+
+   **The output MUST be saved to a durable, checkable file and reused on every future run — never
+   re-harvested from scratch.** Save each module's dump to `ELEMENT_MAP_<module>.md` (or one
+   `ELEMENT_MAP.md` for a small app) in the project's automation folder, committed to disk (not just
+   held in the conversation). Before writing or running ANY flow, on ANY session — including a brand
+   new session days later — `ls`/glob for `ELEMENT_MAP*.md`/`*AUTOMATION_MAP*.md` in the project dir
+   FIRST and read the relevant one; only dump again if the specific element you need genuinely isn't
+   in it (UI changed, or that screen wasn't covered in the original pass). Re-harvesting an already-
+   mapped screen "just to be safe" every run is exactly the waste this gate exists to prevent —
+   trust the saved file until it's proven stale (an element it documents no longer matches).
 2. **Group flows by auth state before writing them** — `maestro-auth-state-strategy`. One login per
    account/session, chain everything that account needs via `runFlow` attach (no `launchApp`/
    `clearState`) instead of a fresh login per flow. If you're about to write a flow that starts with
