@@ -18,6 +18,37 @@ Maestro is a declarative YAML framework for mobile E2E testing — no WebDriver,
 One YAML file runs on both iOS and Android. Built-in retry tolerance makes it far less flaky than
 Appium for most use cases.
 
+## 🚦 MANDATORY gate — do this BEFORE writing/running ANY flow, on ANY project
+
+This is not optional background reading. Skipping it is what made both TetherTails and Soundwise
+slow — evidence, not theory:
+
+- **TetherTails**: 23/23 `flows/petmgmt/*.yaml` each independently ran `launchApp: {clearState: true}`
+  + a full OTP-login `runFlow` at the top, instead of one warm session per account. clearState+login
+  is a fixed ~30-40s tax paid on *every single flow*, regardless of what it tests.
+- **Soundwise**: element discovery was done as 338 separate `adb shell uiautomator dump` + `pull`
+  round-trips, one screen at a time, instead of one `maestro hierarchy`/Studio harvest pass — and
+  failing sections got **re-run whole** (3×, 3×, 2×) instead of retesting only the failed IDs.
+
+Both projects hit exactly the failure modes these 3 skills already exist to prevent. The fix isn't
+"remember better" — it's **stop and do these 3 checks before the first flow/dump of any new
+suite**, on every project, no exception:
+
+1. **Harvest elements ONCE, up front** — `maestro-element-harvest`. Never interleave ad-hoc dumps
+   with flow-writing; that pays the login/navigate cost again every time you need one more element.
+2. **Group flows by auth state before writing them** — `maestro-auth-state-strategy`. One login per
+   account/session, chain everything that account needs via `runFlow` attach (no `launchApp`/
+   `clearState`) instead of a fresh login per flow. If you're about to write a flow that starts with
+   `launchApp: {clearState: true}` + a login `runFlow`, stop and check whether it can instead attach
+   to an already-logged-in session.
+3. **Never re-run a whole suite/section to retest a few failures** — `feedback_test-rerun-discipline`
+   / canary pattern. Re-run only the specific failed IDs/flows; a full-section rerun to confirm 2
+   fixed cases wastes the same login+navigate cost as the original run, times however many cases
+   already passed.
+
+If a task looks like it'll produce more than ~5 flows or touch more than 1 account, this gate is not
+skippable — say explicitly which of the 3 you applied before starting.
+
 ## Quick Start
 
 ```bash
