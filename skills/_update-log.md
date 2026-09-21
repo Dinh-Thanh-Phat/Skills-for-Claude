@@ -268,3 +268,9 @@ Thảo luận với user về việc có nên "lấy all element + logic app + n
 - **Yêu cầu mới của user, đã bake vào gate:** output PHẢI lưu file bền (`ELEMENT_MAP_<module>.md`) và **BẮT BUỘC check/reuse file đó ở MỌI session sau, kể cả session hoàn toàn mới vài ngày sau** — không harvest lại "cho chắc" mỗi lần chạy. Chỉ dump lại khi có bằng chứng cụ thể element trong map không còn đúng (UI đổi), không phải mặc định.
 
 `maestro-element-harvest` skill đã sẵn đúng nguyên tắc này ("harvest 1 lần → cache → không bao giờ dump lại") — không cần sửa, chỉ cần `maestro-mobile` trỏ đúng.
+
+## 2026-09-21 (session 14) — Đánh giá lại gate mobile: sửa 3 lỗi + thêm bảng tóm tắt chống lu mờ
+
+Tự đánh giá lại gate sau khi sửa nhiều lần trong ngày, tìm ra 3 vấn đề: (1) tên "Phase 0" trùng số với item #0 trong list gây rối, (2) điều kiện trigger "chưa có ELEMENT_MAP" mơ hồ per-project vs per-module, (3) business-logic quirk phát hiện lúc onboarding chỉ note vào ELEMENT_MAP (file cục bộ) thay vì `knowledge/[slug].md` — tái tạo đúng lỗ hổng "hỏi lại info đã có" vừa fix ở session trước. Đã sửa cả 3.
+
+User hỏi thêm "dài quá có ảnh hưởng không" — trả lời thật: không ảnh hưởng lookup/routing (skill chỉ load full khi trigger, không phải mọi turn như qa-router), NHƯNG có ảnh hưởng thật tới việc rule quan trọng bị chôn trong đoạn văn dài dễ bị đọc lướt bỏ sót — đúng root cause khiến qa-router từng bị bỏ qua. Thêm 1 bảng tóm tắt 4 dòng ngay đầu gate (mỗi dòng 1 hành động cốt lõi) — giữ nguyên phần prose chi tiết bên dưới cho ai cần đọc sâu, không xoá nội dung.
