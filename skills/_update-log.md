@@ -275,6 +275,10 @@ Tự đánh giá lại gate sau khi sửa nhiều lần trong ngày, tìm ra 3 v
 
 User hỏi thêm "dài quá có ảnh hưởng không" — trả lời thật: không ảnh hưởng lookup/routing (skill chỉ load full khi trigger, không phải mọi turn như qa-router), NHƯNG có ảnh hưởng thật tới việc rule quan trọng bị chôn trong đoạn văn dài dễ bị đọc lướt bỏ sót — đúng root cause khiến qa-router từng bị bỏ qua. Thêm 1 bảng tóm tắt 4 dòng ngay đầu gate (mỗi dòng 1 hành động cốt lõi) — giữ nguyên phần prose chi tiết bên dưới cho ai cần đọc sâu, không xoá nội dung.
 
+## 2026-09-21 (session 16) — CORRECTION: "23/23 flows clearState+login" was a false claim
+
+While live-checking the mobile flow on a real device (192.168.0.100:37423), re-measured TetherTails by grep: only 5/82 flows (all in `flows/petmgmt/`) use `clearState: true` + login `runFlow`; 56 use `clearState: false` (warm session by design). The "23/23" figure came from counting files in the folder (23) and assuming all matched, when an earlier grep in the same session had already shown 5 — I never reconciled the two. Corrected in `maestro-mobile` gate, `knowledge/tethertails.md`, memory `feedback_bake-fix-into-entry-skill-not-scatter`. Consequence: TetherTails' slowness was NOT mainly per-flow login; it was element re-discovery + whole-suite reruns. Gate item #2 (group by auth state) stays valid as general guidance but its TetherTails evidence was overstated. Lesson = existing `lesson_verify-the-instrument-before-the-finding`: reconcile every number against the raw grep before writing it into a skill.
+
 ## 2026-09-21 (session 15) — Verification pass: đọc lại full 3 file cùng lúc, tìm ra 2 lỗi thật
 
 User yêu cầu "check lại xem workflow đã thật sự ổn chưa" — đọc lại TOÀN BỘ `qa-router` + `qa-preflight` + `maestro-mobile` cùng lúc (không chỉ đọc từng phần vừa sửa) để tìm inconsistency giữa các lần sửa rải rác trong ngày. Tìm ra 2 lỗi thật:
