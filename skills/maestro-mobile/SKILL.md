@@ -859,6 +859,9 @@ maestro check-syntax flows/            # catches unsupported keys before a devic
 ```
 
 ## Sources
+- https://maestro.dev/blog/maestro-cli-2-10-0 — CLI 2.10.0 (9 Sep 2026): full system-image path for `--device-os`, legacy flags deprecated
+- https://maestro.dev/blog/maestro-cli-2-9-0 — CLI 2.9.0 (31 Aug 2026): dark mode commands, iOS/Android/Web
+- https://docs.maestro.dev/reference/commands-available/setdarkmode — `setDarkMode: enabled | disabled`
 - https://maestro.dev/blog — CLI 2.8.0 (6 Aug 2026): swipe from any point inside an element, variables in permissions and screenshot thresholds, Cloud upload/report reliability fixes; CLI 2.7.0 (27 Jul 2026): debug failing Cloud runs with your AI agent
 - https://docs.maestro.dev/reference/commands-available/swipe — `from.point` accepts `"50%, 85%"` (relative to the element's own bounds) or `"25, 75"` (pixel offset from its top-left); omitted → swipe starts at element centre; `direction` cannot be combined with `start`/`end`
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md — `maestro check-syntax`, `maestro chat`, `--reinstall-driver`, `--device-os`/`--device-model`, `--compact`, `MAESTRO_FILENAME` (1.39.0–1.40.0); parallel local iOS simulator fix + `--driver-host-port` (2.6.0); automatic per-step screenshots + failure hierarchy, leaner artifact bundle, Android native SIGSEGV crash detection, `maestro chat` discontinued (2.7.0)
