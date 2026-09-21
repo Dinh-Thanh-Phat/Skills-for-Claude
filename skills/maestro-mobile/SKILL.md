@@ -23,9 +23,12 @@ Appium for most use cases.
 This is not optional background reading. Skipping it is what made both TetherTails and Soundwise
 slow — evidence, not theory:
 
-- **TetherTails**: 23/23 `flows/petmgmt/*.yaml` each independently ran `launchApp: {clearState: true}`
-  + a full OTP-login `runFlow` at the top, instead of one warm session per account. clearState+login
-  is a fixed ~30-40s tax paid on *every single flow*, regardless of what it tests.
+- **TetherTails** (measured 2026-09-21 by grep, NOT assumed): only 5 of 82 flows do
+  `launchApp: {clearState: true}` + OTP-login `runFlow` (all in `flows/petmgmt/`, the delete/edit
+  flows that need a different account); the other 56 already use `clearState: false` = warm session.
+  So the suite's flow design was mostly fine — the recurring slowness there came from element
+  discovery and whole-suite reruns, not from per-flow login. clearState+login is still a ~30-40s tax
+  per flow that uses it, so don't add more of them.
 - **Soundwise**: element discovery was done as 338 separate `adb shell uiautomator dump` + `pull`
   round-trips, one screen at a time, instead of one `maestro hierarchy`/Studio harvest pass — and
   failing sections got **re-run whole** (3×, 3×, 2×) instead of retesting only the failed IDs.
