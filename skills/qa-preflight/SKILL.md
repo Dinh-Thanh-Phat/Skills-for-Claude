@@ -101,7 +101,7 @@ tags: [qa, pre-flight, environment, playwright, maestro, mobile]
 
 □ Endpoints
   - Base URL đúng không?
-  - Model version đúng không? (chatbot: GPT-4 vs GPT-3.5)
+  - Model version đúng không? (chatbot: model đời mới hơn/mắc hơn vs đời rẻ hơn config trong .env)
 
 □ Rate Limits
   - Số lượng test cases có vượt rate limit không?
