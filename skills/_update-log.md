@@ -108,3 +108,13 @@ Lịch sử thay đổi các skills — được ghi tự động bởi skill-up
 | `.claude/skills/fe-component-builder/`, `.claude/skills/figma-to-code/` bị tạo nhầm trong repo Duy (Python/FastAPI agent, không phải FE project); `figma-to-code` hard-code "React + Tailwind" sai ngữ cảnh | Move cả 2 sang `~/.claude/skills/` (global) — nơi hợp lý hơn cho skill FE generic; xoá khỏi repo Duy |
 | `skills/maestro-speed-optimization.md` (project-local flat file) bị lag phía sau bản global — thiếu cảnh báo phân biệt với `maestro-element-harvest`, thiếu phần "ĐO trước khi tin optimization" | Overwrite bằng nội dung `~/.claude/skills/maestro-speed-optimization/SKILL.md` |
 | `skills/maestro-android-windows-gotchas.md`, `maestro-test-scaling.md`, `maestro-auth-state-strategy/` chỉ là flat knowledge file, không phải skill invoke-được, không có bản global tương ứng | Giữ nguyên (khớp memory reference_maestro-*) — không phải bug, đã xác nhận là chủ ý |
+
+## 2026-09-21 (session 2) — Web scan for new/updated skills
+
+**Research domains:** Playwright, Maestro mobile, LLM agent testing (theo focus domains của `daily-skill-evolution`).
+
+| Domain | Finding | Quyết định |
+|---|---|---|
+| Playwright | Playwright 1.63 released 2026-09-04: test locks, cross-frame locators (no-selector `frameLocator()`), `Locator.visible()`, `test.step()` subtitle/params, selective trace snapshots + aria trace viewer mode, `ariaSnapshotJSON()`, `--add-reporter` | **CREATED** `playwright-1.63-new-apis` — theo đúng format của 1.60/1.61/1.62 |
+| Maestro mobile | MCP server, MaestroGPT self-healing, Studio redesign (contextual autocomplete Apr 2026), Android 15/16, iOS 26 | **SKIP** — đã cover đủ bởi `maestro-mcp-workflow`, `maestro-studio`, `android-16-qa-gate`, `ios-26-test-gotchas` |
+| LLM agent testing | Trace/span-level eval, tool-calling correctness, 5-10 run semantic-similarity distribution testing | **SKIP** — đã cover bởi `llm-agent-trace-eval`, `llm-agent-trajectory-eval`; ngưỡng "nhiều lượt đo" đã khớp `feedback_chatbot-measure-8-runs-not-3` |
