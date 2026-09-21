@@ -199,3 +199,25 @@ Grep xác nhận `maestro-mobile/SKILL.md` (skill chính, có version timeline t
 | `qa-preflight/SKILL.md` | Thêm "Rule P0 #2" — bắt buộc tra registry + grep ACCOUNTS/README/credentials/.env/ELEMENT_MAP TRƯỚC KHI hỏi user hoặc báo blocked |
 
 **Lưu ý cho lần sau:** (1)+(2) chưa có fix triệt để — hook + hard-block đã là mức mạnh nhất khả thi hiện có mà vẫn tái diễn; bd-issue-per-category là nỗ lực tiếp theo, cần theo dõi có còn tái diễn không sau fix này.
+
+## 2026-09-21 (session 9) — Đào transcript thô TetherTails + Soundwise (2 agent nền, ~1.7GB text)
+
+User yêu cầu đọc lại conversation lúc làm TetherTails + Soundwise, tự đánh giá cần update gì. 2 agent grep transcript JSONL gốc (extract user-text only, loại boilerplate/compaction noise), cross-check với MEMORY.md để tránh báo lại pattern đã biết.
+
+**TetherTails — 3 finding mới:**
+| Finding | Fix |
+|---|---|
+| User hỏi 3 lần riêng biệt (24-Aug/27-Aug/03-Sep) "có lưu automation script để lần sau chạy không" — chưa từng được fix triệt để | Thêm mục #0 vào `maestro-mobile` MANDATORY gate: check flows đã lưu trên đĩa TRƯỚC khi viết flow mới (khác với #1 harvest-element — đây là persistence CROSS-SESSION, không phải trong 1 session) |
+| "Đã nói rất nhiều lần" — staging không charge tiền, multi-account cần account thứ 2 không phải máy thứ 2, destructive/RPC được phép trên staging — 3 fact này KHÔNG có ở đâu trong memory | Thêm section "Staging environment facts" vào `knowledge/tethertails.md` |
+| Voice note chỉ người tạo mới thấy — mention 1 lần, chưa verify lại | Ghi vào `knowledge/tethertails.md` mục "Unverified — needs reconfirm" |
+
+**Soundwise — 5 finding mới:**
+| Finding | Fix |
+|---|---|
+| Nav-away-back báo PASS persistence (profile bio) nhưng thực ra là bug — chỉ lộ ra khi force-stop+relaunch thật | **NEW** `lesson_android-persistence-needs-cold-relaunch` — áp dụng CHUNG mọi Android app, không riêng Soundwise |
+| `uiautomator dump` trả stale content khi đang transition/đang phát audio (không chỉ miss popup) | Thêm "second trigger condition" vào `lesson_uiautomator_diff_misses_popup_windows` |
+| Device khoá/dozing chặn adb input, không tự phát hiện được | Thêm vào `knowledge/soundwise.md` — dumpsys power/window check + mitigate bằng screen_off_timeout |
+| User hỏi 2 lần "đã lưu automation scripts chưa" | Thêm "Deliverable convention" vào `knowledge/soundwise.md` — verify bằng `ls` trước khi báo done |
+| Brand list thiếu Herr Professor/Arika/Relax Change | Thêm vào `project_soundwise-whitelabel-qa.md` (low priority, chỉ backfill fact) |
+
+**Không tìm thấy pattern mới nào khác sau khi loại các finding đã biết** (happy-path-only, partial-run, per-flow relogin, ad-hoc dump, full-section rerun, prod-no-delete, two-pass-verify) — 2 agent confirm rõ ràng, không manufacture finding để lấp chỗ trống.
