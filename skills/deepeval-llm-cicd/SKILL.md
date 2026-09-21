@@ -343,7 +343,7 @@ from `llm-judge-bias` (single-output scoring calibration) and the threshold-base
 
 ## Controlling the Judge Model (Cost vs Accuracy)
 
-DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
+DeepEval defaults to whichever OpenAI model its current version ships as default (this has changed across DeepEval releases — check `deepeval --version` / the DeepEval docs rather than assuming a specific model name). Swap models to balance cost and accuracy:
 
 ```python
 from deepeval.models import GPTModel
