@@ -79,3 +79,25 @@ at the top of the `maestro-mobile` skill before adding more flows to this projec
   flows.
 - **Next step**: unclear — resume from `00_COVERAGE_MATRIX.md`/`99_OPEN_ITEMS_AND_QUESTIONS.md` in
   the parent `TetherTails/` folder for what's still open.
+
+## Live verification of the 5 clearState+login flows (2026-09-21, same device) — DONE
+- `petmgmt/23, 22, 21` PASS (PET_NAME=Simba, non-mutating). `petmgmt/01` -> `20` (create `TEST_AUTO_Milo` then hard delete) PASS.
+  `petmgmt/14` (move to Memory) ran through the move + memorial-view asserts, then failed ONLY on a stale
+  assertion `of 2 pets used`: account 70000034 now shows **"1 of 5 pets used" + "Care plan"** (was Free, cap 2).
+  Fixed to `of [0-9]+ pets used`; tail re-verified (memorial pet shows "In memory"; memorial pet not counted in cap).
+- Other flows still hard-code `of 2 pets used` (`petmgmt/03`, `suba/09`, `suba/_assert/entitlements-free`,
+  `subscriptions/pet-cap-and-gating`, `lostpet/09,12` comments): valid only on a genuinely FREE account. Account tier
+  drifts after suba/subscription flows upgrade it -> check the plan chip before trusting/failing those.
+- clearState+login costs ~70s per flow; `login.yaml` already calls dismiss-popups, so the extra call after it in those 5 is redundant (harmless, +3s).
+- Leftover on staging: memorialized `TEST_AUTO_Milo` on 70000034 (uses no cap). Simba untouched.
+- Gotcha: a `cmd &` inside a `run_in_background` Bash orphans the process (the tool reports "completed" while the loop still drives the device) -> two runs collided on one device. Run in background WITHOUT `&`; check `Get-CimInstance Win32_Process` for stray java/maestro before starting.
+
+## Dedup redundant dismiss-popups call (2026-09-22) — DONE
+- `login.yaml` already calls `dismiss-popups.yaml` internally TWICE (right after OTP-submit, and again
+  after the Home hydrate wait) — so the extra `- runFlow: ../_setup/dismiss-popups.yaml` I added after
+  `runFlow: login.yaml` in the 5 clearState+login flows (`petmgmt/14,20,21,22,23`) was a 3rd, redundant
+  call (~3s wasted each, since `extendedWaitUntil ... optional:true` waits out its timeout when the
+  popup isn't there).
+- Removed that line from all 5 flows (backup: `_backup/flows_before_dismiss_dedup_20260922`).
+  `check-syntax` OK on all 5. Re-ran the 3 non-mutating ones on device (Simba, no mutation):
+  `23`=105s, `22`=115s, `21`=115s, all exit=0 — no popup leaked through, no regression.

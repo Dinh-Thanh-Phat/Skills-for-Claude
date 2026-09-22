@@ -293,3 +293,10 @@ User yêu cầu "check lại xem workflow đã thật sự ổn chưa" — đọ
 **Verify cơ học (không chỉ đọc):** `bd list --status=open --label qa-coverage` → rỗng (không còn issue test sót lại từ lúc pipe-test hook). Hook `qa-coverage-stop-gate.py` chạy lại → exit 0 sạch. `settings.json` parse lại bằng Python → Stop hook + UserPromptSubmit hook đều đúng cấu trúc.
 
 **Kết luận:** sau verification pass, workflow web+mobile hiện đã nhất quán giữa các file — không còn cross-reference gãy hay checklist lệch nhau. Vẫn còn 2 điều chưa verify được từ bên trong session này: (a) user chưa mở `/hooks` để nạp Stop hook mới, (b) chưa có lần chạy thật nào để confirm behavior thực tế khớp với những gì skill mô tả.
+
+## Session 18 (2026-09-21) — live run of the 5 clearState+login flows
+- petmgmt 23/22/21/01/20 pass on device; 14 passes after fixing stale `of 2 pets used` -> regex (acct tier now Care, cap 5). Details in knowledge/tethertails.md.
+- Lesson: don't add `&` inside run_in_background (orphaned run collided with the rerun); kill stray maestro/java before rerun.
+
+## Session 19 (2026-09-22) — removed redundant dismiss-popups call in 5 clearState flows
+- login.yaml already dismisses popups twice internally; the extra call I'd added earlier in petmgmt/14,20,21,22,23 was dead weight (~3s/flow). Removed + verified 23/22/21 on device (105-115s each, exit=0). Backup: _backup/flows_before_dismiss_dedup_20260922.
