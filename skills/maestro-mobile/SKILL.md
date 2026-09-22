@@ -43,6 +43,7 @@ suite**, on every project, no exception:
 | 1 | For a module with no `ELEMENT_MAP_<module>.md` yet: one pass, nav + full hierarchy dump together, per screen. Reuse the saved map forever after — never re-dump a mapped screen "to be safe" | ↓ |
 | 2 | Group flows by auth state — one login/session via `runFlow` attach, not `launchApp+clearState` per flow | ↓ |
 | 3 | A failure → rerun only that flow/ID, never the whole suite/section | ↓ |
+| 4 | Never `maestro test flows/<folder>` across MULTIPLE modules/accounts in one invocation — see below | ↓ |
 
 0. **Check for already-saved flows FIRST, across sessions — not just within one.** TetherTails:
    user asked "have you saved the automation script so next time you just run it" **3 separate
