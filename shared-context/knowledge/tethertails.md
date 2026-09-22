@@ -101,3 +101,31 @@ at the top of the `maestro-mobile` skill before adding more flows to this projec
 - Removed that line from all 5 flows (backup: `_backup/flows_before_dismiss_dedup_20260922`).
   `check-syntax` OK on all 5. Re-ran the 3 non-mutating ones on device (Simba, no mutation):
   `23`=105s, `22`=115s, `21`=115s, all exit=0 — no popup leaked through, no regression.
+
+## Full-suite batch run 2026-09-22 — INVALID RESULT, methodology bug found (read before trusting any "X/57" count)
+- Ran all 8 remaining modules (57 flows) via `maestro test flows/<module>` (whole-folder mode), sequentially,
+  in background, no stop. Raw result: 8 PASS / 49 FAIL. **This count is NOT trustworthy — do not cite it.**
+- Root cause #1 (confirmed): whole-folder invocation drops per-flow `-e` params. ~14 flows
+  (`petmgmt/06,07,08,09,10,11,12,14,17,18,20,21,22,23`, `household/invite-member`, `lostpet/15`) require
+  `${PET_NAME}` (or other env) with NO default -> tap-on-empty-string failures. Confirmed root cause, not
+  an app bug.
+- Root cause #2 (confirmed via screenshot + hierarchy dump): **account-bleed across modules**. The household
+  "QC HH" has multiple accounts (Owner, Free1=?, Free2=?, Free3=70000036...) each seeing a different pet
+  set. A flow inside the batch (`subscriptions/plans`) did an internal `clearState:true` login to a
+  different account; subsequent modules in the same batch run assumed `clearState:false` (continue with
+  whatever session is active) and inherited the WRONG account, so fixed pet names ("pet 1", "gh", etc.)
+  the flow author wrote for THAT flow's specific account weren't visible under the wrong one. This is
+  exactly what `reference_maestro-auth-state-strategy` (group flows by required auth state/account before
+  batching) exists to prevent — violated it by batching all 8 modules with no account grouping.
+- Correction to an earlier note in this same file: I originally guessed "15 pets = my own test-data
+  clutter" — WRONG. `VerifyPet1/2`, `QA_CRUD_Pet`, `bb`, `gh`, `Simba` are pre-existing INTENTIONAL seed
+  data from prior sessions (matches MATRIX_RESULTS.md), not clutter from this session. Only
+  `TEST_AUTO_Milo` (memorialized) is mine.
+- **Rule for next time:** never run `maestro test flows/<module>` across MULTIPLE modules back-to-back in
+  one invocation unless every flow in the batch either (a) does clearState:true+login itself with no
+  dependency on prior state, or (b) the whole batch is pre-grouped by the SAME required logged-in account.
+  Mixed-account modules (petmgmt uses 70000034; suba/subscriptions/lostpet may use others) must run as
+  SEPARATE invocations per account group, not one folder-walk. Per-flow `-e` params must be supplied
+  explicitly per flow, not assumed from a folder run.
+- Net result: full-suite coverage is still NOT verified. Only the previously-confirmed set (canary,
+  check_bell, the 5 clearState+login petmgmt flows run individually with correct `-e`) is trustworthy.

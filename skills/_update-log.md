@@ -300,3 +300,9 @@ User yêu cầu "check lại xem workflow đã thật sự ổn chưa" — đọ
 
 ## Session 19 (2026-09-22) — removed redundant dismiss-popups call in 5 clearState flows
 - login.yaml already dismisses popups twice internally; the extra call I'd added earlier in petmgmt/14,20,21,22,23 was dead weight (~3s/flow). Removed + verified 23/22/21 on device (105-115s each, exit=0). Backup: _backup/flows_before_dismiss_dedup_20260922.
+
+## Session 20 (2026-09-22) — full-suite batch run exposed a real methodology bug
+- Ran all 8 remaining modules (57 flows) via folder-mode `maestro test flows/<module>`; raw result 8 PASS/49 FAIL was almost entirely a false signal: ~14 flows missing -e PET_NAME (folder mode drops params), rest mostly account-bleed (one flow's internal clearState:true login changed the active account; later clearState:false flows in the same batch inherited it).
+- Corrected an earlier wrong guess in tethertails.md ("15 pets = my clutter" — actually pre-existing intentional seed data; only TEST_AUTO_Milo is mine).
+- Added MANDATORY gate #4 to maestro-mobile SKILL.md: never folder-batch `maestro test flows/<dir>` across multiple modules/accounts. Annotated the Quick Start folder-run example with the same warning.
+- Net: full 82-flow suite coverage is STILL not verified. Only canary + check_bell + the 5 clearState+login petmgmt flows (run individually, correct -e) are trustworthy.
