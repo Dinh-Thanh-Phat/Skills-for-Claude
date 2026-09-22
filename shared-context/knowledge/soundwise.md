@@ -25,6 +25,23 @@ State-persistence claims (edit saved, download persisted, etc.) must be verified
 [[lesson_android-persistence-needs-cold-relaunch]]. A profile-bio "PASS" was retracted to BUG once
 a real cold relaunch was used (revert only showed up then).
 
+## AUTH module gotchas (2026-09-22 re-run)
+- **New Android notification-permission system dialog appears on cold launch** since ~2026-09,
+  not present when `run_matrix_auth_full.py` was first written — script now auto-dismisses it
+  ("Allow" tap) inside `ensure_cold_start_at_login()`.
+- **`sw_driver.Device()` now supports `ANDROID_SERIAL` env var** (fixes "Multiple devices
+  connected" crash when both the wireless-debug and USB session of the same phone show up in
+  `adb devices` at once) — set it before running any script if that error appears again.
+- **AUTH-09 (Forgot Password) must NEVER submit the reset form against `Support@mysoundwise.com`**
+  — user explicitly said (2026-09-22) not to trigger a real password reset on that shared real
+  content account. The script now only verifies the external-browser link opens, and does not
+  type an email or tap "Send reset email". The full submit+confirmation was verified once
+  manually on 2026-09-14 (01_EXPANDED_COVERAGE_MATRIX.md AUTH-09) — treat that as still valid,
+  don't re-trigger a real reset email automatically on future runs.
+- Chrome's WebView content for `app.mysoundwise.com/password_reset` is **not exposed in the
+  uiautomator accessibility tree** (only the URL bar/toolbar show up as native nodes) — any
+  future automation of that page needs screenshot-based pixel coordinates, not `find_by_text`.
+
 ## Device state gotchas
 - **Locked/dozing device blocks adb input.** Diagnose with `adb shell dumpsys power | grep
   mWakefulness` and `adb shell dumpsys window | grep isKeyguardShowing`; if locked, ask the user to
