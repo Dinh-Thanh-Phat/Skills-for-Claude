@@ -92,9 +92,27 @@ suite**, on every project, no exception:
    / canary pattern. Re-run only the specific failed IDs/flows; a full-section rerun to confirm 2
    fixed cases wastes the same login+navigate cost as the original run, times however many cases
    already passed.
+4. **Never `maestro test flows/<folder>` across multiple modules/accounts in one invocation.**
+   Measured on TetherTails (2026-09-22): batching all 8 remaining modules (57 flows) as 8 sequential
+   `maestro test flows/<module>` folder-runs produced 49 "FAILED" results that were almost entirely
+   **not real** — traced via screenshot + `maestro hierarchy` to two mechanical causes:
+   - Folder-mode drops each flow's `-e` params (`${PET_NAME}` etc.) — any flow with no env default
+     taps on an empty string and fails. Confirmed on ~14 flows.
+   - **Account-bleed**: one flow inside the batch did its own `clearState:true` + login to a
+     *different* account; every subsequent flow in the batch that assumed `clearState:false`
+     (continue with whatever session is already active — correct in isolation) silently inherited
+     the wrong account, so fixed seed-pet names the flow author wrote for *that* flow's specific
+     account weren't visible under the one actually logged in. This is exactly what step #2 above
+     (group by auth state) exists to prevent, and folder-batching across modules violates it even
+     though each individual flow is written correctly.
+   Rule: run flows individually with their required `-e` params, or batch ONLY flows already
+   verified to share both (a) no unmet env requirement and (b) the same required logged-in account.
+   A 49-failure result from a mixed-module folder run is a methodology signal, not a bug report —
+   verify the actually-logged-in account (`maestro hierarchy` → look for the account-name label) and
+   check for missing `-e` before reporting any of it as an app defect.
 
 If a task looks like it'll produce more than ~5 flows or touch more than 1 account, this gate is not
-skippable — say explicitly which of the 4 you applied before starting.
+skippable — say explicitly which of the 5 you applied before starting.
 
 ## Tap says COMPLETED but nothing changed / "element not found" right after launch — check for an overlay FIRST
 
