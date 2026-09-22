@@ -42,6 +42,17 @@ a real cold relaunch was used (revert only showed up then).
   uiautomator accessibility tree** (only the URL bar/toolbar show up as native nodes) — any
   future automation of that page needs screenshot-based pixel coordinates, not `find_by_text`.
 
+## Gap-fill pass 2026-09-22 — SET-07/SET-09/NOT-03 closed, GLB-02/03 blocker root-caused
+Closed the last genuinely-actionable open items from `00_COVERAGE_MATRIX.md`: Log Out (SET-07),
+Show Profile (SET-09), tap-notification-navigates (NOT-03) — all PASS. Also root-caused why
+GLB-02/03 (airplane mode) kept getting deferred: the phone's SECOND "device" entry in `adb devices`
+(`adb-R58NA3EF0YA-YxSlil._adb-tls-connect._tcp`) looks like it could be a USB cable but is actually
+ALSO wireless debugging (mDNS-discovered), not a real USB connection — both `adb` entries share the
+same wifi radio and would drop together if wifi/airplane-mode were toggled. **Don't assume a second
+`adb devices` entry is a USB safety net without checking** — a real USB serial looks like a bare
+alphanumeric string (no `_adb-tls-connect._tcp` suffix, no `ip:port` form). Airplane-mode testing
+here still needs an actual USB cable, not just a second `adb devices` row.
+
 ## Device state gotchas
 - **Locked/dozing device blocks adb input.** Diagnose with `adb shell dumpsys power | grep
   mWakefulness` and `adb shell dumpsys window | grep isKeyguardShowing`; if locked, ask the user to
