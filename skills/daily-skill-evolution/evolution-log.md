@@ -5,6 +5,99 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-22 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-21 `110475a`
+commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout,
+not `main`'s stale pre-2026-07-30 copy.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily
+since 09-11: Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, byte-for-byte matches `playwright-1.63-new-apis`, unchanged since 09-11;
+`@playwright/mcp` via npm registry — 0.0.82 confirmed still latest, unchanged since 09-18; `@playwright/test`
+npm registry — 1.63.0 confirmed still latest, matches the documented release), Maestro/mobile
+(direct fetch of the core `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest,
+"Unreleased" section still empty, unchanged since 09-11; the community `devicelab-dev/maestro-runner`
+fork's own `CHANGELOG.md` — confirmed still at v1.1.27 (2026-09-11), the version the 09-21 update
+just documented; its "Unreleased" section has picked up one new one-line fix since then — WDA now
+rejects invalid/missing element bounds and retries selector lookup instead of tapping stale
+`(0, 0)` coordinates — but it is an unreleased bug fix, not a testing technique, command, or flag,
+so left undocumented per this log's standing practice for bug-fix-only changes), AI chatbot/LLM
+testing (DeepEval — direct `pypi.org/pypi/deepeval/json` fetch — 4.2.3 confirmed still latest,
+unchanged since 09-15; Promptfoo `CHANGELOG.md` direct fetch — 0.123.1 confirmed still latest,
+unchanged since 09-18), axe-core (npm registry re-check — 4.13.0 confirmed still latest).
+
+Beyond the pinned re-checks, ran fresh WebSearch sweeps this run rather than only re-verifying
+known sources: general Playwright/Maestro/QA-design/chatbot-testing 2026 sweeps returned the same
+trend-level framing (getByRole-first locators, fixture-based composition over POM, AI-first/
+agentic-QE, shift-left-plus-shift-right) this log has dismissed on effectively every prior run, all
+already covered by existing skills; a Chrome DevTools MCP sweep (Google's official MCP server
+exposing console/network/performance-trace/Lighthouse-audit access to coding agents) surfaced a
+tool with real debugging value but no OWASP/Playwright-specific *testing methodology* distinct from
+what an agent would already do with it via the console — judged not yet concrete enough to encode
+as its own skill without a specific test-authoring pattern, held for a future run if one emerges; a
+visual-regression-testing sweep (Applitools/Percy/SmartUI perceptual-diff engines) returned only
+vendor-comparison marketing already adjacent to, but not adding technique beyond, existing
+Playwright screenshot-testing coverage.
+
+One genuinely new, verified finding in AI chatbot/LLM testing (security/red-teaming): the **OWASP
+GenAI LLM Top 10 2026**, published 2026-08-04 by the OWASP GenAI Security Project — a full
+reordering and partial rescoping of the base (non-agentic) LLM Top-10, distinct from the already-
+documented "OWASP Top 10 for Agentic Applications (ASI 2026)". Grepped `skills/llm-red-teaming` and
+confirmed it already name-drops "OWASP LLM Top-10 2026" for LLM01 (line 22) and cites the 2026
+prompt-injection page in Sources, but never spelled out the other 9 categories, their 2026 order,
+or what changed from 2025 — the same "referenced but never documented" gap the 07-27 entry found
+and fixed for the ASI list. `genai.owasp.org` itself 403'd the fetcher (the same recurring block
+noted throughout this log for that domain), so verified instead against the OWASP GenAI Security
+Project's own canonical Markdown source on GitHub
+(`GenAI-Security-Project/GenAI-LLM-Top10/2026/final/LLM01..10_*.md`) — first-party, not a blog
+summary. Cross-checked the claimed reordering (Excessive Agency #6→#3, Unbounded Consumption
+#10→#6, Improper Output Handling #5→#10, System Prompt Leakage renamed/broadened to Hidden Context
+Exposure) against the actual category descriptions in each file, not just a secondhand "what
+changed" blog claim. While building the Promptfoo-plugin mapping for each 2026 category, found and
+verified a second, actionable detail: Promptfoo's own `owasp-llm-top-10.md` doc (fetched directly
+from `promptfoo/promptfoo` `main`) still presents the **2025** category order under its
+`owasp:llm:01`-`owasp:llm:10` numeric shorthand — e.g. `owasp:llm:06` there is 2025's "Excessive
+Agency", not 2026's "Unbounded Consumption" — a real footgun for anyone assuming the shorthand
+tracks the current OWASP ranking. Checked each named plugin recommendation in the new mapping table
+against that same doc's per-category examples (`pii:direct`/`pii:session`/`pii:social`/`pii:api-db`,
+`excessive-agency`/`overreliance`/`imitation`/`hijacking`/`rbac`, `prompt-extraction` with required
+`systemPrompt` config, `divergent-repetition`, `rbac`/`bola`/`bfla`) before writing, and caught one
+own draft error before committing: an initially-guessed `resource-exhaustion` plugin name for
+Unbounded Consumption that does not appear anywhere in Promptfoo's docs — removed and replaced with
+the doc's actual `--repeat` CLI flag / custom-assertion pattern.
+
+- UPDATED: skills/llm-red-teaming — Added an "OWASP Top 10 for LLM Applications — 2026
+  Renumbering" section: a reorder table (2026 ID/name vs. 2025 rank, what changed per category) and
+  a named-Promptfoo-plugin mapping table for all 10 categories, plus an explicit warning that
+  Promptfoo's `owasp:llm:NN` numeric shorthand still follows the 2025 order so testers should target
+  named plugins instead of the numeric aliases until Promptfoo re-aliases them. Updated frontmatter
+  trigger keywords and Sources. Verified against the OWASP GenAI Security Project's own
+  `GenAI-LLM-Top10` GitHub repo (canonical 2026/final/ Markdown, not genai.owasp.org which 403'd the
+  fetcher) and Promptfoo's own `owasp-llm-top-10.md` doc for plugin names. Sources:
+  https://github.com/GenAI-Security-Project/GenAI-LLM-Top10,
+  https://raw.githubusercontent.com/GenAI-Security-Project/GenAI-LLM-Top10/main/2026/final/LLM01_PromptInjection.md
+  (and LLM02-LLM10 siblings), https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-llm-top-10.md
+- SKIPPED Playwright/web E2E — 1.63, `@playwright/mcp` 0.0.82, and `@playwright/test` 1.63.0 all
+  remain latest and already fully documented; general best-practices sweep returned only
+  locator-strategy/fixture-composition framing already covered by `playwright-page-object-model`/
+  `playwright-1.63-new-apis`; Chrome DevTools MCP surfaced as a real tool but with no
+  testing-methodology angle distinct from ad-hoc agent debugging yet — held for a future run.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest with an empty "Unreleased" section,
+  unchanged since 09-11; the community `maestro-runner` fork remains at the already-documented
+  v1.1.27, with only one new unreleased bug fix (WDA element-bounds validation) since the 09-21
+  update — not a testing technique to document.
+- SKIPPED AI chatbot/LLM testing (tooling) — DeepEval 4.2.3, Promptfoo 0.123.1, and axe-core 4.13.0
+  all remain latest and already documented; visual-regression-testing vendor sweep returned only
+  marketing framing already adjacent to existing Playwright screenshot-testing coverage.
+- SKIPPED QA test design — general September 2026 sweep returned only AI-driven-generation/
+  shift-left-plus-shift-right trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-21): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — not re-attempted this run (arXiv access has been blocked on
+  every prior attempt since 09-09 with no change reported); flagged again for a future run.
+- STILL UNVERIFIED (carried over from 09-14 through 09-21): Maestro Cloud Android 15/16 device
+  profiles — not re-attempted this run; remains low-priority per the 09-17 assessment.
+
 ## 2026-09-21 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-20 commit),

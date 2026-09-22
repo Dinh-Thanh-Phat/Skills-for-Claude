@@ -14,7 +14,8 @@ description: >-
   "promptfoo websocket target", "red team websocket chatbot", "promptfoo tracing", "red team
   trace timeline", "promptfoo grafana tempo", "promptfoo braintrust tracing", "promptfoo
   langfuse tracing", "metadata.toolCalls", "promptfoo mcp.enabled", "assert executed mcp tool
-  calls".
+  calls", "OWASP LLM Top 10 2026", "LLM01 prompt injection", "hidden context exposure LLM08",
+  "owasp llm plugin numbering", "excessive agency LLM03".
 ---
 
 # LLM Red Teaming
@@ -67,6 +68,51 @@ redteam:
 ```
 
 Not the same taxonomy as DeepTeam's "OWASP ASI 2026" alignment claim below — DeepTeam covers responsibility (bias/toxicity/PII), this is Promptfoo's dedicated plugin mapping to the actual 10 ASI risk categories. Prefer this table when you specifically need to report ASI-ID-level coverage (e.g. for a security sign-off).
+
+## OWASP Top 10 for LLM Applications — 2026 Renumbering
+
+Published 2026-08-04. This is the base LLM Top-10 (single-model/chatbot risks), distinct from the
+agentic ASI list above. The 2026 edition keeps the same 10 risk *names* mostly intact but
+**reorders and rescopes them** relative to the 2025 edition — three categories moved by 4+ ranks,
+and System Prompt Leakage was broadened and renamed:
+
+| 2026 ID | Risk | 2025 rank (name) | What changed |
+|---|---|---|---|
+| LLM01 | Prompt Injection | #1 (same) | Scope widened to multimodal/tool-output/memory delivery surfaces |
+| LLM02 | Sensitive Information Disclosure | #2 (same) | Added inference-time side-channel disclosure (timing, logprobs, cache-hit) |
+| LLM03 | Excessive Agency | #6 → **#3** | Biggest single jump — reflects agentic deployment becoming the default |
+| LLM04 | Supply Chain | #3 → #4 | Now explicitly covers LoRA/PEFT adapters and "slopsquatting" of hallucinated packages |
+| LLM05 | Data and Model Poisoning | #4 → #5 | — |
+| LLM06 | Unbounded Consumption | #10 → **#6** | Reasoning/thinking-token exhaustion and MCP-amplified cost cascades added |
+| LLM07 | Misinformation | #9 → #7 | — |
+| LLM08 | **Hidden Context Exposure** | #7 "System Prompt Leakage" | Renamed + broadened beyond the system prompt to tool schemas/retrieved policy text |
+| LLM09 | Vector and Embedding Weaknesses | #8 → #9 | Added embedding-inversion (Vec2Text/ZSInvert) and cross-tenant vector-index leakage |
+| LLM10 | Improper Output Handling | #5 → **#10** | — |
+
+⚠️ **Promptfoo's numeric shorthand (`owasp:llm:01`…`owasp:llm:10`) still follows the *2025* order**
+as of this check (verified directly against `site/docs/red-team/owasp-llm-top-10.md` on the
+`promptfoo/promptfoo` `main` branch) — e.g. `owasp:llm:06` there still maps to the 2025 "Excessive
+Agency" slot, not 2026's LLM06 "Unbounded Consumption". Until Promptfoo re-aliases these, target
+each 2026 category by its **named plugin**, never the numeric shorthand, to avoid silently testing
+the wrong risk:
+
+| 2026 ID | Risk | Named Promptfoo plugins (stable regardless of numbering) |
+|---|---|---|
+| LLM01 | Prompt Injection | `jailbreak-templates` strategy + `indirect-prompt-injection`, `system-prompt-override` |
+| LLM02 | Sensitive Information Disclosure | `pii:direct`, `pii:session`, `pii:social`, `pii:api-db`, `harmful:privacy` |
+| LLM03 | Excessive Agency | `excessive-agency`, `overreliance`, `imitation`, `hijacking`, `rbac` |
+| LLM04 | Supply Chain | `ModelAudit` static model-file scanning (backdoors/embedded executables) + running the same test suite across model versions to catch behavioral drift on upgrade |
+| LLM05 | Data and Model Poisoning | `harmful`, `overreliance`, `hallucination` (Promptfoo can't test training-time poisoning directly — these detect its runtime symptoms; `agentic:memory-poisoning`/`cross-session-leak` are for *live* agent-memory poisoning, i.e. ASI06, not this category) |
+| LLM06 | Unbounded Consumption | `divergent-repetition` + the `--repeat` CLI flag/custom output-length assertions (rate/cost caps are an infra control, not a red-team plugin) |
+| LLM07 | Misinformation | `hallucination`, `harmful:misinformation-disinformation` |
+| LLM08 | Hidden Context Exposure | `prompt-extraction` (requires `config.systemPrompt`), `tool-discovery` |
+| LLM09 | Vector and Embedding Weaknesses | `rbac`, `bola`, `bfla` (access-control layer) + `indirect-prompt-injection` (retrieval poisoning) |
+| LLM10 | Improper Output Handling | `shell-injection`, `sql-injection`, `ssrf`, ascii-smuggling/harmful-code plugins |
+
+Verified directly against the OWASP GenAI Security Project's own canonical Markdown source
+(`GenAI-Security-Project/GenAI-LLM-Top10` `2026/final/LLM01..10_*.md` on GitHub — `genai.owasp.org`
+itself 403'd the fetcher, same recurring block as other OWASP GenAI pages noted elsewhere in this
+repo) — not a secondhand blog summary.
 
 ## Tool Selection
 
@@ -517,6 +563,8 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Promptfoo 0.121.19 release notes (goblin strategy introduced): https://github.com/promptfoo/promptfoo/releases
 - promptmap (utkusen) — black-box LLM security scanner: https://github.com/utkusen/promptmap
 - OWASP Top 10 for Agentic Applications 2026 (released 2025-12-09, ASI01-ASI10): https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
+- OWASP GenAI LLM Top 10 2026 canonical source (published 2026-08-04, LLM01-LLM10 renumbered): https://github.com/GenAI-Security-Project/GenAI-LLM-Top10, https://raw.githubusercontent.com/GenAI-Security-Project/GenAI-LLM-Top10/main/2026/final/LLM01_PromptInjection.md (and LLM02-LLM10 siblings in the same directory)
+- Promptfoo OWASP LLM Top 10 plugin guide (still on the 2025 numbering as of this check): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-llm-top-10.md
 - Promptfoo's ASI-to-plugin mapping table (ASI01-ASI10 → plugin names, verbatim source for the table above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-agentic-ai.md
 - Promptfoo tracing docs (OTLP setup, Grafana Tempo/Braintrust/Langfuse external providers, trace correlation API): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/tracing.md
 - Promptfoo 0.122.1 CHANGELOG (tracing subsystem, multi-turn attacker/grading token accounting): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
