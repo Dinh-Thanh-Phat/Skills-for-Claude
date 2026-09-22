@@ -144,7 +144,8 @@ maestro test flow.yaml
 # Run with environment variables (for cross-platform)
 maestro test --env APP_ID=com.example.app login-flow.yaml
 
-# Run entire folder
+# Run entire folder — ONLY when every flow in it needs no missing -e param AND shares the same
+# required logged-in account. See gate #4 above before doing this across modules.
 maestro test flows/
 
 # Record a new flow interactively
