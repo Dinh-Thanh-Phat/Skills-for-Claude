@@ -5,6 +5,89 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-23 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-22 `3e30a7a`
+commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from this checkout.
+
+Domains researched: AI chatbot/LLM testing (DeepEval — `pypi.org/pypi/deepeval/json` direct fetch
+found the pinned version had moved from 4.2.3 (documented 09-15) to **4.2.5**; fetched
+`github.com/confident-ai/deepeval/releases` and found the jump is two releases, `python-v4.2.4`
+(Sept 22) — a genuinely new, substantive feature, not a bug-fix bump — and `python-v4.2.5` (also
+Sept 22, same day; PyPI JSON carries no changelog for it and the GitHub release page failed to
+load its notes body, so left undocumented as an unverified patch rather than guessed at; Promptfoo
+`CHANGELOG.md` direct fetch — 0.123.1 (Sept 18) confirmed still latest, unchanged, already
+documented), Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still
+the sole/topmost heading, verified section-by-section against `playwright-1.63-new-apis` and
+confirmed byte-for-byte coverage, unchanged since 09-11; `@playwright/mcp` npm registry — 0.0.82
+confirmed still latest, unchanged since 09-18), Maestro/mobile (direct fetch of the core
+`mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" section still
+empty, unchanged since 09-11; the community `devicelab-dev/maestro-runner` fork's own
+`CHANGELOG.md` — its "[Unreleased]" section has grown substantially since the 09-22 entry's
+one-line note: HTTP(s) `--app-file` URLs with SHA256-verified caching, `runScript` gaining
+CommonJS `require()` and an `--insecure` TLS-skip flag, a new `wait` step, DeviceLab becoming
+Android's default driver in place of UIAutomator2 (reported 1.5-2x speed, equivalent pass rate),
+automatic iOS-runner restart on crash, WebDriverAgent bumped 11.1.3→16.12.8, and a
+`scrollUntilVisible` early-stop optimization — a real testing-technique-worthy batch, but confirmed
+via the project's own GitHub tags page that **v1.1.27 (Sept 11) remains the latest tag**, so every
+item above is still unshipped; left undocumented per this log's standing "verify before writing,
+no unshipped/speculative content" guardrail, same reasoning applied to the 07-27/07-22 Playwright
+alpha skips — flagging it here as a run to watch closely rather than a routine unreleased-bugfix
+skip, since this is the largest pending unreleased batch this log has seen for that project),
+axe-core (npm registry re-check — 4.13.0 confirmed still latest, unchanged), QA test design
+(general September 2026 sweep — only AI-powered-test-generation/self-healing/shift-left-plus-right/
+risk-based-coverage trend framing, all already covered by `qa-test-generation`/
+`self-healing-test-automation`/`behavioral-coverage-matrix`, no new reproducible technique).
+
+Deep-dived the DeepEval `python-v4.2.4` finding before writing anything, since the WebFetch
+summary of the releases page alone wasn't enough to trust: cross-verified "Jev, TypeSafe AI's
+System One model" against five independent third-party sources (Arize AI, HoneyHive, DataCamp,
+Tom's Hardware, plus multiple community GitHub repos), then went straight to the DeepEval source
+on GitHub rather than trusting any blog's code sample (`deepeval.com` itself is egress-blocked in
+this environment, consistent with this log's long-standing notes on that domain) — found the actual
+`deepeval/models/system_one/typesafe_model.py` (`TypeSafeModel` class, `TYPESAFE_API_KEY`/
+`TYPESAFE_MODEL_NAME`/`TYPESAFE_COST_PER_INPUT_TOKEN` env vars) and confirmed via `g_eval.py` that
+it's wired in internally (`initialize_system_one_model()`, `_experimental_system_one_spec`) rather
+than exposed as a per-metric constructor parameter — the CLI opt-in (`deepeval set-typesafe
+--model=jev` / `deepeval unset-typesafe`) verified against PR #3340's description, since GitHub
+code search returned zero hits for "jev" (indexing lag, not evidence the feature doesn't exist —
+the source files themselves resolved fine by direct raw-content fetch).
+
+- UPDATED: skills/deepeval-llm-cicd — Added a "Jev / System One Decision Model (v4.2.4, September
+  2026 — opt-in, experimental)" subsection under the existing "Controlling the Judge Model" section:
+  what Jev is (TypeSafe AI's non-LLM "System One" decision model — typed question in, calibrated
+  probability out, no free-form generation), where it plugs into DeepEval (QAG claim verification
+  e.g. `FaithfulnessMetric`, `GEval` per-step verdicts, `DAGMetric` binary node decisions, and the
+  new **Classifiers** categorical-label feature), the CLI/env-var opt-in mechanism (`deepeval
+  set-typesafe --model=jev` / `unset-typesafe`; `TYPESAFE_API_KEY`/`TYPESAFE_MODEL_NAME`/
+  `TYPESAFE_COST_PER_INPUT_TOKEN`), the cost/speed numbers (~100ms, $0.042/M input tokens, no
+  output charge), and a caveat that it's still marked experimental with no reasoning trace on the
+  decision step itself. Updated frontmatter trigger keywords and Sources. Sources:
+  https://github.com/confident-ai/deepeval/releases/tag/python-v4.2.4,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/models/system_one/typesafe_model.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/g_eval/g_eval.py,
+  https://github.com/confident-ai/deepeval/pull/3340
+- SKIPPED AI chatbot/LLM testing (DeepEval 4.2.5) — released same day as 4.2.4 with no available
+  changelog (PyPI JSON blank, GitHub release notes body failed to load); left unverified rather than
+  guessed at. Promptfoo 0.123.1 remains latest and already documented.
+- SKIPPED Playwright/web E2E — 1.63 and `@playwright/mcp` 0.0.82 both remain latest and fully
+  documented; re-verified `playwright-1.63-new-apis` section-by-section against the live release
+  notes rather than trusting the prior run's confirmation alone.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest with an empty "Unreleased" section; the
+  community `maestro-runner` fork's substantial pending feature batch (HTTP `--app-file`, `wait`
+  step, DeviceLab-as-default-driver, WDA 16.12.8, etc.) is all still unshipped per the project's own
+  tags page (v1.1.27, Sept 11, remains latest) — held per the no-unshipped-content guardrail, worth
+  a priority re-check on the next Maestro-focused run in case it lands as a release.
+- SKIPPED axe-core — 4.13.0 remains latest and already documented.
+- SKIPPED QA test design — general September 2026 sweep returned only AI-generation/self-healing/
+  shift-left-plus-right/risk-based trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-22): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — re-attempted this run, still blocked (now an
+  environment-level egress block on `arxiv.org` rather than a prior soft-403; same practical
+  effect); flagged again for a future run.
+- STILL UNVERIFIED (carried over from 09-14 through 09-21): Maestro Cloud Android 15/16 device
+  profiles — not re-attempted this run; remains low-priority per the 09-17 assessment.
+
 ## 2026-09-22 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-21 `110475a`

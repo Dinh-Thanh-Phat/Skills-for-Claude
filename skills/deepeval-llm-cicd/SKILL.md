@@ -20,7 +20,9 @@ description: |
   "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric",
   "VoiceConfig ConversationSimulator", "VapiConnector", "PipecatConnector deepeval",
   "deepeval voice connector", "live voice agent simulation deepeval", "WebRTCConnector",
-  "deepeval webrtc voice testing", "aiortc voice agent test".
+  "deepeval webrtc voice testing", "aiortc voice agent test", "deepeval Jev", "TypeSafe AI",
+  "System One model", "deepeval set-typesafe", "TypeSafeModel", "Jev judge model",
+  "deepeval Classifiers", "categorical LLM-as-judge".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -812,6 +814,44 @@ release_metric = FaithfulnessMetric(
 
 Strategy: use a lightweight judge for per-PR speed checks; use the strongest judge for release-gate evals where accuracy matters most.
 
+### Jev / System One Decision Model (v4.2.4, September 2026 — opt-in, experimental)
+
+`python-v4.2.4` added support for routing metrics' *decision* step to **Jev**, TypeSafe AI's
+"System One" model. Jev is not an LLM — it takes a typed question (yes/no verdict, a DAG node's
+binary judgement, a G-Eval rubric level, a classifier label) and returns a calibrated probability
+instead of generated text, so it can't hallucinate a verdict format or go off-rubric. The LLM you
+already configured still does every *language* step (extracting claims/statements, writing G-Eval
+evaluation steps, generating the human-readable reason) — only the final decision hands off to Jev.
+This is a separate axis from the GPT-model swap above: it changes *which kind of model* renders the
+verdict, not which LLM does the reasoning.
+
+Where it plugs in (per the DeepEval source, `deepeval/models/system_one/`): QAG-based metrics'
+claim verification (e.g. `FaithfulnessMetric`), `GEval`'s per-step verdict, `DAGMetric`'s binary
+node decisions, and the new **Classifiers** feature (categorical LLM-as-judge against a closed
+label set, instead of a 0–1 score).
+
+Opt in globally — metrics auto-detect it once configured, there's no per-metric constructor param:
+
+```bash
+# Enable (reads/writes local DeepEval settings)
+deepeval set-typesafe --model=jev
+
+# Disable, fall back to pure-LLM verdicts
+deepeval unset-typesafe
+```
+
+Or via environment variables (same settings the CLI writes): `TYPESAFE_API_KEY`,
+`TYPESAFE_MODEL_NAME` (defaults to the latest Jev model), `TYPESAFE_COST_PER_INPUT_TOKEN` (override
+if you're on a custom pricing tier — DeepEval validates it's `>= 0`).
+
+Tradeoffs before enabling for a release gate: TypeSafe's own numbers put Jev at ~100ms per query
+(batched for independent questions) and $0.042/M input tokens with no output-token charge — cheap
+and fast relative to a frontier-model judge call. But it's marked experimental in the release notes
+and existing behavior is unchanged unless you opt in, so pilot it on a non-blocking metric run
+before swapping a release-gate threshold onto it, and don't expect a reasoning trace back from the
+decision step itself (the LLM-authored `reason` field is unaffected, but a Jev verdict itself is a
+bare probability, not an explanation).
+
 ## Sources
 
 - https://deepeval.com/docs/evaluation-unit-testing-in-ci-cd
@@ -831,6 +871,10 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/models/index.ts (13 judge providers + OpenRouter/Portkey gateways)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/typescript/src/integrations/vitest/index.mts and `matchers.mts` (`expect().toPass()` — the `assert_test()` analogue)
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/llm_test_case.py (`ToolCallType` enum, `ToolCall.type` field, v4.1.9)
+- https://github.com/confident-ai/deepeval/releases/tag/python-v4.2.4 (Jev/System One release notes, September 22 2026)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/models/system_one/typesafe_model.py (`TypeSafeModel` constructor, env vars)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/g_eval/g_eval.py (`initialize_system_one_model()`, `_experimental_system_one_spec`)
+- https://github.com/confident-ai/deepeval/pull/3340 (`deepeval set-typesafe`/`unset-typesafe` CLI opt-in)
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/metrics/tool_correctness/tool_correctness.py (`_get_type_mismatches`, type-aware exact/non-exact/ordering scoring, v4.1.9)
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/utils.py (`classify_tool_call_types`, `process_mcp_servers` classifying both `tools_called` and `expected_tools`)
 - https://github.com/confident-ai/deepeval/pull/3062 (PR introducing tool-call type distinction, merged into v4.1.9)
