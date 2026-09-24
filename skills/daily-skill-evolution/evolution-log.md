@@ -5,6 +5,78 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-24 (GMT+7)
+
+Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-23 `dca68a0`
+commit; `git merge --ff-only origin/main` refused with "refusing to merge unrelated histories" —
+`main` and `skill-evolution` no longer share a common ancestor in this checkout, so the merge step
+was skipped this run rather than forced; flagging for a human to reconcile the branches, since this
+routine must never force a merge of unrelated histories), read this branch's own `SKILL.md` and the
+top of `evolution-log.md` from this checkout, not `main`'s stale copy.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily:
+Maestro/mobile (direct fetch of the core `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed
+still latest, "Unreleased" section still empty, unchanged since 09-11; quoted the full 2.10.0 entry
+verbatim — its sole item, `--device-os` accepting a full Android system image path, is already
+documented in `maestro-mobile` under "More CLI Utility Commands & Flags", confirmed via grep before
+concluding a duplicate; the community `devicelab-dev/maestro-runner` fork — checked the project's
+own GitHub tags page directly (not just the CHANGELOG's `[Unreleased]` heading) and confirmed
+**v1.1.27 (Sept 11) remains the latest tag**, no release since; the substantial pending batch
+flagged 09-23 as "a run to watch closely" (HTTP `--app-file` caching, `runScript` CommonJS
+`require()`, DeviceLab-as-default-driver, WDA 16.12.8, etc.) is still sitting unshipped in
+`[Unreleased]`, unchanged — held again per the no-unshipped-content guardrail), AI chatbot/LLM
+testing (DeepEval — `pypi.org/pypi/deepeval/json` re-check confirms 4.2.5 still latest, no version
+bump since 09-23; re-attempted the `python-v4.2.5` GitHub release notes fetch — page still fails to
+render its notes body (same "there was an error while loading" failure as 09-23), left undocumented
+per verify-before-writing; Promptfoo `CHANGELOG.md` direct fetch — 0.123.1 (Sept 18) confirmed still
+latest; read the full changelog body this time rather than only checking the version number, and
+confirmed the additions since 0.123.0 (Gemini 3.8/Vertex Live, GPT-Live voice sessions, OpenAI
+Agents API provider, portable HTTP/MCP config schemas, Ollama 0.34 compatibility) are provider/config
+additions and bug fixes, not a testing technique — consistent with this log's standing practice of
+not documenting Promptfoo's provider-support churn; general "AI chatbot LLM testing new tool
+technique September 2026" sweep — Giskard/Deepchecks/Ragas/TestMu framing, all already covered by
+`ai-agent-eval-platforms`/`rag-evaluation-ragas`/`chatbot-tester`, no new reproducible technique),
+Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` still the sole/topmost
+heading, section list (test locks, cross-frame locate, `Locator.visible()`, step params/subtitle,
+aria/screen trace snapshots, new APIs, Ubuntu 20.04 deprecation, browser versions) matches
+`playwright-1.63-new-apis` verbatim, unchanged since 09-11), axe-core (npm registry re-check —
+4.13.0 confirmed still latest, unchanged), QA test design (general September 2026 sweep — only
+self-healing/autonomous-test-generation/intelligent-failure-triage trend framing, all already
+covered by `self-healing-test-automation`/`qa-test-generation`/`flaky-test-prevention`, no new
+reproducible technique).
+
+- No changes — researched Maestro/mobile (core + `maestro-runner` fork), AI chatbot/LLM testing
+  (DeepEval, Promptfoo — this time read past the version number into the full changelog body before
+  concluding "nothing new"), Playwright/web E2E, axe-core, and QA test design; every finding either
+  duplicated an existing skill (verified by grep/read of the actual skill section, not recollection)
+  or was unshipped (`maestro-runner`'s pending batch, DeepEval 4.2.5's unrenderable release notes) or
+  provider/config churn with no testing technique. Quality-over-quantity guardrail applied.
+- SKIPPED Maestro/mobile — core CLI 2.10.0's only change (`--device-os` full system image path)
+  already documented; `maestro-runner` fork's large pending feature batch remains unreleased at
+  v1.1.27 (Sept 11), same as 09-23 — worth another close check next Maestro-focused run.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.5 and Promptfoo 0.123.1 both remain latest; 4.2.5's
+  release notes still fail to render (left unverified rather than guessed at); Promptfoo's changes
+  since 0.123.0 are provider/config additions, not testing technique.
+- SKIPPED Playwright/web E2E — 1.63 remains latest and fully documented, re-verified section list
+  against `playwright-1.63-new-apis`.
+- SKIPPED axe-core — 4.13.0 remains latest and already documented.
+- SKIPPED QA test design — general September 2026 sweep returned only AI-generation/self-healing/
+  failure-triage trend framing already covered by existing skills.
+- STILL UNVERIFIED (carried over from 09-09 through 09-23): "Large Reasoning Models Are Autonomous
+  Jailbreak Agents" (arXiv 2508.04039) — not re-attempted this run given the repeated environment-
+  level egress block on `arxiv.org`; still flagged for a future run or a human to fetch out-of-band.
+- STILL UNVERIFIED (carried over from 09-14 through 09-22): Maestro Cloud Android 15/16 device
+  profiles — not re-attempted this run; remains low-priority per the 09-17 assessment.
+- **NEW FLAG for a human**: `git merge --ff-only origin/main` failed this run with "refusing to
+  merge unrelated histories" — `skill-evolution` and `main` have diverged to the point of having no
+  common ancestor in this checkout. This routine only ever fast-forward-merges `main` into
+  `skill-evolution` and must never force an unrelated-histories merge on its own initiative; a human
+  should reconcile the two branches (e.g. decide whether `skill-evolution` should be rebased onto
+  `main`, or whether `main`'s stale pre-2026-07-30 skill copies should be updated from this branch)
+  when convenient. This run proceeded with the skill-file edits/log entry on top of `skill-evolution`
+  as-is, per the "commit only to skill-evolution, never main" rule, without attempting to force the
+  merge.
+
 ## 2026-09-23 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-22 `3e30a7a`
