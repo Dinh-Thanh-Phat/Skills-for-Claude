@@ -5,6 +5,95 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-25 (GMT+7)
+
+Orientation: `git fetch origin main skill-evolution` + `git checkout skill-evolution` (HEAD at the
+2026-09-24 `1aa803f` commit), read this branch's own `SKILL.md` and the top of `evolution-log.md`
+from this checkout. Re-confirmed the 09-24 flag: `main` and `skill-evolution` still have no common
+ancestor (`git merge-base main skill-evolution` returns nothing) — left unreconciled per the
+"never force an unrelated-histories merge" rule, still awaiting a human.
+
+**NEW environment note**: this run's sandbox has GitHub access hard-scoped to
+`Dinh-Thanh-Phat/skills-for-claude` only — every `github.com`/`api.github.com` request to any other
+repo (release pages, tags API, releases.atom) was rejected outright by the session's own proxy
+("GitHub access to this repository is not enabled for this session"), not merely 403'd by the
+target site the way past runs' notes describe. `raw.githubusercontent.com` and `files.pythonhosted.org`
+are unaffected and were used instead throughout this run (sdist download + diff for DeepEval, below).
+Also newly confirmed as an org-policy-level block (not a soft 403): `arxiv.org` — the long-carried
+"Large Reasoning Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) verification attempt
+failed with an explicit `connect_rejected (organization policy)` from the egress proxy this run,
+a harder signal than the plain connection failures logged 09-09 through 09-24. Downgrading this from
+"retry every run" to "needs a human to fetch out-of-band" — no further daily re-attempts logged
+unless the block lifts.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily:
+AI chatbot/LLM testing (DeepEval — `pypi.org/pypi/deepeval/json` re-check found a genuine version
+bump, 4.2.5 → **4.2.6** (Sept 24); GitHub release notes for `python-v4.2.6` failed to render body
+content yet again (same recurring failure noted 09-22/09-23), and `api.github.com`/`github.com`
+were unavailable per the new scoping note above, so — following this log's established "go straight
+to source" practice from the 09-23 TypeSafe deep-dive — downloaded both the 4.2.5 and 4.2.6 sdists
+directly from `files.pythonhosted.org` and diffed them file-by-file; found a substantive, verifiable
+generalization of the 09-23-documented Jev/TypeSafe decision hook, detailed below; Promptfoo
+`CHANGELOG.md` direct fetch — 0.123.1 (Sept 18) confirmed still latest, unchanged since 09-18),
+Maestro/mobile (direct fetch of the core `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed
+still latest, "Unreleased" section still empty, unchanged since 09-11; the community
+`devicelab-dev/maestro-runner` fork's own `CHANGELOG.md` — its already-large pending `[Unreleased]`
+batch (flagged 09-23, re-confirmed unshipped 09-24) has grown substantially again: on top of the
+HTTP `--app-file` caching/CommonJS `require`/`wait` step/DeviceLab-default-driver/WDA 16.12.8 items
+already noted, it now also lists `--insecure` TLS-skip for `runScript` HTTP calls, an
+`--typing-frequency` fix extending to uiautomator2 `keyPress`-mode typing, a `scrollUntilVisible`
+early-stop optimization, a JUnit `<failure>` body-vs-attribute parser fix, WDA read-back-and-retype
+for dropped characters, WDA rejecting invalid/stale element bounds, a React-Native-New-Architecture
+accessibility-tree depth-cap fix, and a physical-iPhone WDA build-destination fix — confirmed via
+`git ls-remote --tags` (api.github.com being unavailable this run) that **v1.1.27 (Sept 11) is
+still the latest tag**, so every item remains unshipped; held again per the no-unshipped-content
+guardrail — this is now the largest pending batch this log has tracked for this project across three
+consecutive runs), Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63`
+still the sole/topmost heading, unchanged since 09-11; `@playwright/mcp` npm registry — 0.0.82
+confirmed still latest, unchanged since 09-18), axe-core (npm registry re-check — 4.13.0 confirmed
+still latest, unchanged), QA test design (general September 2026 sweep — only the same EP/BVA/
+pairwise-70%/exploratory/shift-left-plus-right/AI-driven trend framing this log has dismissed on
+effectively every prior run, all already covered by existing skills, no new reproducible technique).
+
+- UPDATED: skills/deepeval-llm-cicd — Rewrote the "Jev / System One Decision Model" section (added
+  09-23) into "Jev / System One Eval Modes (v4.2.6)": v4.2.6 generalized the narrow v4.2.4 hook
+  (only `FaithfulnessMetric`/`GEval`/`DAGMetric`/Classifiers, on/off via `deepeval set-typesafe`)
+  into a three-way `eval_mode` (`llm` default / `hybrid` / `system_one`) wired into nearly every
+  built-in metric via a new per-metric `eval_mode=` constructor argument, a new `DEEPEVAL_EVAL_MODE`
+  setting, and a new `deepeval set-eval-mode {llm,hybrid,system_one}` CLI command (`set-typesafe`
+  is unchanged and still needed for the API key). Documented the precedence rule (metric argument >
+  setting > `llm` default), the `hybrid` per-decision LLM fallback vs. `system_one`'s zero-fallback
+  behavior, the new `SystemOneContextLimitError` pre-check that replaces an opaque 400/422 on
+  context overflow, and that a metric with no System One wiring (`DAGMetric`, a custom subclass)
+  silently runs as `hybrid` under `system_one` mode. Verified entirely from source: `github.com`/
+  `api.github.com` being unavailable to this session (see environment note above) and the GitHub
+  release-notes body failing to render (as it has on every prior attempt for this project), both
+  the 4.2.5 and 4.2.6 sdists were downloaded directly from `files.pythonhosted.org` and diffed
+  file-by-file — confirmed via `deepeval/config/eval_mode.py` (new), `deepeval/metrics/utils/
+  system_one.py` (new), `deepeval/models/system_one/limits.py` (new), and a `cli/main.py`/
+  `metrics/faithfulness/faithfulness.py` diff, not a secondhand summary. Updated frontmatter trigger
+  keywords and Sources. Sources: https://pypi.org/pypi/deepeval/json (version/release-date ground
+  truth), https://files.pythonhosted.org/.../deepeval-4.2.5.tar.gz and .../deepeval-4.2.6.tar.gz
+  (sdists diffed directly — see Sources section of the skill for the exact source-file list read).
+- SKIPPED AI chatbot/LLM testing (Promptfoo) — 0.123.1 remains latest and already documented.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest; `maestro-runner` fork's now-even-larger
+  pending feature batch remains unshipped at v1.1.27 (Sept 11) per its own tags — held per the
+  no-unshipped-content guardrail for a fourth consecutive run; flagging again as worth a priority
+  check the moment it ships, given its size.
+- SKIPPED Playwright/web E2E — 1.63 and `@playwright/mcp` 0.0.82 both remain latest and fully
+  documented.
+- SKIPPED axe-core — 4.13.0 remains latest and already documented.
+- SKIPPED QA test design — general September 2026 sweep returned only trend framing already covered
+  by existing skills.
+- STILL UNVERIFIED, now downgraded to "needs a human" (see environment note above): "Large Reasoning
+  Models Are Autonomous Jailbreak Agents" (arXiv 2508.04039) — `arxiv.org` egress is rejected at the
+  organization-policy level in this session, not just soft-403'd; no further daily retries logged.
+- STILL UNVERIFIED (carried over from 09-14 through 09-24): Maestro Cloud Android 15/16 device
+  profiles — not re-attempted this run; remains low-priority per the 09-17 assessment.
+- Merge-unrelated-histories flag (from 09-24) remains open and unreconciled; not re-raised in full
+  each run going forward unless something about it changes — a human still needs to decide how to
+  reconcile `main` and `skill-evolution`.
+
 ## 2026-09-24 (GMT+7)
 
 Orientation: `git fetch origin` + `git checkout skill-evolution` (HEAD at the 2026-09-23 `dca68a0`

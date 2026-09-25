@@ -22,7 +22,8 @@ description: |
   "deepeval voice connector", "live voice agent simulation deepeval", "WebRTCConnector",
   "deepeval webrtc voice testing", "aiortc voice agent test", "deepeval Jev", "TypeSafe AI",
   "System One model", "deepeval set-typesafe", "TypeSafeModel", "Jev judge model",
-  "deepeval Classifiers", "categorical LLM-as-judge".
+  "deepeval Classifiers", "categorical LLM-as-judge", "deepeval eval_mode", "DEEPEVAL_EVAL_MODE",
+  "deepeval set-eval-mode", "hybrid eval mode deepeval", "system_one eval mode".
 ---
 
 # DeepEval — LLM Quality CI/CD Regression Testing
@@ -814,43 +815,47 @@ release_metric = FaithfulnessMetric(
 
 Strategy: use a lightweight judge for per-PR speed checks; use the strongest judge for release-gate evals where accuracy matters most.
 
-### Jev / System One Decision Model (v4.2.4, September 2026 — opt-in, experimental)
+### Jev / System One Eval Modes (v4.2.6, September 2026 — opt-in, experimental)
 
-`python-v4.2.4` added support for routing metrics' *decision* step to **Jev**, TypeSafe AI's
-"System One" model. Jev is not an LLM — it takes a typed question (yes/no verdict, a DAG node's
-binary judgement, a G-Eval rubric level, a classifier label) and returns a calibrated probability
-instead of generated text, so it can't hallucinate a verdict format or go off-rubric. The LLM you
-already configured still does every *language* step (extracting claims/statements, writing G-Eval
-evaluation steps, generating the human-readable reason) — only the final decision hands off to Jev.
-This is a separate axis from the GPT-model swap above: it changes *which kind of model* renders the
-verdict, not which LLM does the reasoning.
+The narrow v4.2.4 "route the decision step to Jev" hook (previous paragraph, now superseded) was
+generalized in **v4.2.6** into a three-way **eval mode** wired into nearly every built-in metric
+(`FaithfulnessMetric`, `AnswerRelevancyMetric`, all the contextual/turn/conversational metrics,
+`ToolCorrectnessMetric`, `ToolUseMetric`, `TaskCompletionMetric`, the MCP metrics, the classifiers,
+etc. — grep `_system_one_eval_spec` in a checkout to see the full list; `DAGMetric` and a user's own
+`BaseMetric` subclass are the exceptions, see below):
 
-Where it plugs in (per the DeepEval source, `deepeval/models/system_one/`): QAG-based metrics'
-claim verification (e.g. `FaithfulnessMetric`), `GEval`'s per-step verdict, `DAGMetric`'s binary
-node decisions, and the new **Classifiers** feature (categorical LLM-as-judge against a closed
-label set, instead of a 0–1 score).
+- **`llm`** (default) — the LLM runs the whole chain, unchanged from today.
+- **`hybrid`** — the LLM still extracts/writes the reason, but Jev answers the decision points a
+  metric wires for it; if a Jev call fails at runtime (rate limit, context limit, network) that one
+  decision quietly falls back to the LLM.
+- **`system_one`** — Jev decides the *entire* metric in one request over the raw test case (no LLM
+  built or called at all), and there is **no fallback**: a Jev error or context overflow surfaces
+  directly, telling you to switch back to `llm`. `metric.reason` becomes deterministic text listing
+  each question and Jev's answer (not LLM prose), and `metric.confidence` reports how decisive the
+  least-certain answer was.
 
-Opt in globally — metrics auto-detect it once configured, there's no per-metric constructor param:
+Set it per metric, or globally:
 
-```bash
-# Enable (reads/writes local DeepEval settings)
-deepeval set-typesafe --model=jev
-
-# Disable, fall back to pure-LLM verdicts
-deepeval unset-typesafe
+```python
+FaithfulnessMetric(threshold=0.8, eval_mode="hybrid")       # per-metric override, wins outright
 ```
 
-Or via environment variables (same settings the CLI writes): `TYPESAFE_API_KEY`,
-`TYPESAFE_MODEL_NAME` (defaults to the latest Jev model), `TYPESAFE_COST_PER_INPUT_TOKEN` (override
-if you're on a custom pricing tier — DeepEval validates it's `>= 0`).
+```bash
+deepeval set-eval-mode system_one   # or: hybrid | llm — writes DEEPEVAL_EVAL_MODE
+deepeval set-typesafe --model=jev   # still required: this only sets TYPESAFE_API_KEY etc.
+```
 
-Tradeoffs before enabling for a release gate: TypeSafe's own numbers put Jev at ~100ms per query
-(batched for independent questions) and $0.042/M input tokens with no output-token charge — cheap
-and fast relative to a frontier-model judge call. But it's marked experimental in the release notes
-and existing behavior is unchanged unless you opt in, so pilot it on a non-blocking metric run
-before swapping a release-gate threshold onto it, and don't expect a reasoning trace back from the
-decision step itself (the LLM-authored `reason` field is unaffected, but a Jev verdict itself is a
-bare probability, not an explanation).
+or the `DEEPEVAL_EVAL_MODE` env var directly (`llm` / `hybrid` / `system_one`). Precedence: the
+metric's own `eval_mode=` argument, then the setting, then `llm`. A metric with no `system_one`
+wiring (DAG, a custom subclass) silently runs as `hybrid` under `system_one` mode, since it still
+needs the LLM for its own task nodes.
+
+Practical notes: `system_one` mode now pre-checks the request against Jev's context window
+(`SystemOneContextLimitError`) instead of letting an oversized test case surface as an opaque
+400/422 — the fix on overflow is to shrink the state or fall back to `hybrid`/`llm` for that case.
+Same cost/latency tradeoffs as before (~100ms/query, $0.042/M input tokens, no output charge) and
+still marked experimental — pilot `hybrid` on a non-blocking run before trusting `system_one` on a
+release gate, since that mode has zero fallback if Jev errors.
 
 ## Sources
 
@@ -875,6 +880,15 @@ bare probability, not an explanation).
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/models/system_one/typesafe_model.py (`TypeSafeModel` constructor, env vars)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/g_eval/g_eval.py (`initialize_system_one_model()`, `_experimental_system_one_spec`)
 - https://github.com/confident-ai/deepeval/pull/3340 (`deepeval set-typesafe`/`unset-typesafe` CLI opt-in)
+- PyPI `deepeval` 4.2.5→4.2.6 sdist diff (github.com/api.github.com blocked for this repo in this
+  session's sandbox, so verified by downloading both sdists from `files.pythonhosted.org` and
+  diffing source directly): `deepeval/config/eval_mode.py` (new — `EvalMode` enum, `resolve_eval_mode`
+  precedence rules), `deepeval/metrics/utils/system_one.py` (new — `SystemOneEvalSpec`,
+  `run_system_one_eval`, deterministic reason formatting), `deepeval/models/system_one/limits.py`
+  (new — `check_context_budget`/`SystemOneContextLimitError`), `deepeval/cli/main.py` diff (new
+  `set-eval-mode` command), `deepeval/metrics/faithfulness/faithfulness.py` diff (per-metric
+  `eval_mode=` constructor argument, `_system_one_eval_spec` method) — all read verbatim from the
+  downloaded package contents, version 4.2.6 released 2026-09-24 per `pypi.org/pypi/deepeval/json`.
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/metrics/tool_correctness/tool_correctness.py (`_get_type_mismatches`, type-aware exact/non-exact/ordering scoring, v4.1.9)
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/utils.py (`classify_tool_call_types`, `process_mcp_servers` classifying both `tools_called` and `expected_tools`)
 - https://github.com/confident-ai/deepeval/pull/3062 (PR introducing tool-call type distinction, merged into v4.1.9)
