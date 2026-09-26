@@ -5,6 +5,73 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-26 (GMT+7)
+
+Orientation: `git fetch origin main skill-evolution`, checked out `skill-evolution` (HEAD at the
+09-25 `215b312` commit), read this branch's own `SKILL.md` and the top ~115 lines of
+`evolution-log.md` from this checkout, plus `git log main..skill-evolution`/`skill-evolution..main`
+to re-confirm the two branches still share no common ancestor (unrelated histories, flagged since
+09-24) — left unreconciled again per the "never force an unrelated-histories merge" rule, still
+awaiting a human. GitHub access this run was again hard-scoped to `Dinh-Thanh-Phat/skills-for-claude`
+only (confirmed by the session's own repo-scope notice), same as 09-25; `raw.githubusercontent.com`,
+`pypi.org`, `registry.npmjs.org`, and `git ls-remote` over HTTPS were all reachable and used instead.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily, plus
+one new-technique sweep per domain:
+Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` remains the sole/topmost
+heading; cross-checked its full bullet list — test locks, frame-agnostic `frameLocator()`,
+`Locator.visible()`, step `subtitle`/`params`, aria+screen trace snapshots, `httpCredentials` arrays,
+`storageState({opfs})`, `dialogClosed` events, `ariaSnapshotJSON()`, typed `APIRequestContext`,
+`reducedMotion`/`forcedColors`/`contrast` test options, `--add-reporter`, `omitTags`, the `perfetto`
+reporter — against `skills/playwright-1.63-new-apis/SKILL.md` line by line: every item already
+documented there, nothing new since that skill's 09-05 creation; `@playwright/mcp` npm registry —
+0.0.82 confirmed still latest, unchanged since 09-18), Maestro/mobile (direct fetch of the core
+`mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest, "Unreleased" section still
+empty; the community `devicelab-dev/maestro-runner` fork — `git ls-remote --tags` confirms **v1.1.27
+(Sept 11) is still the latest tag**, its `CHANGELOG.md` "Unreleased" batch (HTTP `--app-file`
+caching, CommonJS `require`, `wait` step, DeviceLab-default-driver, `--insecure` TLS-skip,
+`--typing-frequency` fix, etc., flagged 09-23 through 09-25) remains unshipped — held again per the
+no-unshipped-content guardrail, now four consecutive runs; general "Maestro mobile testing new
+feature September 2026" sweep returned only third-party guide/marketing pages (QASkills.sh,
+Plaintest, BrowserStack) describing Cloud-tier Android 15/16 support and MaestroGPT, both already
+covered by existing `maestro-*` skills), AI chatbot/LLM testing (`pypi.org/pypi/deepeval/json`
+re-check — 4.2.6 confirmed still latest, unchanged since 09-24, already fully documented by the
+09-25 `deepeval-llm-cicd` update; Promptfoo `CHANGELOG.md` direct fetch — 0.123.1 (Sept 18) confirmed
+still latest; a WebSearch surfaced `promptfoo/promptfoo` PR #10154 ("correct plugin docs and
+collection expansion") describing new ecommerce/telecom/real-estate-specific plugin collections —
+verified directly against the first-party `site/docs/red-team/plugins/index.md` and
+`configuration.md` on `main`: neither lists any industry-vertical collection (only the existing
+`harmful`/`pii`/`toxicity`/`bias`/`medical`/`misinformation`/`illegal-activity` category bundles are
+documented), so this is an in-flight PR, not yet shipped/merged to docs — held per the
+no-unshipped-content guardrail rather than documented from the PR title alone; `cekura.ai` (a
+previously-cited chatbot-testing vendor blog) is now blocked outright by this session's network
+egress proxy, a new access restriction — noted for future runs, no content was available to
+evaluate from it), axe-core (npm registry re-check — 4.13.0 confirmed still latest, unchanged), QA
+test design (general September 2026 sweep — only the same EP/BVA/pairwise-70%/shift-left-plus-right/
+AI-driven trend framing this log has dismissed on effectively every prior run, all already covered
+by existing skills, no new reproducible technique).
+
+- No changes — every finding across Playwright/web E2E, Maestro/mobile, AI chatbot/LLM testing, and
+  QA test design either duplicated an already-documented skill (verified by direct line-by-line
+  comparison against the skill file, not just the changelog) or was unshipped/unverified (Promptfoo's
+  industry-plugin-collection PR not yet in the docs, `maestro-runner`'s fourth-straight-day pending
+  batch). Quality-over-quantity guardrail applied.
+- SKIPPED Playwright/web E2E — 1.63 remains latest and every bullet in its full changelog section is
+  already covered verbatim by `skills/playwright-1.63-new-apis`; `@playwright/mcp` 0.0.82 unchanged.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest with an empty "Unreleased" section;
+  `maestro-runner` fork confirmed still at tag v1.1.27 (Sept 11) via `git ls-remote --tags`, so its
+  large pending feature batch remains unshipped, four consecutive runs now. General feature sweep
+  returned only Cloud-tier/MaestroGPT content already covered by existing skills.
+- SKIPPED AI chatbot/LLM testing — DeepEval 4.2.6 and Promptfoo 0.123.1 both confirmed still latest
+  and already documented. A promising-looking Promptfoo PR (industry-vertical red-team plugin
+  collections) checked directly against first-party docs and confirmed not yet merged/shipped —
+  held per the verify-before-writing guardrail. `cekura.ai` now blocked by the session's egress
+  proxy (new access restriction, noted for future runs).
+- SKIPPED axe-core — 4.13.0 confirmed still latest, unchanged.
+- SKIPPED QA test design — general sweep returned only trend-level framing already covered by
+  `behavioral-coverage-matrix`/`pairwise-combinatorial-testing`/`metamorphic-testing`. No new
+  reproducible technique found.
+
 ## 2026-09-25 (GMT+7)
 
 Orientation: `git fetch origin main skill-evolution` + `git checkout skill-evolution` (HEAD at the
