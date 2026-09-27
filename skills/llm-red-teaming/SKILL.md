@@ -15,7 +15,8 @@ description: >-
   trace timeline", "promptfoo grafana tempo", "promptfoo braintrust tracing", "promptfoo
   langfuse tracing", "metadata.toolCalls", "promptfoo mcp.enabled", "assert executed mcp tool
   calls", "OWASP LLM Top 10 2026", "LLM01 prompt injection", "hidden context exposure LLM08",
-  "owasp llm plugin numbering", "excessive agency LLM03".
+  "owasp llm plugin numbering", "excessive agency LLM03", "promptfoo openai agents provider",
+  "red team openai agents sdk", "openai:agents: target", "toolMocks executeTools mock".
 ---
 
 # LLM Red Teaming
@@ -254,6 +255,43 @@ For endpoints that stream multiple messages before completing, `streamResponse` 
 that returns `complete: true` once a terminal message (e.g. `{"type":"done"}`) arrives. The
 WebSocket URL is derived automatically from `https`↔`wss`/`http`↔`ws` if you point `id` at an
 HTTP(S) URL instead, useful when the same origin serves both a REST and a realtime endpoint.
+
+### Targeting an OpenAI Agents SDK App Directly (2026)
+
+Beyond a plain chat-completion endpoint, Promptfoo can now target an app built with the **OpenAI
+Agents SDK** (TypeScript or Python) directly — the same `redteam.plugins`/`strategies` pipeline
+drives the agent's actual `handoff()`s and tool calls instead of a bare LLM API, so ASI02 (Tool
+Misuse) and ASI07 (Insecure Inter-Agent Communication) probes above exercise the real dispatch
+path rather than a simulated one:
+
+```yaml
+targets:
+  - id: openai:agents:support-agent
+    config:
+      agent: file://./agents/support-agent.ts   # or an inline { name, model, instructions } object
+      tools: file://./tools/support-tools.ts
+      maxTurns: 15
+      executeTools: mock   # 'real' hits live tools; 'mock' keeps red-team runs deterministic
+      toolMocks:
+        lookup_order: { status: 'shipped' }
+      tracing: true        # emits agent/tool/handoff spans, needed for trajectory assertions
+
+redteam:
+  plugins: [excessive-agency, mcp, rbac, hijacking]
+  strategies: [crescendo]
+```
+
+Notes specific to this target type:
+- Tools passed via `tools:`/`toolMocks` must be **async functions** — a synchronous tool throws
+  at runtime rather than failing a specific test case.
+- `executeTools: mock` supports function tools and direct `Agent` handoffs only; an explicit
+  `Handoff` object still executes for real even in mock mode — don't rely on mocking to sandbox a
+  handoff-heavy attack path.
+- Assert on the trajectory, not just the final reply, to catch ASI02/ASI07 findings a text-only
+  judge would miss: `assert: [{type: trajectory:tool-used, value: lookup_order}]`.
+- The sibling providers `openai:agents-api` (managed Codex sessions), `openai:chatkit`, and
+  `openai:codex-sdk` follow the same `targets.id` pattern for their respective OpenAI
+  agent/coding-assistant surfaces.
 
 ### Newer Multi-Turn Strategies (2026): `mischievous-user` and `custom`
 
@@ -545,6 +583,7 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - OWASP LLM Top-10 2026 (LLM01: Prompt Injection): https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 - Garak vs PyRIT comparison 2026: https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/
 - LLM Red Teaming Guide 2026 (tools + methodology): https://appsecsanta.com/ai-security-tools/llm-red-teaming
+- Promptfoo `openai:agents:*` provider (added v0.123.1, Sept 18 2026): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/openai-agents.md, https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/openai.md, https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - IEEE 2026: Prompt injection in third-party chatbot plugins: https://arxiv.org/html/2511.05797v1
 - Promptfoo WebSocket provider config (targets, messageTemplate, streamResponse): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/websocket.md
 - Promptfoo 0.121.20 release (WebSocket URL templating support, July 30 2026): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md

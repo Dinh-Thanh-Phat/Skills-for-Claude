@@ -5,6 +5,65 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-27 (GMT+7)
+
+Orientation: `git fetch origin main skill-evolution`, checked out `skill-evolution` (HEAD at the
+09-26 `d9ff6c8` commit), read this branch's own `SKILL.md` and the top of `evolution-log.md` from
+this checkout. Re-confirmed `main` and `skill-evolution` still share no common ancestor
+(`git merge-base main skill-evolution` exits non-zero) — left unreconciled again per the "never
+force an unrelated-histories merge" rule, still awaiting a human; this is now the fourth run
+flagging it (09-24 through 09-27).
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily:
+Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` remains the sole/
+topmost heading, unchanged since 09-05, every bullet already documented by
+`skills/playwright-1.63-new-apis`; `@playwright/mcp` npm registry — 0.0.82 confirmed still latest,
+unchanged since 09-18), Maestro/mobile (direct fetch of the core `mobile-dev-inc/maestro`
+`CHANGELOG.md` — 2.10.0 confirmed still latest since 09-11, "Unreleased" section still empty; the
+community `devicelab-dev/maestro-runner` fork's own `CHANGELOG.md` — still tagged v1.1.27 (Sept 11)
+with its large pending `[Unreleased]` batch (HTTP `--app-file` caching, CommonJS `require`, `wait`
+step, `--insecure` TLS-skip, etc., flagged 09-23 through 09-26) still unshipped — held again per the
+no-unshipped-content guardrail, now a sixth consecutive run), AI chatbot/LLM testing (`pypi.org/
+pypi/deepeval/json` re-check — 4.2.6 confirmed still latest, unchanged since 09-24, already fully
+documented; Promptfoo `CHANGELOG.md` direct fetch — 0.123.1 (Sept 18) confirmed still latest, but
+this run cross-checked its full bullet list line-by-line rather than just the version number:
+alongside provider additions already dismissed as non-testing-technique (Gemini 3.8, Vertex Live,
+GPT-Live voice, Bedrock auth), one item — "providers: add OpenAI Agents API" — turned out to be a
+genuine new red-team/eval **target type**, not just a provider integration: verified directly
+against the first-party `site/docs/providers/openai.md` and `site/docs/providers/openai-agents.md`
+on `main` (not the changelog line alone) that Promptfoo now ships an `openai:agents:*` target that
+drives an app's actual OpenAI Agents SDK `handoff()`s and tool calls through the same
+`redteam.plugins`/`strategies` pipeline documented in `llm-red-teaming`'s existing "Promptfoo"
+section — grepped the whole repo for "Agents API"/"Agents SDK"/`openai:agents` first and confirmed
+zero prior coverage, so this is additive, not a duplicate of the sibling `websocket`/`wss` target
+subsection), axe-core (npm registry re-check — 4.13.0 confirmed still latest, unchanged), QA test
+design (general September 2026 sweep — only the same EP/BVA/pairwise/self-healing/shift-left trend
+framing this log has dismissed on effectively every prior run; spot-checked "self-healing test"
+specifically via grep and confirmed it's already covered by `skills/self-healing-test-automation`
+and `skills/playwright-test-agents` — no new reproducible technique).
+
+- UPDATED: skills/llm-red-teaming — Added "Targeting an OpenAI Agents SDK App Directly (2026)"
+  subsection (placed alongside the existing WebSocket-target subsection, both under "Promptfoo —
+  CI-Integrated Red Teaming"): the `openai:agents:*` target id, `agent`/`tools`/`maxTurns`/
+  `executeTools`/`toolMocks`/`tracing` config fields, a full `promptfooconfig.yaml` example
+  red-teaming a support agent with `excessive-agency`/`mcp`/`rbac`/`hijacking` plugins, and three
+  gotchas verified from the provider doc (tools must be async, `executeTools: mock` doesn't sandbox
+  explicit `Handoff` objects, use `trajectory:tool-used` assertions to catch ASI02/ASI07 findings a
+  text-only judge misses). Also noted the sibling `openai:agents-api`/`openai:chatkit`/
+  `openai:codex-sdk` providers for the adjacent Codex/ChatKit surfaces. Updated frontmatter trigger
+  keywords and Sources. Sources: https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md,
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/openai.md,
+  https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/openai-agents.md
+- SKIPPED Playwright/web E2E — 1.63 remains latest and fully documented; `@playwright/mcp` 0.0.82
+  unchanged.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest with an empty "Unreleased" section;
+  `maestro-runner` fork's pending feature batch remains unshipped at v1.1.27 (Sept 11), sixth
+  consecutive run held per the no-unshipped-content guardrail.
+- SKIPPED AI chatbot/LLM testing (DeepEval) — 4.2.6 confirmed still latest and already documented.
+- SKIPPED axe-core — 4.13.0 confirmed still latest, unchanged.
+- SKIPPED QA test design — general sweep returned only trend-level framing already covered by
+  existing skills (self-healing test automation confirmed covered via direct grep, not assumed).
+
 ## 2026-09-26 (GMT+7)
 
 Orientation: `git fetch origin main skill-evolution`, checked out `skill-evolution` (HEAD at the
