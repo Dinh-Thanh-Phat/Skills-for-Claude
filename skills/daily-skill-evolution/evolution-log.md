@@ -5,6 +5,72 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-28 (GMT+7)
+
+Orientation: `git fetch origin`, checked out `skill-evolution` (HEAD at the 09-27 `f861f7e`
+commit), read this branch's own `SKILL.md` and evolution-log.md from this checkout. Re-confirmed
+`main` and `skill-evolution` still share no common ancestor (`git merge-base main skill-evolution`
+exits non-zero) — left unreconciled again per the "never force an unrelated-histories merge" rule;
+this is now the fifth run flagging it (09-24 through 09-28), still awaiting a human.
+
+Domains researched, re-checking the same pinned first-party sources this log has tracked daily:
+Playwright/web E2E (direct fetch of `release-notes-js.md` — `## Version 1.63` remains the sole/
+topmost heading, unchanged since 09-05, every bullet already in `skills/playwright-1.63-new-apis`;
+`@playwright/mcp` npm registry — 0.0.82 confirmed still latest, unchanged since 09-18; a
+"Playwright 1.64" search returned no stable release, only coverage of 1.60-1.63), Maestro/mobile
+(direct fetch of the core `mobile-dev-inc/maestro` `CHANGELOG.md` — 2.10.0 confirmed still latest
+since 09-11, "Unreleased" section still empty, and its sole 2.10.0 bullet — `--device-os` accepting
+a full Android system-image path — is already documented in `skills/maestro-mobile`; the community
+`devicelab-dev/maestro-runner` fork — `git ls-remote --tags` confirms **v1.1.27 (Sept 11) is still
+the latest tag**, seventh consecutive run holding its still-unshipped `[Unreleased]` batch per the
+no-unshipped-content guardrail), AI chatbot/LLM testing (Promptfoo `CHANGELOG.md` direct fetch —
+0.123.1 (Sept 18) confirmed still latest, already fully documented; axe-core npm registry — 4.13.0
+confirmed still latest, unchanged; **DeepEval** `pypi.org/pypi/deepeval/json` re-check — 4.2.6
+confirmed still latest, but a WebSearch on "DeepEval new metric agent evaluation" surfaced three
+metric names (`PlanQualityMetric`, `PlanAdherenceMetric`, `StepEfficiencyMetric`) from a secondary
+source (a `confident-ai.com` blog post, not `deepeval.com` itself, which 403's the fetcher as
+usual) — rather than trust the secondary summary, verified them first-party by fetching
+`deepeval/metrics/__init__.py` directly off GitHub `main`: all three are real, currently-exported
+metric classes, and a grep of `skills/deepeval-llm-cicd/SKILL.md` confirmed zero prior mentions of
+any of the three (unlike `ToolUseMetric`/`GoalAccuracyMetric`/`TopicAdherenceMetric`/
+`AgentResponsivenessMetric` from the same search, which are already fully documented) — a genuine,
+verified gap, not a duplicate), QA test design (general September 2026 sweep — only the same
+EP/BVA/self-healing/autonomous-test-generation/shift-left trend framing this log has dismissed on
+effectively every prior run; the "skip Page Object Model, use composable fixtures" framing from a
+Playwright best-practices search is architecture-preference commentary, not a new reproducible
+technique, and doesn't square with this repo's own `playwright-page-object-model` skill without a
+first-party Playwright source backing the claim — left undocumented).
+
+- UPDATED: skills/deepeval-llm-cicd — Added a "Plan Quality, Plan Adherence & Step Efficiency
+  Metrics" section documenting three previously-undocumented single-turn agentic metrics
+  (`PlanQualityMetric`, `PlanAdherenceMetric`, `StepEfficiencyMetric`): all three need only
+  `input`/`actual_output` plus `requires_trace = True` (same trace-extraction mechanism as
+  `TaskCompletionMetric`), default `threshold=0.5`, and score against a five-level LLM-judged
+  rubric — `PlanQualityMetric` judges the plan itself independent of execution, `PlanAdherenceMetric`
+  compares the plan against what was actually executed (auto-scores 1.0 if no plan is extractable),
+  and `StepEfficiencyMetric` penalizes a bloated/redundant trace even when the task succeeded.
+  Framed as a complement to the existing `TaskCompletionMetric`/`ToolCorrectnessMetric` pairing:
+  together they catch "didn't reach the goal", "called the wrong tools", and "reached the goal via
+  a bad/drifting/wasteful plan" — the last of which nothing previously in this skill covers.
+  Verified constructor params, required fields, and scoring rubric directly against
+  `deepeval/metrics/plan_quality/plan_quality.py`, `plan_adherence/plan_adherence.py`, and
+  `step_efficiency/step_efficiency.py` on GitHub `main` (not the blog post that surfaced the
+  names). Updated frontmatter trigger keywords and Sources. Sources:
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/__init__.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/plan_quality/plan_quality.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/plan_adherence/plan_adherence.py,
+  https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/step_efficiency/step_efficiency.py
+- SKIPPED Playwright/web E2E — 1.63 remains latest and fully documented; `@playwright/mcp` 0.0.82
+  unchanged; no 1.64 stable found.
+- SKIPPED Maestro/mobile — core CLI 2.10.0 remains latest with an empty "Unreleased" section and
+  its one bullet already documented; `maestro-runner` fork remains unshipped at v1.1.27 (Sept 11),
+  seventh consecutive run held per the no-unshipped-content guardrail.
+- SKIPPED Promptfoo / axe-core — both confirmed still at their already-documented latest versions
+  (0.123.1 / 4.13.0).
+- SKIPPED QA test design — general sweep returned only trend-level framing already covered by
+  existing skills; one "drop POM for fixtures" opinion piece was not backed by a first-party
+  Playwright source, so left undocumented rather than encoded as settled guidance.
+
 ## 2026-09-27 (GMT+7)
 
 Orientation: `git fetch origin main skill-evolution`, checked out `skill-evolution` (HEAD at the

@@ -17,6 +17,8 @@ description: |
   "deepeval score direction flip", "BiasMetric threshold", "ToxicityMetric threshold",
   "HallucinationMetric threshold", "MisuseMetric threshold", "warn_score_direction_flipped",
   "deepeval 4.2.0", "ToolUseMetric", "GoalAccuracyMetric", "TopicAdherenceMetric",
+  "PlanQualityMetric", "PlanAdherenceMetric", "StepEfficiencyMetric", "plan quality deepeval",
+  "plan adherence agent trace", "step efficiency metric",
   "tool selection metric deepeval", "goal accuracy conversational", "topic adherence metric",
   "VoiceConfig ConversationSimulator", "VapiConnector", "PipecatConnector deepeval",
   "deepeval voice connector", "live voice agent simulation deepeval", "WebRTCConnector",
@@ -370,6 +372,48 @@ assert_test(agent_case, [permission_metric])  # score = fraction of calls that s
 Requires at least one of `allowed_tools`/`denied_tools` (raises `ValueError` if neither is set);
 only needs `tools_called` on the test case — cheap enough to run on every agent test, not just
 release gates.
+
+## Plan Quality, Plan Adherence & Step Efficiency Metrics
+
+Three more single-turn agentic metrics exist in DeepEval's `metrics/__init__.py` alongside
+`TaskCompletionMetric` (confirmed via direct read of the package's export list — none of the three
+were previously documented in this skill) that score the agent's *plan*, not just its final
+outcome. All three: only need `input`/`actual_output` on the `LLMTestCase`, set
+`requires_trace = True` (they extract the task and the agent's plan from the trace, same
+mechanism as `TaskCompletionMetric`/`AgentLoopDetectionMetric`), default `threshold=0.5`, and
+score against a five-level LLM-judged rubric rather than a deterministic formula:
+
+- **`PlanQualityMetric`** — judges the plan itself, independent of execution: is it "Inadequate",
+  "Weak", "Adequate but flawed", "Good", or "Excellent" for the task at hand? Catches an agent that
+  stumbles into the right answer via a bad plan — something `TaskCompletionMetric` alone can't see
+  since it only looks at whether the goal was reached.
+- **`PlanAdherenceMetric`** — compares the plan against what the agent actually executed, rating
+  "No" / "Weak" / "Partial" / "Strong" / "Perfect" adherence. Catches an agent that plans well but
+  drifts mid-run. If the trace has no extractable plan, it scores 1.0 automatically rather than
+  penalizing agents that don't externalize a plan step.
+- **`StepEfficiencyMetric`** — rates "Highly inefficient" through "Perfectly efficient": did the
+  agent take a reasonable number of steps, or pad the trace with redundant/unnecessary tool calls
+  and reasoning turns even though it got the task done? Complements `TaskCompletionMetric` (which
+  doesn't penalize wasted steps as long as the goal is met).
+
+```python
+from deepeval.metrics import PlanQualityMetric, PlanAdherenceMetric, StepEfficiencyMetric
+
+assert_test(agent_case, [
+    PlanQualityMetric(threshold=0.6),
+    PlanAdherenceMetric(threshold=0.6),
+    StepEfficiencyMetric(threshold=0.6),
+])
+```
+
+Use these three alongside `TaskCompletionMetric`/`ToolCorrectnessMetric` for a fuller agent-trace
+gate: `TaskCompletionMetric` catches "didn't reach the goal", `ToolCorrectnessMetric` catches
+"called the wrong tools", and this trio catches "reached the goal, but via a bad, drifting, or
+wasteful plan" — a failure mode a task-completion-only gate misses entirely. Verified directly
+against `deepeval/metrics/plan_quality/plan_quality.py`,
+`deepeval/metrics/plan_adherence/plan_adherence.py`, and
+`deepeval/metrics/step_efficiency/step_efficiency.py` on GitHub `main` (the `deepeval.com` docs
+site 403'd the fetcher, same recurring pattern noted throughout this log for this domain).
 
 ## Multi-Turn (Conversational) Evaluation
 
@@ -878,6 +922,10 @@ release gate, since that mode has zero fallback if Jev errors.
 - https://raw.githubusercontent.com/confident-ai/deepeval/python-v4.1.9/deepeval/test_case/llm_test_case.py (`ToolCallType` enum, `ToolCall.type` field, v4.1.9)
 - https://github.com/confident-ai/deepeval/releases/tag/python-v4.2.4 (Jev/System One release notes, September 22 2026)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/models/system_one/typesafe_model.py (`TypeSafeModel` constructor, env vars)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/__init__.py (confirmed `PlanQualityMetric`/`PlanAdherenceMetric`/`StepEfficiencyMetric` are real exported metrics, not previously documented in this skill)
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/plan_quality/plan_quality.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/plan_adherence/plan_adherence.py
+- https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/step_efficiency/step_efficiency.py
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/g_eval/g_eval.py (`initialize_system_one_model()`, `_experimental_system_one_spec`)
 - https://github.com/confident-ai/deepeval/pull/3340 (`deepeval set-typesafe`/`unset-typesafe` CLI opt-in)
 - PyPI `deepeval` 4.2.5→4.2.6 sdist diff (github.com/api.github.com blocked for this repo in this
