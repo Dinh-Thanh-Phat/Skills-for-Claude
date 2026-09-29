@@ -5,6 +5,13 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-29 (GMT+7)
+
+Domains researched (same pinned first-party sources as prior runs): Playwright/web E2E (`release-notes-js.md` — 1.63 still topmost; `@playwright/test` 1.63.0 latest; `@playwright/mcp` npm shows **0.0.83 published 2026-09-28**, but no release notes were retrievable — GitHub API blocked, npm metadata has no changelog — so nothing verifiable to document), Maestro/mobile (CHANGELOG — 2.10.0 still latest, Unreleased empty; maestro-runner tag v1.1.27 still latest), AI chatbot/LLM testing (Promptfoo 0.123.1, DeepEval 4.2.6 still latest, already documented).
+
+- No changes — nothing new and verifiable. `@playwright/mcp` 0.0.83 noted as unverified; re-check next run for release notes.
+- `main` and `skill-evolution` still have unrelated histories (ff-merge refused) — unreconciled, awaiting a human.
+
 ## 2026-09-28 (GMT+7)
 
 Orientation: `git fetch origin`, checked out `skill-evolution` (HEAD at the 09-27 `f861f7e`
