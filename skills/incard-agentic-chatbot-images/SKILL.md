@@ -135,6 +135,19 @@ Renaming files on Drive (to fix name collisions) can be done via the Drive API w
 local token — see `scripts/drive_media.py rename`. The image Drive folder is **shared**,
 so a rename affects both prod and staging bots that scan it.
 
+**HEIC/HEIF files are silently skipped by Scan Folder** (measured 30/09/2026, bot 286:
+99 Drive files → 88 records, the 11 missing were exactly the HEIF ones). iPhone photos are
+often HEIF **even when named `.jpeg`** — check `mimeType` via the Drive API, not the
+extension. Convert them to real JPG on Drive before scanning, or tell the user they won't be
+sent. Scan also picks up `.mp4` (media_type=video); "Select All → Train" may only queue part
+of the list per click — loop until the media-list API shows every record `success`.
+
+**Creating a bot:** "Add New Chatbot" creates the record immediately (it shows in the list
+with the typed title/instructions even if the Next-save POST never fires). After creating,
+re-read `enable_image_reply` from the list; if it is false, reopen step 1, tick it, click
+Next and confirm `POST /dashboard/chatbot/update` → 200. Re-running a create script must
+reuse the bot with the same title instead of creating a duplicate.
+
 ## Verifying in the preview (don't trust your eyes on thumbnails)
 
 Open `/chatbot/<preview-uuid>/preview`, click the chat trigger, type a question, wait
