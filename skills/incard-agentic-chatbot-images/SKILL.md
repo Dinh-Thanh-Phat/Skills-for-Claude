@@ -148,6 +148,14 @@ re-read `enable_image_reply` from the list; if it is false, reopen step 1, tick 
 Next and confirm `POST /dashboard/chatbot/update` → 200. Re-running a create script must
 reuse the bot with the same title instead of creating a duplicate.
 
+**Auto-attach fires only on the FIRST media turn of a conversation** (measured 30/09/2026,
+staging bot 286, web preview): after one turn that attached media, later turns attach
+nothing even though the reply says "em gửi video/hình…" — 0/6 across a product switch
+(S40 → NPK) and a same-product follow-up (ảnh → video pha chế). Control: the identical
+message in a fresh conversation attached correctly 2/2. Instructions cannot fix this —
+report to InCard with that repro. Always include a multi-turn case in preview tests; a
+single-turn suite hides it. (Facebook/Zalo channel not yet measured.)
+
 ## Verifying in the preview (don't trust your eyes on thumbnails)
 
 Open `/chatbot/<preview-uuid>/preview`, click the chat trigger, type a question, wait
