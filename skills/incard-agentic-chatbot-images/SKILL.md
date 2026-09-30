@@ -147,6 +147,12 @@ the editor still opens and accepts input, but a toast says "AI Sales Chatbot pla
 expired … Renew Plan" and Next sends no create/update request — no bot appears. Check for
 that toast before blaming the script; renewing is the account owner's decision.
 
+**Scan returns 0 records → read the scan POST response before retrying.** Prod 30/09/2026:
+`POST /dashboard/chatbot/train/gdrive-image/scan` → 422 `Table
+'agentic.incard.biz.ext_chatbot_gdrive_folders' doesn't exist` and the media-list API → 500.
+The Product Media UI was live on prod but its DB migration was not — only InCard devs can
+fix it. The UI shows no error; only the network response does.
+
 **Creating a bot:** "Add New Chatbot" creates the record immediately (it shows in the list
 with the typed title/instructions even if the Next-save POST never fires). After creating,
 re-read `enable_image_reply` from the list; if it is false, reopen step 1, tick it, click
