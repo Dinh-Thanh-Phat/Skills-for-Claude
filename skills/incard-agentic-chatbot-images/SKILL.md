@@ -142,19 +142,25 @@ extension. Convert them to real JPG on Drive before scanning, or tell the user t
 sent. Scan also picks up `.mp4` (media_type=video); "Select All → Train" may only queue part
 of the list per click — loop until the media-list API shows every record `success`.
 
+**Expired plan = silent create failure** (prod, 30/09/2026, account thanhphat12tna234):
+the editor still opens and accepts input, but a toast says "AI Sales Chatbot plan has
+expired … Renew Plan" and Next sends no create/update request — no bot appears. Check for
+that toast before blaming the script; renewing is the account owner's decision.
+
 **Creating a bot:** "Add New Chatbot" creates the record immediately (it shows in the list
 with the typed title/instructions even if the Next-save POST never fires). After creating,
 re-read `enable_image_reply` from the list; if it is false, reopen step 1, tick it, click
 Next and confirm `POST /dashboard/chatbot/update` → 200. Re-running a create script must
 reuse the bot with the same title instead of creating a duplicate.
 
-**Auto-attach fires only on the FIRST media turn of a conversation** (measured 30/09/2026,
-staging bot 286, web preview): after one turn that attached media, later turns attach
-nothing even though the reply says "em gửi video/hình…" — 0/6 across a product switch
-(S40 → NPK) and a same-product follow-up (ảnh → video pha chế). Control: the identical
-message in a fresh conversation attached correctly 2/2. Instructions cannot fix this —
-report to InCard with that repro. Always include a multi-turn case in preview tests; a
-single-turn suite hides it. (Facebook/Zalo channel not yet measured.)
+**Multi-turn attach is flaky in the automated preview harness — NOT a confirmed platform
+rule.** 30/09/2026: in scripted headless preview runs, a follow-up turn that switches product
+("Còn NPK/Super 40 thì sao, cho xem ảnh luôn") often got no media even when the reply said
+"em gửi hình…", while the same sentence in a fresh chat attached fine. A first guess
+("only the first media turn per chat attaches") was REFUTED the same day: on bot 287 turn 1
+sent nothing and turn 2 still attached nothing, and the user's own manual test of the switch
+case works. So: keep a multi-turn case in suites, but when it fails, reproduce by hand in a
+real browser before calling it a platform bug.
 
 ## Verifying in the preview (don't trust your eyes on thumbnails)
 
