@@ -729,6 +729,25 @@ maestro hierarchy --compact
 > Match the `abi` segment to the CI runner's host architecture (`x86_64` on Intel/AMD runners,
 > `arm64-v8a` on Apple Silicon/ARM runners) — a mismatched ABI fails to boot the emulator.
 
+### CLI 2.11.0 — Stricter Validation + Android 17 (July–Sept 2026)
+
+- **Android 17 (API 37):** `start-device` now resolves the new *minor-versioned* 16 KB page-size
+  system images, and when the image derived from `--device-os` isn't installed it names the exact
+  `--device-os` value to use. Copy that value into CI rather than guessing the image tag.
+- **Physical iOS devices are not supported:** Maestro stops listing physical iPhones as devices and
+  fails an attempted run early with `Physical iOS devices are not yet supported` — a fast, explicit
+  failure instead of a confusing mid-run one. Use simulators for iOS (see `maestro-real-ios-device`
+  for the workaround options).
+- **Stricter flow validation (may break previously "passing" flows):**
+  - `start`/`end` in an element selector are now **rejected** — they belong to `swipe`, and were
+    silently ignored for other actions. `tapOn: {start: ...}` was a no-op typo; it now errors.
+  - `setDarkMode` and `setAirplaneMode` accept only `enabled`/`disabled`, and now honour
+    `optional: true`.
+  Run `maestro check-syntax` after upgrading to catch these before CI does.
+- **Artifact manifest:** screen recordings record when they actually started
+  (`metadata.startedAtEpochMs`), so video timestamps can be aligned with `commands.json` steps.
+- **Windows:** `maestro cloud <flow.yaml>` no longer fails when the flow uses `runFlow` with complex paths.
+
 ```yaml
 # MAESTRO_FILENAME — built-in env var exposing the current flow's filename inside the flow itself
 # Useful for tagging screenshots/artifacts with the source file without hardcoding it per flow
@@ -791,3 +810,4 @@ simulators at the same time.
 - https://maestro.dev/blog/maestro-cli-v2-6-0 — Maestro CLI 2.6.0 release notes
 - https://docs.maestro.dev/
 - https://github.com/mobile-dev-inc/maestro/pull/3543 — `--device-os` accepts a full Android system image path (`system-images;<os>;<tag>;<abi>`), overloading the existing flag rather than adding a new one (2.10.0)
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (2.11.0 section) — Android 17 `start-device`, physical-iOS early failure, `start`/`end` selector rejection, `setDarkMode`/`setAirplaneMode` validation, `metadata.startedAtEpochMs`, Windows `maestro cloud` fix

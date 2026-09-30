@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-09-30 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (`release-notes-js.md` — 1.63 still topmost; npm `@playwright/test` latest 1.63.0, next 1.64.0-alpha only; `@playwright/mcp` 0.0.83 still latest, still no retrievable release notes), Maestro/mobile (CHANGELOG — **2.11.0 is new**, Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.123.1 still latest; DeepEval PyPI 4.2.7 vs logged 4.2.6 — no release notes retrievable, not documented).
+
+- UPDATED: skills/maestro-mobile — added "CLI 2.11.0" subsection: Android 17 (API 37) `start-device` image resolution, early failure for physical iOS devices, `start`/`end` now rejected in element selectors (previously silently ignored), `setDarkMode`/`setAirplaneMode` accept only `enabled`/`disabled` and honour `optional: true`, `metadata.startedAtEpochMs` in the artifact manifest, Windows `maestro cloud` fix — https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md
+- SKIPPED Playwright, Promptfoo, DeepEval 4.2.7 (unverifiable), `@playwright/mcp` 0.0.83 (unverifiable).
+- `main` and `skill-evolution` still have unrelated histories (ff-merge refused) — unreconciled, awaiting a human.
+
 ## 2026-09-29 (GMT+7)
 
 Domains researched (same pinned first-party sources as prior runs): Playwright/web E2E (`release-notes-js.md` — 1.63 still topmost; `@playwright/test` 1.63.0 latest; `@playwright/mcp` npm shows **0.0.83 published 2026-09-28**, but no release notes were retrievable — GitHub API blocked, npm metadata has no changelog — so nothing verifiable to document), Maestro/mobile (CHANGELOG — 2.10.0 still latest, Unreleased empty; maestro-runner tag v1.1.27 still latest), AI chatbot/LLM testing (Promptfoo 0.123.1, DeepEval 4.2.6 still latest, already documented).
