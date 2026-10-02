@@ -1,11 +1,6 @@
----
+﻿---
 name: test-auth-strategy
-description: >-
-  Reusable test authentication strategy — login once, token caching, global setup, separation of
-  auth vs feature tests, secure token handling. Use when setting up authentication for any test
-  suite, managing multiple roles, or deciding when to reuse vs re-authenticate. Triggers on:
-  "test authentication", "test login", "auth test", "login once", "token caching test", "global
-  setup auth", "reuse token", "auth state", "storage state", "auth fixture".
+description: Reusable test authentication strategy — login once, token caching, global setup, separation of auth vs feature tests, secure token handling. Use when setting up authentication for any test suite, managing multiple roles, or deciding when to reuse vs re-authenticate. Triggers on: "test authentication", "test login", "auth test", "login once", "token caching test", "global setup auth", "reuse token", "auth state", "storage state", "auth fixture".
 triggers:
   - "test authentication"
   - "test login"
@@ -52,32 +47,38 @@ tests/
 
 ## Login Once, Reuse — Playwright Implementation
 
-```typescript
-// global-setup.ts
-import { chromium } from '@playwright/test';
+Use a **setup project** (Playwright's documented auth pattern), not a hand-launched browser in
+`globalSetup`: a browser you `chromium.launch()` yourself does not get the config's `baseURL`,
+so a relative `page.goto('/login')` there fails.
 
-async function globalSetup() {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  await page.goto('/login');
-  await page.fill('[data-testid="email"]', process.env.TEST_USER_EMAIL!);
-  await page.fill('[data-testid="password"]', process.env.TEST_USER_PASSWORD!);
-  await page.click('[data-testid="login-btn"]');
+```typescript
+// tests/auth.setup.ts
+import { test as setup } from '@playwright/test';
+
+setup('authenticate', async ({ page }) => {
+  await page.goto('/login');                       // baseURL applies here
+  await page.getByTestId('email').fill(process.env.TEST_USER_EMAIL!);
+  await page.getByTestId('password').fill(process.env.TEST_USER_PASSWORD!);
+  await page.getByTestId('login-btn').click();
   await page.waitForURL('/dashboard'); // wait for FINAL redirect — cookies set AFTER this
   await page.context().storageState({ path: '.auth/user-state.json' });
-  await browser.close();
-}
-
-export default globalSetup;
+});
 ```
 
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  globalSetup: './global-setup.ts',
-  use: { storageState: '.auth/user-state.json' },
+  projects: [
+    { name: 'setup', testMatch: /auth\.setup\.ts/ },
+    {
+      name: 'chromium',
+      use: { storageState: '.auth/user-state.json' },
+      dependencies: ['setup'],
+    },
+  ],
 });
 ```
+More variants (multi-role projects, OAuth, expiry): `auth-session-testing`.
 
 ## One State File Per Role
 
