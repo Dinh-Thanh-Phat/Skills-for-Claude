@@ -154,10 +154,10 @@ Then('I should see an error message {string}', async ({ page }, message) => {
 Use Playwright fixtures to inject POM instances into step definitions:
 
 ```typescript
-// fixtures.ts — extend playwright-bdd's test with POM fixtures
-import { test as base } from 'playwright-bdd';
-import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
+// fixtures.ts — extend playwright-bdd's test with POM fixtures, export bound step/hook functions
+import { test as base, createBdd } from 'playwright-bdd';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 type Fixtures = {
   loginPage: LoginPage;
@@ -172,20 +172,22 @@ export const test = base.extend<Fixtures>({
     await use(new DashboardPage(page));
   },
 });
+
+// Bind steps/hooks to the custom test → playwright-bdd auto-detects it (no importTestFrom)
+export const { Given, When, Then, Before, After } = createBdd(test);
 ```
 
 ```typescript
-// playwright.config.ts — point defineBddConfig to the fixture file
+// playwright.config.ts — include fixtures.ts in `steps`
 const testDir = defineBddConfig({
-  paths: ['features/**/*.feature'],
-  require: ['steps/**/*.ts'],
-  importTestFrom: 'fixtures.ts',   // use custom test with POM fixtures
+  features: 'features/**/*.feature',
+  steps: ['steps/**/*.ts', 'fixtures.ts'],
 });
 ```
 
 ```typescript
 // steps/login.steps.ts — use POM via fixture injection
-import { Given, When, Then } from 'playwright-bdd';
+import { Given, When, Then } from '../fixtures';
 
 Given('I am on the login page', async ({ loginPage }) => {
   await loginPage.navigate();
@@ -204,28 +206,31 @@ Then('I should be redirected to the dashboard', async ({ dashboardPage }) => {
 
 ## Hooks (before/after scenarios)
 
+Official advice: **prefer Playwright fixtures over hooks**. When you do need hooks, get them from `createBdd(test)` (exported from `fixtures.ts` above). Scenario hooks (`BeforeScenario`/`Before`, `AfterScenario`/`After`) take **one argument — the test-scoped fixtures** (incl. `$testInfo`, `$tags`); there is no Cucumber-style `scenario` second argument.
+
 ```typescript
 // steps/hooks.ts
-import { Before, After, BeforeAll, AfterAll } from 'playwright-bdd';
+import { Before, After } from '../fixtures';
 
-// Runs before each scenario — use for per-test setup
+// Runs before each scenario
 Before(async ({ page }) => {
   await page.goto('/');
 });
 
-// Scoped to a Gherkin tag — only runs for @auth scenarios
-Before({ tags: '@auth' }, async ({ page, context }) => {
-  // Restore saved auth state
+// Scoped by tag expression (v8+); shortcut: Before('@auth', fn)
+Before({ tags: '@auth' }, async ({ context }) => {
   await context.addCookies([{ name: 'auth', value: 'token', domain: 'example.com', path: '/' }]);
 });
 
-After(async ({ page }, scenario) => {
-  // Take screenshot on failure
-  if (scenario.result?.status === 'FAILED') {
-    await page.screenshot({ path: `screenshots/${scenario.pickle.name}.png` });
+// Screenshot on failure — use $testInfo, not scenario.result
+After(async ({ page, $testInfo }) => {
+  if ($testInfo.status !== $testInfo.expectedStatus) {
+    await page.screenshot({ path: `screenshots/${$testInfo.title}.png` });
   }
 });
 ```
+
+Hooks also accept `name` and `timeout` (`Before({ name: 'seed', timeout: 5000 }, fn)`). Worker-level hooks: `BeforeAll`/`AfterAll` (aliases `BeforeWorker`/`AfterWorker`, worker-scoped fixtures only). Step hooks: `BeforeStep`/`AfterStep` (since 8.2; v9.1 runs `AfterStep` after failed steps with the error in `$step.error`). Note: Playwright's built-in `screenshot: 'only-on-failure'` usually makes the `After` screenshot unnecessary.
 
 ---
 
@@ -257,18 +262,22 @@ npx playwright test --grep "@smoke.*@auth"
 ## Running tests
 
 ```bash
-# Generate Playwright tests from .feature files, then run
-npx playwright test
+# Generate Playwright tests from .feature files (bddgen), THEN run — `playwright test` alone does NOT regenerate
+npx bddgen && npx playwright test
 
-# UI mode with Gherkin scenarios visible
-npx playwright test --ui
+# Convenience: package.json → "test": "npx bddgen && npx playwright test"
+
+# UI mode with Gherkin scenarios visible (regenerate first; see playwright-bdd docs guides/ui-mode.md for watch setups)
+npx bddgen && npx playwright test --ui
 
 # Run a specific feature
-npx playwright test --grep "User Login"
+npx bddgen && npx playwright test --grep "User Login"
 
-# See the generated test files (playwright-bdd caches them in .features-gen/)
+# See the generated test files (default outputDir: .features-gen/) — add it to .gitignore
 cat .features-gen/features/login.feature.spec.js
 ```
+
+> PowerShell 5.1 has no `&&` — use `npx bddgen; if ($?) { npx playwright test }`.
 
 ---
 
@@ -316,7 +325,4 @@ project/
 
 ## Sources
 - https://testdino.com/blog/playwright-bdd
-- https://medium.com/@tito.irfanwibisono/behavior-driven-development-bdd-with-gherkin-cucumber-and-playwright-a-practical-guide-9c38396c4c11
-- https://www.browserstack.com/guide/playwright-cucumber
-- https://medium.com/@sreekanth.parikipandla/playwright-bdd-with-typescript-a-practical-guide-to-fast-readable-e2e-tests-6bd1dca6b3d1
-- https://github.com/vitalets/playwright-bdd
+- https://medium.com/@t
