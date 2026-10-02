@@ -1,11 +1,6 @@
 ---
 name: playwright-network-interception
-description: >-
-  Use when writing Playwright tests that need to mock API responses, intercept HTTP requests,
-  simulate network conditions (slow/offline), block third-party requests, or make flaky
-  API-dependent tests deterministic. Triggers on: "mock API response", "intercept request", "stub
-  network", "fake backend", "test without real API", "block analytics", "simulate slow network",
-  "network mocking".
+description: Use when writing Playwright tests that need to mock API responses, intercept HTTP requests, simulate network conditions (slow/offline), block third-party requests, or make flaky API-dependent tests deterministic. Triggers on: "mock API response", "intercept request", "stub network", "fake backend", "test without real API", "block analytics", "simulate slow network", "network mocking".
 ---
 
 # Playwright Network Interception
@@ -54,20 +49,21 @@ await page.route('**/api/users', route =>
 
 ## Prevent mock leakage between tests
 
-Playwright does NOT clear routes between tests automatically:
+Routes registered on the test's own `page`/`context` fixture die with that context — each test
+gets a fresh one, so `beforeEach(unrouteAll)` is unnecessary there. Leakage only happens when you
+share a context/page across tests (worker-scoped fixture, `beforeAll` page, `test.describe.serial`):
 
 ```ts
-// In beforeEach — fresh route per test
-test.beforeEach(async ({ page }) => {
-  await page.unrouteAll()
-})
-
-// Or scope to test block
+// Default: scope to the test block — route only exists in this test
 test('shows error state', async ({ page }) => {
   await page.route('**/api/users', route =>
     route.fulfill({ status: 500, json: mockError })
   )
-  // route only exists in this test
+})
+
+// Only for a SHARED page/context: remove routes explicitly (unrouteAll since v1.41)
+test.afterEach(async () => {
+  await sharedPage.unrouteAll({ behavior: 'ignoreErrors' })
 })
 ```
 

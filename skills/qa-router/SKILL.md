@@ -56,7 +56,7 @@ triggers:
 
 **"Hard block"** = không được skip dù user không mention, dù request có vẻ đơn giản.
 
-> **Recurring failure đã xảy ra nhiều lần (xem `[[feedback_automation-must-cover-all-cases-not-happy-path]]`):**
+> **Recurring failure đã xảy ra nhiều lần (xem memory `[[feedback_automation-must-cover-all-cases-not-happy-path]]` (memory)):**
 > user nói "chạy full cases" → Claude tự làm một lượt walkthrough thủ công vài case dễ thấy nhất rồi
 > report như xong, để lộ phần thiếu chỉ khi user hỏi lại "sao ít vậy". Đây là lỗi ÁP DỤNG lặp lại
 > (đã có skill mà không dùng để tự chặn mình TRƯỚC khi báo cáo), không phải thiếu quy trình.
