@@ -199,7 +199,7 @@ def has_valid_citation(answer: str, source_doc: str) -> bool:
     """Citation phải ở CUỐI answer dạng '- source_doc'."""
     return bool(re.search(r'[-–]\s*' + re.escape(source_doc) + r'\s*$', answer))
 
-# Nếu thiếu → re-enrich bằng enrichment_model (70b), không giữ answer lỗi
+# Nếu thiếu → re-enrich bằng ENRICHMENT_MODEL (120b), không giữ answer lỗi
 ```
 
 #### 7. Rate limit: sleep + exponential backoff
