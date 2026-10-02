@@ -2,7 +2,7 @@
 name: maestro-viewer
 description: |
   Official Maestro MCP server (built into CLI 2.6.0+) with Maestro Viewer — a web app that
-  embeds an iOS simulator, Android emulator, or physical device directly inside your coding agent
+  embeds an iOS simulator, Android emulator, or Android physical device directly inside your coding agent
   or browser so you can watch every MCP command execute in real time and interact with the device
   without leaving the agent. Use when you want to: set up the official (not third-party) Maestro
   MCP server, use Maestro Viewer for live device visibility in Claude Code/Cursor/Copilot, or
@@ -211,5 +211,7 @@ Windsurf, JetBrains AI Assistant — any MCP-compatible tool works.
 - [Maestro CLI 2.6.0: Introducing Maestro Viewer — maestro.dev blog](https://maestro.dev/blog/maestro-cli-v2-6-0)
 - [Maestro MCP Server — official docs](https://docs.maestro.dev/get-started/maestro-mcp)
 - [Maestro MCP: An Introduction — maestro.dev blog](https://maestro.dev/blog/maestro-mcp-an-introduction)
-- [Official Maestro MCP GitHub — mobile-dev-inc/maestro-mcp](https://github.com/mobile-dev-inc/maestro-mcp)
+- ~~mobile-dev-inc/maestro-mcp~~ — ARCHIVED repo (GitHub API, checked 2026-10-02); the server now lives in the CLI
+- [Maestro MCP docs (markdown) — tool list, install, Viewer](https://docs.maestro.dev/get-started/maestro-mcp.md)
+- CHANGELOG 2.11.0 — "Physical iOS devices are not yet supported"
 - [Maestro CHANGELOG.md — 2.5.0 MCP tool consolidation + native Cloud tools, 2.6.0 CLI details, `describe_cloud_run` tool (2.7.0)](https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md)

@@ -34,7 +34,7 @@ playwright.config.ts:
   ]
 
 CLI --reporter=json → REPLACES cả 3 reporters trên bằng json → stdout
-                    → results.json KHÔNG được ghi
+                    → results.json KHÔNG được ghi (outputFile trong config bị bỏ qua)
                     → output file từ background task bị truncate nếu quá lớn
 ```
 
@@ -46,9 +46,19 @@ Chỉ dùng khi KHÔNG có config sẵn, hoặc muốn thêm reporter mà KHÔNG
 # Xem live output khi CI không hiển thị
 npx playwright test --reporter=list  # NHƯNG mất file reporters
 
-# Thêm reporter BỔ SUNG (Playwright 1.35+)
-# Không có cách CLI native — phải dùng env var hoặc sửa config tạm thời
+# ✅ Thêm reporter BỔ SUNG, GIỮ reporters trong config (Playwright 1.63+)
+npx playwright test tests/cms/ --add-reporter=list
+npx playwright test --add-reporter=./my-ci-reporter.ts   # path tới custom reporter, comma-separated được
+
+# Nếu BUỘC phải dùng --reporter=json → set env để ghi ra file thay vì stdout
+# bash:
+PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright test --reporter=json
+# PowerShell:
+$env:PLAYWRIGHT_JSON_OUTPUT_NAME="results.json"; npx playwright test --reporter=json
+# (PLAYWRIGHT_JSON_OUTPUT_DIR chọn thư mục; mặc định cwd/config dir)
 ```
+
+> Trước 1.63 không có `--add-reporter` — với project pin version cũ thì vẫn phải sửa config hoặc dùng env var. Kiểm tra `npx playwright --version` trước.
 
 ## Protocol trước mỗi test run
 
