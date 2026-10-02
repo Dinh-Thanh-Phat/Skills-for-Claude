@@ -1,14 +1,6 @@
 ---
 name: ocr-processor
-description: >-
-  Extract text from scanned PDFs and images using multi-engine OCR (Tesseract → EasyOCR → Google
-  Vision fallback). Automatically detects whether a PDF has a text layer or needs OCR. Supports
-  Vietnamese + English, image preprocessing (deskew, denoise, binarization), batch processing,
-  and quality scoring. Use whenever you need to read text from images or scan-based documents
-  before feeding into the chatbot-tester pipeline. Triggers on: "OCR this PDF", "extract text
-  from image", "read scanned document", "process Vietnamese scan", "convert image to text", "PDF
-  has no text layer", "preprocess document for chatbot testing". Integrates as Step 0 before
-  gdrive-doc-reader in the chatbot testing pipeline.
+description: Extract text from scanned PDFs and images using multi-engine OCR (Tesseract → EasyOCR → Google Vision fallback). Automatically detects whether a PDF has a text layer or needs OCR. Supports Vietnamese + English, image preprocessing (deskew, denoise, binarization), batch processing, and quality scoring. Use whenever you need to read text from images or scan-based documents before feeding into the chatbot-tester pipeline. Triggers on: "OCR this PDF", "extract text from image", "read scanned document", "process Vietnamese scan", "convert image to text", "PDF has no text layer", "preprocess document for chatbot testing". Integrates as Step 0 before gdrive-doc-reader in the chatbot testing pipeline.
 ---
 
 # OCR Processor
@@ -121,14 +113,22 @@ def preprocess_image(img: np.ndarray, config: dict = None) -> np.ndarray:
 
 
 def _deskew(img: np.ndarray) -> np.ndarray:
-    """Straighten tilted images using Hough transform angle detection."""
+    """Straighten tilted images using minAreaRect over dark pixels.
+
+    minAreaRect's angle convention changed across OpenCV versions ([-90,0) vs (0,90]),
+    so normalize to (-45, 45] instead of assuming one. Verified on cv2 4.13 with
+    synthetic skews 0/±5/±12/30° → residual 0°.
+    """
     try:
-        coords = np.column_stack(np.where(img < 128))
+        # np.where gives (row, col) = (y, x); minAreaRect expects (x, y)
+        coords = np.column_stack(np.where(img < 128))[:, ::-1].astype(np.float32)
         if len(coords) < 10:
             return img
-        angle = cv2.minAreaRect(coords.astype(np.float32))[-1]
+        angle = cv2.minAreaRect(coords)[-1]
         if angle < -45:
             angle += 90
+        elif angle > 45:
+            angle -= 90
         if abs(angle) < 0.5:
             return img  # skip tiny corrections
         (h, w) = img.shape[:2]
