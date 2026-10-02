@@ -65,7 +65,8 @@ Heuristic evaluation has a brutal, well-measured reliability problem. Treat your
   problems** (Bailey 43% false; Woolrych & Cockton 65% of predictions false). Expert inspection
   *invents* problems a real user never hits, because the evaluator imagines the user instead of
   observing one.
-- **DOM/code presence ≠ user reality**: automated/code signals catch only ~30–40% of real issues.
+- **DOM/code presence ≠ user reality**: automated/code signals catch only part of real issues (axe-style
+  automation ≈ 57% of a11y issues per Deque's 2021 study — the rest needs human observation).
   An element existing in the DOM does not mean it's visible/reachable; a label being *present* in
   markup does not mean it's *announced or usable*. (In this skill's own pilot run, **five** findings
   inferred from code/DOM — chip "click trap", placeholder-as-label, "no Step N of 4", back data-loss,

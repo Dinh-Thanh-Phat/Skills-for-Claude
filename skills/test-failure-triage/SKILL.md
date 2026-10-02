@@ -1,10 +1,6 @@
 ---
 name: test-failure-triage
-description: >-
-  Batch triage all test failures at once — categorize into test bugs vs system bugs before fixing
-  anything. Use when a test suite has multiple failures and you need to categorize them all
-  before starting fixes. Triggers on: "multiple test fail", "test suite fail", "triage failures",
-  "categorize test failures", "10 fail", "N tests failing".
+description: Batch triage all test failures at once — categorize into test bugs vs system bugs before fixing anything. Use when a test suite has multiple failures and you need to categorize them all before starting fixes. Triggers on: "multiple test fail", "test suite fail", "triage failures", "categorize test failures", "10 fail", "N tests failing".
 ---
 
 # Test Failure Triage — Quick Decision Tree
@@ -74,7 +70,7 @@ When you see N failing tests, STOP and triage ALL of them before fixing anything
 After triage, produce this summary before touching any code:
 
 ```
-SYSTEM BUGS (skip + report to user):
+SYSTEM BUGS (test.fail-lock + report to user):
 - CMT-002, CMT-003: Button never appears (feature not rendered)
 - TC-005: Validation not enforced (expected feature behavior)
 - TUG-002: Created item doesn't persist (backend issue)
@@ -88,7 +84,7 @@ TEST SUITE BUGS (fix with --last-failed):
 - UPD-001: Setup not isolating between tests
 ```
 
-→ System bugs: `test.skip(true, 'system bug: [reason]')` + report to user
+→ System bugs: `test.fail(true, 'BUG-xxx: [reason]')` + report to user — keep the assertion on the EXPECTED behavior; the test stays green while the bug exists and turns red ("expected to fail but passed") the moment it's fixed → then remove the annotation. Never `test.skip` a known bug — that hides it. Canonical policy: `skip-vs-fail`.
 → Test bugs: fix, then `npx playwright test --last-failed`
 
 ## When in Doubt: Check Artifacts (In Order)
