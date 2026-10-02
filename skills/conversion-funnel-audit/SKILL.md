@@ -32,8 +32,8 @@ Source: https://baymard.com/lists/cart-abandonment-rate , https://baymard.com/bl
 - [ ] Clear single primary CTA per step (not competing buttons) → 🚩
 
 **Checkout/commerce specifics**
-- [ ] **Guest checkout** offered (not forced account creation) → 🚩 (forced account = 19% abandon)
-- [ ] Total incl. shipping/fees visible **before** the payment step → 🚩 (extra-cost surprise = 39%)
+- [ ] **Guest checkout** offered (not forced account creation) → 🚩 (forced account = 18% abandon)
+- [ ] Total incl. shipping/fees visible **before** the payment step → 🚩 (extra-cost surprise = 40%)
 - [ ] Trust signals near payment (HTTPS lock, security/badge, return policy) → 🚩 if absent
 - [ ] Step count shown / progress indicator on multi-step → 🚩 if missing
 
@@ -49,7 +49,7 @@ Navigate to the flow with Playwright (do NOT submit real data). For each step:
 ## Report
 ```
 # Conversion audit — [flow]  (steps: N)
-🚩 HIGH: forced account creation (no guest option) — 19% abandonment driver
+🚩 HIGH: forced account creation (no guest option) — 18% abandonment driver
 🚩 MED: 11 fields (aim ≤8) — consider splitting/removing [list the trimmable ones]
 🚩 MED: no inline validation — errors only surface on submit
 🟢 OK: autocomplete present · total shown before payment · HTTPS+badge
