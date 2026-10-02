@@ -1,17 +1,15 @@
 ---
 name: test-reporter
-description: >-
-  Generate comprehensive self-contained HTML test reports for chatbot evaluation results with
-  embedded charts, performance metrics, accuracy scores, and failed test details. Use when you
-  need a professional shareable report from chatbot test data. Triggers on: "generate test
-  report", "create chatbot test HTML report", "export test results report", "make performance
-  report", "generate QA report for chatbot". Used as Step 6 (final step) in chatbot testing
-  pipeline. Outputs a single self-contained HTML file (and optionally PDF).
+description: Generate comprehensive self-contained HTML test reports for chatbot evaluation results with embedded charts, performance metrics, accuracy scores, and failed test details. Use when you need a professional shareable report from chatbot test data. Triggers on: "generate test report", "create chatbot test HTML report", "export test results report", "make performance report", "generate QA report for chatbot". Used as Step 6 (final step) in chatbot testing pipeline. Outputs a single self-contained HTML file (and optionally PDF).
 ---
 
 # Test Reporter
 
 Generates a professional, self-contained HTML report from chatbot test results.
+
+> **Report destination (user preference):** a shareable report goes to a **separate Google Sheet** (one
+> spreadsheet per test run, never a new tab in the original test-case sheet) via `gsheet-safe-write`, then
+> formatted with `gsheet-formatter`. Generate the HTML report below **only if the user explicitly asks for HTML**.
 
 ## Report Structure
 
