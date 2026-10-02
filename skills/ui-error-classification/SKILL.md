@@ -87,7 +87,7 @@ test('TC-FORM-REAL-001: Contact form submission [BUG-FORM-001]', async ({ page }
   // EXPECTED: success message
   // ACTUAL: "Something went wrong" — production API is broken
   await expect(page.getByRole('heading', { name: 'Success!' })).toBeVisible();
-  // ^ This assertion CORRECTLY FAILS to document BUG-FORM-001
+  // ^ Fails while BUG-FORM-001 exists → test.fail keeps the run green but tracked
 });
 ```
 
