@@ -186,7 +186,7 @@ class ChatbotAPICaller:
 if __name__ == "__main__":
     # Usage: python chatbot_caller.py questions.json chatbot_url [output.json]
     # API config read from api_config.json in current directory
-    config = json.loads(Path("api_config.json").read_text()) if Path("api_config.json").exists() else {
+    config = json.loads(Path("api_config.json").read_text(encoding="utf-8")) if Path("api_config.json").exists() else {
         "endpoint": sys.argv[2],
         "method": "POST",
         "request_template": {"message": "{{question}}"},
