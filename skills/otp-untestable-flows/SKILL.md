@@ -186,7 +186,9 @@ v12? See the v12 adapter migration guide: https://otplib.yeojz.dev/guide/v12-ada
 
 The Playwright helpers above don't apply inside a Maestro flow. Options, best first:
 1. **Same infra, fetched by script** — call the dev bypass API / mail-catcher from a Maestro
-   `runScript` (GraalJS `http.get`) and `inputText: ${output.otp}`. Same "ask dev first" rule applies.
+   `runScript` (Maestro JS HTTP API — docs.maestro.dev/maestro-flows/javascript/make-http-requests;
+   exact call shape e.g. `http.get(url)` UNVERIFIED this session) and `inputText: ${output.otp}`.
+   Same "ask dev first" rule applies.
 2. **Fixed test OTP / test-number prefix** agreed with dev (e.g. a staging rule for test phone numbers).
 3. **Android emulator SMS** — `adb emu sms send 5551234 "Your code is 123456"` delivers a real SMS to
    the emulator (emulator only; a real device needs a real SMS). See `android-17-qa-gate`.
