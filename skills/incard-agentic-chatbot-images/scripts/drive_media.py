@@ -58,6 +58,7 @@ def id2name(at, ids):
 
 
 def _children(at, fid):
+    # LIMITATION: nextPageToken is not followed — >1000 children per folder are truncated.
     url = "https://www.googleapis.com/drive/v3/files?" + urllib.parse.urlencode({
         "q": f"'{fid}' in parents and trashed=false",
         "fields": "files(id,name,mimeType)",

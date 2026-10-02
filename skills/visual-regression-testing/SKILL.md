@@ -154,7 +154,10 @@ will flake on slower machines.
 ```bash
 npx playwright test --update-snapshots
 ```
-Baseline files stored in: `tests/__snapshots__/`
+Baseline files stored by default next to the spec in `<spec-file>-snapshots/`
+(e.g. `tests/visual/login.visual.spec.ts-snapshots/login-page-chromium-linux.png`).
+To use a central folder, set `snapshotPathTemplate` in config, e.g.
+`snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}'`.
 
 ### Reviewing changes
 ```bash
@@ -168,7 +171,7 @@ npx playwright show-report
 npx playwright test visual.spec.ts --update-snapshots
 
 # Commit updated baseline
-git add tests/__snapshots__/
+git add tests/**/*-snapshots/      # or your snapshotPathTemplate folder
 git commit -m "chore: update visual baselines after [feature name] redesign"
 ```
 

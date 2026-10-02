@@ -137,6 +137,7 @@ print("\n=== PREVIEW CHANGES ===")
 - [ ] Có dry-run preview trước append/delete chưa?
 - [ ] Biết rõ số dòng hiện tại và sẽ thêm bao nhiêu chưa?
 - [ ] Có backup plan nếu cần rollback chưa? (xóa rows appended)
+- [ ] Sau khi ghi đã chạy `gsheet-formatter` chưa?
 
 ## Phantom Row — `appendSpreadsheetRows` (cẩn trọng)
 
