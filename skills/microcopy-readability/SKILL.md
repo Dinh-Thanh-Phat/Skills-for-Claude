@@ -18,7 +18,7 @@ concrete. Companion to [[ux-heuristic-evaluation]] (heuristic H2 "match the real
 ## Targets (general consumer/B2B web)
 | Signal | Target | Why |
 |---|---|---|
-| Flesch-Kincaid Grade | **≤ 8** | ~8th-grade is the plain-language norm (US Plain Writing Act) |
+| Flesch-Kincaid Grade | **≤ 8** | ~8th-grade is the common plain-language guideline (the US Plain Writing Act itself sets no grade number) |
 | Flesch Reading Ease | **60–70+** | higher = easier |
 | Avg sentence length | **15–20 words** | longer → harder to parse |
 | Passive-voice ratio | low (flag clusters) | passive hides the actor |
