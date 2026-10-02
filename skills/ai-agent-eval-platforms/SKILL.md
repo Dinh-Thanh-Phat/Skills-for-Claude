@@ -76,14 +76,17 @@ def score_json_validity(output, expected, input):
   env:
     BRAINTRUST_API_KEY: ${{ secrets.BRAINTRUST_API_KEY }}
 
-- name: Check score regression
-  run: |
-    npx braintrust eval --assert-no-regression \
-      --project orders-chatbot \
-      --experiment-name "pr-${{ github.sha }}"
+- name: Run Braintrust Eval() files
+  run: npx braintrust eval evals/ --terminate-on-failure
 ```
 
-**Free tier:** 1M spans/month, 10K eval runs.
+> There is **no** `--assert-no-regression` / `--experiment-name` flag on `braintrust eval`
+> (real flags include `--filter`, `--list`, `--jsonl`, `--watch`, `--no-send-logs`,
+> `--terminate-on-failure`, `--num-workers`). For PR comments showing per-score diffs vs. the base
+> experiment use the official GitHub Action `braintrustdata/eval-action`, and enforce a hard gate
+> in your own script by comparing the summary scores.
+
+**Free tier:** UNVERIFIED (pricing changes often — check braintrust.dev/pricing).
 
 ---
 
