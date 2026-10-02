@@ -160,22 +160,24 @@ targets:
 
 redteam:
   plugins:
-    - prompt-injection
-    - jailbreak
     - harmful:hate
-    - harmful:violence
+    - harmful:violent-crime
     - pii:direct
     - indirect-prompt-injection   # RAG attack vectors
   strategies:
+    - prompt-injection            # a STRATEGY in promptfoo, not a plugin
+    - jailbreak
     - jailbreak:composite
-    - multi-turn
+    - crescendo                   # multi-turn (no strategy id is literally "multi-turn")
+    - goat
   numTests: 25
 ```
 
 ```bash
 npx promptfoo redteam generate   # generate attack prompts
 npx promptfoo redteam run        # execute and score
-npx promptfoo redteam report     # HTML report
+npx promptfoo redteam report     # opens a local browser UI (port 15500) — not for headless CI
+npx promptfoo redteam plugins --ids-only   # live list of valid plugin ids
 ```
 
 ### Newer Multi-Turn Strategies (2026): `mischievous-user` and `custom`
