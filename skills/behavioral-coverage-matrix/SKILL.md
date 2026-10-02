@@ -241,6 +241,7 @@ expect(count).toBe(0); // actual empty state verified
 - [ ] Có test boundary không? (per-page limit, max chars)
 - [ ] Assertions verify STATE CHANGE, không chỉ visibility?
 - [ ] Auth behaviors được test không?
+- [ ] Đủ 8 category bắt buộc (POS/NEG/EDGE/SEC/A11Y/BOUNDARY/STATE/ERROR) chưa? Thiếu category nào = gap
 - [ ] Coverage% = behaviors_covered / total_behaviors × 100 đã tính chưa?
 
 ---
