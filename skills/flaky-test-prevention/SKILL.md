@@ -266,7 +266,7 @@ When a test fails intermittently, check in this order:
 
 ## Cross-references (unified flaky rules)
 
-**networkidle rule** — tất cả 3 skills dưới đây đều đồng ý: NO networkidle, dùng `domcontentloaded` + `waitForSelector`:
+**networkidle rule** — tất cả 3 skills dưới đây đều đồng ý: NO `networkidle`, NO `page.waitForSelector` (cả hai bị Playwright docs đánh dấu discouraged) — dùng web-first assertion `await expect(locator).toBeVisible()` / `waitForResponse`. **Retries:** CI `retries: 1`, local `0`:
 - **this skill** — prevention framework + 5 root causes
 - **`e2e-test-stability`** — patterns chi tiết cho 7 flake sources phổ biến
 - **`playwright-flaky-test-detection`** — diagnosis-from-symptom workflow
