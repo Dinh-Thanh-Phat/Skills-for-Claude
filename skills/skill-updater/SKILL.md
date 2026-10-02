@@ -81,12 +81,10 @@ Phân tích feedback của user để xác định loại lỗi:
 
 ## Bước 3 — Đọc Skill Hiện Tại
 
-**Hai convention lưu skill** — phải check cả 2:
+**Convention loadable duy nhất:** `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` (+ `references/` tuỳ chọn).
 
-| Convention | Đường dẫn | Dùng cho |
-|---|---|---|
-| Single-file | `C:\Users\wi\.claude\skills\[skill-name].md` | Business / PT skills, mini-skills |
-| Folder | `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` | QA / testing skills, large skills có references/ |
+File phẳng `C:\Users\wi\.claude\skills\[skill-name].md` (13 file business cũ) vẫn đọc/sửa được, nhưng **không được
+Claude Code load** — sửa chúng không thay đổi hành vi. Khi sửa một file phẳng, nhắc user điều này.
 
 Thử folder trước (`[name]/SKILL.md`); nếu không có thì thử file (`[name].md`).
 Dùng Read tool để đọc toàn bộ nội dung skill được detect ở Bước 1.
