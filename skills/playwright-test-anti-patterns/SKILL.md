@@ -126,10 +126,12 @@ expect(count).toBeLessThan(100);
 const items = page.locator('.item');
 await expect(items).toHaveCount(5);  // If expecting exactly 5
 
-// Or for range assertions (use proper matchers):
-const count = await items.count();
-expect(count).toBeGreaterThan(0);
-expect(count).toBeLessThan(100);
+// Or for range assertions — wrap in expect(...).toPass() so the count is re-read until it fits:
+await expect(async () => {
+  const count = await items.count();
+  expect(count).toBeGreaterThan(0);
+  expect(count).toBeLessThan(100);
+}).toPass({ timeout: 5_000 });
 ```
 
 **Why:** Web-first assertions on locators retry; extracted variables don't.
