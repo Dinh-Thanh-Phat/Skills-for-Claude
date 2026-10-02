@@ -239,9 +239,8 @@ tests/
     login.visual.spec.ts
     dashboard.visual.spec.ts
     components.visual.spec.ts
-  __snapshots__/
-    login.visual.spec.ts-snapshots/
-      login-page-chromium-linux.png  # auto-named with browser+OS
+    login.visual.spec.ts-snapshots/      # default location: next to the spec
+      login-page-chromium-linux.png      # auto-named with browser+OS
 ```
 
 ---
