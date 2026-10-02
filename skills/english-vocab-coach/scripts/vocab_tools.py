@@ -91,9 +91,11 @@ def build_deck(args):
     print()
     print("Import into Anki:")
     print("  1. Anki > File > Import > select this CSV")
-    print("  2. Field separator: Comma. Allow HTML in fields: YES (checkbox).")
+    print("  2. Anki 2.1.54+ reads the #separator/#html/#columns header automatically.")
+    print("     Older Anki: set Field separator = Comma, Allow HTML = YES, and delete the 3 '#' lines.")
     print("  3. Field 1 -> Front, Field 2 -> Back. Import.")
-    print("Quizlet: Import > paste, set 'Comma' between term/definition, 'New line' between cards.")
+    print("Quizlet: delete the 3 '#' header lines first, then Import > paste,")
+    print("  set 'Comma' between term/definition, 'New line' between cards.")
 
 
 # --------------------------------------------------------------------------- #
