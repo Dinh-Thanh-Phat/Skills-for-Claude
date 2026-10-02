@@ -372,7 +372,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     cfg_path = sys.argv[4] if len(sys.argv) > 4 else "ui_automator_config.json"
-    config = json.loads(Path(cfg_path).read_text()) if Path(cfg_path).exists() else {}
+    config = json.loads(Path(cfg_path).read_text(encoding="utf-8")) if Path(cfg_path).exists() else {}
     config["chatbot_url"] = sys.argv[2]
 
     automator = ChatbotUIAutomator(config)
