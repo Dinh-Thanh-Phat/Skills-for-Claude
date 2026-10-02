@@ -52,7 +52,7 @@ For credit/quota/real-publish/irreversible ops:
 - Run it **once**. If it fails, **diagnose from artifacts** (screenshot/trace/log) —
   do **not** "just run it again". Each re-run spends real money and may leave debris.
 - If the failure is environmental (slow AI, quota exhausted), STOP and report —
-  see `warn-environment-factors`. Do not keep paying to discover the same thing.
+  see `qa-preflight` and memory `feedback_warn-environment-factors.md`. Do not keep paying to discover the same thing.
 
 ### 3. Gate it and warn+consent every time
 - Keep these tests behind an env flag (`test.skip(!process.env.RUN_GEN, ...)`).
