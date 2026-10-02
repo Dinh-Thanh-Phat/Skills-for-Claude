@@ -128,8 +128,9 @@ await expect(page.locator('.status')).toHaveText('Saved');
 await sendEmail(page, { subject, to });
 
 await page.goto('/campaign-history');
-await expect(page.locator(`text="${subject}"`)).toBeVisible();
-await expect(page.locator('.status').first()).toHaveText('Sent');
+const row = page.getByRole('row').filter({ hasText: subject }); // THIS email's row, not "the first status"
+await expect(row).toHaveCount(1);
+await expect(row.locator('.status')).toHaveText('Sent');
 ```
 
 ### Level 4 — Full Chain (for critical business flows)
