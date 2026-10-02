@@ -1,12 +1,6 @@
----
+﻿---
 name: data-grid-testing
-description: >-
-  Patterns for testing data grids and tables in Playwright — virtual scroll, sort, filter,
-  pagination, infinite scroll, AG Grid column virtualization. Use when writing tests for tables,
-  data grids, or list views that have sort/filter/pagination/infinite scroll, especially with
-  virtual scrolling (AG Grid, TanStack Table, react-virtual). Triggers on: "table", "data grid",
-  "AG Grid", "sort column", "filter table", "pagination", "infinite scroll", "virtual scroll",
-  "row count wrong", "column not found".
+description: Patterns for testing data grids and tables in Playwright — virtual scroll, sort, filter, pagination, infinite scroll, AG Grid column virtualization. Use when writing tests for tables, data grids, or list views that have sort/filter/pagination/infinite scroll, especially with virtual scrolling (AG Grid, TanStack Table, react-virtual). Triggers on: "table", "data grid", "AG Grid", "sort column", "filter table", "pagination", "infinite scroll", "virtual scroll", "row count wrong", "column not found".
 ---
 
 # Data Grid / Table Testing
@@ -21,8 +15,7 @@ With virtual scroll, **only visible rows are in the DOM**. `getByRole('row').cou
 // 1. Click column header to sort ascending
 await page.getByRole('columnheader', { name: 'Name' }).click();
 
-// 2. Collect visible cell values
-const cells = page.getByRole('cell', { name: /\w+/ }); // adjust for your grid
+// 2. Collect visible cell values (adjust selector for your grid)
 const values = await page.locator('[data-col="name"]').allTextContents();
 
 // 3. Compare with sorted version
@@ -56,15 +49,19 @@ await filterRequest; // verify correct params sent to server
 ## Pagination Testing
 
 ```typescript
+// ⚠️ page.getByRole('row') ALSO matches the header row → 10 data rows count as 11.
+// Scope to the body rows (tbody, or the grid's body rowgroup / AG Grid '.ag-center-cols-container').
+const bodyRows = page.locator('tbody').getByRole('row');
+
 // Assert page 1 content and count
-await expect(page.getByRole('row')).toHaveCount(10); // rows per page
-const firstRowText = await page.getByRole('row').first().textContent();
+await expect(bodyRows).toHaveCount(10); // rows per page
+const firstRowText = await bodyRows.first().textContent();
 
 // Navigate to page 2
 await page.getByRole('button', { name: 'Next page' }).click();
-await expect(page.getByRole('row')).toHaveCount(10);
+await expect(bodyRows).toHaveCount(10);
 // Different data on page 2
-await expect(page.getByRole('row').first()).not.toHaveText(firstRowText!);
+await expect(bodyRows.first()).not.toHaveText(firstRowText!);
 
 // Assert page indicator
 await expect(page.getByText('Page 2 of 5')).toBeVisible();
@@ -137,6 +134,7 @@ await expect(page.locator('.ag-row')).toHaveCount(1);
 
 | Gotcha | Fix |
 |---|---|
+| Row count off by one | `getByRole('row')` includes the header row — scope to `tbody` / body rowgroup |
 | `getByRole('row').count()` returns partial data | Virtual scroll — only rendered rows in DOM. Use ID Set pattern for total |
 | Column locator returns 0 results | AG Grid removes off-screen columns — `suppressColumnVirtualisation` or scroll to column |
 | `locator.check()` on row checkbox ignored | Grid intercepts — click the row element or use grid's selection API |

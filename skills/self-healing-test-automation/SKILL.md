@@ -42,7 +42,9 @@ const LOCATOR_PRIORITY = [
 async function resilientLocator(page: Page, meta: ElementMeta): Promise<Locator> {
   for (const strategy of LOCATOR_PRIORITY) {
     const loc = strategy(page, meta);
-    if (await loc.count() > 0) return loc;
+    // Accept only a UNIQUE match — `count() > 0` would hand back an ambiguous locator
+    // and silently act on the wrong element (see `safe-locators`)
+    if (await loc.count() === 1) return loc;
   }
   throw new Error(`No locator resolved for element: ${JSON.stringify(meta)}`);
 }
@@ -67,12 +69,14 @@ async function healLocator(
   failedSelector: string,
   stepDescription: string,
 ): Promise<string> {
-  // Capture accessibility tree (lighter than full DOM)
-  const snapshot = await page.accessibility.snapshot();
-  const domContext = JSON.stringify(snapshot, null, 2).slice(0, 8000); // token budget
+  // Capture accessibility tree (lighter than full DOM).
+  // `page.accessibility.snapshot()` was REMOVED in Playwright 1.57 — use the aria snapshot
+  // (`page.ariaSnapshot()` since 1.59; `page.ariaSnapshotJSON()` since 1.63 for JSON).
+  const snapshot = await page.ariaSnapshot();
+  const domContext = snapshot.slice(0, 8000); // token budget
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: process.env.HEAL_MODEL!, // pick a current model id — check the `claude-api` skill, don't hardcode from memory
     max_tokens: 300,
     messages: [{
       role: 'user',
@@ -84,6 +88,17 @@ Return ONLY a valid Playwright locator call (e.g. getByRole('button', { name: '.
   });
 
   return (response.content[0] as { text: string }).text.trim();
+}
+
+// The LLM returns a JS expression such as `getByRole('button', { name: 'Save' })`.
+// That is NOT a selector string — `page.locator(healed)` would throw "invalid selector".
+// Map it to a real Locator through a whitelist instead of eval:
+function toLocator(page: Page, healed: string): Locator {
+  const m = healed.match(/^getByRole\('([a-z]+)',\s*\{\s*name:\s*'([^']+)'\s*\}\)$/);
+  if (m) return page.getByRole(m[1] as Parameters<Page['getByRole']>[0], { name: m[2], exact: true });
+  const t = healed.match(/^getByTestId\('([^']+)'\)$/);
+  if (t) return page.getByTestId(t[1]);
+  throw new Error(`[self-heal] unsupported healed locator, needs human review: ${healed}`);
 }
 ```
 
