@@ -56,7 +56,8 @@ All standard Maestro commands work on web unless noted:
 | `assertNotVisible` | |
 | `scroll` | Scrolls in a direction |
 | `openLink` | Navigate to a URL mid-flow |
-| `clearState: true` | Clears cookies/storage for the origin |
+| `clearState` | Clears cookies/storage for the origin (web support since 2.4.0) |
+| `id:` selectors | On Flutter Web, resolve against `flt-semantics-identifier` (2.7.0) |
 | `runFlow` | Compose sub-flows exactly as on mobile |
 | `evalScript` | Run JavaScript — same engine |
 
