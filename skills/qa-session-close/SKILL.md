@@ -162,7 +162,7 @@ Sửa tại chỗ các dòng này (không append bản trùng). Project chưa c�
 Session [DATE] | [Project] | [Feature]
 Tested: X pass / Y fail / Z skip | Bugs: BUG-XX (P1), BUG-YY (P3)
 Coverage: +N behaviors (X/Y total) | Remaining: N scenarios
-Resume: npx playwright test [spec] --grep "[pattern]"
+Resume: npx playwright test [spec] --grep "[pattern]"   (mobile: maestro test [flow.yaml])
 Next: [1 câu mô tả việc quan trọng nhất]
 ```
 
