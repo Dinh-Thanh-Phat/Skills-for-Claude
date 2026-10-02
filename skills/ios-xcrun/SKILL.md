@@ -450,12 +450,12 @@ maestro test --env APP_ID=com.example.myapp flows/
 ### Grant từng permission thủ công
 
 ```bash
-# Location (2 loại — grant cả hai để chắc)
+# Kiểm tra tên service hợp lệ trước: xcrun simctl help privacy
+# Location — `location-always` đã xác nhận; `location` (when-in-use) UNVERIFIED tên chính xác
 xcrun simctl privacy booted grant location-always com.example.myapp
-xcrun simctl privacy booted grant location-when-in-use com.example.myapp
 
-# Notifications — quan trọng cho test push notification flow
-xcrun simctl privacy booted grant notifications com.example.myapp
+# Notifications — `simctl privacy` có thể KHÔNG hỗ trợ (UNVERIFIED). Với Maestro dùng:
+#   - launchApp: { permissions: { notifications: allow } }
 
 # Reset permissions để test lại flow request permission từ đầu
 xcrun simctl privacy booted reset all com.example.myapp
