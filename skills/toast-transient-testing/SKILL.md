@@ -54,9 +54,9 @@ Prevent auto-dismiss entirely during assertion. Best for slow CI environments.
 ```typescript
 // ⚠️ install() alone does NOT freeze time — after install the fake clock keeps running.
 // Install BEFORE navigation (must precede any other clock call), then pauseAt to freeze.
-await page.clock.install();
-await page.goto('/settings');
-await page.clock.pauseAt(new Date(Date.now() + 1000)); // pause slightly ahead of the fake clock's now
+await page.clock.install({ time: new Date('2026-01-01T10:00:00') }); // a bit BEFORE the pause time
+await page.goto('/settings');                                          // page loads with timers running
+await page.clock.pauseAt(new Date('2026-01-01T10:01:00'));            // now timers are frozen
 
 await page.getByRole('button', { name: 'Save' }).click();
 const toast = page.getByRole('alert');
