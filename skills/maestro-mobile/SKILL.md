@@ -88,7 +88,7 @@ suite**, on every project, no exception:
    `clearState`) instead of a fresh login per flow. If you're about to write a flow that starts with
    `launchApp: {clearState: true}` + a login `runFlow`, stop and check whether it can instead attach
    to an already-logged-in session.
-3. **Never re-run a whole suite/section to retest a few failures** — `feedback_test-rerun-discipline`
+3. **Never re-run a whole suite/section to retest a few failures** — skill `test-rerun-discipline`
    / canary pattern. Re-run only the specific failed IDs/flows; a full-section rerun to confirm 2
    fixed cases wastes the same login+navigate cost as the original run, times however many cases
    already passed.
