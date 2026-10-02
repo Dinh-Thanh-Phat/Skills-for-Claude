@@ -177,11 +177,12 @@ You can also prompt this manually:
 
 ## YAML Error Pinpointing (2.6.0)
 
-Error messages now include exact line and column numbers:
+Parse and validation errors now pinpoint the exact line and column (per the 2.6.0 blog). Exact
+message wording below is illustrative — UNVERIFIED:
 
 ```
 Error in flows/checkout.yaml, line 14, col 5:
-  Unknown command 'tapOn_' — did you mean 'tapOn'?
+  Unknown command 'tapOn_'
 ```
 
 Previously Maestro reported file-level errors without position info, making typos hard to locate
