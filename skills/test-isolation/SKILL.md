@@ -74,9 +74,10 @@ import { test as base } from '@playwright/test';
 
 export const test = base.extend({
   loggedInPage: async ({ page }, use) => {
-    await login(page, { email: 'test@incard.biz', password: process.env.TEST_PASSWORD });
+    await login(page, { email: process.env.TEST_EMAIL!, password: process.env.TEST_PASSWORD! });
     await use(page);
-    // automatic cleanup after each test
+    // code after use() = teardown; put cleanup of data this fixture created here
+    // (the page/context itself is closed by Playwright automatically)
   },
 });
 ```
