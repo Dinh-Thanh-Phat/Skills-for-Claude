@@ -118,7 +118,7 @@ Fix the root cause first; the cluster of failures should disappear together.
 | Browser crashed / OOM / "Target page closed" | INFRA | Retry with fewer workers; check memory |
 | All tests fail at `beforeEach` (login) | INFRA / TEST | Run `login-verification` first |
 | Single test times out, others pass | TEST BUG or SYSTEM | Triage by screenshot |
-| Assertion fails on valid action | SYSTEM BUG | Skip + report, do not fix test |
+| Assertion fails on valid action | SYSTEM BUG | `test.fail(true, 'BUG-xxx')` + report, do not weaken the test (see `skip-vs-fail`) |
 | Test passes alone, fails in parallel | DATA RIPPLE | Add cleanup / isolate data |
 | Flaky 1-in-20 with no screenshot | INVESTIGATE | Run `--repeat-each=10` to confirm |
 

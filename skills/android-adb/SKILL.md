@@ -655,7 +655,7 @@ jobs:
           disable-animations: true
           script: |
             ./scripts/prepare-android.sh
-            maestro test --retry-on-failure 2 --format junit --output results.xml flows/
+            maestro test --format junit --output results.xml flows/   # no --retry-on-failure flag exists; use the `retry:` flow command
 
       - name: Cleanup (always)
         if: always()
