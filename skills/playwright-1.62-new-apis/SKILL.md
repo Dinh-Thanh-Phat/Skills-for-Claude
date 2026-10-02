@@ -1,20 +1,6 @@
 ---
 name: playwright-1.62-new-apis
-description: >-
-  Use Playwright 1.62 (July 2026) new APIs including the "stories and galleries"
-  component-testing model, AbortSignal cancellation on actions/assertions, WebP screenshots,
-  Reporter.preprocess() custom test filtering, retryStrategy 'isolated', WebAuthn credentials in
-  storageState, the scroll action option, APIResponse.timing(), Locator.waitForFunction(), and
-  the bundled `npx playwright mcp` / `npx playwright cli`. Use when writing component tests with
-  mount fixtures, needing to cancel a long-running action/assertion, storing screenshots as WebP,
-  writing a custom reporter that skips/excludes tests before the run starts, isolating retries
-  from a flaky suite, persisting passkeys across contexts, opting an action out of auto-scroll,
-  timing an API response, or waiting on a custom condition via a Locator. Triggers on:
-  "playwright 1.62", "stories and galleries", "Fixtures.mount", "playwright AbortSignal",
-  "playwright cancel action", "toHaveScreenshot webp", "Reporter.preprocess", "retryStrategy
-  isolated", "storageState credentials webauthn", "scroll auto none option",
-  "APIResponse.timing", "Locator.waitForFunction", "npx playwright mcp", "npx playwright cli",
-  "mergeFiles reporter option".
+description: Use Playwright 1.62 (July 2026) new APIs including the "stories and galleries" component-testing model, AbortSignal cancellation on actions/assertions, WebP screenshots, Reporter.preprocess() custom test filtering, retryStrategy 'isolated', WebAuthn credentials in storageState, the scroll action option, APIResponse.timing(), Locator.waitForFunction(), and the bundled `npx playwright mcp` / `npx playwright cli`. Use when writing component tests with mount fixtures, needing to cancel a long-running action/assertion, storing screenshots as WebP, writing a custom reporter that skips/excludes tests before the run starts, isolating retries from a flaky suite, persisting passkeys across contexts, opting an action out of auto-scroll, timing an API response, or waiting on a custom condition via a Locator. Triggers on: "playwright 1.62", "stories and galleries", "Fixtures.mount", "playwright AbortSignal", "playwright cancel action", "toHaveScreenshot webp", "Reporter.preprocess", "retryStrategy isolated", "storageState credentials webauthn", "scroll auto none option", "APIResponse.timing", "Locator.waitForFunction", "npx playwright mcp", "npx playwright cli", "mergeFiles reporter option".
 ---
 
 # Playwright 1.62 New APIs
@@ -34,6 +20,8 @@ test('click should expand', async ({ mount }) => {
 ```
 
 Pass a story type as a template argument to type-check its props, and call `update(props)` / `unmount()` on the returned locator to re-render or tear down mid-test without a fresh `mount()`.
+
+→ **Full setup (gallery contract, config with `serviceWorkers: 'block'` + `reuseContext: true`, story patterns, migration table from `@playwright/experimental-ct-*`) lives in `playwright-component-testing`.** Note 1.63 froze the experimental CT packages — migrate before upgrading past 1.62.
 
 ## 2. Cancel Operations with `AbortSignal`
 
