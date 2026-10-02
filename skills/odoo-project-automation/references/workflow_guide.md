@@ -325,13 +325,13 @@ Task Name: Payment webhook timeout
 Task Type: bug
 Description: Webhook requests timing out after 5 seconds, payments not recorded
 Assignee: Phuc Do
-Tags: [bug, payment, critical]
-Priority: 0
+Tags: [bug]
+Priority: "3"   # Urgent
 ```
 
 **Flow:**
 1. Show confirmation dialog with expanded bug format
-2. Highlight Critical priority
+2. Highlight Urgent priority
 3. Wait for "yes"
 4. ✅ Create task
 5. You can immediately assign to someone for action

@@ -372,7 +372,7 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 | Anti-pattern | Đúng phải làm |
 |---|---|
 | Viết Playwright code ngay khi user nói "viết test" | Manual test cases trước, đợi confirm |
-| Generate test cases không có behavior inventory | `behavioral-coverage-matrix` trước |
+| Generate test cases không có behavior inventory / coverage matrix | Có spec/Figma → `qa-test-coverage-max` trước; chỉ có UI live → `behavioral-coverage-matrix` trước |
 | Debug bằng cách edit code ngay | `playwright-diagnosis-first` → screenshot/trace trước |
 | Chạy test không check env | `qa-preflight` trước |
 | Thử locator lần 3+ | `ask-when-stuck` sau lần 2 |
