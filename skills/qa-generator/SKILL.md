@@ -374,7 +374,7 @@ pip install anthropic groq
 ### Generation
 - **Batch size ≤ 5** khi dùng Groq free tier — tránh JSON truncation do token budget
 - **`response_format={"type":"json_object"}`** — buộc Groq output JSON hợp lệ
-- **Model split**: 8b-instant cho generation, 70b-versatile cho enrichment/fix
+- **Model split**: gpt-oss-20b cho generation, gpt-oss-120b cho enrichment/fix (Llama 3.x đã shut down 2026-08-16)
 - **Prompt bằng tiếng Anh** với Groq — tránh small model echo prompt vào output
 - **Anti-echo instruction**: thêm "Do NOT start the answer by repeating the question" vào prompt
 - **Anti-short instruction**: thêm "MUST be ≥ 50 characters of actual content" vào prompt
