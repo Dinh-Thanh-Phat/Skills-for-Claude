@@ -1,12 +1,6 @@
----
+﻿---
 name: auth-session-testing
-description: >-
-  Playwright auth testing patterns — storageState setup project, role-based auth files, session
-  expiry simulation, protected route redirects, OAuth/SSO flows. Use when writing tests that
-  require login, testing auth itself, managing multiple user roles, or testing what happens when
-  session expires. Triggers on: "auth test", "login test", "storageState", "session expiry",
-  "protected route", "multiple roles", "OAuth", "SSO", "global setup auth", "reuse token",
-  "storage state".
+description: Playwright auth testing patterns — storageState setup project, role-based auth files, session expiry simulation, protected route redirects, OAuth/SSO flows. Use when writing tests that require login, testing auth itself, managing multiple user roles, or testing what happens when session expires. Triggers on: "auth test", "login test", "storageState", "session expiry", "protected route", "multiple roles", "OAuth", "SSO", "global setup auth", "reuse token", "storage state".
 triggers:
   - "auth test"
   - "login test"
@@ -111,12 +105,17 @@ test('session expired → redirects to login', async ({ browser }) => {
   const ctx = await browser.newContext({ storageState: '.auth/user.json' });
   const page = await ctx.newPage();
 
+  // Navigate first — the new page is on about:blank, where touching localStorage
+  // from page.evaluate likely throws (opaque origin; UNVERIFIED on every browser)
+  await page.goto('/dashboard');
+
   // Simulate expiry by clearing session
   await ctx.clearCookies();
   await page.evaluate(() => localStorage.clear());
 
-  await page.goto('/dashboard');
+  await page.reload();
   await expect(page).toHaveURL(/\/login/);
+  await ctx.close();
 });
 ```
 
