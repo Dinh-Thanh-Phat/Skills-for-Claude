@@ -134,11 +134,13 @@ test('cold-start dashboard', async ({ page }) => {
 await expect(page.getByText('Done')).toBeVisible({ timeout: 30_000 });
 ```
 
-## Eliminate Cold Start with `page.clock` or Warm-up
+## Eliminate Cold Start with a Warm-up
 
 Instead of inflating timeouts to absorb cold-start:
-- **Warm-up** in `globalSetup`: one `page.goto(BASE_URL)` to wake the instance
-- Or freeze time with `page.clock.install()` and `fastForward()` past internal delays
+- **Warm-up** in `globalSetup` / a setup project: one request to `BASE_URL` to wake the instance
+- `page.clock` does NOT help here — it only fakes time inside the browser; a server cold start
+  is real wall-clock time on the server. Use `page.clock` only for client-side timers
+  (debounce, countdown, polling interval) — see `playwright-clock-testing`.
 
 ## Checklist Before Changing Any Timeout
 
