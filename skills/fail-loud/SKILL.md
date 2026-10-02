@@ -1,9 +1,6 @@
 ---
 name: fail-loud
-description: >-
-  Enforce hard assertions and prevent error swallowing in Playwright tests. Use when writing or
-  reviewing automation tests to ensure they fail loudly when features break. Triggers on: "write
-  test", "review test", "viết test", "kiểm tra test", any test code generation task.
+description: Enforce hard assertions and prevent error swallowing in Playwright tests. Use when writing or reviewing automation tests to ensure they fail loudly when features break. Triggers on: "write test", "review test", "viết test", "kiểm tra test", any test code generation task.
 ---
 
 # Fail Loud Skill
@@ -35,7 +32,7 @@ await page.click('button');
 await expect(page.locator('.success')).toBeVisible(); // fails if not visible
 ```
 
-**Decision rule:** If you remove the assertion and the test still passes, the assertion is worthless. Delete it and write a real one.
+**Decision rule:** Break the feature (mentally or for real). If the test still passes with this assertion in place, the assertion is worthless. Delete it and write a real one.
 
 ---
 
