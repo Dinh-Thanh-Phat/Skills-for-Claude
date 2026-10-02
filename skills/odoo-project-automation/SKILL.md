@@ -1,7 +1,7 @@
 ---
 name: odoo-project-automation
-description: Use ONLY when user explicitly mentions "Odoo" or "erp" in their message. DO NOT trigger based on project names (Soundwise, TRS, HVS, HaiVan Ship, etc.) alone — those names are ambiguous. Handles creating, moving, closing, updating, or bulk-operating tasks/bugs in Odoo projects. Bug descriptions render as structured HTML with Steps/Expected/Actual + Technical Context table. Bug priority auto-assessed (1–3 stars) from keywords. Auto-tags bugs as "bugs", tasks as "task". Supports bulk move between stages and bulk mark-done via state field.
-compatibility: Requires Python 3.8+, no external dependencies (uses standard library xmlrpc)
+description: Use ONLY when user explicitly mentions "Odoo" or "erp" in their message. DO NOT trigger based on project names (Soundwise, TRS, HVS, HaiVan Ship, etc.) alone — those names are ambiguous. Handles creating, moving, closing, updating, or bulk-operating tasks/bugs in Odoo projects. Bug descriptions render as structured HTML with Steps/Expected/Actual + Technical Context table. Bug priority auto-assessed (1–3 stars) from keywords. Auto-tags bugs as "bug" (project.tags id 5), tasks as "Task" (id 6). Supports bulk move between stages and bulk mark-done via state field.
+compatibility: Reads/writes via mcp__odoo__* tools. Python stdlib xmlrpc only as an explicit fallback for binary image attachments (XML-RPC is scheduled for removal in Odoo 22).
 ---
 
 # Odoo Project Automation Skill
