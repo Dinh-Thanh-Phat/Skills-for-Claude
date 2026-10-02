@@ -251,12 +251,23 @@ Tổng col_widths nên ≈ 1400–1800px để vừa màn hình 1080p không c�
 
 ---
 
-## Khi sheet có nhiều rows (>300)
+## addBanding — mặc định cho alternating rows (`USE_BANDING = True`)
 
-Thay alternating rows loop bằng `addBanding` — nhanh hơn nhiều:
+Dùng `addBanding` thay cho loop repeatCell — 1 request thay vì ~N/2, sheet nào cũng nên dùng (không chỉ >300 rows).
+
+⚠️ **`addBanding` KHÔNG idempotent:** nếu range đã có banding (lần chạy trước, hoặc user đã bật "Alternating colors"), request sẽ lỗi và **cả batchUpdate fail** (exact error text UNVERIFIED). Trước khi add, đọc `bandedRanges` của sheet và xoá cái cũ:
 
 ```python
-requests.append({"addBanding": {
+meta = sheets.get(spreadsheetId=SPREADSHEET_ID, fields="sheets(properties.sheetId,bandedRanges)").execute()
+for s in meta["sheets"]:
+    if s["properties"]["sheetId"] == sheet_id:
+        for br in s.get("bandedRanges", []):
+            requests.insert(0, {"deleteBanding": {"bandedRangeId": br["bandedRangeId"]}})
+```
+
+```python
+if ALT_ROW_COLOR and USE_BANDING:
+  requests.append({"addBanding": {
     "bandedRange": {
         "range": {"sheetId": sheet_id, "startRowIndex": 1, "endRowIndex": NUM_ROWS,
                   "startColumnIndex": 0, "endColumnIndex": NUM_COLS},
