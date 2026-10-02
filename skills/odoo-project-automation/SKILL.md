@@ -327,20 +327,35 @@ Created: 2026-05-05T10:30:45.123456
 
 ## Implementation Details
 
-### Scripts Location
-- `scripts/odoo_manager.py` - Core Odoo API manager (mock + real API support)
-- `scripts/skill_handler.py` - Skill handler with confirmation workflow
+### How reads/writes happen (default path)
+All reads and writes go through the **`mcp__odoo__*` tools** — no local scripts:
 
-### API Connection
+1. Read/resolve: `mcp__odoo__search_records` (project, stages, tags, users, existing tasks), `read_record`, `get_model_fields`.
+2. Write: `mcp__odoo__preview_write` / `validate_write` → returns an approval object → `mcp__odoo__execute_approved_write` with the full approval object and `confirm=true`.
+3. Chatter text: `mcp__odoo__chatter_post`.
+
+(`scripts/` contains no Python sources anymore — `odoo_manager.py` / `skill_handler.py` do not exist. Don't look for or recreate them.)
+
+### API Connection facts
 - **Endpoint:** `https://erp.inapps.net` (NOT `/odoo/` — causes 303 redirect)
 - **DB:** `inapps` (NOT `inapps-erp` — does not exist)
 - **Login:** `phat.dinh@inapps.net` (NOT Gmail — causes auth failure)
-- **Token:** Stored in `scripts/skill_handler.py`
-- **Authentication:** XML-RPC via API key, **uid cached 24h** (no re-auth on every call)
-- **Transport:** Persistent HTTPS connection (reuses SSL — no repeated handshakes)
-- **Mode:** Real API (live, not mock)
-- **Session cache:** `skills/odoo-project-automation/.odoo_session.json`
+- **API key:** never stored in this skill folder. Read it at runtime from a local credentials file or env var (see memory `reference_odoo-credentials`); never echo it.
 - **Odoo version:** 19.0
+
+### API deprecation — XML-RPC / JSON-RPC
+Odoo docs (19.0, External JSON-2 API): *"Both the XML-RPC and JSON-RPC APIs at endpoints `/xmlrpc`, `/xmlrpc/2` and `/jsonrpc` are scheduled for removal in Odoo 22 (fall 2028)."* Replacement:
+
+```
+POST https://erp.inapps.net/json/2/<model>/<method>
+Authorization: bearer <API_KEY>
+X-Odoo-Database: inapps          # when needed
+Content-Type: application/json
+
+{"ids": [1, 2, 3], "fields": ["name"], "context": {"lang": "en_US"}}
+```
+Named parameters in the body (no positional args). `mcp__odoo__generate_json2_payload` can build the body.
+Source: https://www.odoo.com/documentation/19.0/developer/reference/external_api.html
 
 ### Features
 ✅ **Real API Mode (Default)**
