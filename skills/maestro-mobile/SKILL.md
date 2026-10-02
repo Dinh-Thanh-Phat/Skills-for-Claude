@@ -591,6 +591,12 @@ Prefer in this order — each step down trades reliability for control:
 3. `from: <selector>` + `point` — anchored *and* precise (2.8.0+)
 4. `start`/`end` screen coordinates — **last resort**, breaks on any other screen size
 
+> **2.11.0 breaking:** `start`/`end` are valid ONLY directly under `swipe` (and `drag`). Putting
+> them inside an element selector — e.g. `tapOn: { start: "50%,50%" }` or under `from:` — used to be
+> **silently ignored** (the tap hit the element centre or the wrong place and the flow still
+> "passed"); it is now a hard error. If an old flow starts failing on parse after upgrading, grep
+> it: `grep -rnE "^\s+(start|end):" flows/` and check each hit's parent is `swipe`/`drag`.
+
 **When `point` is the fix.** Element-anchored swipes start at the element's center. That silently
 fails when the center sits on top of something that swallows the gesture — a nested scroll view, an
 embedded map, an image carousel inside a card, or a button. The classic symptom is a swipe-to-delete
