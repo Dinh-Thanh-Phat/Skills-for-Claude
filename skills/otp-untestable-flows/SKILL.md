@@ -170,13 +170,29 @@ async function getSmsOtp(phoneNumber: string): Promise<string> {
 
 ## TOTP Authenticator App (Google Authenticator / Authy)
 
-For tests of TOTP 2FA, generate the code locally from the shared secret:
+For tests of TOTP 2FA, generate the code locally from the shared secret.
+**otplib v13** (13.5.0, 2026-08-21) **removed the `authenticator` export** — the old
+`authenticator.generate(secret)` no longer exists. Current API (async):
 ```typescript
-import { authenticator } from 'otplib';   // npm i otplib
+import { generate } from 'otplib';             // npm i otplib  (v13+)
 const secret = process.env.TOTP_TEST_SECRET!;   // shared with test user setup
-const code = authenticator.generate(secret);
+const code = await generate({ secret });
 await page.getByLabel('6-digit code').fill(code);
 ```
+Sync variant `generateSync` needs a sync crypto plugin (`@otplib/plugin-crypto-node`). Pinned to
+v12? See the v12 adapter migration guide: https://otplib.yeojz.dev/guide/v12-adapter.html
+
+## Mobile (Maestro / Android) OTP paths
+
+The Playwright helpers above don't apply inside a Maestro flow. Options, best first:
+1. **Same infra, fetched by script** — call the dev bypass API / mail-catcher from a Maestro
+   `runScript` (GraalJS `http.get`) and `inputText: ${output.otp}`. Same "ask dev first" rule applies.
+2. **Fixed test OTP / test-number prefix** agreed with dev (e.g. a staging rule for test phone numbers).
+3. **Android emulator SMS** — `adb emu sms send 5551234 "Your code is 123456"` delivers a real SMS to
+   the emulator (emulator only; a real device needs a real SMS). See `android-17-qa-gate`.
+4. **OTP shown on screen** (dev builds / demo) — `extractTextWithAI` (Maestro Cloud login required,
+   experimental, `optional: true` by default → set `optional: false`). See `maestro-ai-assertions`.
+Physical iOS devices are not supported by Maestro CLI 2.11.0 — plan iOS OTP tests on simulators.
 
 ## Rate-Limit on Resend OTP
 
