@@ -1,11 +1,6 @@
 ---
 name: otp-untestable-flows
-description: >-
-  Plan OTP and email verification test infrastructure BEFORE writing auth tests to avoid
-  permanently-skipped tests. Use when writing tests involving OTP, email verification, magic
-  links, forgot password, or 2FA. Triggers on: "OTP", "email verification", "forgot password
-  test", "reset password", "email link", "magic link", "2FA", "untestable flow", "email
-  interception".
+description: Plan OTP and email verification test infrastructure BEFORE writing auth tests to avoid permanently-skipped tests. Use when writing tests involving OTP, email verification, magic links, forgot password, or 2FA. Triggers on: "OTP", "email verification", "forgot password test", "reset password", "email link", "magic link", "2FA", "untestable flow", "email interception".
 ---
 
 # OTP / Untestable Flows Skill
@@ -49,9 +44,15 @@ If the answer to ALL of these is "no" → **raise this as a blocker** and create
 
 ### Solution 1: Email Interception (Best)
 
-Use Mailhog, Mailtrap, or Mailpit to capture emails sent to test addresses, then extract OTP programmatically:
+Use Mailhog, Mailtrap, or Mailpit to capture emails sent to test addresses, then extract OTP programmatically.
+
+> ⚠️ The code below is **MailHog-specific** (`/api/v2/messages`, `Content.Headers.To`). MailHog is
+> effectively unmaintained (no release since ~2020 — UNVERIFIED this session); Mailpit and Mailtrap
+> have different APIs/response shapes (Mailpit uses `/api/v1/...` — exact schema UNVERIFIED). Adapt the
+> fetch + JSON paths to the tool you actually run, and throw if nothing matches (don't return empty).
 
 ```typescript
+// MailHog v2 API only
 async function getOtpFromEmail(recipientEmail: string): Promise<string> {
   const response = await fetch('http://localhost:8025/api/v2/messages');
   const data = await response.json();
