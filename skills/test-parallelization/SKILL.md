@@ -137,12 +137,19 @@ const testEmail = `test-worker-${parallelIndex}@test.example.com`;
 
 ### Solution: Unique data per test, not per suite
 ```typescript
+let createdName: string | undefined;
+
+test.afterEach(async () => {
+  // cleanup in afterEach — runs even when the test fails mid-way (see `test-data-lifecycle`)
+  if (createdName) await campaignPage.delete(createdName);
+  createdName = undefined;
+});
+
 test('Create campaign', async ({ page }) => {
   // Include timestamp + random to ensure uniqueness across parallel runs
-  const name = `AT-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-  await campaignPage.create(name);
+  createdName = `AT-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  await campaignPage.create(createdName);
   // ...
-  await campaignPage.delete(name); // cleanup in same test
 });
 ```
 
