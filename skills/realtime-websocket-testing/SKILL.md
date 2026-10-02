@@ -1,13 +1,6 @@
----
+﻿---
 name: realtime-websocket-testing
-description: >-
-  Patterns for testing real-time UI in Playwright — WebSocket mocking, proxy/inject mode, live
-  update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for
-  features that update in real time without user action: notifications, live dashboards, chat,
-  collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time",
-  "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push
-  notification", "live data", "intercept websocket", "mock websocket playwright", "fake websocket
-  server", "ws mocking".
+description: Patterns for testing real-time UI in Playwright — WebSocket mocking, proxy/inject mode, live update assertions, polling verification, SSE, chat-like interfaces. Use when writing tests for features that update in real time without user action: notifications, live dashboards, chat, collaborative editing, price feeds, status polling. Triggers on: "websocket", "real-time", "live update", "polling", "SSE", "chat", "notifications", "routeWebSocket", "push notification", "live data", "intercept websocket", "mock websocket playwright", "fake websocket server", "ws mocking".
 ---
 
 # Real-Time / WebSocket UI Testing
@@ -21,10 +14,10 @@ Never use `waitForTimeout` for real-time updates. Use **retrying assertions** wi
 ### 1. Mock incoming messages
 ```typescript
 // ✅ Register BEFORE navigation — WS connects on page load
+// The handler runs when the page opens the socket — WebSocketRoute has NO onopen/onmessage
+// (only send / onMessage / onClose / close / connectToServer / protocols / url).
 await page.routeWebSocket('wss://api.example.com/ws', ws => {
-  ws.onopen(() => {
-    ws.send(JSON.stringify({ type: 'notification', message: 'New order received' }));
-  });
+  ws.send(JSON.stringify({ type: 'notification', message: 'New order received' }));
 });
 await page.goto('/notifications');
 await expect(page.getByText('New order received')).toBeVisible();
