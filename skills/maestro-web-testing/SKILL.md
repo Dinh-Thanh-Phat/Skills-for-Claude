@@ -66,8 +66,8 @@ All standard Maestro commands work on web unless noted:
 ## Session & State Management
 
 ```yaml
-# Clear browser state before sensitive tests
-- clearState: true
+# Clear browser state before sensitive tests (command takes no `true` value)
+- clearState
 
 # Or clear state on launchApp
 - launchApp:
@@ -75,6 +75,9 @@ All standard Maestro commands work on web unless noted:
 ```
 
 State is cleared by **origin** (scheme + hostname + port), matching web storage semantics.
+
+> ⚠️ **By default browser state (cookies, local storage) is RETAINED between flows in the same test
+> run** (docs). A login in flow A leaks into flow B unless you clear it — order-dependent passes.
 
 ---
 
