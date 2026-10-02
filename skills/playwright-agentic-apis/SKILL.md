@@ -1,12 +1,6 @@
 ---
 name: playwright-agentic-apis
-description: >-
-  Playwright 1.59 agentic testing APIs — locator.normalize() to canonicalize brittle selectors,
-  page.pickLocator() for interactive element discovery, page.screencast for precise annotated
-  video recording. Use when migrating CSS/XPath locators to ARIA-best-practice form, exploring
-  unfamiliar UIs interactively, or recording annotated test videos. Triggers on:
-  "locator.normalize", "pickLocator", "screencast", "normalize locator", "interactive locator
-  picker", "annotated video recording", "Playwright 1.59".
+description: Playwright 1.59 agentic testing APIs — locator.normalize() to canonicalize brittle selectors, page.pickLocator() for interactive element discovery, page.screencast for precise annotated video recording. Use when migrating CSS/XPath locators to ARIA-best-practice form, exploring unfamiliar UIs interactively, or recording annotated test videos. Triggers on: "locator.normalize", "pickLocator", "screencast", "normalize locator", "interactive locator picker", "annotated video recording", "Playwright 1.59".
 ---
 
 # Playwright 1.59 Agentic Testing APIs
@@ -96,9 +90,9 @@ test('checkout flow with annotated recording', async ({ page }) => {
 **Live streaming (no file):**
 ```typescript
 await cast.start({
-  onFrame: (frame) => {
-    // frame is a Buffer of the current viewport JPEG
-    ws.send(frame);
+  onFrame: ({ data, viewportWidth, viewportHeight, timestamp }) => {
+    // frame is an OBJECT: data = JPEG Buffer; timestamp added in 1.61
+    ws.send(data);
   }
 });
 ```
@@ -107,11 +101,12 @@ await cast.start({
 
 ## Companion: `browserContext.setStorageState()`
 
-Also new in 1.59 — resets cookies, localStorage, and IndexedDB on an existing context and loads a new state without creating a new context. Useful for mid-test auth switches.
+Also new in 1.59 — clears cookies, localStorage and IndexedDB for all origins (in current versions also OPFS entries and virtual WebAuthn credentials) on an existing context and loads a new state without creating a new context. Useful for mid-test auth switches. If the new state contains passkey credentials, the virtual authenticator is installed automatically.
 
 ```typescript
 // Switch to a different user mid-test without a new context
-await context.setStorageState({ path: 'auth/admin-state.json' });
+// Argument is a file path or a storage-state object — NOT { path }
+await context.setStorageState('auth/admin-state.json');
 ```
 
 Prefer this over `browser.newContext()` when your test needs to verify behavior across two roles without paying the browser-context startup cost.
