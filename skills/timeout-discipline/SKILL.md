@@ -1,9 +1,6 @@
 ---
 name: timeout-discipline
-description: >-
-  Prevent blind timeout escalation in Playwright/E2E tests. Use when a test is flaky or timing
-  out — BEFORE adjusting any timeout value. Triggers on: "test timeout", "flaky test", "increase
-  timeout", "test bị timeout", "test flaky".
+description: Prevent blind timeout escalation in Playwright/E2E tests. Use when a test is flaky or timing out — BEFORE adjusting any timeout value. Triggers on: "test timeout", "flaky test", "increase timeout", "test bị timeout", "test flaky".
 ---
 
 # Timeout Discipline Skill
@@ -40,8 +37,8 @@ Before changing a single timeout value, measure actual wait times:
 ```typescript
 // Add timing instrumentation temporarily
 const t0 = Date.now();
-await page.waitForLoadState('networkidle');
-console.log(`networkidle took: ${Date.now() - t0}ms`);
+await expect(page.getByRole('main')).toBeVisible({ timeout: 120_000 }); // the element that proves "ready"
+console.log(`page ready took: ${Date.now() - t0}ms`);
 
 const t1 = Date.now();
 await fp.assertStepIs(2);
