@@ -78,6 +78,7 @@ Triggered AFTER API call. Source: backend returns 4xx/5xx. User input was valid.
 ```typescript
 // This test SHOULD FAIL — it documents a production bug
 test('TC-FORM-REAL-001: Contact form submission [BUG-FORM-001]', async ({ page }) => {
+  test.fail(true, 'BUG-FORM-001: valid submission returns "Something went wrong"');
   // No mock — real API
   await page.getByRole('textbox', { name: 'Full Name' }).fill('John Smith');
   await page.getByRole('textbox', { name: 'Email' }).fill('john@company.com');
