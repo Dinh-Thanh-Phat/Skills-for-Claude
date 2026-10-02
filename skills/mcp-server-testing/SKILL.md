@@ -82,11 +82,17 @@ npx @modelcontextprotocol/inspector --cli node build/index.js \
 | 2 | No MCP app found |
 | 3 | Authentication required |
 | 4 | Server unreachable |
-| 5 | Tool error or not found |
+| 5 | Tool error (`isError:true`) or tool not found |
+| 6 | `--strict` found an error-severity tool-schema portability problem |
+| 7 | `--verify` found a SEP-2640 skill violation (conformance error, digest/size mismatch) |
+| 8 | `--verify` could not check the whole skill catalog (read bounds hit) |
+| 9 | `--verify --require-digests` found a skill advertising no digests |
 
-Non-zero exits also write a JSON error envelope to stderr (`code`, `message`, `status`, `url`) — assert on that envelope rather than screen-scraping human text.
+Non-zero exits also write a single-line JSON error envelope to stderr (`{"error": {code, message, status, url}}`) — parse it with `2>&1 | tail -1 | jq .error` rather than screen-scraping human text.
 
-For a fleet of servers or repeatable presets (fixtures for tools/resources/prompts/OAuth flows), use `--config path/to/config.json --server <name>` instead of ad-hoc args — this is how you turn a manual Inspector session into a versioned, CI-checked-in test fixture.
+These codes are **Inspector v2** (a rewrite; v1 only exited 0/1 and even exited 0 on a failed tool call). v2 needs Node ≥ 22.19.0; v1 is deprecated (pin `@modelcontextprotocol/inspector@v1-latest` only if you must).
+
+For a fleet of servers or repeatable presets (fixtures for tools/resources/prompts/OAuth flows), use `--config path/to/config.json --server <name>` (read-only session file; `--catalog` is the writable one, mutually exclusive) instead of ad-hoc args — this is how you turn a manual Inspector session into a versioned, CI-checked-in test fixture. For OAuth-protected servers in CI, `--use-stored-auth` reuses a token from a web-Inspector OAuth flow (exit 3 if none).
 
 ## Layer 3 — Schema-Drift and Security Checks
 
