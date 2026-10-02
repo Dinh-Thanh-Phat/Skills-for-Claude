@@ -1,10 +1,6 @@
 ---
 name: qa-test-coverage-max
-description: >-
-  Maximum coverage test case generation from multi-source inputs (scope docs, Q&A docs, Figma UI,
-  user stories). Invoke when user provides any combination of: scope document, Figma
-  link/screenshots, Q&A document, PRD, or says "đảm bảo coverage toàn bộ" / "coverage đầy đủ" /
-  "không thiếu case nào".
+description: Maximum coverage test case generation from multi-source inputs (scope docs, Q&A docs, Figma UI, user stories). Invoke when user provides any combination of: scope document, Figma link/screenshots, Q&A document, PRD, or says "đảm bảo coverage toàn bộ" / "coverage đầy đủ" / "không thiếu case nào".
 triggers:
   - user provides scope document + asks for test cases
   - user provides Figma URL or screenshots + asks for test cases
@@ -101,27 +97,46 @@ For EACH screen visible in Figma, extract:
 
 ## PHASE 2 — 8-Category Coverage Matrix
 
-For EVERY module, ensure ALL 8 categories are covered. Mark any category with 0 cases as a **gap**.
+For EVERY module, ensure ALL 8 **mandatory** categories are covered. Mark any mandatory category with 0 cases as a **gap**.
+
+> **Canonical set** = the 8 categories enforced by the `qa-coverage` Stop hook and `qa-router`
+> (`bd create … --labels qa-coverage,<category>`): POS / NEG / EDGE / SEC / A11Y / BOUNDARY / STATE / ERROR.
+> Same set in `behavioral-coverage-matrix`. Do not substitute other categories for these.
+
+**Mandatory (8):**
 
 | # | Category | Symbol | What to Cover |
 |---|---|---|---|
 | 1 | **Positive (POS)** | ✅ | Happy path with valid data, expected user flow |
 | 2 | **Negative (NEG)** | ❌ | Invalid input, missing required fields, wrong format |
-| 3 | **UI / Visual** | 🎨 | Layout correct, empty state, error state, loading state, icons, truncation |
-| 4 | **Edge** | 🔲 | Boundary values, max length, special chars, 0 items, 1 item, many items |
-| 5 | **Security (SEC)** | 🔒 | SQL injection, XSS, auth bypass, unauthorized access, session expiry, brute force |
-| 6 | **Performance (PERF)** | ⚡ | Load time with large data sets, scroll performance, cold launch time |
-| 7 | **Accessibility (A11Y)** | ♿ | VoiceOver/TalkBack, Dynamic Type, keyboard nav, color contrast |
-| 8 | **Platform/Device** | 📱 | iOS-specific, Android-specific, mobile browser, desktop browser, responsive |
+| 3 | **Edge (EDGE)** | 🔲 | Special chars, unicode/emoji, 0 items, 1 item, many items, duplicate submit |
+| 4 | **Security (SEC)** | 🔒 | SQL injection, XSS, auth bypass, unauthorized access/role, session expiry, brute force |
+| 5 | **Accessibility (A11Y)** | ♿ | VoiceOver/TalkBack, Dynamic Type, keyboard nav, color contrast |
+| 6 | **Boundary (BOUNDARY)** | 📏 | min/max length, min-1/max+1, numeric limits, date ranges, pagination edges |
+| 7 | **State (STATE)** | 🔄 | State transitions (draft→published, active→deleted), persistence after reload/relaunch, ripple to other modules |
+| 8 | **Error (ERROR)** | ⚠️ | Network fail/timeout, 4xx/5xx, error recovery & retry, error message correctness |
 
-**Minimum per module:**
+**Additional (optional columns — add when relevant, not counted as gaps):**
+
+| Category | Symbol | What to Cover |
+|---|---|---|
+| **UI / Visual** | 🎨 | Layout correct, empty state, loading state, icons, truncation |
+| **Performance (PERF)** | ⚡ | Load time with large data sets, scroll performance, cold launch time |
+| **Platform/Device** | 📱 | iOS-specific, Android-specific, mobile browser, desktop browser, responsive |
+
+**Minimum per module (mandatory):**
 - POS: ≥ 2 cases (at least 1 happy path, 1 alternate success)
 - NEG: ≥ 2 cases
-- UI: ≥ 1 case per distinct screen in that module
-- Edge: ≥ 1 case (boundary or special character)
+- EDGE: ≥ 1 case (special character / empty / many items)
 - SEC: ≥ 1 case for any module that accepts user input or requires auth
-- PERF: ≥ 1 case for any list/gallery with potentially large data
 - A11Y: ≥ 1 case for any core flow (login, main feature action)
+- BOUNDARY: ≥ 1 case per input with a limit (length, number, date)
+- STATE: ≥ 1 case for any module that creates/changes data or has statuses
+- ERROR: ≥ 1 case for any module that calls the network/API
+
+**Optional (when relevant):**
+- UI: ≥ 1 case per distinct screen in that module
+- PERF: ≥ 1 case for any list/gallery with potentially large data
 - Platform: ≥ 1 case if feature has platform-specific behaviour noted in scope/Q&A
 
 ---
