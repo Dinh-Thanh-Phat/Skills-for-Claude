@@ -247,7 +247,6 @@ Saved to: `data/outputs/test-cases-[feature]-[YYYYMMDD].md`
 ```
 
 3. **STOP HERE** — Do not write any automation code until user confirms.
-4. **Do NOT run `qa-excel-export`** unless user explicitly asks.
 
 ---
 
