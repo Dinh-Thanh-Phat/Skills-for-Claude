@@ -113,7 +113,7 @@ If a test "always passes" — check for:
 
 ## Rule 5: AI Self-Healing ≠ Fail-Loud (2026 Caution)
 
-AI tools (Healwright, TestMu, etc.) có thể tự fix broken selectors khi UI refactor — nhưng điều này KHÔNG thay thế hard assertions.
+AI tools (Playwright's built-in healer agent since 1.56; third-party tools such as Healwright, TestMu — names UNVERIFIED) có thể tự fix broken selectors khi UI refactor — nhưng điều này KHÔNG thay thế hard assertions.
 
 > **Note:** AI self-healing là tính năng của external tools, không phải Claude Code. Rule dưới đây áp dụng khi team dùng những tools đó.
 
