@@ -103,10 +103,13 @@ Feature: User Login
 
 ```typescript
 // steps/login.steps.ts
-import { Given, When, Then } from 'playwright-bdd';
 import { expect } from '@playwright/test';
+import { createBdd } from 'playwright-bdd';
 
-// Direct page access — Playwright fixtures available in steps
+// Step functions come from createBdd() — not a direct named import
+const { Given, When, Then } = createBdd();
+
+// Playwright-style steps: 1st arg = fixtures, then the step parameters
 Given('I am on the login page', async ({ page }) => {
   await page.goto('/login');
   await expect(page).toHaveTitle(/Login/);
