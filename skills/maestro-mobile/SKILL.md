@@ -943,6 +943,10 @@ Maestro Cloud supports API levels 29/30/31/33/34/35/36, tags `google_apis` or
 (downloaded on demand). `--android-api-level`/`--ios-version`/`--os-version` still work but now emit
 a deprecation warning — migrate to `--device-os`.
 
+**Android 17 / API 37 (2.11.0):** `maestro start-device --device-os android-37` works; API 37 ships
+minor-versioned 16 KB page-size system images, which Maestro now resolves. If the derived image
+isn't installed, the error names the exact `--device-os` string to pass — copy it rather than guessing.
+
 ## Anti-Patterns to Avoid
 
 ```yaml
