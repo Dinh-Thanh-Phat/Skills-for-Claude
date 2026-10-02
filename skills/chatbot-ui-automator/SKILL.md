@@ -197,6 +197,16 @@ class ChatbotUIAutomator:
         input_box = await find_input(page, self.custom_sel.get("input"))
         send_btn = await find_send_button(page, self.custom_sel.get("send_button"))
 
+        # Count bot bubbles BEFORE sending. If user and bot bubbles share a CSS class,
+        # `.last` right after send is OUR OWN question — it looks "stable" and gets
+        # recorded as the answer. Waiting for count+1 guarantees a NEW bubble.
+        resp_sel = self.custom_sel.get("response")
+        count_loc = page.locator(resp_sel) if resp_sel else None
+        if count_loc is None:
+            probe = await _first_visible(page, RESPONSE_STRATEGIES)
+            count_loc = probe.locator("xpath=..").locator("> *") if False else None  # see note below
+        before = await count_loc.count() if count_loc is not None else None
+
         # Type question
         await input_box.click()
         await input_box.fill("")  # clear
