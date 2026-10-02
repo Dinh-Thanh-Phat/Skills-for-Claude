@@ -168,6 +168,16 @@ export const test = base.extend<HealingFixtures>({
 
 ---
 
+## Built-in Option First: Playwright's Healer Agent (1.56+)
+
+Before building a custom healer, check Playwright's official Test Agents (planner / generator /
+**healer**, release notes 1.56): the healer "executes the test suite and automatically repairs
+failing tests". See the `playwright-test-agents` skill. The custom tiers below are for teams
+that need healing inside the runtime (fixture) rather than as an agent pass over the specs.
+
+> The failure-category percentages above come from vendor blogs (QA Wolf etc.) — treat them as
+> UNVERIFIED rough estimates, not measurements.
+
 ## When to Use Each Approach
 
 | Situation | Approach |
