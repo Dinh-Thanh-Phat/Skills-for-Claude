@@ -83,6 +83,11 @@ State is cleared by **origin** (scheme + hostname + port), matching web storage 
 
 ## Composing Mobile + Web Flows
 
+> ⚠️ **UNVERIFIED — likely does NOT work.** A single `maestro test` run targets one device
+> (Android/iOS device OR Chromium); nothing in the docs/CHANGELOG says `runFlow` switches platform
+> mid-flow. Treat the example below as hypothetical; the safe pattern is two separate flows run as
+> separate invocations (one against the device, one with `--platform web`/Chromium — flag value UNVERIFIED).
+
 ```yaml
 # flows/checkout-e2e.yaml — mobile app → web confirmation page
 appId: com.example.shop
