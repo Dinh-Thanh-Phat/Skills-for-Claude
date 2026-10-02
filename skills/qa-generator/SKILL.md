@@ -1,12 +1,6 @@
 ---
 name: qa-generator
-description: >-
-  Generate comprehensive test questions with expected answers from document content using Claude
-  API or Groq API. Use when you need to create a test question bank from reference documents to
-  evaluate a chatbot or AI system. Triggers on: "generate test questions from docs", "create QA
-  pairs from document", "make test cases from content", "generate chatbot test questions". Used
-  as Step 2 in chatbot testing pipeline. Outputs structured JSON with factual, reasoning, and
-  edge case questions.
+description: Generate comprehensive test questions with expected answers from document content using Claude API or Groq API. Use when you need to create a test question bank from reference documents to evaluate a chatbot or AI system. Triggers on: "generate test questions from docs", "create QA pairs from document", "make test cases from content", "generate chatbot test questions". Used as Step 2 in chatbot testing pipeline. Outputs structured JSON with factual, reasoning, and edge case questions.
 ---
 
 # QA Generator — Test Question Generator
@@ -126,11 +120,15 @@ response = client.chat.completions.create(
 
 #### 3. Model selection
 ```python
-# Groq free tier models:
-GENERATION_MODEL  = "llama-3.1-8b-instant"    # Bulk generation (nhanh, rẻ)
-ENRICHMENT_MODEL  = "llama-3.3-70b-versatile" # Citation enrichment (chất lượng cao)
-# KHÔNG dùng 8b để enrich citations — nó leak prompt và tạo citation sai
+# Groq models (llama-3.1-8b-instant + llama-3.3-70b-versatile SHUT DOWN 2026-08-16):
+GENERATION_MODEL  = "openai/gpt-oss-20b"   # Bulk generation (nhanh, rẻ)
+ENRICHMENT_MODEL  = "openai/gpt-oss-120b"  # Citation enrichment (chất lượng cao)
+# KHÔNG dùng model nhỏ để enrich citations — nó leak prompt và tạo citation sai
+# (measured on Llama 3.x 8b, re-verify với gpt-oss-20b)
 ```
+
+> ⚠️ Trước mỗi lần chạy: check https://console.groq.com/docs/deprecations + `client.models.list()`
+> — Groq shut down model với ~2 tháng báo trước, pipeline gãy âm thầm.
 
 #### 4. Prompt bằng tiếng Anh cho Groq — bắt buộc anti-echo + anti-short
 ```python
