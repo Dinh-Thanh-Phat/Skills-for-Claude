@@ -122,8 +122,13 @@ class GDriveReader:
         elif mime_type == GOOGLE_SHEET:
             content = self.service.files().export(fileId=file_id, mimeType='text/csv').execute()
             return content.decode('utf-8')
+        elif mime_type.startswith('image/'):
+            # Images have no text layer — decoding bytes as UTF-8 yields junk that passes
+            # .strip() and pollutes docs_content.txt. Route images to ocr-processor instead.
+            print(f"  ↪ image ({mime_type}) — skipped, needs ocr-processor")
+            return ""
         else:
-            request = self.service.files().get_media(fileId=file_id)
+            request = self.service.files().get_media(fileId=file_id, supportsAllDrives=True)
             buffer = io.BytesIO()
             downloader = MediaIoBaseDownload(buffer, request)
             done = False
