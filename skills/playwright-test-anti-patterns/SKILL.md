@@ -143,7 +143,7 @@ await expect(async () => {
 - [ ] All assertions are on **locators or elements**, not extracted variables/booleans
 - [ ] No `.catch()` that silently fails — use explicit error handling
 - [ ] No `.nth()` locators without fallback to semantic selectors
-- [ ] No `expect()` wrapping `async/await` — assertions come AFTER actions
+- [ ] No `expect(async () => …).resolves.toBeTruthy()` — use a web-first matcher, or `expect(async () => { …expect… }).toPass()` for multi-value retries
 - [ ] Timeout values are data-driven (measure actual duration × 1.5)
 - [ ] Error messages in `test.fixme()` explain WHY test can't run
 
