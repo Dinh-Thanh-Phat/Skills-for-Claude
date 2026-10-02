@@ -711,3 +711,7 @@ adb shell dumpsys package <pkg> | grep -i targetSdk   # what the app targets
 ```
 
 Both must be 36+ for those behaviour changes to activate — otherwise a "pass" is a false pass.
+
+If the device or `targetSdk` is **API 37 (Android 17**, stable 2026-06-16) → also run `android-17-qa-gate`.
+A suite green on API 36 says nothing about API 37 (and Maestro needs CLI ≥ 2.11.0 to `start-device`
+an API 37 emulator).
