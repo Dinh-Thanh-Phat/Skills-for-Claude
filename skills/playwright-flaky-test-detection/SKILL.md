@@ -1,9 +1,6 @@
 ---
 name: playwright-flaky-test-detection
-description: >-
-  Detect data dependencies, timeouts, race conditions causing flaky tests - fix before they ship.
-  Triggers on: "flaky test", "test lúc pass lúc fail", "intermittent failure", "passes
-  sometimes", "diagnosis flaky".
+description: Detect data dependencies, timeouts, race conditions causing flaky tests - fix before they ship. Triggers on: "flaky test", "test lúc pass lúc fail", "intermittent failure", "passes sometimes", "diagnosis flaky".
 type: skill
 triggers:
   - "flaky test"
@@ -74,6 +71,10 @@ grep -n "CMIT\|TestUser\|admin@test" tests/**/*.spec.ts
 
 ```ts
 // ❌ FLAKY: 1s timeout might be too short
+await expect(page.locator('.result')).toBeVisible({ timeout: 1_000 });
+
+// ❌ ALSO WRONG: isVisible() never waits — its `timeout` option is deprecated and IGNORED
+// (class-locator.md). It returns the state at that instant.
 const element = await page.locator('.result').isVisible({ timeout: 1_000 });
 ```
 
