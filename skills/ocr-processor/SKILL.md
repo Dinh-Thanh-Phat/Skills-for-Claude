@@ -406,7 +406,7 @@ if __name__ == "__main__":
 
     config = {}
     if len(sys.argv) > 4 and Path(sys.argv[4]).exists():
-        config = json.loads(Path(sys.argv[4]).read_text())
+        config = json.loads(Path(sys.argv[4]).read_text(encoding="utf-8"))
 
     processor = OCRProcessor(config)
     input_path = sys.argv[1]
@@ -461,16 +461,28 @@ pip install pytesseract pillow opencv-python-headless numpy
 
 # PDF handling
 pip install pdfplumber pdf2image
+# ⚠️ pdf2image needs the Poppler binaries on Windows (https://pypi.org/project/pdf2image/):
+#   download https://github.com/oschwartz10612/poppler-windows/releases/ → add bin/ to PATH
+#   or pass poppler_path=r"C:\path\to\poppler-xx\bin" to convert_from_path.
+# No-Poppler alternative: pip install pymupdf, then
+#   import fitz; doc = fitz.open(pdf_path)
+#   images = [Image.frombytes("RGB", (p.width, p.height), p.samples)
+#             for p in (page.get_pixmap(dpi=dpi) for page in doc)]
 
 # Secondary OCR engine (optional but recommended)
 pip install easyocr
 
-# Google Vision (tertiary, optional)
-pip install google-cloud-vision
+# Google Vision (tertiary, optional) — ocr_google_vision() calls the REST API via requests
+pip install requests
 
 # System: Tesseract binary + Vietnamese language pack
 # Windows: download from https://github.com/UB-Mannheim/tesseract/wiki
 #   → include Vietnamese (vie) during install, or copy vie.traineddata to tessdata/
+# ⚠️ THIS workstation (checked 2026-10-02): Tesseract 5.4.0 at C:\Program Files\Tesseract-OCR,
+#   tessdata has only eng/jpn/osd — NO vie.traineddata. Without it every page fails in
+#   Tesseract and silently falls through to EasyOCR. Copy vie.traineddata from
+#   https://github.com/tesseract-ocr/tessdata_best into tessdata\ and confirm with
+#   `tesseract --list-langs` before running.
 # Linux:  sudo apt install tesseract-ocr tesseract-ocr-vie
 # macOS:  brew install tesseract tesseract-lang
 ```
