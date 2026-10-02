@@ -206,7 +206,7 @@ Construct this structure. Every field is a string or array of strings.
 **`agenda_sections`** drives the Agenda slide. If omitted, feature names are used as a flat list.
 
 Rules:
-- `bullets`: 3–5 items per feature, outcome-focused not a feature checkbox list — ≤ 15 words each
+- `bullets`: 3–5 items per feature (script keeps only the first 5), outcome-focused not a feature checkbox list — ≤ 15 words each
 - `image_path`: absolute path to saved screenshot, or **`null`** for text-only slides (admin/backend pages with no UI to capture)
 - `next_steps`: optional, can be empty array `[]`
 - Screenshot naming: `sNN_descriptive_name.png` (numbered in demo flow order)
@@ -309,7 +309,7 @@ Never force a narrative that contradicts real account data — use what's actual
 2. **Bullets = outcomes, not feature list.** What can the user DO? What limits will they hit?
    - ❌ "Has Facebook, Instagram, X, LinkedIn support"
    - ✅ "Kết nối 6 nền tảng: Facebook, Instagram, X, LinkedIn, TikTok, Zalo OA"
-3. **Max 4 bullets** — each ≤ 15 words.
+3. **3–5 bullets, max 5** (`generate_slide.py` renders `bullets[:5]` and drops the rest) — each ≤ 15 words.
 4. **Admin/backend slides with no UI** → set `"image_path": null` for clean text-only slides.
 
 ---

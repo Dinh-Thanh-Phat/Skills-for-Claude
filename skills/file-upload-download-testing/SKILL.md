@@ -167,7 +167,8 @@ const dataTransfer = await page.evaluateHandle(async () => {
 await page.dispatchEvent('#dropzone', 'drop', { dataTransfer });
 await expect(page.getByText('image.png')).toBeVisible();
 ```
-Limitation: `DataTransfer` only works in Chromium and Firefox, not WebKit.
+Limitation: creating `DataTransfer` this way only works in Chromium and Firefox, not WebKit.
+On 1.60+ prefer `locator.drop()`, which works cross-browser.
 
 ### 9. Rich-text editor inline image (Lexical / Slate / TipTap / CKEditor)
 

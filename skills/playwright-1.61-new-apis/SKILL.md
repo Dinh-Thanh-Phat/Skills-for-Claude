@@ -1,18 +1,6 @@
 ---
 name: playwright-1.61-new-apis
-description: >-
-  Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web
-  Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests,
-  WebSocket recording in HAR/traces, connectOverCDP artifactsDir, screencast cursor decoration,
-  the -G grep-invert shorthand, and FullConfig.argv/configFile reporter introspection. Use when
-  testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring
-  video on retries, capturing WebSocket traffic in traces, attaching to an existing browser via
-  CDP, annotating screencast recordings, or writing a custom reporter that needs the run's CLI
-  args or resolved config path. Triggers on: "test passkeys playwright", "WebAuthn virtual
-  authenticator", "playwright localStorage", "sessionStorage test", "video on retries
-  playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright",
-  "connectOverCDP artifactsDir", "screencast cursor", "grep-invert shorthand", "FullConfig.argv",
-  "custom reporter config file".
+description: Use Playwright 1.61 (June 2026) new APIs including WebAuthn passkey virtual authenticator, Web Storage read/write, expanded video retention modes, expect.soft.poll(), failOnFlakyTests, WebSocket recording in HAR/traces, connectOverCDP artifactsDir, screencast cursor decoration, the -G grep-invert shorthand, and FullConfig.argv/configFile reporter introspection. Use when testing passkey authentication flows, seeding localStorage/sessionStorage in tests, configuring video on retries, capturing WebSocket traffic in traces, attaching to an existing browser via CDP, annotating screencast recordings, or writing a custom reporter that needs the run's CLI args or resolved config path. Triggers on: "test passkeys playwright", "WebAuthn virtual authenticator", "playwright localStorage", "sessionStorage test", "video on retries playwright", "failOnFlakyTests", "soft poll assertion", "websocket trace playwright", "connectOverCDP artifactsDir", "screencast cursor", "grep-invert shorthand", "FullConfig.argv", "custom reporter config file".
 ---
 
 # Playwright 1.61 New APIs
@@ -21,44 +9,44 @@ Released June 2026. No breaking changes.
 
 ## 1. WebAuthn Passkeys via `browserContext.credentials`
 
-Virtual authenticator — no hardware security key needed. **Chromium-only** (does not work in WebKit/Firefox).
+Virtual authenticator — no hardware security key needed. Works in **all browsers** (Chromium, Firefox, WebKit) — Playwright overrides `navigator.credentials` in the page rather than using a CDP-only authenticator.
+
+API: `context.credentials.create(rpId, { id?, userHandle?, privateKey?, publicKey? })` seeds a passkey · `context.credentials.install()` (no args) turns interception on · `context.credentials.get({ rpId?, id? })` returns `[{ id, rpId, userHandle, privateKey, publicKey, signCount }]` · `context.credentials.delete(id)`. There is **no** `enable()`.
+
+> `install()` is **required** and must run **before the page first touches `navigator.credentials`**. Credentials seeded with `create()` but never installed are invisible to the page.
 
 ### Register a passkey in a setup test, reuse in spec tests:
 
 ```typescript
-// global-setup.ts
-import { chromium } from '@playwright/test';
+// passkey.setup.ts (setup project)
+import { test as setup, expect } from '@playwright/test';
+import fs from 'fs';
 
-export default async function setup() {
-  const browser = await chromium.launch();
-  const context = await browser.newContext({ ignoreHTTPSErrors: true });
+setup('register passkey', async ({ context, page }) => {
+  await context.credentials.install();          // intercept before the page uses WebAuthn
 
-  await context.credentials.enable();
-
-  const page = await context.newPage();
   await page.goto('/register');
   await page.getByRole('button', { name: 'Register passkey' }).click();
   await expect(page.getByText('Passkey registered')).toBeVisible();
 
-  // Serialize the registered credential for reuse across tests
-  const creds = await context.credentials.get();
-  require('fs').writeFileSync('passkey.json', JSON.stringify(creds));
-
-  await browser.close();
-}
+  // Read back what the app registered (includes private key + signCount)
+  const creds = await context.credentials.get({ rpId: 'example.com' });
+  fs.writeFileSync('passkey.json', JSON.stringify(creds));
+});
 ```
 
 ```typescript
 // passkey.fixture.ts
 import { test as base, BrowserContext } from '@playwright/test';
+import fs from 'fs';
 
 const test = base.extend<{ authedContext: BrowserContext }>({
   authedContext: async ({ browser }, use) => {
-    const context = await browser.newContext({ ignoreHTTPSErrors: true });
-    await context.credentials.enable();
-
-    const savedCreds = JSON.parse(require('fs').readFileSync('passkey.json', 'utf8'));
-    await context.credentials.install(savedCreds);
+    const context = await browser.newContext();
+    const saved = JSON.parse(fs.readFileSync('passkey.json', 'utf8'));
+    for (const c of saved)
+      await context.credentials.create(c.rpId, c);   // re-seed each credential
+    await context.credentials.install();
 
     await use(context);
     await context.close();
@@ -67,6 +55,8 @@ const test = base.extend<{ authedContext: BrowserContext }>({
 
 export { test };
 ```
+
+> Simpler since 1.62: `context.storageState({ path, credentials: true })` saves passkeys; restoring that storage state auto-installs the authenticator (see `playwright-1.62-new-apis` §6).
 
 ```typescript
 // login.spec.ts
@@ -81,9 +71,8 @@ test('passkey login works', async ({ authedContext }) => {
 });
 ```
 
-> `credentials.enable()` → activates the virtual authenticator.  
-> `credentials.install([...])` → seeds serialized passkeys into the context.  
-> CDP-based: intercepts `navigator.credentials.create()` and `.get()` automatically.
+> `credentials.create(rpId, cred)` → seeds a passkey (fresh keys are ECDSA P-256; seeded credentials are discoverable/resident).  
+> `credentials.install()` → overrides `navigator.credentials.create()` / `.get()` in all current and future pages of the context; real authenticators stop working in that context.
 
 ## 2. Web Storage API
 
