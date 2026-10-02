@@ -1,15 +1,6 @@
 ---
 name: mcp-server-testing
-description: >-
-  Test an MCP (Model Context Protocol) server itself — as the system under test, not as a tool
-  your agent calls. Covers in-memory unit testing (no transport), MCP Inspector's scriptable CLI
-  mode for CI, schema-drift checks against tool contracts, and the MCP-specific security surface
-  (token passthrough, confused deputy, tool poisoning). Distinct from
-  playwright-mcp-server/maestro-mcp-workflow (those document consuming an MCP server as a tool);
-  this is for verifying an MCP server you build or integrate is correct and safe. Triggers on:
-  "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp
-  tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP
-  server CI".
+description: Test an MCP (Model Context Protocol) server itself — as the system under test, not as a tool your agent calls. Covers in-memory unit testing (no transport), MCP Inspector's scriptable CLI mode for CI, schema-drift checks against tool contracts, and the MCP-specific security surface (token passthrough, confused deputy, tool poisoning). Distinct from playwright-mcp-server/maestro-mcp-workflow (those document consuming an MCP server as a tool); this is for verifying an MCP server you build or integrate is correct and safe. Triggers on: "test MCP server", "MCP Inspector", "mcp-inspector --cli", "MCP conformance", "test my mcp tool", "tool poisoning", "token passthrough mcp", "InMemoryTransport", "FastMCP test", "MCP server CI".
 ---
 
 # Testing MCP Servers
@@ -20,12 +11,20 @@ Testing an MCP server means verifying the server itself — its tools, resources
 
 Fastest feedback loop: connect a `Client` straight to the server object in the same process, skipping stdio/HTTP transport entirely.
 
-**Python SDK:**
+**Python SDK (official `mcp` v2.x — `from mcp import Client`, `from mcp.server import MCPServer`):**
 ```python
-async with Client(mcp) as client:
+from mcp import Client
+from server import mcp          # the MCPServer instance itself — no process, no port
+
+async with Client(mcp) as client:                 # Client(mcp, raise_exceptions=True) to surface server errors in tests
     result = await client.call_tool("add", {"a": 1, "b": 2})
-    assert result.data == 3
+    assert not result.is_error                    # a raising tool is a RESULT (is_error=True), not an exception
+    assert result.structured_content == {"result": 3}
 ```
+
+> `result.data == 3` is the **FastMCP** (jlowin `fastmcp`, now 4.x) client API, not the official
+> SDK's — official v2 returns `content` (for the model), `structured_content` (for code) and
+> `is_error`. Always assert `is_error` on negative-input cases.
 
 **TypeScript SDK** uses the equivalent `InMemoryTransport` pair — connect a client and server transport to each other in-process instead of spawning a child. Use this tier for the bulk of your suite: assert on tool output shape, error responses for bad input, and resource/prompt content, all in milliseconds with no process spawn.
 
