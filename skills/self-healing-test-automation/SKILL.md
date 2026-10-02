@@ -135,8 +135,8 @@ Test action throws ──► DETECT (catch ActionError)
 
 ```typescript
 // fixtures/healing-fixture.ts
-import { test as base, Page } from '@playwright/test';
-import { healLocator } from '../helpers/ai-healer';
+import { test as base, expect, Page } from '@playwright/test';
+import { healLocator, toLocator } from '../helpers/ai-healer';
 
 type HealingFixtures = { healingPage: Page };
 
