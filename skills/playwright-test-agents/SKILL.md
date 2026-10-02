@@ -213,7 +213,7 @@ Estimated first-time coverage for a typical 5-scenario flow: **~15–30 minutes 
 
 ## Sources
 
-- [Playwright Test Agents — official docs](https://playwright.dev/docs/test-agents)
+- [Playwright Test Agents — official docs](https://playwright.dev/docs/test-agents) (source: https://github.com/microsoft/playwright/blob/main/docs/src/test-agents-js.md; layout re-verified 2026-10-02 against playwright 1.59.1 `lib/agents/generateAgents.js`)
 - [Playwright Agents: Planner, Generator and Healer in Action — DEV Community](https://dev.to/playwright/playwright-agents-planner-generator-and-healer-in-action-5ajh)
 - [Playwright Test Agents Guide 2026 — TestDino](https://testdino.com/blog/playwright-test-agents)
 - [Playwright Test Agents — qaskills.sh guide](https://qaskills.sh/blog/playwright-test-agents-planner-generator-healer-guide)

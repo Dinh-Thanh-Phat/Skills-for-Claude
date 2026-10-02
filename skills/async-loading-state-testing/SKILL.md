@@ -88,6 +88,6 @@ await expect(page.locator('.spinner')).toBeHidden();
 - [ ] Spinner/skeleton asserted as hidden BEFORE checking content
 - [ ] `waitForResponse` started BEFORE the trigger action (not after)
 - [ ] Lazy-load: scroll container (not window), then assert count
-- [ ] `page.clock.fastForward()` used for animation-delayed skeletons
+- [ ] `page.clock.install()` BEFORE `goto`, then `page.clock.fastForward()` for animation-delayed skeletons
 - [ ] Loading state actually visible during slow request (tested with route delay)
 
