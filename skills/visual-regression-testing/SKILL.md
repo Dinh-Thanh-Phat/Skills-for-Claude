@@ -135,10 +135,11 @@ await expect(chart).toBeVisible();
 // Prefer a real signal over a fixed sleep:
 await page.evaluate(() => document.fonts.ready);
 await expect(chart).toHaveAttribute('data-rendered', 'true');  // if app exposes one
-// or freeze time and let Playwright auto-retry the snapshot:
-await page.clock.install();
 
-await expect(page).toMatchSnapshot('dashboard.png');
+// toHaveScreenshot itself retries until two consecutive screenshots match (stability wait).
+// If you need fixed time (clocks/relative dates), call page.clock.install() BEFORE page.goto()
+// — installing after load does nothing for already-scheduled timers.
+await expect(page).toHaveScreenshot('dashboard.png');
 ```
 
 If the chart has no real "ready" signal, ask the dev to expose one (e.g. `data-rendered`,
