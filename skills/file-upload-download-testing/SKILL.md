@@ -1,15 +1,6 @@
----
+﻿---
 name: file-upload-download-testing
-description: >-
-  Patterns for testing file upload and download UI in Playwright — setInputFiles, drag-and-drop,
-  custom dropzones, upload-relationship/drawer fields (PayloadCMS/Strapi), FSA API workaround,
-  download verification. Use when writing tests for any file upload feature (profile pictures,
-  document import, CSV upload, CMS image/logo fields) or file download (export, report download).
-  Triggers on: "file upload", "setInputFiles", "drag and drop", "file download", "export CSV",
-  "download button", "input type file", "React Dropzone", "file chooser", "filechooser event",
-  "upload field", "image field", "logo upload", "avatar upload", "image cropper", "media drawer",
-  "PayloadCMS upload", "Create New media", "upload inside iframe", "Cloudinary widget", "S3
-  presigned upload", "inline image editor", "broken image check", "DataTransfer drop".
+description: Patterns for testing file upload and download UI in Playwright — setInputFiles, drag-and-drop, custom dropzones, upload-relationship/drawer fields (PayloadCMS/Strapi), FSA API workaround, download verification. Use when writing tests for any file upload feature (profile pictures, document import, CSV upload, CMS image/logo fields) or file download (export, report download). Triggers on: "file upload", "setInputFiles", "drag and drop", "file download", "export CSV", "download button", "input type file", "React Dropzone", "file chooser", "filechooser event", "upload field", "image field", "logo upload", "avatar upload", "image cropper", "media drawer", "PayloadCMS upload", "Create New media", "upload inside iframe", "Cloudinary widget", "S3 presigned upload", "inline image editor", "broken image check", "DataTransfer drop".
 ---
 
 # File Upload & Download Testing
@@ -36,9 +27,10 @@ await expect(page.getByText('test-data.csv')).toBeVisible();
 ### 2. Hidden input (styled upload button)
 ```typescript
 // Most styled upload buttons hide the real <input type="file"> via CSS
-// ✅ Target the hidden input directly with force: true
+// ✅ Target the hidden input directly — setInputFiles works on hidden inputs as-is
+// (there is NO `force` option; setInputFiles only accepts timeout / signal / noWaitAfter)
 const hiddenInput = page.locator('input[type="file"]');
-await hiddenInput.setInputFiles('path/to/document.pdf', { force: true });
+await hiddenInput.setInputFiles('path/to/document.pdf');
 
 await expect(page.getByText('document.pdf')).toBeVisible();
 ```
