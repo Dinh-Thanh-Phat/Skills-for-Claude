@@ -219,7 +219,9 @@ Past the SLA: either fix it or formally retire the test with a written reason â€
 
 ```typescript
 // playwright.config.ts
-retries: process.env.CI ? 1 : 0, // ONE retry in CI only
+retries: process.env.CI ? 1 : 0, // ONE retry in CI only (suite-wide standard)
+retryStrategy: 'isolated',        // 1.62+: retries run at the end, one by one in a single worker
+failOnFlakyTests: !!process.env.CI, // a test that only passed on retry still fails the run
 ```
 
 **Acceptable:** 1 retry for known environment instability (cold start, external API)
