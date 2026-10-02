@@ -343,7 +343,7 @@ await page.route('**/api/upload', route =>
 
 | Gotcha | Fix |
 |---|---|
-| `setInputFiles` on styled button element | Always locate `input[type="file"]` directly, use `{ force: true }` if hidden |
+| `setInputFiles` on styled button element | Always locate `input[type="file"]` directly — works even if hidden (no `force` option exists) |
 | `page.on('filechooser')` never fires | App uses File System Access API — disable it in test config |
 | Download race condition: click then waitForEvent | Always `Promise.all([waitForEvent, click])` — both start together |
 | `suggestedFilename()` ≠ saved file path | They're different values — don't mix them up |
