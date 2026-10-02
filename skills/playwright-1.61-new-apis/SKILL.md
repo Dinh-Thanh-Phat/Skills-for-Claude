@@ -143,7 +143,9 @@ await expect.soft(page.locator('.toast')).toBeVisible();
 
 **When to use**: Async background operations (real-time sync, polling UIs) where you want to observe all failures instead of stopping at the first one.
 
-## 5. `failOnFlakyTests` Config
+## 5. `FullConfig.failOnFlakyTests` (reporter-visible)
+
+The `failOnFlakyTests` **config option** itself dates from 1.52; what 1.61 adds is `FullConfig.failOnFlakyTests`, mirroring it so reporters can explain why a flaky run failed.
 
 ```typescript
 // playwright.config.ts
