@@ -133,7 +133,7 @@ test('banner updates on day rollover without resetting running timers', async ({
 });
 ```
 
-**`setSystemTime` vs `fastForward`**: `fastForward` fires all timers between now and the target; `setSystemTime` only moves the Date — timers still need `runFor`/`fastForward` to fire after the shift.
+**`setSystemTime` vs `fastForward` vs `runFor`**: `setSystemTime` only moves the Date and triggers **no** timers (official use case: time-shift such as DST/timezone change); `fastForward` jumps and fires each due timer **at most once**; `runFor` fires **every** callback in the period. The official docs call `setSystemTime` an advanced-use-case method — prefer `setFixedTime` or `install` + `fastForward`/`runFor`.
 
 ---
 
