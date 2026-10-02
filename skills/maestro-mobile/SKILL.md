@@ -996,6 +996,7 @@ maestro check-syntax flows/            # catches unsupported keys before a devic
 ```
 
 ## Sources
+- https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md#2110 — CLI 2.11.0 (29 Sep 2026): Android 17/API 37, physical iOS rejected early, setDarkMode/setAirplaneMode value + optional, start/end rejected in selectors, recording startedAtEpochMs, Windows cloud runFlow path fix
 - https://maestro.dev/blog/maestro-cli-2-10-0 — CLI 2.10.0 (9 Sep 2026): full system-image path for `--device-os`, legacy flags deprecated
 - https://maestro.dev/blog/maestro-cli-2-9-0 — CLI 2.9.0 (31 Aug 2026): dark mode commands, iOS/Android/Web
 - https://docs.maestro.dev/reference/commands-available/setdarkmode — `setDarkMode: enabled | disabled`
