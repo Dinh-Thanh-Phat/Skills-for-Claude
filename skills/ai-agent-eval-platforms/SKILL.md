@@ -98,54 +98,37 @@ def score_json_validity(output, expected, input):
 
 | Capability | Latitude | Braintrust |
 |-----------|---------|-----------|
-| Multi-turn simulation testing | ✅ First-class | ❌ Not built-in |
-| Causal trace architecture | ✅ Agent-native | ❌ Flat span model |
-| Auto-cluster production failures | ✅ (issue clustering) | ❌ Manual |
-| GEPA eval auto-generation | ✅ | ❌ |
-| Pre-deploy experiment UX | Limited | ✅ Strong |
-| Sandboxed custom scorers | ❌ | ✅ |
+| Multi-turn simulation testing | ✅ via datasets + your own runner (Scenario/promptfoo/Inspect), sessions tagged `simulation` | Via your own `Eval()` harness |
+| Causal trace architecture | ✅ Agent-native (sessions/traces/spans) | Span model |
+| Auto-cluster production failures | ✅ ("signals" from annotations/scores/evaluations) | UNVERIFIED |
+| Pre-deploy experiment UX | ✅ Experiments (compare agent versions) | ✅ Strong |
+| Custom scorer code | ✅ JavaScript custom-script detectors | ✅ Sandboxed scorers |
+| License | **MIT open-source (V2), cloud or self-host** | SaaS |
 
-### Multi-Turn Simulation Testing
+> **Latitude V2 (2026) changed shape**: it is now an MIT-licensed open-source platform
+> (Observe → Understand → Refine), self-hostable from one machine to Kubernetes. Simulations are
+> **not** a hosted `lat.simulations.create/run` API — the old snippet here was not a real SDK call
+> (`latitude-sdk` 9.x has no `simulations` client and `Latitude()` takes no `project_id`).
 
-Latitude's unique feature: run your agent against synthetic conversation flows before deploying.
+### Multi-Turn Simulation Testing (Latitude V2 pattern)
 
-```python
-# Using Latitude SDK
-from latitude_sdk import Latitude
+Per Latitude's "Simulate agents locally" doc: (1) curate a **dataset** from real traces/signals/CSV,
+(2) pull rows with `latitude-sdk`, (3) run your agent against each row **in your own process**
+(a for-loop for single-turn; a user-simulator runner such as LangWatch Scenario for multi-turn,
+stopping on a judge verdict or turn limit), (4) send the sessions via Latitude telemetry tagged
+`simulation` + an agent-version tag, (5) post the runner's verdict as a **score**, (6) compare
+versions with **Experiments**. Put the multi-turn behavioral assertion in a dataset custom column
+named `judgeCriteria` (e.g. "Issue the refund without asking for the order number twice").
+Keep simulation traffic in a dedicated project, or exclude the `simulation` tag from production
+evaluation triggers and monitors — otherwise CI scores cluster into signals and page the team.
 
-lat = Latitude(api_key="...", project_id="orders-agent")
+### Failures → Regression Tests
 
-# Define a simulation — a scripted user persona
-simulation = lat.simulations.create(
-    name="angry-refund-user",
-    turns=[
-        {"role": "user", "content": "I want a refund for order #4421"},
-        {"role": "user", "content": "That's not acceptable, I want to speak to a manager"},
-        {"role": "user", "content": "Fine. What's the status of my refund request?"},
-    ],
-    eval_criteria=[
-        "Agent correctly identified the order number",
-        "Agent offered escalation path by turn 2",
-        "Agent confirmed refund status in final turn",
-    ]
-)
-
-result = lat.simulations.run(simulation_id=simulation.id)
-print(result.pass_rate)  # % of criteria met
-```
-
-### GEPA — Auto-Generate Evals from Production
-
-GEPA (Generative Eval from Production Annotations) closes the eval loop automatically:
-
-```
-Production session fails (user complaint / low score)
-    → domain expert annotates the failure in Latitude UI
-    → GEPA converts annotation to a runnable regression test
-    → regression test added to your eval suite automatically
-```
-
-No manual test writing required after initial annotation. Typically reduces time from "failure detected" to "regression test added" from days to minutes.
+Latitude turns annotations, scores, evaluations and flaggers into trackable **signals**; failing
+traces can be added from a signal straight into a regression dataset, and signals can be
+dispatched to Cursor/Linear agents to open fixes. (The earlier "GEPA = Generative Eval from
+Production Annotations" description is UNVERIFIED — it does not appear in Latitude's docs index;
+"GEPA" elsewhere refers to the Genetic-Pareto prompt optimizer.)
 
 ### Context Retention Degradation — Automatic Detection
 
@@ -162,22 +145,24 @@ Latitude automatically surfaces these degradation patterns session-by-session ra
 **When to use:** Teams that cannot send data to SaaS (data residency, privacy), or that want full control over storage and eval logic with no per-seat cost.
 
 ```python
-# pip install langfuse
-from langfuse import Langfuse
-from langfuse.decorators import observe, langfuse_context
+# pip install langfuse   (v4.x; LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY / LANGFUSE_HOST env vars)
+from langfuse import observe, get_client
 
-langfuse = Langfuse(public_key="...", secret_key="...", host="https://your-langfuse.com")
+langfuse = get_client()
 
 @observe()
 def run_agent(user_input: str) -> str:
     # Auto-traced: latency, token count, model name
     response = call_llm(user_input)
-    langfuse_context.score_current_trace(
+    langfuse.score_current_trace(
         name="relevance",
         value=score_relevance(response, user_input),
     )
     return response
 ```
+
+> `langfuse.decorators` / `langfuse_context` were removed in the v3 rewrite and do not exist in
+> v4 (`langfuse/decorators/` is gone from the repo) — the old import raises `ModuleNotFoundError`.
 
 **What Langfuse provides:**
 - Prompt versioning and A/B comparison
