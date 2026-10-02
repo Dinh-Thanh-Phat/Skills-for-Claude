@@ -18,6 +18,11 @@ emulators/devices. The community tool **maestro-runner** (by DeviceLab) fills th
 
 Existing YAML flows work as-is; no syntax changes required.
 
+> **Official CLI 2.11.0+ (29 Sep 2026):** `maestro` no longer lists physical iPhones in its device
+> list, and `maestro test` against one fails immediately with *"Physical iOS devices are not yet
+> supported"*. If you see that error, it's not a provisioning/USB problem — switch to maestro-runner.
+> Before 2.11.0 the phone could appear as a target and then hang or fail obscurely mid-run.
+
 ## Installation
 
 ```bash
