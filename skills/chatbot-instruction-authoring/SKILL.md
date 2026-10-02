@@ -55,6 +55,9 @@ tường minh cho đúng tình huống đang rơi**, không phải đi cấm chu
 → Thấy câu mặc định của platform: **hỏi "instruction thiếu câu mẫu cho tình huống nào?"**, đừng
 hỏi "làm sao chặn chuỗi này".
 
+> ⚠️ Mâu thuẫn với memory `lesson_platform-guard-outranks-prompt` (nói ngược lại: chuỗi ra y hệt
+> = guard platform) — cần reconcile.
+
 ---
 
 ## LUẬT 3 — Một CATALOGUE câu dự phòng theo tình huống, không phải một câu
@@ -191,7 +194,8 @@ Không đặt dấu ngoặc kép quanh tên sản phẩm, quanh giá.
 - **Luôn có nhóm canh regression** — nhóm "hỏi bằng tên đầy đủ sản phẩm" ổn định nhất.
 - **Kiểm chứng công cụ chấm TRƯỚC.** Regex giá thiếu cờ `i` từng cho 23 lượt bịa giá lọt qua
   và bị báo là sạch. Danh sách "cụm từ cấm" sai từng khiến tôi chấm **câu trả lời đúng sự thật**
-  là bịa (chính sách ship thật của shop). Xem `verify-the-instrument-before-the-finding`.
+  là bịa (chính sách ship thật của shop). Xem memory `lesson_verify-the-instrument-before-the-finding.md`
+  (memory, không phải skill).
 - **MỘT harness dùng chung, không chép tay.** Xem luật dưới.
 
 ---
