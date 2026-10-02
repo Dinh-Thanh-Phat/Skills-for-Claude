@@ -154,7 +154,8 @@ class GDriveReader:
 
     def read_from_link(self, drive_link: str, output_file: str = "docs_content.txt") -> dict:
         file_id = self.extract_file_id(drive_link)
-        metadata = self.service.files().get(fileId=file_id, fields="id, name, mimeType").execute()
+        metadata = self.service.files().get(fileId=file_id, fields="id, name, mimeType",
+                                            supportsAllDrives=True).execute()
 
         if metadata['mimeType'] == 'application/vnd.google-apps.folder':
             files = self.list_files_in_folder(file_id)
