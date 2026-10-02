@@ -40,51 +40,27 @@ Hai chế độ:
 
 Đọc lại context conversation để xác định task vừa thực hiện là gì.
 
-Map task → skill theo bảng sau:
+**KHÔNG dùng bảng skill gõ cứng** — thư viện có ~170+ skill và thay đổi hằng ngày (routine `daily-skill-evolution`). Discover bằng lệnh:
 
-| Nếu task liên quan đến... | Skill nghi ngờ |
-|---|---|
-| Tạo báo giá, tra giá, discount | `quote-builder` |
-| Bảng giá cũ/mới, SP thay đổi giá | `price-list-manager` |
-| Phân loại khách, VIP, churn | `customer-segmentation` |
-| Deal, pipeline, forecast | `sales-pipeline-tracker` |
-| Hoa hồng, commission, tier | `commission-calculator` |
-| Trả hàng, hoàn tiền, refund | `returns-processor` |
-| Gợi ý tái đơn, follow-up | `reorder-suggester` |
-| Lịch giao hàng, tài xế, tuyến | `delivery-scheduler` |
-| Hợp đồng, công nợ, hết hạn | `contract-tracker` |
-| Gộp đơn từ nhiều NV | `order-aggregation` |
-| Soát đơn, kiểm đơn trước duyệt | `order-verification` |
-| Đối chiếu đơn vs kho/giao hàng | `order-reconciliation` |
-| Báo cáo doanh số, pivot, report | `order-reporting` |
-| VLOOKUP, so sánh file, filter | `file-aggregation-comparison` |
-| **QA routing / entry point** | `qa-router` |
-| **QA session start / context recovery** | `qa-session-start` |
-| **QA session close / handoff** | `qa-session-close` |
-| **QA env check trước khi test** | `qa-preflight` |
-| **Viết test cases, coverage** | `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` |
-| **Debug test fail** | `qa-router` → `playwright-diagnosis-first` |
-| **Bug report + Odoo log** | `qa-bug-report` |
+```bash
+# 1. Danh sách skill LOADABLE (dạng thư mục)
+ls C:/Users/wi/.claude/skills
+# 2. Tìm theo keyword của task trong name/description/triggers
+grep -il "<keyword>" C:/Users/wi/.claude/skills/*/SKILL.md
+grep -i -A1 "^description:" C:/Users/wi/.claude/skills/*/SKILL.md | grep -i "<keyword>"
+```
 
-### QA / Test Automation (folder-style)
-| Nếu task liên quan đến... | Skill nghi ngờ |
-|---|---|
-| Viết test Playwright cho web | `qa-test-generation` / `qa-test-coverage-max` / `qa-e2e-complete` |
-| Selector / locator / DOM | `dom-inspect-first` / `safe-locators` / `playwright-snapshot-parser` |
-| Test fail / flaky / debug | `playwright-diagnosis-first` / `test-debug-checklist` / `test-failure-triage` |
-| Assertion / fail-loud | `fail-loud` / `soft-assertion-ban` / `outcome-verification` |
-| Auth / login test | `auth-session-testing` / `test-auth-strategy` / `login-verification` / `otp-untestable-flows` |
-| Data cleanup / isolation | `test-data-lifecycle` / `test-isolation` / `state-ripple-verify` |
-| Upload file / ảnh trong test | `file-upload-download-testing` |
-| Mobile / Maestro / iOS / Android | `maestro-mobile` / `ios-xcrun` / `android-adb` |
-| Bug report / Odoo | `qa-bug-report` / `odoo-project-automation` |
-| Chatbot / AI test | `chatbot-tester` (orchestrator) |
-| Visual / a11y / responsive | `visual-regression-testing` / `accessibility-testing` / `responsive-viewport-testing` |
-| Anti-patterns / code review test | `playwright-test-anti-patterns` |
-| Phân loại lỗi nhanh / triage | `test-failure-triage` |
+Ưu tiên skill có `description`/`triggers` khớp nhất với task vừa làm. Với task QA, đối chiếu thêm bảng route trong `qa-router` (entry point).
+
+> ⚠️ **13 file business phẳng ở gốc** (`quote-builder.md`, `price-list-manager.md`, `customer-segmentation.md`,
+> `sales-pipeline-tracker.md`, `commission-calculator.md`, `returns-processor.md`, `reorder-suggester.md`,
+> `delivery-scheduler.md`, `contract-tracker.md`, `order-aggregation.md`, `order-verification.md`,
+> `order-reconciliation.md`, `order-reporting.md`) **hiện KHÔNG được Claude Code load** — Claude Code chỉ load
+> `<name>/SKILL.md`. Nếu feedback liên quan tới chúng: báo user rằng file đó không tự kích hoạt, và hỏi có muốn
+> chuyển sang dạng `<name>/SKILL.md` không (user quyết định, không tự chuyển).
 
 Nếu không chắc, hỏi user:
-> "Vấn đề bạn gặp xảy ra khi đang làm gì — tạo báo giá, tổng hợp đơn, hay tính hoa hồng?"
+> "Vấn đề bạn gặp xảy ra khi đang làm gì (task nào, bước nào)?"
 
 ---
 
