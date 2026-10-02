@@ -1,12 +1,6 @@
 ---
 name: chatbot-tester
-description: >-
-  Main orchestrator for automated AI chatbot testing pipeline. Use this skill whenever the user
-  wants to test an AI chatbot's accuracy, performance, or quality — especially when given a
-  Google Drive link with documentation and a chatbot URL. Triggers on: "test my chatbot",
-  "evaluate chatbot accuracy", "run chatbot QA", "benchmark my AI assistant", "test bot with
-  documents". Coordinates the full pipeline: read docs → generate questions → call chatbot →
-  evaluate responses → analyze performance → generate report.
+description: Main orchestrator for automated AI chatbot testing pipeline. Use this skill whenever the user wants to test an AI chatbot's accuracy, performance, or quality — especially when given a Google Drive link with documentation and a chatbot URL. Triggers on: "test my chatbot", "evaluate chatbot accuracy", "run chatbot QA", "benchmark my AI assistant", "test bot with documents". Coordinates the full pipeline: read docs → generate questions → call chatbot → evaluate responses → analyze performance → generate report.
 ---
 
 # Chatbot Tester — Main Orchestrator
@@ -47,13 +41,29 @@ Step 5: performance-analyzer → metrics.json + charts/
 Step 6: test-reporter        → report.html (+ report.pdf optional)
 ```
 
+**Step-number → skill mapping (Agentic project `run.py`):** `--step 2` = qa-generator ·
+`--step 3` = chatbot-api-caller / chatbot-ui-automator · `--step 3b` = response-evaluator
+(skill Step 4) · `--step 4` = Excel export (not a skill in this chain).
+
+> ⚠️ **Known limitations (not yet implemented):**
+> - **Step 0 needs local files.** `ocr-processor` reads a local folder, but `gdrive-doc-reader`
+>   extracts text in memory and saves no source files. Download scanned PDFs/images yourself,
+>   OCR them, and merge `ocr_output.txt` into `docs_content.txt`.
+> - **`qa_generator.py` has no CLI.** `qa-generator` provides template code only (no
+>   `__main__`, no fixed args). The `qa_generator.py` step in the template below assumes you
+>   wrote one taking `<docs_content.txt> <num_questions> <test_questions.json>`.
+
 **Pre-flight: validate chatbot reachable** before running full batch:
 ```python
-# Send 1 throwaway question; if it fails, abort early
-sample_q = {"id": "preflight", "question": "ping"}
-r = run_step("chatbot-api-caller", inputs={"questions": [sample_q]})
-if not r.success or "error" in r.response.lower():
-    raise RuntimeError(f"Chatbot pre-flight failed — aborting. Response: {r.response[:200]}")
+# Send 1 throwaway question through the real step-3 script; abort early if it fails
+import json, subprocess
+from pathlib import Path
+pre_q, pre_out = output_dir / "preflight_q.json", output_dir / "preflight_resp.json"
+pre_q.write_text(json.dumps([{"id": "preflight", "question": "ping"}]), encoding="utf-8")
+subprocess.run(["python", "chatbot_caller.py", str(pre_q), chatbot_url, str(pre_out)], check=True)
+r = json.loads(pre_out.read_text(encoding="utf-8"))[0]
+if not r["success"] or not (r["response"] or "").strip() or "sorry" in r["response"].lower():
+    raise RuntimeError(f"Chatbot pre-flight failed — aborting. Response: {str(r['response'])[:200]} / {r['error']}")
 ```
 
 ## Orchestration Protocol
@@ -77,16 +87,8 @@ For each step:
 Never silently skip a failed step. Fail loud, fail early.
 
 ### 3. Error & Retry Logic
-```python
-for attempt in range(max_retries):
-    result = run_step(step_name, inputs)
-    if result.success:
-        break
-    if attempt < max_retries - 1:
-        time.sleep(2 ** attempt)  # exponential backoff
-else:
-    raise StepFailedError(f"{step_name} failed after {max_retries} attempts")
-```
+Implemented inside `run_pipeline()` below (subprocess per step, retry with `2 ** attempt`
+backoff, raise `RuntimeError` after `max_retries`). There is no separate `run_step()` helper.
 
 ### 4. Progress Reporting
 Print a status line after each step:
