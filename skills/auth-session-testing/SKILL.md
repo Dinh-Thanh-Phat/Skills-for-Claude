@@ -220,7 +220,7 @@ const ctxA = await browser.newContext(); const pageA = await ctxA.newPage();
 const ctxB = await browser.newContext(); const pageB = await ctxB.newPage();
 await login(pageA); await login(pageB);  // both authenticated as same user
 await pageA.goto('/account/security');
-await pageA.click('text=Log out everywhere');
+await pageA.getByRole('button', { name: 'Log out everywhere' }).click();
 await pageB.goto('/dashboard');
 await expect(pageB).toHaveURL(/\/login/);  // pageB also signed out
 ```
