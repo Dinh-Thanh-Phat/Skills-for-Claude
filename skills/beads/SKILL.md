@@ -35,8 +35,14 @@ See [BOUNDARIES.md](${CLAUDE_SKILL_DIR}/resources/BOUNDARIES.md) for detailed co
 bd --version  # Requires v0.60.0+
 ```
 
+> **Version note (checked 2026-10-02):** local bd is **0.63.3**. Upstream latest is **1.3.1 (2026-09-30)**, which
+> changes `BEADS_DIR` semantics (must point at the `.beads` directory itself, not the project root) and makes
+> batch `bd close` exit non-zero if any ID fails. Read the release notes
+> (https://github.com/steveyegge/beads/releases) before upgrading; run `bd prime` after any upgrade.
+
 - **bd CLI** installed and in PATH
-- **Git repository** (optional — use `BEADS_DIR` + `--stealth` for git-free operation)
+- **Git repository** (optional — for git-free operation use `--stealth` + `BEADS_DIR=<path>/.beads` on bd 1.x;
+  on 0.6x `BEADS_DIR` was more lenient, but pointing it at the `.beads` dir works on both)
 - **Initialization**: `bd init` run once (humans do this, not agents)
 
 ## CLI Reference

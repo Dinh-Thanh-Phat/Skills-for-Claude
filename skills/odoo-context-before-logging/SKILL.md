@@ -1,7 +1,7 @@
 ---
 name: odoo-context-before-logging
 description: Use ONLY when the user explicitly mentions "Odoo" or "ERP" AND wants to log/create/report a task or bug for a NAMED project (e.g. "log a bug for HVS on Odoo", "tạo task cho Soundwise lên Odoo", "report this issue to the FE project on ERP"). This skill runs FIRST as a context-gathering gate — it explores the named project on disk and on Odoo to understand its flow, conventions, team, stages, and existing tickets BEFORE handing off to odoo-project-automation to actually write the ticket. This makes the logged task/bug accurate, deduplicated, and reproducible instead of a vague one-liner. Trigger it even when the user just says "log this bug to <project> on Odoo" without spelling out the steps — the whole point is that you fill in the context they didn't. Do NOT trigger when "Odoo"/"ERP" is absent, or for logging that has no named project.
-compatibility: Uses mcp__odoo__* tools (or scripts/ from odoo-project-automation), the Explore agent, and reads ~/.claude/shared-context/. No extra dependencies.
+compatibility: Uses mcp__odoo__* tools (odoo-project-automation has no scripts/ sources — its only Python path is an XML-RPC fallback for binary image attachments), the Explore agent, and reads ~/.claude/shared-context/. No extra dependencies.
 ---
 
 # Odoo: Gather Project Context Before Logging
