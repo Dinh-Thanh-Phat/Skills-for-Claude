@@ -146,7 +146,7 @@ In CI, also consider `retryStrategy: 'isolated'` (1.62+ — runs all retries at 
 
 - **Newly added tests** are not in the last run, so `--last-failed` does not include them.
   → Run them once with `--grep` before going back to `--last-failed`.
-- **Skipped tests** (via `test.skip`) are not "failed", so they won't re-run.
+- **Skipped tests** (via `test.skip`) and fail-locked tests that failed as expected (via `test.fail`) are not "failed", so they won't re-run.
 - `--last-failed` reads from `test-results/.last-run.json` — deleting that file resets it.
 
 ## Faster Alternatives to Full Suite (Playwright 1.46+)

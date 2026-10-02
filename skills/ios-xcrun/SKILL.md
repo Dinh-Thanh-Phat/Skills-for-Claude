@@ -343,11 +343,12 @@ xcrun devicectl device install app --device <UDID> /path/to/MyApp.app
 # Launch on real device
 xcrun devicectl device process launch --device <UDID> com.example.myapp
 
-# Take screenshot from real device
-xcrun devicectl device screenshot --device <UDID> ./shot.png
+# Take screenshot from real device — subcommand is `device capture screenshot` (Xcode 26.6+/27 per a
+# third-party reference; exact flags UNVERIFIED — check `xcrun devicectl device capture --help`)
+xcrun devicectl device capture screenshot --device <UDID> ...
 
-# Stream logs (real device)
-xcrun devicectl device log stream --device <UDID> --predicate 'subsystem == "com.example.myapp"'
+# Stream logs (real device) — `devicectl device log stream` is UNVERIFIED and likely does NOT exist
+# (reports say log streaming was missing/renamed in Xcode 26). Check `xcrun devicectl help` before scripting it.
 
 # Pair a device for the first time (after enabling Developer Mode on iOS 16+)
 xcrun devicectl manage pair --device <UDID>
