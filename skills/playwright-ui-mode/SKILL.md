@@ -1,13 +1,6 @@
 ---
 name: playwright-ui-mode
-description: >-
-  Use Playwright's interactive UI mode (--ui flag) to develop and debug tests with watch mode,
-  time-travel DOM inspection, locator picking, and test filtering — without re-running from the
-  terminal. Use when writing new tests and you want live feedback on locator changes, when a test
-  is failing locally and you want to step through actions with DOM snapshots, or when you want to
-  pick accurate locators from a live page. Triggers on: "playwright ui mode", "--ui flag",
-  "interactive test runner", "watch mode playwright", "pick locator", "time travel debugging
-  local", "playwright debug locally", "ui mode vs headed", "npx playwright test --ui".
+description: Use Playwright's interactive UI mode (--ui flag) to develop and debug tests with watch mode, time-travel DOM inspection, locator picking, and test filtering — without re-running from the terminal. Use when writing new tests and you want live feedback on locator changes, when a test is failing locally and you want to step through actions with DOM snapshots, or when you want to pick accurate locators from a live page. Triggers on: "playwright ui mode", "--ui flag", "interactive test runner", "watch mode playwright", "pick locator", "time travel debugging local", "playwright debug locally", "ui mode vs headed", "npx playwright test --ui".
 ---
 
 # Playwright UI Mode
@@ -31,7 +24,9 @@ npx playwright test tests/login.spec.ts --ui
 npx playwright test --ui-host=0.0.0.0 --ui-port=8080
 ```
 
-> When `--ui-host` or `--ui-port` are set, the UI opens in the system browser instead of a dedicated Chromium window — useful for containerised setups.
+> When `--ui-host` or `--ui-port` are set, the UI is served for a browser instead of a dedicated window — useful for Docker / GitHub Codespaces (Codespaces forwards the port automatically).
+
+> ⚠️ **Security:** with `--ui-host=0.0.0.0`, UI Mode — including your traces, and any passwords/secrets in them — is accessible from **other machines on your network** (official docs warning). Only bind to `0.0.0.0` inside an isolated container/network; never on shared office Wi-Fi with real credentials in tests.
 
 **UI Mode vs other run modes:**
 
@@ -57,6 +52,8 @@ The left sidebar shows a tree of all spec files and tests. At the top is a filte
 
 Click the **eye icon** next to any test (or the top-level eye) to enable **watch mode** for that test. The eye turns green — any file change re-triggers it automatically.
 
+> ⚠️ **Project dependencies are NOT run for you.** UI Mode does not take setup projects (e.g. `dependencies: ['setup']` for auth, see `playwright-config`) into account — run the setup tests **manually first** (click ▶ on the `setup` project / `auth.setup.ts`), otherwise dependent tests fail with missing `storageState` and look like real failures.
+
 ---
 
 ## 3 — Watch Mode
@@ -70,7 +67,7 @@ Sidebar eye icon → green → save any imported file → test re-runs automatic
 **Practical workflow:**
 1. Open UI mode.
 2. Enable watch on the test you're writing.
-3. Edit the test or the fixture — the test re-runs within ~200 ms.
+3. Edit the test or the fixture — the test re-runs automatically on save (exact latency UNVERIFIED; depends on suite/transform cost).
 4. Iterate on locators without switching to the terminal.
 
 > To watch all tests simultaneously, click the eye at the very top of the sidebar. Use sparingly in large suites — it triggers the full suite on every save.
@@ -114,7 +111,7 @@ await page.getByTestId('cart-total').textContent();
 
 ## 6 — Fixture Inspection
 
-UI Mode treats fixtures as first-class actions. The action list shows:
+UI Mode shows hooks and fixture setup/teardown in the action list. Illustrative shape (exact grouping/labels vary by version — UNVERIFIED):
 
 ```
 ▶ beforeAll hook
