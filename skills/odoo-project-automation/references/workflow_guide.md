@@ -104,10 +104,10 @@ Tags: ["Task"]
 Project 'InvalidProject' not found.
 
 Details:
-  - Available projects: Soundwise, TRS, Olivia - CRM App
+  - Available projects: Soundwise (76), TRS, Olivia - CRM App (64), Website InApps (79), FCCX (80), ...
 ```
 
-**Solution:** Use exact project name from list above.
+**Solution:** Use exact project name, or `ilike` search on `project.project`.
 
 ### Assignee Not Found
 ```
