@@ -49,6 +49,9 @@ Tôi có thể hỗ trợ các mảng QA sau. Chỉ cần nói tự nhiên — k
 | Maestro YAML flow | "Viết test login cho app iOS+Android" |
 | iOS simulator | "Tạo simulator iPhone 15, install app" |
 | Android + ADB | "Cài APK + grant permissions trước khi test" |
+| Lấy hết selector app 1 lần | "Dò element chậm quá" / "Lấy element map cho module này" |
+| Tăng tốc suite Maestro | "Suite mobile chạy lâu quá" / "Chạy song song nhiều device" |
+| Lỗi sau khi nâng OS/SDK | "Từ khi lên Android 17 / iOS 27 test bị lỗi" |
 
 ---
 
