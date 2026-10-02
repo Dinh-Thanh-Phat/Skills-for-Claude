@@ -48,8 +48,11 @@ xcrun simctl boot ABCD-1234-...
 # Boot by name (alternative, less reliable)
 xcrun simctl boot "iPhone 15 Pro"
 
-# Open Simulator.app (makes the window visible)
-open -a Simulator
+# Make the window visible
+open -a Simulator          # Xcode ≤ 26 only
+# Xcode 27: Simulator.app is replaced by DeviceHub.app (Contents/Applications/DeviceHub.app,
+# bundle id com.apple.dt.Devices) — `open -a Simulator` fails. See `ios-27-test-gotchas` §1.
+# simctl itself still works headless; you don't need the window for CI.
 
 # Wait until booted (for CI scripts)
 xcrun simctl bootstatus ABCD-1234-... -b
@@ -600,4 +603,24 @@ jobs:
         with:
           name: ios-test-artifacts
           path: test-artifacts/
+```
+
+---
+
+## Toolchain-version gate
+
+Running on **iOS 26 with Xcode 26.x**? Read `ios-26-test-gotchas` before debugging any
+element-not-found failure. Xcode 26.1/26.2 break the accessibility tree on iOS 26+ (`No matches
+found for Descendants matching type TabBar`), nav-bar `UIBarButtonItem` accessibility IDs stop
+being exposed, and Accessibility Inspector renders an empty hierarchy. None of these are fixable
+by rewriting selectors — pin the environment first:
+
+```bash
+xcodebuild -version && sw_vers && xcrun simctl list runtimes
+```
+
+Simulator won't boot after a macOS upgrade:
+
+```bash
+xcrun simctl runtime dyld_shared_cache update --all
 ```
