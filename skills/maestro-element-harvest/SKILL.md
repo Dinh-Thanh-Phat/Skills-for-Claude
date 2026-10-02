@@ -67,14 +67,19 @@ Không có `runScript`? Chạy `maestro hierarchy` giữa các bước nav bằn
 # parked app đang ở Home — nav + dump từng màn, 1 login duy nhất
 for pair in "tab-crm crm" "tab-appointments cal" "tab-forms forms" "tab-daily-tasks tasks"; do
   set -- $pair
-  maestro test - <<EOF
+  # `maestro test -` (đọc flow từ stdin) KHÔNG có trong TestCommand — UNVERIFIED/khả năng fail.
+  # Ghi flow tạm ra file rồi chạy:
+  cat > /tmp/nav.yaml <<EOF
 appId: com.olivia.mobile.staging
 ---
 - tapOn: { id: "$1" }
 EOF
-  maestro hierarchy > "dumps/$2.json"    # dump ra ĐĨA, không vào context
+  maestro test /tmp/nav.yaml
+  maestro hierarchy --compact > "dumps/$2.json"    # --compact bỏ giá trị rỗng → file nhỏ hơn; dump ra ĐĨA
 done
 ```
+Lưu ý: mỗi `maestro test` boot lại JVM (~10–15s) — vòng lặp này chậm hơn attach-flow chain ở trên;
+dùng khi không có cách dump trong flow. Từ 2.6.0 `maestro hierarchy` chỉ in JSON.
 
 ### Bước 3 — Trích selector TRÊN ĐĨA (không đọc blob vào context)
 ```bash
