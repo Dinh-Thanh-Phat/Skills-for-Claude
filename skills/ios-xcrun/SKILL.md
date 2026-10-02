@@ -95,8 +95,10 @@ xcrun simctl install booted /path/to/MyApp.app
 # Launch app (returns PID)
 xcrun simctl launch booted com.example.myapp
 
-# Launch with env vars (useful for feature flags)
-xcrun simctl launch booted com.example.myapp --env FEATURE_FLAG=true
+# Launch with env vars (useful for feature flags) — prefix with SIMCTL_CHILD_; simctl strips the
+# prefix and passes FEATURE_FLAG=true to the app. (Anything after the bundle id is argv, NOT env.)
+# UNVERIFIED this session (from memory of `xcrun simctl help launch`) — confirm locally.
+SIMCTL_CHILD_FEATURE_FLAG=true xcrun simctl launch booted com.example.myapp
 
 # Launch and capture stdout/stderr
 xcrun simctl launch --console booted com.example.myapp
@@ -235,9 +237,12 @@ xcrun simctl privacy booted revoke camera com.example.myapp
 # Reset all permissions for app (forces re-prompt)
 xcrun simctl privacy booted reset all com.example.myapp
 
-# Available services: camera, photos, microphone, contacts, calendar,
-#   reminders, location-always, location-when-in-use, medialibrary,
-#   motion, notifications, faceid, siri, speech, usertracking
+# Service names CHANGE between Xcode versions — always check the real list first:
+xcrun simctl help privacy
+# Known-valid on Xcode 27 (third-party PR conorluddy/ios-simulator-skill#99): all, contacts-limited,
+#   location-always, photos-add, media-library (NOT `medialibrary`/`mediaLibrary`); `health`/`keyboard` rejected.
+# UNVERIFIED — may be rejected: camera, notifications, location-when-in-use, faceid, speech, usertracking.
+# A rejected service fails with NSPOSIXErrorDomain code=1 — don't swallow it.
 ```
 
 ## Media & Files
