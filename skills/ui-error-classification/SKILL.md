@@ -114,23 +114,25 @@ test('TC-FORM-REAL-001: Contact form submission [BUG-FORM-001]', async ({ page }
 When the API is broken and you want to document it:
 
 ```typescript
-// ✅ Pattern: real test that intentionally fails + documents the bug
+// ✅ Pattern: expected-behavior test, fail-locked with the bug ID (canonical: `skip-vs-fail`)
 test('TC-FORM-REAL-001: Form submission works [BUG-API-001]', async ({ page }) => {
+  test.fail(true, 'BUG-API-001: POST /api/contact returns 500');
   // Comment: No mock — hits real API
   // EXPECTED: "Thank you!" heading
   // ACTUAL (BUG-API-001): "Something went wrong" — POST /api/contact returns 500
-  // This test will auto-pass when the API is fixed
-  
+
   // ... fill form ...
   await expect(page.getByRole('heading', { name: 'Thank you!' })).toBeVisible();
-  // ^ Intentionally failing assertion — this is the test serving as a bug tracker
+  // ^ Assert the EXPECTED behavior — never weaken it to match the bug
 });
 ```
 
 **Benefits:**
 - Bug is documented in test suite, not just Jira
-- Test auto-passes when bug is fixed → CI becomes the regression detector
+- CI stays green while the bug is known (no permanent red noise), but the test still RUNS
+- When the bug is fixed the run reports "expected to fail, but passed" → remove `test.fail` → CI becomes the regression detector
 - Dev knows exactly what to look for
+- Never `test.skip` it instead — a skipped test can't tell you the bug was fixed (or got worse)
 
 ---
 
