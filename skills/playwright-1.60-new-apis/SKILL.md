@@ -1,6 +1,6 @@
 ---
 name: playwright-1.60-new-apis
-description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic external file/data drop on upload zones, tracing.startHar() for on-demand HAR recording, test.abort() to fail a test immediately from a fixture/hook/route handler, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
+description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic external file/data drop on upload zones, tracing.startHar() for on-demand HAR recording, test.abort() to fail a test immediately from a fixture/hook/route handler, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, recording HAR on demand mid-test, failing a test immediately on detected misuse, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
 ---
 
 # Playwright 1.60 New APIs
