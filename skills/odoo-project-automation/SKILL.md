@@ -17,7 +17,7 @@ task_name: "Login button not responding"
 task_type: "bug"
 description: "Button click doesn't work on mobile"
 assignee: "Phuc Do"
-tags: ["bug", "mobile"]
+tags: ["bug"]          # live project.tags: bug=5, Task=6, Enhancement=27
 priority: "3"  # Odoo 19 project.task.priority: "0"=Low, "1"=Medium, "2"=High, "3"=Urgent
 
 # Optional technical context (for bug type only — helps AI find & fix quickly)
