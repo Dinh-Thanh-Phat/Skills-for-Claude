@@ -1,11 +1,6 @@
 ---
 name: llm-hallucination-detection
-description: >-
-  Use when adding hallucination detection to an LLM application, choosing between NLI,
-  consistency sampling, or LLM-as-judge methods, or setting CI gates on hallucination rates.
-  Triggers on: "hallucination detection", "groundedness check", "faithfulness check",
-  "SelfCheckGPT", "consistency sampling", "NLI entailment", "LLM makes up facts", "reduce
-  hallucinations in production".
+description: Use when adding hallucination detection to an LLM application, choosing between NLI, consistency sampling, or LLM-as-judge methods, or setting CI gates on hallucination rates. Triggers on: "hallucination detection", "groundedness check", "faithfulness check", "SelfCheckGPT", "consistency sampling", "NLI entailment", "LLM makes up facts", "reduce hallucinations in production".
 ---
 
 # LLM Hallucination Detection
@@ -165,10 +160,14 @@ def test_no_hallucination(case):
         context=case["retrieved_docs"]
     )
     assert_test(test_case, [
-        HallucinationMetric(threshold=0.1),   # < 10% hallucination rate
+        HallucinationMetric(threshold=0.9),   # DeepEval ≥4.2: score = share of contexts AGREED with → ≥0.9 ≈ <10% hallucination
         FaithfulnessMetric(threshold=0.8),    # ≥ 80% claims grounded
     ])
 ```
+
+> ⚠️ DeepEval 4.2.0 flipped `HallucinationMetric` to "higher is better" (threshold = minimum).
+> On ≥4.2 the old `threshold=0.1` would pass nearly everything; on <4.2 the new `0.9` fails nearly
+> everything — check `pip show deepeval` before copying thresholds. See `deepeval-llm-cicd`.
 
 Recommended thresholds:
 - **General chatbot**: Hallucination < 10%, Faithfulness > 0.80
