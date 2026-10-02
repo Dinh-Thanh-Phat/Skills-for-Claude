@@ -1,13 +1,6 @@
 ---
 name: llm-agent-trace-eval
-description: >-
-  Evaluate AI agents at the component level using DeepEval's trace/span architecture — score each
-  tool call, retrieval step, LLM completion, and planning decision independently rather than only
-  grading the final answer. Use when testing LLM agents with tool use, RAG pipelines, or
-  multi-step reasoning where the final answer alone doesn't reveal what broke. Triggers on:
-  "evaluate agent tool calls", "agent trace evaluation", "DeepEval agent", "span evaluation",
-  "tool correctness metric", "component-level LLM eval", "agent step scoring", "trace-based
-  evaluation".
+description: Evaluate AI agents at the component level using DeepEval's trace/span architecture — score each tool call, retrieval step, LLM completion, and planning decision independently rather than only grading the final answer. Use when testing LLM agents with tool use, RAG pipelines, or multi-step reasoning where the final answer alone doesn't reveal what broke. Triggers on: "evaluate agent tool calls", "agent trace evaluation", "DeepEval agent", "span evaluation", "tool correctness metric", "component-level LLM eval", "agent step scoring", "trace-based evaluation".
 ---
 
 # LLM Agent Trace Evaluation — DeepEval Component-Level Evals
@@ -32,28 +25,34 @@ deepeval login   # or set CONFIDENT_AI_API_KEY env var
 
 ## Instrument Your Agent with @observe
 
+> **API note (verified against deepeval 4.2.7 wheel, 2026-10-02):** `deepeval.tracing` exports
+> `observe`, `update_current_span`, `update_current_trace`, `update_{llm,tool,retriever,agent}_span`,
+> `evaluate_trace`, `evaluate_span`, `evaluate_thread`. There is **no** `RetrieverAttributes` /
+> `LlmAttributes` / `ToolAttributes`, **no** `deepeval.collect_traces()`, and **no** `span.add_metric()` —
+> older blog snippets using those will `ImportError`/`AttributeError`. Metrics attach to a span via
+> `@observe(metrics=[...])`, and the span's test case is set with `update_current_span(...)`.
+
 ```python
-from deepeval.tracing import observe, RetrieverAttributes, LlmAttributes, ToolAttributes
-import deepeval
+from deepeval.tracing import observe, update_current_span
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import ContextualRelevancyMetric, ArgumentCorrectnessMetric
 
-@observe(type="retriever", attributes=RetrieverAttributes(
-    embedding_model="text-embedding-3-small",
-    top_k=5
-))
+@observe(type="retriever", metrics=[ContextualRelevancyMetric(threshold=0.7)])
 def retrieve_docs(query: str) -> list[str]:
-    return vector_store.search(query, k=5)
+    docs = vector_store.search(query, k=5)
+    update_current_span(input=query, retrieval_context=docs)   # span-level test case
+    return docs
 
-@observe(type="tool", attributes=ToolAttributes(name="search_web"))
+@observe(type="tool", metrics=[ArgumentCorrectnessMetric(threshold=0.8)])
 def search_web(query: str) -> str:
-    return web_api.search(query)
+    result = web_api.search(query)
+    update_current_span(input=query, output=result)
+    return result
 
-@observe(type="llm", attributes=LlmAttributes(
-    model="claude-sonnet-4-6",
-    cost_per_input_token=0.003 / 1000
-))
+@observe(type="llm")
 def call_llm(prompt: str) -> str:
     return anthropic_client.messages.create(
-        model="claude-sonnet-4-6",
+        model="claude-sonnet-5-5",
         max_tokens=1024,
         messages=[{"role": "user", "content": prompt}]
     ).content[0].text
@@ -67,52 +66,45 @@ def run_agent(user_query: str) -> str:
 
 ## Trace-Level Evaluation (End-to-End)
 
+Iterate a dataset with `evals_iterator()`; metrics passed there score the whole trace, while the
+`metrics=` on each `@observe` span (above) score the components in the same run.
+
 ```python
-from deepeval import evaluate
-from deepeval.test_case import LLMTestCase
-from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric, TaskCompletionMetric
+from deepeval.dataset import EvaluationDataset, Golden
+from deepeval.metrics import TaskCompletionMetric, StepEfficiencyMetric
 
-with deepeval.collect_traces() as traces:
-    final_answer = run_agent("What is our refund policy?")
+dataset = EvaluationDataset(goldens=[Golden(input="What is our refund policy?")])
 
-test_case = LLMTestCase(
-    input="What is our refund policy?",
-    actual_output=final_answer,
-    retrieval_context=["Refund window is 30 days from purchase date..."]
-)
-
-evaluate(
-    test_cases=[test_case],
-    metrics=[
-        TaskCompletionMetric(threshold=0.7),
-        AnswerRelevancyMetric(threshold=0.8),
-        FaithfulnessMetric(threshold=0.8),
-    ]
-)
+for golden in dataset.evals_iterator(
+    metrics=[TaskCompletionMetric(threshold=0.7), StepEfficiencyMetric(threshold=0.7)]
+):
+    run_agent(golden.input)   # traced call — trace + span metrics evaluated automatically
 ```
 
 ## Span-Level Evaluation (Per-Component)
 
+Span metrics are declared on the decorator (see instrumentation above). For tool *selection*,
+give the tool span the called vs. expected tools so `ToolCorrectnessMetric` (requires `input`,
+`tools_called`, `expected_tools`) can score it:
+
 ```python
-from deepeval.metrics import (
-    ToolCorrectnessMetric,
-    ArgumentCorrectnessMetric,
-    ContextualRelevancyMetric,
-)
+from deepeval.test_case import ToolCall
+from deepeval.metrics import ToolCorrectnessMetric
 
-with deepeval.collect_traces() as traces:
-    run_agent("What is our refund policy?")
-
-for trace in traces:
-    for span in trace.spans:
-        if span.type == "tool":
-            span.add_metric(ToolCorrectnessMetric(threshold=0.8))
-            span.add_metric(ArgumentCorrectnessMetric(threshold=0.8))
-        elif span.type == "retriever":
-            span.add_metric(ContextualRelevancyMetric(threshold=0.7))
-
-evaluate(traces=traces)
+@observe(type="agent", metrics=[ToolCorrectnessMetric(threshold=0.8)])
+def run_agent(user_query: str) -> str:
+    ...
+    update_current_span(
+        input=user_query,
+        output=answer,
+        tools_called=[ToolCall(name="search_web")],
+        expected_tools=[ToolCall(name="search_web")],   # from your golden
+    )
+    return answer
 ```
+
+Offline (already-captured) traces/spans can be scored with `deepeval.tracing.evaluate_trace` /
+`evaluate_span` instead of re-running the agent.
 
 ## Key Agent Metrics
 
