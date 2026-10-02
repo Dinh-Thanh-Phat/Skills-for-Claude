@@ -121,7 +121,7 @@ mcp__plugin_playwright_playwright__browser_navigate → feature URL
 
 # 2. Apply zoom + scroll (MANDATORY after every navigate)
 mcp__plugin_playwright_playwright__browser_evaluate
-  → () => { document.documentElement.style.zoom = '0.85'; window.scrollTo(0, 0); }
+  → () => { document.body.style.zoom = '0.85'; window.scrollTo(0, 0); }   // body, same as A0
 
 # 3. Wait for render
 mcp__plugin_playwright_playwright__browser_wait_for → time: 1.5

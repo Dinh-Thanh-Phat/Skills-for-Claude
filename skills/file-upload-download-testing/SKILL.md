@@ -154,7 +154,8 @@ section below for that case.
 
 ### 8. Pure drag-and-drop dropzone — listens to `drop` only, no hidden input
 
-When `locator.drop()` and `input[type=file]` both fail, build a `DataTransfer` and dispatch:
+Fallback only for Playwright < 1.60 (no `locator.drop()`), or when `drop()` and
+`input[type=file]` both fail — build a `DataTransfer` and dispatch:
 ```typescript
 const dataTransfer = await page.evaluateHandle(async () => {
   const dt = new DataTransfer();
