@@ -187,17 +187,17 @@ updateSnapshots: process.env.CI ? 'none' : 'missing',
 
 ```typescript
 // Tight threshold — exact match required (icons, logos)
-await expect(page.locator('.logo')).toMatchSnapshot('logo.png', {
+await expect(page.locator('.logo')).toHaveScreenshot('logo.png', {
   maxDiffPixels: 0,
 });
 
 // Loose threshold — allow minor anti-aliasing differences
-await expect(page).toMatchSnapshot('full-page.png', {
+await expect(page).toHaveScreenshot('full-page.png', {
   maxDiffPixelRatio: 0.05, // 5% difference OK
 });
 
 // Absolute pixel count (for small elements)
-await expect(button).toMatchSnapshot('button.png', {
+await expect(button).toHaveScreenshot('button.png', {
   maxDiffPixels: 100, // allow up to 100 pixels different
 });
 ```
