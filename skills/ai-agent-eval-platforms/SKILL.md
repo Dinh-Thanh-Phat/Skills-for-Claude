@@ -1,13 +1,6 @@
 ---
 name: ai-agent-eval-platforms
-description: >-
-  Choosing and using commercial/OSS evaluation platforms for AI agents (multi-turn, tool-calling)
-  in 2026 — Braintrust for pre-deployment experiments with sandboxed scorers, Latitude for
-  agent-native causal tracing and multi-turn simulation, Langfuse for self-hosted open-source
-  eval logging. Use when selecting an LLM eval platform, setting up continuous eval for an
-  agentic system, or comparing eval platforms for a team. Triggers on: "Braintrust", "Latitude
-  eval", "eval platform", "LLM eval SaaS", "agent evaluation platform", "multi-turn simulation
-  testing", "GEPA", "production eval", "LLM experiment tracking".
+description: Choosing and using commercial/OSS evaluation platforms for AI agents (multi-turn, tool-calling) in 2026 — Braintrust for pre-deployment experiments with sandboxed scorers, Latitude for agent-native causal tracing and multi-turn simulation, Langfuse for self-hosted open-source eval logging. Use when selecting an LLM eval platform, setting up continuous eval for an agentic system, or comparing eval platforms for a team. Triggers on: "Braintrust", "Latitude eval", "eval platform", "LLM eval SaaS", "agent evaluation platform", "multi-turn simulation testing", "GEPA", "production eval", "LLM experiment tracking".
 ---
 
 # AI Agent Evaluation Platforms (2026)
@@ -40,10 +33,9 @@ Three clear tiers in early 2026:
 # pip install braintrust openai
 import braintrust
 
-project = braintrust.init(project="orders-chatbot")
-
-# Run an experiment — compares current run against previous automatically
-experiment = project.init_experiment("gpt-4o-mini-vs-gpt-4o")
+# braintrust.init() RETURNS the Experiment (there is no project object with .init_experiment();
+# braintrust.init_experiment(...) is a module-level alias). Python SDK 0.44.x verified.
+experiment = braintrust.init(project="orders-chatbot", experiment="gpt-4o-mini-vs-gpt-4o")
 
 for row in eval_dataset:
     output = call_llm(row["input"])
