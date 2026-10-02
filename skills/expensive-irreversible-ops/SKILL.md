@@ -47,7 +47,8 @@ ALWAYS: confirm delete works → then create → assert → delete in afterAll/g
 
 ### 2. One validated run — never a retry loop
 For credit/quota/real-publish/irreversible ops:
-- Set `retries: 0` for that test. A failed expensive op must NOT auto-retry.
+- Set `retries: 0` for that test (e.g. `test.describe.configure({ retries: 0 })` in its describe,
+  overriding the CI default of 1). A failed expensive op must NOT auto-retry.
 - Run it **once**. If it fails, **diagnose from artifacts** (screenshot/trace/log) —
   do **not** "just run it again". Each re-run spends real money and may leave debris.
 - If the failure is environmental (slow AI, quota exhausted), STOP and report —
