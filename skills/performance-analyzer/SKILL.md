@@ -294,5 +294,7 @@ The reporter's "Trend vs Previous Run" section consumes `metrics.vs_prev` direct
 - Always compute p95 and p99, not just mean — mean hides tail latency problems
 - Charts use consistent color coding: green=#2ecc71 (pass ≥70), red=#e74c3c (fail <70)
 - Failed questions must be sorted by score ascending (worst first) for the reporter
-- If no successful API calls, skip response time metrics but still compute accuracy (all zeros)
+- If no successful API calls, skip response time metrics but still compute accuracy (all zeros) —
+  and the threshold checks must report FAILED (`response_time_passed: false`, `no_timing_data: true`),
+  never pass on missing data. Guard every division by `len(...)` against empty inputs.
 - Close all matplotlib figures after saving (`plt.close(fig)`) to avoid memory leaks
