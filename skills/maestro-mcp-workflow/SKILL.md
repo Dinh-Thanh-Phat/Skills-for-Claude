@@ -99,7 +99,7 @@ Claude drives the live device step-by-step through direct tool calls (`tap`, `in
 | **UI interactions** | Tap, swipe, scroll, input text, press keys, open deep link |
 | **Assertions** | Check visibility, wait for element, extract text |
 | **System** | Toggle orientation, airplane mode, run in-app JavaScript |
-| **AI assertions** | `assertWithAI` / `extractTextWithAI` for canvas/custom UI |
+| **AI assertions** | `maestro_assert_with_ai` / `maestro_extract_text_ai` / `maestro_assert_no_defects` (need Maestro Cloud login — see `maestro-ai-assertions`) |
 
 ## Debugging Broken Tests
 
