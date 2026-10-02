@@ -80,19 +80,20 @@ Run full suite exactly once to catch regressions. Done.
 
 ---
 
-## system bug → test.skip Pattern
+## system bug → test.fail Pattern
 
-After confirming a system bug, park it immediately:
+After confirming a system bug, park it immediately (canonical policy: `skip-vs-fail`):
 
 ```typescript
-// ✅ Correct: skip with reason so future reader knows why
-test.skip(true, 'system bug: order creation returns 500 on staging')
-
-// When dev fixes → remove skip → verify
-test('should create order', async ({ page }) => { ... })
+test('should create order', async ({ page }) => {
+  // ✅ Correct: expected-to-fail with ticket ID; assertions stay on the EXPECTED behavior
+  test.fail(true, 'BUG-123: order creation returns 500 on staging');
+  // ...
+});
+// When dev fixes → run reports "expected to fail, but passed" → remove test.fail → verify
 ```
 
-**Rule:** A system bug test left failing (not skipped) keeps polluting `--last-failed` and makes it impossible to know when test bugs are truly resolved.
+**Rule:** A system bug test left failing (not locked) keeps polluting `--last-failed` and makes it impossible to know when test bugs are truly resolved. Do NOT use `test.skip` for it: a skipped test never runs, so nobody notices when the bug is fixed (or gets worse).
 
 ---
 
