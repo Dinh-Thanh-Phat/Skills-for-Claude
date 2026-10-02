@@ -325,4 +325,8 @@ project/
 
 ## Sources
 - https://testdino.com/blog/playwright-bdd
-- https://medium.com/@t
+- https://medium.com/@tito.irfanwibisono/behavior-driven-development-bdd-with-gherkin-cucumber-and-playwright-a-practical-guide-9c38396c4c11
+- https://www.browserstack.com/guide/playwright-cucumber
+- https://medium.com/@sreekanth.parikipandla/playwright-bdd-with-typescript-a-practical-guide-to-fast-readable-e2e-tests-6bd1dca6b3d1
+- https://github.com/vitalets/playwright-bdd
+- Official docs (re-verified 2026-10-02 for v9 API): https://github.com/vitalets/playwright-bdd/blob/main/docs/getting-started/write-first-test.md, docs/configuration/options.md (`features`/`steps`; `paths`/`require`/`import` deprecated), docs/writing-steps/hooks/scenario-hooks.md, CHANGELOG.md (9.0.0 Node ≥20, 9.2.1 Playwright 1.63)
