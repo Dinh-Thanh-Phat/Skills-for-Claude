@@ -14,7 +14,9 @@ Maestro 2.0 extends its declarative YAML syntax from mobile to desktop web brows
 The same commands (`tapOn`, `inputText`, `assertVisible`) work identically on Android, iOS,
 and Chromium. Teams with existing Maestro mobile flows can add web coverage with zero new syntax.
 
-> **Status**: Beta — Chromium only; locale fixed to `en-US`; viewport not freely configurable.
+> **Status**: Beta — Chromium only; locale fixed to `en-US`. Docs say viewport is "preset", but the
+> CLI (2.11.0) has `maestro test --screen-size <WxH> --headless` to set the headless browser window
+> size. Need CLI ≥ 2.9.0 for Chrome 150+ ("Web: fix broken tests on Chrome 150+").
 
 ---
 
