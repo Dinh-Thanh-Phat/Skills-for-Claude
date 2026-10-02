@@ -73,16 +73,17 @@ test.describe('User Management', () => {
     }
   });
 
-  test('ADM-U001: Create user → appears in list', async () => {
+  test('ADM-U001: Create user → appears in list', async ({ page }) => {
+    const email = `at-adm-u001-${Date.now()}@test.example.com`; // unique — parallel-safe
     const result = await admin.addUser({
       name: 'Test User',
-      email: 'test@example.com',
+      email,
       password: 'Pass123@',
     });
     createdUserIds.push(result.userId);
 
     await admin.gotoUsers();
-    await expect(page.getByText('test@example.com')).toBeVisible();
+    await expect(page.getByText(email)).toBeVisible();
   });
 });
 ```
@@ -110,7 +111,8 @@ test.describe('Port Management', () => {
     const response = await request.post('/api/ports', {
       data: { name: 'CMIT', location: 'Ho Chi Minh' },
     });
-    seededPortId = response.json().id;
+    expect(response.ok()).toBe(true);
+    seededPortId = (await response.json()).id; // json() is async — must await
   });
 
   test.afterAll(async ({ request }) => {
@@ -121,7 +123,7 @@ test.describe('Port Management', () => {
   test('CSP-001: Export port data → contains seeded port', async ({ page }) => {
     // Use seededPortId in test
     await page.goto(`/admin/ports/${seededPortId}`);
-    expect(page.getByText('CMIT')).toBeVisible();
+    await expect(page.getByText('CMIT')).toBeVisible(); // without await this ALWAYS passes
   });
 
   test('CSP-002: Filter ports → shows seeded port', async ({ page }) => {
