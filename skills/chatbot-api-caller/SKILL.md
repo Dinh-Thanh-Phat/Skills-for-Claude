@@ -1,6 +1,6 @@
 ---
 name: chatbot-api-caller
-description: Send test questions to a chatbot API and record responses with timing metrics. Use when you need to call a chatbot endpoint with a batch of questions and measure performance. Supports REST, WebSocket, and GraphQL APIs with retry logic and rate limiting. Triggers on: "send questions to chatbot API", "call chatbot with test questions", "measure chatbot response time", "batch test chatbot API". Used as Step 3 in chatbot testing pipeline. Outputs JSON with responses, timing, and success/failure status for each question.
+description: Send test questions to a chatbot API and record responses with timing metrics. Use when you need to call a chatbot endpoint with a batch of questions and measure performance. Implements REST (+ optional SSE streaming); WebSocket/GraphQL are config-shape only, with retry logic and rate limiting. Triggers on: "send questions to chatbot API", "call chatbot with test questions", "measure chatbot response time", "batch test chatbot API". Used as Step 3 in chatbot testing pipeline. Outputs JSON with responses, timing, and success/failure status for each question.
 ---
 
 # Chatbot API Caller
