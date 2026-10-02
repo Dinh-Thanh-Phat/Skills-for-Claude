@@ -130,16 +130,16 @@ Details:
 
 **Solution:** Use exact assignee name from list above.
 
-### Invalid Status Transition
+### Stage Not Found
 ```
 ❌ ERROR
 
-Cannot move from 'Done' to 'Todo'.
+Stage 'Develop' not found in project 'Soundwise'.
 
-Valid transitions: []
+Available: BackLog, TODO, INPROGRESS, DEVELOPED, READY FOR TEST, DONE
 ```
 
-**Solution:** Done is terminal. Create new task instead.
+**Solution:** Use the real stage name. (Odoo has no "terminal stage" rule — a DONE task can be moved back if needed.)
 
 ### Task Not Found
 
