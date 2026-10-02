@@ -1,11 +1,6 @@
----
+﻿---
 name: async-loading-state-testing
-description: >-
-  Patterns for testing async UI states in Playwright — spinners, skeleton screens, lazy-loaded
-  content, progressive loading. Use when writing tests for features with loading indicators,
-  async data fetching, skeleton UI, or any operation where UI transitions from loading to loaded
-  state. Triggers on: "spinner", "skeleton", "loading state", "lazy load", "async content",
-  "networkidle", "waitForResponse", "loading indicator".
+description: Patterns for testing async UI states in Playwright — spinners, skeleton screens, lazy-loaded content, progressive loading. Use when writing tests for features with loading indicators, async data fetching, skeleton UI, or any operation where UI transitions from loading to loaded state. Triggers on: "spinner", "skeleton", "loading state", "lazy load", "async content", "networkidle", "waitForResponse", "loading indicator".
 ---
 
 # Async Loading State Testing
@@ -47,6 +42,10 @@ await expect(page.getByRole('row')).toHaveCount(10);
 ### 4. Skip animation delays with page.clock
 ```typescript
 // ✅ Skip skeleton screen delay entirely — more reliable than real waits
+// install() MUST come before page.goto() and before any other clock call,
+// otherwise the page's timers are real and fastForward cannot control them.
+await page.clock.install();
+await page.goto('/page');
 await page.clock.fastForward(1000);
 await expect(page.locator('.skeleton')).toBeHidden();
 await expect(page.locator('.content')).toBeVisible();
