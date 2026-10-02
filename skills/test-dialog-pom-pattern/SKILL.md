@@ -95,12 +95,10 @@ test('DEL-001: Delete user', async ({ page }) => {
 ### For Single-Step Dialogs (click → dialog appears)
 
 ```ts
-async deleteItem(selector: string) {
-  const [dialog] = await Promise.all([
-    this.page.waitForEvent('dialog'),
-    this.page.locator(selector).click(),
-  ]);
-  await dialog.accept();  // or .dismiss()
+async deleteItem(button: Locator) {
+  // Handler registered BEFORE the click — the dialog blocks the click until handled
+  this.page.once('dialog', (dialog) => dialog.accept());  // or .dismiss()
+  await button.click();
 }
 ```
 

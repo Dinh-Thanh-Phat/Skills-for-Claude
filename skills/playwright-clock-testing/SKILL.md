@@ -182,6 +182,7 @@ Official recommendation: use `setFixedTime` when you only need a fixed date (it 
 ## Sources
 
 - [Clock API — Playwright Docs](https://playwright.dev/docs/clock)
+- API reference: https://github.com/microsoft/playwright/blob/main/docs/src/api/class-clock.md (fastForward/pauseAt "fires due timers at most once"; setSystemTime "does not trigger any timers") — corrected 2026-10-02
 - [clock.md — microsoft/playwright GitHub](https://github.com/microsoft/playwright/blob/main/docs/src/clock.md)
 - [Playwright Clock & Time Control: Complete 2026 Testing Guide — Qaskills](https://qaskills.sh/blog/playwright-clock-time-control-testing-guide)
 - [Clock | Playwright Python Docs](https://playwright.dev/python/docs/clock)
