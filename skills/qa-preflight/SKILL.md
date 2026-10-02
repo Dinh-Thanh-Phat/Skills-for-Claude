@@ -119,7 +119,7 @@ tags: [qa, pre-flight, environment, playwright, maestro, mobile]
 □ Perf gate (⚠️ P0, xem bảng "MANDATORY gate" đầu skill `maestro-mobile` — bắt buộc nếu > ~5 flow hoặc > 1 account; đây chỉ là checklist rút gọn, bản đầy đủ nằm trong skill đó)
   - Đã check `flows/**/*.yaml` xem có flow nào sẵn cho scenario này chưa? (đừng viết lại từ đầu)
   - Module này đã có `ELEMENT_MAP_<module>.md` chưa? Chưa → harvest nav+element 1 lượt. Có → đọc & reuse, đừng dump lại
-  - Flow đã group theo auth state (1 login/session, KHÔNG launchApp+clearState mỗi flow) chưa? → maestro-auth-state-strategy
+  - Flow đã group theo auth state (1 login/session, KHÔNG launchApp+clearState mỗi flow) chưa? → `maestro-speed-optimization` (auth Group A/B/C qua `executionOrder`)
   - Nếu re-run vì có case fail: chỉ re-run ĐÚNG case đó, không re-run cả section/suite
 ```
 

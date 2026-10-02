@@ -53,6 +53,42 @@ async function is404Page(page: any): Promise<boolean> {
 
 **Why page content:** Next.js, Gatsby, and other SSR frameworks serve 200 with a "Page Not Found" page. The HTTP status is 200 but the user sees a 404 page. Only content inspection catches this.
 
+### `checkUrl` (external links only) + `checkLink` dispatcher
+
+External sites are not your SPA, so an HTTP status is the right signal there — and navigating
+dozens of third-party pages in the browser is slow. HEAD first; some servers reject HEAD with
+405/501, so retry as GET. Network errors are RETURNED as a string (reported), never swallowed.
+
+```typescript
+import type { APIRequestContext, Page } from '@playwright/test';
+
+type LinkStatus = number | string; // number = HTTP status, string = error/404-content reason
+
+// External links only — never use for same-site URLs
+async function checkUrl(request: APIRequestContext, url: string): Promise<LinkStatus> {
+  try {
+    let res = await request.head(url, { timeout: 15_000, maxRedirects: 5 });
+    if (res.status() === 405 || res.status() === 501) {
+      res = await request.get(url, { timeout: 15_000, maxRedirects: 5 });
+    }
+    return res.status();
+  } catch (e) {
+    return `NETWORK ERROR: ${(e as Error).message.split('\n')[0]}`; // reported as broken, not hidden
+  }
+}
+
+// Internal → real browser navigation + content check; external → checkUrl
+async function checkLink(page: Page, request: APIRequestContext, url: string): Promise<LinkStatus> {
+  if (!url.startsWith(BASE)) return checkUrl(request, url);
+  const res = await page.goto(url, { waitUntil: 'domcontentloaded' });
+  if (!res) return 'NO RESPONSE';
+  if (res.status() >= 400) return res.status();
+  return (await is404Page(page)) ? '404 CONTENT (HTTP 200)' : res.status();
+}
+```
+
+Callers treat anything that is not a number `< 400` as broken.
+
 ---
 
 ## Always Track Source Pages
@@ -146,6 +182,7 @@ async function crawlSite(page: any) {
   const queue = [BASE];
   const visited = new Set<string>();
   const sourceMap = new Map<string, string[]>();
+  const crawlErrors: string[] = []; // pages that could not be crawled — reported, not hidden
 
   while (queue.length > 0 && visited.size < MAX_PAGES) {
     const url = queue.shift()!;
