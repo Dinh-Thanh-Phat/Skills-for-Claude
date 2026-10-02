@@ -1,9 +1,6 @@
 ---
 name: soft-assertion-ban
-description: >-
-  Prevent OR-assertions and length>N checks that always pass in Playwright tests. Use when
-  writing or reviewing any test code. Triggers on: "soft assertion", "expect(A || B)", "length >
-  0", "length > N", ".catch(() => false)", "assertion OR", any test code generation or review.
+description: Prevent OR-assertions and length>N checks that always pass in Playwright tests. Use when writing or reviewing any test code. Triggers on: "soft assertion", "expect(A || B)", "length > 0", "length > N", ".catch(() => false)", "assertion OR", any test code generation or review.
 ---
 
 # Soft Assertion Ban Skill
@@ -136,13 +133,18 @@ if (await fileInput.isVisible()) {
   await expect(importBtn).toBeVisible(); // just checks button exists, not the feature
 }
 
-// ✅ After — be explicit
-if (!await fileInput.isVisible({ timeout: 5000 }).catch(() => false)) {
-  test.skip(); // feature not implemented — skip cleanly
-  return;
-}
-await fileInput.setInputFiles(path);
-await expect(page.locator('.email-textarea')).toContainText('@');
+// ✅ After — decide BEFORE the test runs, never by probing the UI inside the body
+// (an in-body `if (!visible) test.skip()` turns a broken upload into a silent skip;
+//  also `isVisible({ timeout })` ignores the timeout and returns immediately)
+test('EL-010: import emails from CSV', async ({ page }) => {
+  // Not implemented yet → skip at TOP with a reason:
+  //   test.skip(true, 'CSV import not implemented yet');
+  // Implemented but known broken → lock it (canonical policy: `skip-vs-fail`):
+  //   test.fail(true, 'BUG-xxx: CSV import drops rows');
+  await expect(fileInput).toBeVisible();          // FAIL loudly if the feature vanished
+  await fileInput.setInputFiles(path);
+  await expect(page.locator('.email-textarea')).toContainText('@');
+});
 ```
 
 ---
