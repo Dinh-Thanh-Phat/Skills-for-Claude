@@ -80,11 +80,24 @@ Appends a reporter to the ones already configured in `playwright.config.ts` inst
 
 ## 8. Other Additions
 
-- `BrowserContext.newContext({ httpCredentials })` now accepts an array of credentials (multiple realms/domains in one context).
+- `browser.newContext({ httpCredentials })` (`Browser.newContext`) now accepts an array of credentials — the first entry matching the request origin is used; entries without an origin match any request.
 - `BrowserContext.storageState()` gains an `opfs` option to persist Origin Private File System data alongside cookies/localStorage/IndexedDB.
 - New events `page.on('dialogClosed')` / `browserContext.on('dialogClosed')` — fires after a dialog (alert/confirm/prompt) is dismissed, complementing the existing `dialog` (open) event.
-- `TestOptions.reducedMotion`, `TestOptions.forcedColors`, `TestOptions.contrast` — standalone per-test options for the corresponding `prefers-reduced-motion` / `forced-colors` / `prefers-contrast` emulation (previously only settable via `page.emulateMedia()`).
-- Built-in `perfetto` reporter — emits a Perfetto-format trace for timeline visualization in `ui.perfetto.dev` or Chrome's trace viewer.
+- `TestOptions.reducedMotion`, `TestOptions.forcedColors`, `TestOptions.contrast` — new standalone test options for `prefers-reduced-motion` / `forced-colors` / `prefers-contrast` emulation (usable in `use: {}` / `test.use()`).
+- Built-in `perfetto` reporter — emits a Trace Event Format file for `ui.perfetto.dev` or `chrome://tracing`, a lane per worker.
+- `Page.ariaSnapshotJSON()` alongside `Locator.ariaSnapshotJSON()` — options `mode`, `depth`, `boxes`.
+- Typed API responses: `const res = await request.get<User>('/api/users/42'); const user = await res.json(); // User`.
+- `omitTags` option for `list`, `line`, `dot`, `github`, `junit` reporters — drop auto-appended tags from titles.
+- HTML report renders a duration waterfall next to test steps.
+- CLI: `npx playwright install --no-remove` keeps other Playwright installations' browsers; `npx playwright codegen --http-credentials` records behind HTTP auth.
+- Cross-frame `frameLocator()` (§2) **throws if the rest of the locator matches elements in several frames** — the remainder still resolves inside a single frame.
+
+## 9. Announcements (act on these)
+
+- ⚠️ **Component testing:** `@playwright/experimental-ct-react`, `-ct-react17` and `-ct-vue` **will no longer be updated** (npm latest stays at 1.62.1). Migrate to the stories/gallery model from 1.62 — see `playwright-component-testing`. Story ids passed to `mount()` can now be typed via the generated `Stories` registry.
+- ⚠️ Ubuntu 20.04 no longer supported.
+- 🐧 Linux arm64 now downloads the Chrome for Testing build of Chromium (same as other platforms).
+- Browsers: Chromium 153.0.8010.12, Firefox 155.0, WebKit 26.6 (tested against Chrome 153 / Edge 153 stable).
 
 ## Sources
 - https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
