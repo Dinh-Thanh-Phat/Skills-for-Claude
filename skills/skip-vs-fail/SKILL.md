@@ -104,7 +104,7 @@ test('reply-to field is saved', async ({ page }) => {
 | Feature not implemented | `test.skip(true, 'reason')` at top |
 | Environment missing config | `test.skip(!env.FLAG, 'reason')` at top |
 | Feature exists but brittle setup | Fix `beforeEach` to reliably set up data |
-| Known bug (documenting) | `test.fail()` |
+| Known bug (filed) | `test.fail(true, 'BUG-xxx: …')` — remove when fixed |
 | Everything working | Plain `expect()` — no skip |
 | ❌ Never | `if (!visible) { test.skip(); return; }` inside body |
 

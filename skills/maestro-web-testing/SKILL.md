@@ -155,7 +155,8 @@ YAML selectors). The `--screen-size` value format (`WxH`) is UNVERIFIED — chec
 
 ## Sources
 
-- https://docs.maestro.dev/get-started/supported-platform/web-browser
+- https://docs.maestro.dev/get-started/supported-platform/web-browser (re-checked 2026-10-02: state retained between flows, Chromium only, en-US)
+- Maestro CHANGELOG — 2.4.0 iframes + web clearState, 2.6.0 Studio removed from CLI, 2.7.0 Flutter `flt-semantics-identifier`, 2.9.0 Chrome 150+ fix; `--screen-size`/`--headless` in TestCommand.kt
 - https://maestro.dev/insights/automate-web-ui-tests-maestro
 - https://maestro.dev/blog/introducing-maestro-2-0-0
 - https://dev.to/leading-edje/maestro-a-single-framework-for-mobile-and-web-e2e-testing-b98
