@@ -118,7 +118,7 @@ hierarchy (bug Maestro đã biết) → fallback `text:`/relative/screenshot.
 
 ## Khi nào HỎI thay vì dò
 Capability không lộ trong 1–2 probe ("Delete ở đâu?", "flow đặt lịch thế nào?") → **hỏi người biết app**.
-Dò mù N cách là nút thắt lớn nhất. Xem `[[ask-when-stuck]]`, `[[feedback_maestro-element-discovery-efficiency]]`.
+Dò mù N cách là nút thắt lớn nhất. Xem skill `[[ask-when-stuck]]`, memory `feedback_maestro-element-discovery-efficiency` (file memory, không phải skill).
 
 ---
 
