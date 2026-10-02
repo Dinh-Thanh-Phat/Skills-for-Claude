@@ -433,19 +433,19 @@ Task: Payment webhook timeout
 Type: bug
 Description: Webhook requests timeout after 5s, payments not recorded
 Assignee: Phuc Do
-Tags: [bug, payment, critical]
-Priority: 0
+Tags: [bug]
+Priority: 3   # Urgent
 
-# Step 2: Move to In Progress (when work starts)
+# Step 2: Move to INPROGRESS (when work starts)
 Project: Soundwise
 Task: Payment webhook timeout
-New Status: In Progress
+New Status: INPROGRESS
 Notes: Investigation started
 
-# Step 3: Move to Develop (when fixing)
+# Step 3: Move to DEVELOPED (fix implemented)
 Project: Soundwise
 Task: Payment webhook timeout
-New Status: Develop
+New Status: DEVELOPED
 Notes: Implemented retry logic with exponential backoff
 
 # Step 4: Close (when complete)
