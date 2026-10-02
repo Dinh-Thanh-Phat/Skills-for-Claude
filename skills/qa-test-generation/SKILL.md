@@ -123,17 +123,16 @@ Khi user paste `### SELECTOR MAP` block, format như sau:
 
 ## Core Output Rules
 
-**These rules override everything else:**
-
-1. **Output = `.md` file only** — When user provides project info and asks to write/generate test cases, save results to a `.md` file (e.g., `test-cases-[feature]-[YYYYMMDD].md`). Do NOT generate Excel files.
-2. **No Excel unless explicitly requested** — Only invoke `qa-excel-export` when the user explicitly says "xuất excel", "export excel", "tạo file excel", or "create excel report". A request to "generate test cases" is NOT a request for Excel.
-3. **Show summary inline first** — After saving the `.md` file, show a brief inline summary (total cases, breakdown by type) in chat using `qa-quick-report` format.
+1. **Bộ test cases từ spec / PRD / scope doc (nhiều module)** → deliverable mặc định theo
+   `qa-excel-export/references/deliverable-format.md` (xem mục "FORMAT DELIVERABLE" ở đầu skill):
+   markdown là nguồn sự thật + xlsx **MỖI MODULE 1 SHEET** sinh bằng script `qa-excel-export`. Không hỏi lại format.
+2. **Case lẻ / 1 feature nhỏ, không có spec** → 1 file `.md` là đủ; Excel chỉ khi user yêu cầu ("xuất excel", "export excel").
+3. **Show summary inline** — sau khi lưu, tóm tắt trong chat (tổng case, breakdown theo 8 category).
 
 ### Output File Path
 
-Save to: `data/outputs/test-cases-[feature-name]-[YYYYMMDD].md`
-
-Example: `data/outputs/test-cases-login-20260418.md`
+- Deliverable từ spec: `<output-dir>/` theo cấu trúc trong `deliverable-format.md`
+- Case lẻ: `data/outputs/test-cases-[feature-name]-[YYYYMMDD].md` (vd `data/outputs/test-cases-login-20260418.md`)
 
 ---
 
