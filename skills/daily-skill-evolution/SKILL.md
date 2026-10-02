@@ -1,12 +1,6 @@
 ---
 name: daily-skill-evolution
-description: >-
-  Daily 7AM (GMT+7) autonomous skill-evolution runbook for a REMOTE Claude Code routine. Use when
-  the scheduled remote agent fires — it web-researches the latest best practices across the
-  user's QA/automation domains, creates or updates skill files inside this repo
-  (Skills-for-Claude), logs the changes, commits & pushes to the skill-evolution branch, then
-  creates a Gmail draft report to thanhphat12tna234@gmail.com. Triggers on: the scheduled routine
-  prompt, "run daily skill evolution", "evolve skills from web research".
+description: Daily 7AM (GMT+7) autonomous skill-evolution runbook for a REMOTE Claude Code routine. Use when the scheduled remote agent fires — it web-researches the latest best practices across the user's QA/automation domains, creates or updates skill files inside this repo (Skills-for-Claude), logs the changes, commits & pushes to the skill-evolution branch, then creates a Gmail draft report to thanhphat12tna234@gmail.com. Triggers on: the scheduled routine prompt, "run daily skill evolution", "evolve skills from web research".
 ---
 
 # Daily Skill Evolution (Remote Runbook)
@@ -76,7 +70,7 @@ Rotate emphasis day to day so domains get fresh coverage over the week — use t
    ```
    ⚠ Do NOT push to `main` and do NOT open a PR (the user merges manually). If the push is rejected, pull/rebase onto `origin/skill-evolution` and retry.
 
-7. **Report — create a Gmail DRAFT.** The attached Gmail connector can only create drafts (no send tool), and that is intended: the user reads the report in Gmail → Drafts. Use `mcp__Gmail__create_draft` (fallback name `mcp__claude_ai_Gmail__create_draft`) with:
+7. **Report — create a Gmail DRAFT.** Draft by choice so the user reviews first (the connector does have `send_message`, but it is deliberately not used): the user reads the report in Gmail → Drafts. Use `mcp__Gmail__create_draft` (fallback name `mcp__claude_ai_Gmail__create_draft`) with:
    - `to`: `["thanhphat12tna234@gmail.com"]`
    - `subject`: `[Skill Evolution] <YYYY-MM-DD> — N created, M updated`
    - `htmlBody`: domains researched; each CREATED skill (name + 1-line purpose + source link); each UPDATED skill (name + what changed + source link); if 0 changes say so plainly; footer with commit hash + branch `skill-evolution`.
@@ -99,4 +93,4 @@ this repo. This runbook would then read that inbox in step 1 and fold the lesson
 local machine but only runs while the user is already working — no dedicated 7AM machine-on.
 
 ## Sources
-- Constraints verified against Claude Code remote-routine capabilities (cloud sandbox, git-repo checkout, claude.ai MCP connectors — Gmail connector is draft-only).
+- Constraints verified against Claude Code remote-routine capabilities (cloud sandbox, git-repo checkout, claude.ai MCP connectors — Gmail connector supports both drafts and `send_message` as of 2026-10; drafts are used by choice).
