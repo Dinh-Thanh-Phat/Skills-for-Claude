@@ -115,11 +115,14 @@ Examples: admin:staging:read-write, user:production:read-only
 ```
 
 ```python
+import time
+
 BUFFER_SECONDS = 60  # refresh if expiring within 60s
 
 def get_valid_token(cache, role, env):
     cached = cache.get(f"{role}:{env}")
-    if cached and (cached.exp - time.now()) > BUFFER_SECONDS:
+    # JWT `exp` is seconds since epoch → compare with time.time() (there is no time.now())
+    if cached and (cached.exp - time.time()) > BUFFER_SECONDS:
         return cached.token
     token = auth.login(credentials[role])
     cache.set(f"{role}:{env}", token)
