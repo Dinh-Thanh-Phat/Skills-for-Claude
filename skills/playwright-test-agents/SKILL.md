@@ -156,8 +156,10 @@ Functionality missing?  →  annotate with test.skip + regression note  →  sto
 Re-run to confirm fix
 ```
 
-The Healer **never silently changes an assertion** to make a test pass — it only updates the
-locator when the element exists but moved.
+⚠️ The Healer's patch scope is **not** limited to locators — "wait adjustment" and "data fix" can
+change test behavior. Always review the Healer's diff: reject any change that weakens an assertion
+or adds a fixed wait (see `soft-assertion-ban`, `timeout-discipline`), and treat every skip it adds
+as a candidate bug to triage, not a fix.
 
 ---
 
