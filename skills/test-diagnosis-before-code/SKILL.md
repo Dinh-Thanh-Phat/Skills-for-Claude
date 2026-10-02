@@ -155,11 +155,12 @@ Create this for EVERY feature before writing tests:
 
 ```
 Diagnosis: "Delete user button doesn't work"
-→ Don't write test
-→ Report bug with reproduction steps
-→ Wait for fix
-→ Then write test
+→ Report bug with reproduction steps (get a BUG-ID)
+→ Write the test asserting the EXPECTED behavior, locked with
+  test.fail(true, 'BUG-xxx: delete user button does nothing')
+→ When dev fixes, the run reports "expected to fail but passed" → remove test.fail
 ```
+Never `test.skip` a known bug — canonical policy: `skip-vs-fail`.
 
 ### Problem: Feature Works But Flaky
 
