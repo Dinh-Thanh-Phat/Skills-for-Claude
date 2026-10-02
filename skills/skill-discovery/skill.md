@@ -35,6 +35,10 @@ Tôi có thể hỗ trợ các mảng QA sau. Chỉ cần nói tự nhiên — k
 | Upload ảnh / file trong test | "Upload logo trong CMS test" |
 | Visual regression | "Snapshot trang chủ, so sánh khi UI thay đổi" |
 | Accessibility | "Kiểm tra a11y / WCAG cho dashboard" |
+| Regression / smoke trước release | "Release được chưa?" / "Chạy smoke test trước deploy" |
+| Test tay tìm bug (exploratory) | "Explore feature này giúp mình, tìm bug" |
+| Test plan / ước lượng effort | "Lập test plan cho sprint này" / "Test này mất bao lâu?" |
+| Đánh giá UX / workflow | "Feature chạy đúng nhưng bất tiện, đánh giá giúp" |
 
 ---
 
