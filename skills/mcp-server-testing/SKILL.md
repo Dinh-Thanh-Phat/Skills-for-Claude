@@ -96,7 +96,7 @@ For a fleet of servers or repeatable presets (fixtures for tools/resources/promp
 
 ## Layer 3 — Schema-Drift and Security Checks
 
-**Schema drift**: a tool's declared JSON-schema input contract silently diverging from what the handler actually accepts/returns breaks LLM tool routing without touching business logic. Snapshot `tools/list` output (via `--format json`) in CI and diff it against a committed baseline — any unreviewed shape change should fail the build, the same discipline `playwright-snapshot-parser` applies to UI snapshots.
+**Schema drift**: a tool's declared JSON-schema input contract silently diverging from what the handler actually accepts/returns breaks LLM tool routing without touching business logic. Snapshot `tools/list` output (via `--format json`) in CI and diff it against a committed baseline — any unreviewed shape change should fail the build, the same discipline `playwright-snapshot-parser` applies to UI snapshots. Also run `mcp-inspector --cli <server> --method tools/list --strict` — it reports schemas that are valid JSON Schema but not portable across clients (path, issue, suggested fix) and exits `6` on error-severity findings (warnings don't fail).
 
 **MCP-specific security surface** (test these explicitly, they're not generic web-app bugs):
 - **Token passthrough** — a server MUST NOT accept a token that wasn't issued specifically for it. Test by presenting a token minted for a different audience/resource and asserting rejection, not silent forwarding.
