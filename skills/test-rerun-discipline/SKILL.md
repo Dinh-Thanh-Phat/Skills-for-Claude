@@ -68,7 +68,7 @@ Then send `qa-quick-report` to user with all system bugs in one batch — not on
 ```bash
 npx playwright test --last-failed
 ```
-System bugs are now skipped → `--last-failed` only shows real test bugs. Iterate until clean.
+System bugs are now fail-locked → `--last-failed` only shows real test bugs. Iterate until clean.
 
 ---
 
