@@ -13,7 +13,7 @@ scope: Python scripts chạy Node.js commands trên Windows
 
 ## Vấn đề
 
-Trên Windows, `npx`, `npm`, `node` là các `.cmd` script (batch files), không phải executables.
+Trên Windows, `npx`, `npm` là các `.cmd` script (batch files), không phải executables — `subprocess` (shell=False) chỉ tự thêm `.exe`, nên `['npx', ...]` → FileNotFoundError. Riêng `node` là `node.exe` thật (không có `node.cmd`).
 
 ```python
 # ❌ FAIL trên Windows — FileNotFoundError
