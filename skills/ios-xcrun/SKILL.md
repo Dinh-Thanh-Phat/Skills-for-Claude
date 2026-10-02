@@ -621,6 +621,10 @@ jobs:
 
 ## Toolchain-version gate
 
+Running on **iOS 27 / Xcode 27** (shipped 2026-09-14)? Read `ios-27-test-gotchas` first —
+Simulator.app is replaced by DeviceHub.app (tools hard-coding the old path break, e.g. Maestro Studio
+"Streaming failed"), plus WDA and `simctl diagnose` issues.
+
 Running on **iOS 26 with Xcode 26.x**? Read `ios-26-test-gotchas` before debugging any
 element-not-found failure. Xcode 26.1/26.2 break the accessibility tree on iOS 26+ (`No matches
 found for Descendants matching type TabBar`), nav-bar `UIBarButtonItem` accessibility IDs stop
