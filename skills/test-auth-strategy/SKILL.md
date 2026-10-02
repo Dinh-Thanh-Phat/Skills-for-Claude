@@ -43,7 +43,7 @@ tests/
 ```
 
 **Auth tests** — Re-authenticate fresh on every run. Test failure cases: wrong password, expired token, logout invalidation.
-**Feature tests** — Never test the login flow. Consume a pre-obtained token from global setup.
+**Feature tests** — Never test the login flow. Consume a pre-obtained session from the setup project.
 
 ## Login Once, Reuse — Playwright Implementation
 
