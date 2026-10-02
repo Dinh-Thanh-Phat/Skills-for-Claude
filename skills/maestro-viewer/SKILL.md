@@ -131,7 +131,7 @@ with inline YAML. Official tool list (docs.maestro.dev/get-started/maestro-mcp):
 choice so screenshot calls don't burn through LLM vision-token budgets in long agent sessions.
 
 > If you set up this MCP server before CLI 2.5.0, drop any tool config referencing `run_flow`,
-> `run_flow_files`, or `use_fuzzy_matching` on `tap_on` (all removed) — point agents at `run` instead.
+> `run_flow_files`, `tap_on`, `input_text` or `use_fuzzy_matching` (all removed) — point agents at `run` instead.
 
 **Android performance (2.6.0):** MCP calls against Android devices now go over a direct ADB
 socket instead of TCP port forwarding — **~41% faster** on a simple `assertVisible` flow, and it
