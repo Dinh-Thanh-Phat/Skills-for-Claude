@@ -145,12 +145,12 @@ test.beforeEach(async ({ context }) => {
 ## Stability Checklist
 
 - [ ] No `waitForTimeout()` — replaced with state-based waits
-- [ ] `networkidle` replaced with `domcontentloaded` + explicit selector wait
+- [ ] `networkidle` / `waitForSelector` replaced with web-first assertions (`await expect(locator)...`)
 - [ ] Toast assertions: assert immediately after action, no delay
-- [ ] `retries: 2` set for CI in `playwright.config.ts`
+- [ ] `retries: process.env.CI ? 1 : 0` (+ `retryStrategy: 'isolated'`, `failOnFlakyTests` in CI)
 - [ ] Timeouts scale with environment (local < CI < Replit)
 - [ ] Tests isolated: no shared page/context state across tests
-- [ ] Stale elements: re-query locators after DOM-changing actions
+- [ ] No ElementHandles (`$`, `$$`) — locators only, so nothing goes stale
 
 ## Anti-Patterns
 
