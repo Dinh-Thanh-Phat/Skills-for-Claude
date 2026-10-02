@@ -188,14 +188,27 @@ await page.request.post('/api/save', {
 ## Pattern 5e: Role-Boundary Negative Test
 
 ```typescript
-// User in `user` role must NOT reach admin route
-test('user blocked from admin', async ({ browser }) => {
+// User in `user` role must NOT reach admin route.
+// Pick the ONE behavior the spec defines — asserting "status ≥ 401 OR redirect" is a soft
+// assertion (see `soft-assertion-ban`); as two separate expects, a redirect (200) fails the first.
+
+// Variant A — spec says the server answers 403:
+test('user blocked from admin (403)', async ({ browser }) => {
   const ctx = await browser.newContext({ storageState: '.auth/user.json' });
   const page = await ctx.newPage();
   const resp = await page.goto('/admin', { waitUntil: 'domcontentloaded' });
-  expect(resp?.status()).toBeGreaterThanOrEqual(401);
-  // OR redirect:
-  await expect(page).toHaveURL(/\/(login|forbidden|403)/);
+  expect(resp?.status()).toBe(403);
+  await ctx.close();
+});
+
+// Variant B — spec says the app redirects to /forbidden:
+test('user blocked from admin (redirect)', async ({ browser }) => {
+  const ctx = await browser.newContext({ storageState: '.auth/user.json' });
+  const page = await ctx.newPage();
+  await page.goto('/admin');
+  await expect(page).toHaveURL(/\/forbidden/);
+  await expect(page.getByRole('heading', { name: /admin/i })).toHaveCount(0); // no admin UI leaked
+  await ctx.close();
 });
 ```
 
