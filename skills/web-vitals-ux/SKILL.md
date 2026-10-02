@@ -56,8 +56,14 @@ Run against a real page with Playwright; capture is OBSERVED evidence.
    // performance.getEntriesByType('navigation')[0].responseStart
    ```
 2. **For INP (and to cross-check), add the `web-vitals` lib** — but use a **CSP-allowed** CDN. Check the
-   page's CSP `script-src`; many allow `cdn.jsdelivr.net` (`https://cdn.jsdelivr.net/npm/web-vitals@4/dist/web-vitals.iife.js`).
+   page's CSP `script-src`; many allow `cdn.jsdelivr.net` (`https://cdn.jsdelivr.net/npm/web-vitals@6/dist/web-vitals.iife.js`
+   — current major is **v6** (6.2.2); the IIFE path for v6 is UNVERIFIED, open the URL first and fall back
+   to `@5` if it 404s). v5 (2025-05) **removed `onFID()`** — use `onINP`/`onLCP`/`onCLS`/`onTTFB`/`onFCP`.
    If injection throws a CSP error, fall back to PerformanceObserver and report INP as n/a.
+   **SPA note:** web-vitals v6 (2026-07) added **soft-navigation** support — Web Vitals per client-side
+   route change. A cold-load-only measurement says nothing about in-app route changes; if the flow
+   under evaluation is SPA navigation, say so and measure each route (or report as not covered).
+   Source: https://github.com/GoogleChrome/web-vitals/blob/main/CHANGELOG.md
 3. **INP needs a real interaction** — after load, perform a representative click/type that triggers JS,
    THEN read `onINP`. A trivial click on empty space may not register; if INP stays null, say
    **"n/a (no measurable interaction)"** — never report 0.
