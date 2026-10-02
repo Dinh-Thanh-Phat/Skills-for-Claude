@@ -227,3 +227,5 @@ Alert when production `schema_pass` rate drops below the same threshold used in 
 - https://devopsboys.com/blog/llm-output-validation-instructor-pydantic-production-2026
 - https://futureagi.com/blog/what-is-llm-input-output-validation-2026/
 - https://techsy.io/en/blog/llm-structured-outputs-guide
+- Instructor hooks (`client.on("completion:error" | "parse:error" | ...)`, handler kwargs `attempt_number`/`max_attempts`/`is_last_attempt`), instructor 1.17.0: https://raw.githubusercontent.com/567-labs/instructor/main/docs/concepts/hooks.md
+- UNVERIFIED (2026-10-02 audit): section 6's claim that Instructor uses Anthropic *native* structured output by default with `response_model` — Instructor's Anthropic default has historically been tool-calling mode; check `instructor.Mode` before relying on "no schema retries".
