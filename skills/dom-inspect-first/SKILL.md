@@ -1,10 +1,6 @@
----
+﻿---
 name: dom-inspect-first
-description: >-
-  Always inspect the real DOM/accessibility tree before writing Playwright selectors — prevents
-  selector mismatch bugs. Use when writing any Playwright locator, selector, getByRole,
-  getByText, or when element is not found. Triggers on: "viết selector", "write locator", "find
-  element", "getByRole", "element không thấy", "element not visible", "can't find element".
+description: Always inspect the real DOM/accessibility tree before writing Playwright selectors — prevents selector mismatch bugs. Use when writing any Playwright locator, selector, getByRole, getByText, or when element is not found. Triggers on: "viết selector", "write locator", "find element", "getByRole", "element không thấy", "element not visible", "can't find element".
 type: qa-practice
 triggers:
   - "viết selector"
@@ -58,11 +54,7 @@ Output example:
 ### Step 4: Check visible text directly
 ```typescript
 // Before writing filter, print actual text:
-const options = page.getByRole('option');
-const count = await options.count();
-for (let i = 0; i < count; i++) {
-  console.log(await options.nth(i).textContent());
-}
+console.log(await page.getByRole('option').allTextContents()); // no index loop / .nth() needed
 ```
 
 ## Locator Priority Order
