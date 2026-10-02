@@ -106,31 +106,32 @@ async deleteItem(button: Locator) {
 
 ```ts
 async confirmAction(confirmText: string) {
-  const [dialog] = await Promise.all([
-    this.page.waitForEvent('dialog'),
-    this.page.getByRole('button', { name: /confirm|delete/i }).click(),
-  ]);
-  
+  const dialogPromise = this.page.waitForEvent('dialog');
+  const clickPromise = this.page.getByRole('button', { name: /confirm|delete/i }).click();
+  const dialog = await dialogPromise;
+
   // Verify dialog message
-  expect(dialog.message()).toContain('Are you sure');
+  expect(dialog.message()).toContain(confirmText);
   await dialog.accept();
+  await clickPromise; // resolves only after the dialog is handled
 }
 ```
 
-### For Dialogs Without Auto-Dismiss
+### For `prompt()` Dialogs (text input)
 
 ```ts
-async handleAuthDialog(username: string, password: string) {
-  const dialog = await this.page.waitForEvent('dialog');
-  
-  // Fill credentials if dialog has input
-  if (dialog.type === 'prompt') {
-    await dialog.accept(username);
-  } else {
-    await dialog.accept();
-  }
+async answerPrompt(trigger: Locator, answer: string) {
+  this.page.once('dialog', async (dialog) => {
+    // type() is a METHOD — `dialog.type === 'prompt'` is always false
+    if (dialog.type() === 'prompt') await dialog.accept(answer);
+    else await dialog.accept();
+  });
+  await trigger.click();
 }
 ```
+
+> HTTP Basic-Auth popups are NOT `dialog` events — use `httpCredentials` in the context options.
+> Since 1.63, `page.on('dialogClosed')` / `context.on('dialogClosed')` fire when a dialog is accepted/dismissed/closed.
 
 ---
 

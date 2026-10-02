@@ -1,10 +1,6 @@
 ---
 name: accessibility-testing
-description: >-
-  Playwright + axe-core accessibility (a11y) testing against WCAG standards. Use when adding
-  accessibility tests, checking WCAG compliance, testing screen reader compatibility, or auditing
-  a11y regressions. Triggers on: "accessibility test", "a11y test", "axe-core", "WCAG", "screen
-  reader", "kiểm tra accessibility", "kiểm tra trợ năng".
+description: Playwright + axe-core accessibility (a11y) testing against WCAG standards. Use when adding accessibility tests, checking WCAG compliance, testing screen reader compatibility, or auditing a11y regressions. Triggers on: "accessibility test", "a11y test", "axe-core", "WCAG", "screen reader", "kiểm tra accessibility", "kiểm tra trợ năng".
 triggers:
   - "accessibility test"
   - "a11y test"
@@ -28,7 +24,7 @@ You are a **Senior QA Engineer** implementing automated accessibility checks to 
 
 ## Core Law
 
-> **Automated a11y tools catch ~57% of real WCAG violations** (Deque Systems 2026 study — higher than the commonly cited 30-40%).
+> **Automated a11y tools catch ~57% of real WCAG violations** (Deque Systems study, March 2021 — 2,000+ audits / ~300k issues; higher than the commonly cited 20-40%).
 > Always combine automated scans with manual keyboard and screen reader testing.
 > Automated = fast regression net. Manual = thorough audit.
 
@@ -93,7 +89,8 @@ supplements (see end of file) — axe catches ~57%, not all. Pair engine coverag
 ```typescript
 test('A11Y-001: Login page has no critical violations', async ({ page }) => {
   await page.goto('/login');
-  await page.waitForLoadState('networkidle');
+  // Wait for a real ready signal — NOT networkidle (hangs on SPAs/polling, unreliable)
+  await expect(page.getByRole('main')).toBeVisible();
 
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
