@@ -1,10 +1,6 @@
 ---
 name: visual-regression-testing
-description: >-
-  Playwright built-in visual/screenshot regression testing. Use when testing UI appearance,
-  detecting unintended visual changes, comparing screenshots against baselines. Triggers on:
-  "visual test", "screenshot test", "visual regression", "UI regression", "snapshot test",
-  "toMatchSnapshot", "kiểm tra giao diện", "chụp màn hình so sánh".
+description: Playwright built-in visual/screenshot regression testing. Use when testing UI appearance, detecting unintended visual changes, comparing screenshots against baselines. Triggers on: "visual test", "screenshot test", "visual regression", "UI regression", "snapshot test", "toMatchSnapshot", "kiểm tra giao diện", "chụp màn hình so sánh".
 triggers:
   - "visual test"
   - "screenshot test"
@@ -55,8 +51,11 @@ Playwright compares screenshots pixel-by-pixel against stored baseline images. I
 // playwright.config.ts
 export default defineConfig({
   expect: {
-    toMatchSnapshot: {
+    // Page/locator screenshots use toHaveScreenshot. (toMatchSnapshot is ONLY for
+    // Buffer/string values — expect(page).toMatchSnapshot(...) throws.)
+    toHaveScreenshot: {
       maxDiffPixelRatio: 0.02, // allow 2% pixel difference
+      // animations: 'disabled' is already the default for toHaveScreenshot
     },
   },
   use: {
@@ -77,7 +76,9 @@ test('VR-001: Login page looks correct', async ({ page }) => {
   // And for fonts (visual stability depends on this):
   await page.evaluate(() => document.fonts.ready);
 
-  await expect(page).toMatchSnapshot('login-page.png');
+  await expect(page).toHaveScreenshot('login-page.png');
+  // Playwright 1.62+: a `.webp` name stores a lossless WebP baseline (smaller repo):
+  // await expect(page).toHaveScreenshot('login-page.webp');
 });
 
 // ❌ Never use `waitUntil: 'networkidle'` here — hangs on SPAs / streaming /

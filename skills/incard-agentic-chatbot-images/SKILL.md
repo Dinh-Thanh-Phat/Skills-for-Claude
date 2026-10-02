@@ -88,8 +88,10 @@ ta.dispatchEvent(new Event('change',{bubbles:true}));
 ```
 Prefer **in-page string surgery** (find/replace on `ta.value`) over pasting the whole
 doc — smaller, and avoids escaping unicode. When you must inject a big block fresh,
-base64-encode it and `atob`+`TextDecoder('utf-8')` in the browser to dodge escaping.
-Never dump the base64 back into your own context to "read" it — it wastes tokens.
+**write it to a local UTF-8 file first, then load that file inside the browser step**
+(e.g. a Playwright code step that reads the file with Node `fs` and passes the string as
+the `page.evaluate` argument to the setter above). Do NOT push a base64 blob through your
+own token stream — see memory `lesson_no-base64-obfuscation-for-injection`.
 
 ## Instructions structure (the catalog approach)
 
@@ -159,14 +161,12 @@ re-read `enable_image_reply` from the list; if it is false, reopen step 1, tick 
 Next and confirm `POST /dashboard/chatbot/update` → 200. Re-running a create script must
 reuse the bot with the same title instead of creating a duplicate.
 
-**Multi-turn attach is flaky in the automated preview harness — NOT a confirmed platform
-rule.** 30/09/2026: in scripted headless preview runs, a follow-up turn that switches product
-("Còn NPK/Super 40 thì sao, cho xem ảnh luôn") often got no media even when the reply said
-"em gửi hình…", while the same sentence in a fresh chat attached fine. A first guess
-("only the first media turn per chat attaches") was REFUTED the same day: on bot 287 turn 1
-sent nothing and turn 2 still attached nothing, and the user's own manual test of the switch
-case works. So: keep a multi-turn case in suites, but when it fails, reproduce by hand in a
-real browser before calling it a platform bug.
+**Multi-turn media bug — FIXED 30/09/2026 on prod; keep the multi-turn regression.**
+Before the fix, only the FIRST image request in a chat got media; later requests said
+"em gửi hình/video…" but attached nothing (0/7 on bots 286/287/353/354). Re-test 30/09/2026
+16:33 on prod bot 353: 2nd/3rd image requests attached the correct media 6/6 (S40→NPK,
+ảnh→video, request after a text turn). Keep multi-turn image cases in every suite; if it
+comes back, report it as this regression, not as a wrong-image failure.
 
 ## Verifying in the preview (don't trust your eyes on thumbnails)
 
