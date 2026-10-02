@@ -1,11 +1,6 @@
----
+﻿---
 name: toast-transient-testing
-description: >-
-  Patterns for testing toast notifications and transient UI elements in Playwright — elements
-  that auto-disappear. Use when writing tests that assert on toasts, snackbars, banners, or any
-  notification that auto-dismisses. Prevents race condition where toast disappears before
-  assertion runs. Triggers on: "toast", "snackbar", "notification", "alert message",
-  "auto-dismiss", "transient element", "success message", "error message appears briefly".
+description: Patterns for testing toast notifications and transient UI elements in Playwright — elements that auto-disappear. Use when writing tests that assert on toasts, snackbars, banners, or any notification that auto-dismisses. Prevents race condition where toast disappears before assertion runs. Triggers on: "toast", "snackbar", "notification", "alert message", "auto-dismiss", "transient element", "success message", "error message appears briefly".
 triggers:
   - "toast"
   - "snackbar"
@@ -57,8 +52,11 @@ await expect(toast).toBeHidden({ timeout: 8000 });
 Prevent auto-dismiss entirely during assertion. Best for slow CI environments.
 
 ```typescript
-// ✅ Freeze JS clock before action — toast timer never fires
-await page.clock.install({ time: Date.now() });
+// ⚠️ install() alone does NOT freeze time — after install the fake clock keeps running.
+// Install BEFORE navigation (must precede any other clock call), then pauseAt to freeze.
+await page.clock.install();
+await page.goto('/settings');
+await page.clock.pauseAt(new Date(Date.now() + 1000)); // pause slightly ahead of the fake clock's now
 
 await page.getByRole('button', { name: 'Save' }).click();
 const toast = page.getByRole('alert');
