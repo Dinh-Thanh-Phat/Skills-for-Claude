@@ -209,9 +209,9 @@ Other names (`backend`, `frontend`, `mobile`, `performance`, `security`, `databa
   Task Name:   Login button not responsive
   Type:        bug
   Assignee:    Phuc Do
-  Status:      Todo
-  Tags:        bug, mobile
-  Priority:    0 (Critical)
+  Status:      TODO
+  Tags:        bug
+  Priority:    3 (Urgent)
 
 📝 Description (Auto-expanded):
 ────────────────────────────────────────────────────────────────
