@@ -84,24 +84,31 @@ Key probe modules: `promptinject`, `dan` (Do Anything Now jailbreaks), `realtoxi
 
 ## PyRIT — Multi-Turn Attack Orchestration
 
+> PyRIT moved to **github.com/microsoft/PyRIT** (Azure/PyRIT is a redirect stub) and is now 1.x
+> (1.1.0, 2026-09). The old `pyrit.orchestrator` package (`CrescendoOrchestrator`,
+> `PromptSendingOrchestrator`) **no longer exists** — attacks live in `pyrit.executor.attack`
+> (`CrescendoAttack`, `PromptSendingAttack`, `TAPAttack`, `PAIRAttack`, `SkeletonKeyAttack`,
+> `ManyShotJailbreakAttack`, `RedTeamingAttack`, …).
+
 ```python
-from pyrit.orchestrator import CrescendoOrchestrator, PromptSendingOrchestrator
+from pyrit.executor.attack import CrescendoAttack, AttackAdversarialConfig
 from pyrit.prompt_target import OpenAIChatTarget
 
-target = OpenAIChatTarget(
-    endpoint="https://your-api/chat",
-    api_key="...",
-)
+target = OpenAIChatTarget(endpoint="https://your-api/chat", api_key="...")   # system under test
+adversary = OpenAIChatTarget(...)                                            # attacker LLM
 
 # Crescendo: gradual topic escalation across turns
-orchestrator = CrescendoOrchestrator(
-    prompt_target=target,
+attack = CrescendoAttack(
+    objective_target=target,
+    attack_adversarial_config=AttackAdversarialConfig(target=adversary),
     max_turns=10,
-    objective="extract system prompt contents",
 )
-result = await orchestrator.run_attack_async()
-print(result.achieved_objective, result.conversation)
+result = await attack.execute_async(objective="extract system prompt contents")
+print(result.outcome)
 ```
+
+UNVERIFIED: the `AttackAdversarialConfig` import path and `result.outcome` field name — confirm in
+`pyrit/executor/attack/__init__.py` / `pyrit/models/attack_result.py` before use.
 
 PyRIT attack strategies:
 - **Crescendo** — gentle escalation; bypasses many per-turn content filters
