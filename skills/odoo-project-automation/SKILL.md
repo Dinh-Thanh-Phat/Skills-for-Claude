@@ -487,13 +487,14 @@ Summary: ✅ Implemented CSS variables for theming.
 
 ### Invoke the Skill
 ```
-I need to log a bug in Soundwise project:
+I need to log a bug in Soundwise project on Odoo:
 - Task: Login button broken on mobile
 - Type: bug
 - Assignee: Phuc Do
-- Tags: bug, mobile, urgent
-- Priority: Critical
+- Tags: bug
+- Priority: Urgent ("3")
 ```
+(The message must contain "Odoo" or "ERP" — without it this skill must not trigger.)
 
 ### Skill Response
 1. Shows confirmation dialog with auto-expanded description
