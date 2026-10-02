@@ -488,7 +488,9 @@ adb install -r build/app-debug.apk
 ./scripts/android-grant-permissions.sh com.example.app
 
 # 4. Chạy Maestro
-maestro test --retry-on-failure 2 flows/
+# KHÔNG có flag `--retry-on-failure` (Maestro 2.11.0 `maestro test --help`). Retry đặt TRONG flow,
+# chỉ bọc bước hay chập chờn:  - retry: { maxRetries: 2, commands: [ ... ] }   (maxRetries 0–3)
+maestro test flows/
 ```
 
 ---
