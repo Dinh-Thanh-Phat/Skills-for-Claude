@@ -38,10 +38,10 @@ Wait for **STATE**, not **TIME**. Web-first assertions (`await expect(locator).t
 // ❌ Hangs on WebSocket apps, Replit, polling
 await page.goto(url, { waitUntil: 'networkidle' });
 
-// ✅ Fast + explicit
+// ✅ Fast + explicit — wait for the element that proves the page is ready
 await page.goto(url, { waitUntil: 'domcontentloaded' });
-await page.waitForSelector('[data-testid="main-content"]');
-// or
+await expect(page.getByTestId('main-content')).toBeVisible();
+// or, outside a test assertion context
 await page.getByRole('main').waitFor({ state: 'visible' });
 ```
 
@@ -52,12 +52,10 @@ await page.getByRole('main').waitFor({ state: 'visible' });
 await page.waitForTimeout(2000);
 await page.click('#submit');
 
-// ✅ Wait for the enabling condition
-await expect(page.locator('#submit')).toBeEnabled();
-await page.click('#submit');
-
-// ✅ Wait for specific state
-await page.waitForSelector('#submit:not([disabled])');
+// ✅ Wait for the enabling condition (web-first, auto-retrying)
+const submit = page.getByRole('button', { name: 'Submit' });
+await expect(submit).toBeEnabled();
+await submit.click(); // locator.click() itself also waits for visible/enabled/stable
 ```
 
 ## Pattern 3: Toast / Transient Notification
@@ -68,26 +66,33 @@ await page.click('[data-testid="save-btn"]');
 await expect(page.locator('.toast')).toBeVisible();
 
 // ✅ Sync with API response first, then assert toast
-const [response] = await Promise.all([
-  page.waitForResponse(r => r.url().includes('/api/save') && r.status() === 200),
-  page.click('[data-testid="save-btn"]'),
-]);
+const responsePromise = page.waitForResponse(r => r.url().includes('/api/save') && r.status() === 200);
+await page.getByTestId('save-btn').click();
+await responsePromise;
 await expect(page.getByRole('status')).toBeVisible({ timeout: 3000 });
 ```
 
-## Pattern 4: Stale Element References
+## Pattern 4: Stale References — Locators vs ElementHandles
+
+A `Locator` is lazy: it re-resolves against the live DOM on **every** action/assertion, so
+holding a locator across a re-render does NOT go stale.
 
 ```typescript
-// ❌ Stale reference if DOM re-renders between locator + action
-const btn = page.locator('#submit');
-await page.click('#reload-section'); // DOM changes
-await btn.click(); // Error: element detached
+// ✅ Fine — the locator re-queries the DOM when click() runs
+const btn = page.getByRole('button', { name: 'Submit' });
+await page.getByRole('button', { name: 'Reload section' }).click(); // DOM re-renders
+await btn.click();
 
-// ✅ Re-query after DOM change
-await page.click('#reload-section');
-await page.waitForLoadState();
-await page.locator('#submit').click(); // fresh reference
+// ❌ Stale — ElementHandles ($, $$, waitForSelector return values) pin ONE DOM node
+const handle = await page.$('#submit');
+await page.getByRole('button', { name: 'Reload section' }).click();
+await handle!.click(); // Error: Element is not attached to the DOM
+// Fix: don't use ElementHandles (docs: "inherently racy") — use locators.
 ```
+
+"Element is detached" with a locator usually means the element was re-rendered *during* the
+action (e.g. list re-sorting) — wait for the UI to settle with a web-first assertion on the
+final state before acting.
 
 ## Pattern 5: Environment-Aware Timeouts
 
@@ -111,15 +116,19 @@ export default defineConfig({
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  retries: process.env.CI ? 2 : 0, // retry in CI only
+  retries: process.env.CI ? 1 : 0,   // ONE retry in CI only, never local (suite-wide standard)
+  retryStrategy: 'isolated',         // 1.62+: retries run at the end, one by one in a single worker
+  failOnFlakyTests: !!process.env.CI // pass-on-retry still fails the run → flakes stay visible
 });
 
 // For specific flaky section within a test
 await expect(async () => {
-  await page.click('[data-testid="refresh-btn"]');
-  await expect(page.locator('[data-testid="data-loaded"]')).toBeVisible();
+  await page.getByTestId('refresh-btn').click();
+  await expect(page.getByTestId('data-loaded')).toBeVisible();
 }).toPass({ timeout: 15000 }); // retry the whole block
 ```
+
+A test that needs more than 1 retry is broken, not flaky — fix it (see `flaky-test-prevention`).
 
 ## Pattern 7: Test Isolation for Parallel Runs
 
