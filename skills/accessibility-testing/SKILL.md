@@ -395,5 +395,7 @@ Store larger snapshots in separate YAML files (supported since 1.50) and update 
 - Playwright accessibility testing: https://playwright.dev/docs/accessibility-testing
 - axe-core WCAG guide: https://www.qamadness.com/a-you-oriented-guide-to-axe-core-playwright-accessibility-testing/
 - Playwright a11y CI guide: https://testdino.com/blog/playwright-accessibility
-- Deque Systems 57% coverage study (2026): https://www.davidmello.com/software-testing/test-automation/playwright-accessibility-testing-axe-lighthouse-limitations
+- Deque Systems 57% coverage study (March 2021): https://www.deque.com/blog/automated-testing-study-identifies-57-percent-of-digital-accessibility-issues/
+- axe-core releases: https://github.com/dequelabs/axe-core/releases
+- Playwright release notes (aria snapshots 1.49/1.60/1.63): https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
 - Playwright release notes (native `contrast` emulateMedia option, `toHaveAccessibleErrorMessage()`): https://playwright.dev/docs/release-notes
