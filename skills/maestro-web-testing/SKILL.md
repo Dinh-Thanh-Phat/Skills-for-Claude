@@ -134,7 +134,7 @@ YAML selectors). The `--screen-size` value format (`WxH`) is UNVERIFIED — chec
 | Web-only app with complex auth/API mocking | **Playwright** — richer API, multi-browser |
 | Cross-platform mobile + web smoke tests | **Maestro web** — minimal overhead |
 | Visual regression, HAR recording, WebSocket | **Playwright** — not available in Maestro beta |
-| CI on Maestro Cloud | **Maestro web** — supported natively |
+| CI on Maestro Cloud | **Maestro web** — Cloud web support UNVERIFIED in current docs |
 | Firefox / Safari required | **Playwright** — Chromium only in Maestro beta |
 
 ---

@@ -1,10 +1,6 @@
----
+﻿---
 name: skip-vs-fail
-description: >-
-  When to use test.skip() vs test.fail() vs expect() in Playwright — prevent conditional skip
-  from masking real bugs. Use when deciding whether to skip a test, when a test is flaky, or when
-  adding test.skip() inside test body. Triggers on: "test.skip", "conditional skip", "mask bug",
-  "false negative", "bỏ qua test", "skip test", "skip inside test body".
+description: When to use test.skip() vs test.fail() vs expect() in Playwright — prevent conditional skip from masking real bugs. Use when deciding whether to skip a test, when a test is flaky, or when adding test.skip() inside test body. Triggers on: "test.skip", "conditional skip", "mask bug", "false negative", "bỏ qua test", "skip test", "skip inside test body".
 type: qa-practice
 triggers:
   - "test.skip"
@@ -82,14 +78,24 @@ test('SE-017: bilingual template language selector', async ({ page }) => {
 });
 ```
 
-### Pattern 4: `test.fail()` — expect known broken behavior
+### Pattern 4: `test.fail()` — known system bug (CANONICAL known-bug policy)
 ```typescript
-// Use when you KNOW the test will fail (e.g., documenting a known bug)
-test('known broken: reply-to field not saved', async ({ page }) => {
-  test.fail(); // test is expected to fail — alerts if it unexpectedly passes
-  // ...
+// Use when you KNOW the test will fail because of a filed product bug
+test('reply-to field is saved', async ({ page }) => {
+  test.fail(true, 'BUG-123: reply-to field not saved'); // always include the ticket ID
+  // ... assertions on the EXPECTED (correct) behavior — never weaken them to match the bug
 });
 ```
+
+**This is the single policy every other skill links to** (`test-failure-triage`,
+`test-rerun-discipline`, `test-diagnosis-before-code`, `ui-error-classification`,
+`soft-assertion-ban`):
+1. Bug confirmed → file it → `test.fail(true, 'BUG-xxx: …')` at the top of the test.
+2. The test keeps RUNNING; while the bug exists it counts as passed (expected failure), so it
+   doesn't pollute `--last-failed` or turn CI red.
+3. When the bug is fixed, Playwright reports "expected to fail, but passed" → **remove the
+   `test.fail` line** and verify the test is green.
+4. Never `test.skip` a known bug — a skipped test can't tell you it was fixed, or that it got worse.
 
 ## Summary Table
 
