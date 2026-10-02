@@ -71,10 +71,9 @@ test('DEL-001: Delete user → confirmation appears', async ({ page }) => {
   
   // Verify deletion
   await admin.gotoUsers();
-  const exists = await page.getByText('test@example.com')
-    .isVisible({ timeout: 2_000 })
-    .catch(() => false);
-  expect(exists).toBe(false);
+  // Web-first, retrying assertion (isVisible() ignores `timeout` and never waits)
+  await expect(page.getByRole('heading', { name: /users/i })).toBeVisible(); // list really loaded
+  await expect(page.getByText('test@example.com')).toHaveCount(0);
 });
 ```
 
