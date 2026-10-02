@@ -363,7 +363,7 @@ await page.route('**/api/upload', route =>
 - [ ] Drag-and-drop: using `locator.drop({ files })` (1.60+), not manual `dispatchEvent`
 - [ ] CMS image/logo field: used the "Create New" drawer pattern, verified persistence via API, captured created media id for cleanup
 - [ ] No DOM input at all: `filechooser` event armed with `Promise.all` before the click
-- [ ] Pure dropzone (no input): `DataTransfer` + `dispatchEvent`, test runs on Chromium/Firefox
+- [ ] Pure dropzone (no input): `locator.drop()`; only on < 1.60 fall back to `DataTransfer` + `dispatchEvent` (Chromium/Firefox)
 - [ ] iframe widget: `frameLocator()` used, waited on a signal inside the frame
 - [ ] Cropper / inline-editor image: confirmed the modal, asserted final result not the raw upload
 - [ ] Image upload verified actually rendered (`naturalWidth > 0`), not just `<img>` visible
