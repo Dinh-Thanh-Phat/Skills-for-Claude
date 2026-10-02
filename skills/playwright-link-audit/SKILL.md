@@ -12,7 +12,8 @@ Senior QA pattern for checking broken links across a site. The three most common
 
 ## ⚠️ Critical Rule: Navigate with Browser, Not HTTP Requests
 
-**Never use `request.head()` or `request.get()` to check if a link is broken.**
+**Never use `request.head()` or `request.get()` to check if an INTERNAL (same-site) link is broken.**
+External links (other domains) are the one exception — see `checkUrl` below.
 
 Using HTTP requests checks if the *URL* returns a response — but that is NOT what happens when a user clicks a link:
 - Links can have `onclick` handlers that intercept and open email, modal, or new tab
