@@ -51,10 +51,9 @@ emulator -list-avds
 emulator -avd Pixel_6_API_33 -no-window -no-audio -no-boot-anim &
 
 # Wait for emulator to fully boot
+# (wait-for-device returns when adbd is up, NOT when Android finished booting — poll the prop on the host)
 adb wait-for-device
-adb shell -c "while [[ -z \$(getprop sys.boot_completed) ]]; do sleep 1; done"
-# Or more reliable:
-adb shell bootcomplete() { [[ "$(adb shell getprop sys.boot_completed 2>&1)" == "1" ]]; }
+until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do sleep 2; done
 
 # Get emulator serial (when multiple)
 adb devices | grep emulator | awk '{print $1}'
@@ -690,3 +689,19 @@ adb logcat -v time \
   ANRManager:E \
   *:S
 ```
+
+---
+
+## Platform-version gate
+
+If the app under test targets **API 36 (Android 16)** — or is being tested on an API 36 device —
+run `android-16-qa-gate` before sign-off. Android 16 removes the edge-to-edge opt-out, stops
+dispatching `onBackPressed()`/`KEYCODE_BACK`, and ignores orientation locks on ≥600dp screens.
+These are runtime-only regressions with no build error, so an adb smoke run will not surface them.
+
+```bash
+adb shell getprop ro.build.version.sdk          # device API level
+adb shell dumpsys package <pkg> | grep -i targetSdk   # what the app targets
+```
+
+Both must be 36+ for those behaviour changes to activate — otherwise a "pass" is a false pass.
