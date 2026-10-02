@@ -382,7 +382,7 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 
 ## Cross-references (flow thường dùng)
 
-- Viết test (web): `qa-router` → `behavioral-coverage-matrix` → `qa-test-generation` → `qa-e2e-complete` → chạy thật (xem dưới) để confirm PASS
+- Viết test (web): `qa-router` → `qa-test-coverage-max` (có spec/Figma) hoặc `behavioral-coverage-matrix` (chỉ UI live) → `qa-test-generation` → `qa-e2e-complete` → chạy thật (xem dưới) để confirm PASS
 - Chạy test có sẵn (web): `qa-router` → `qa-preflight` (Rule P0 #3: background nếu >90s/full) → execute → `qa-quick-report`
 - Viết/chạy test (mobile): `qa-router` → `qa-preflight` → version gate → `maestro-mobile` (MANDATORY gate trong skill)
 - Đánh giá UX (flow RIÊNG, chạy độc lập): `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)

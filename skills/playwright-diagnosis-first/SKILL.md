@@ -1,9 +1,6 @@
 ---
 name: playwright-diagnosis-first
-description: >-
-  Systematic Playwright test failure diagnosis workflow — diagnose before fixing, avoid premature
-  fixes. Use when any test fails or is flaky. Triggers on: "test fail", "test flaky", "debug
-  test", "why test failing", "test timeout", any test failure scenario.
+description: Systematic Playwright test failure diagnosis workflow — diagnose before fixing, avoid premature fixes. Use when any test fails or is flaky. Triggers on: "test fail", "test flaky", "debug test", "why test failing", "test timeout", any test failure scenario.
 ---
 
 # Playwright Test Diagnosis-First Workflow
@@ -161,7 +158,9 @@ that one helper is the single root cause — fix it once and the suite goes gree
 
 Real example (June 2026): all 7 wizard tests timed out at 30s. Every stack ended in
 `AgentWizardPage.continue()`. The bug was one broken locator in that helper
-(`.filter({ has: page.locator('visible=true') })` is invalid, and `getByText(/^Continue/)`
+(`.filter({ has: page.locator('visible=true') })` has the wrong semantics — `visible=true` is a
+valid engine, but inside `has:` it matches "any visible descendant", not "this element is visible";
+use `.filter({ visible: true })` or `Locator.visible()` (v1.63) — and `getByText(/^Continue/)`
 didn't match because the link text had leading whitespace/an icon → 0 matches →
 `isDisabled()` hung for the full timeout). Fixing `continue()` once turned 7 reds green.
 

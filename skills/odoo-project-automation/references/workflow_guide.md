@@ -344,21 +344,22 @@ Task Name: Add user activity logging
 Task Type: enhance
 Description: Track all user actions for audit trail
 Assignee: Anh Huynh
-Tags: [enhance, audit, backend]
-Status: Todo
+Tags: [Enhancement]
+Status: TODO
 
-Step 2 - Move to In Progress:
+Step 2 - Move to INPROGRESS:
 Project: TRS
 Task Name: Add user activity logging
-New Status: In Progress
+New Status: INPROGRESS
 Notes: Started design review
 ```
 
 **Flow:**
-1. Create task (gets to Todo)
-2. Move to In Progress (when work starts)
-3. Move to Develop (when implementation begins)
-4. Move to Done (when complete and tested)
+1. Create task (lands in TODO)
+2. Move to INPROGRESS (when work starts)
+3. Move to DEVELOPED (implementation done)
+4. Move to READY FOR TEST (handed to QA)
+5. Move to DONE (verified)
 
 ### Example 3: Complete Task with Summary
 ```

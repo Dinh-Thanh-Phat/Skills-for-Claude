@@ -260,10 +260,10 @@ class ChatbotUIAutomator:
         else:
             await input_box.press("Enter")
 
-        # Wait a tick so DOM updates (new message appears)
-        await asyncio.sleep(0.3)
-
-        response_loc = await find_response_area(page, self.custom_sel.get("response"))
+        # Wait for a NEW bubble that is not our own question (no fixed sleep)
+        response_loc = await wait_for_new_bot_bubble(
+            group, before, question, timeout_s=min(30, self.response_timeout)
+        )
         text = await wait_for_stable_response(
             page, response_loc,
             timeout_s=self.response_timeout,
