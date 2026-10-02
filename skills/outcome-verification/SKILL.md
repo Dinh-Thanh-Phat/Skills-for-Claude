@@ -1,10 +1,6 @@
 ---
 name: outcome-verification
-description: >-
-  Verify business outcomes (not just UI actions) in E2E tests. Use when writing Playwright tests
-  for any user workflow — form submissions, sends, creates, deletes, updates. Ask "how do I KNOW
-  this worked?" before writing assertions. Triggers on: "write test", "viết test", "test
-  workflow", "test form", "test submit", any E2E test creation.
+description: Verify business outcomes (not just UI actions) in E2E tests. Use when writing Playwright tests for any user workflow — form submissions, sends, creates, deletes, updates. Ask "how do I KNOW this worked?" before writing assertions. Triggers on: "write test", "viết test", "test workflow", "test form", "test submit", any E2E test creation.
 ---
 
 # Outcome Verification Skill
@@ -41,8 +37,10 @@ await expect(page.locator('.toast')).toBeVisible(); // immediate feedback
 
 // Then verify the real outcome
 await page.goto('/campaign-history');
-await expect(page.locator(`text="${emailSubject}"`)).toBeVisible();
-await expect(page.locator('tbody tr').first().locator('.status')).toHaveText('Sent');
+// Find THE row for this email — `.first()` may silently grab a different (older) row
+const row = page.getByRole('row').filter({ hasText: emailSubject });
+await expect(row).toHaveCount(1);
+await expect(row.locator('.status')).toHaveText('Sent');
 ```
 
 ---
