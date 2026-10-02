@@ -229,7 +229,9 @@ Failing selector finds nothing, element absent from tree
 Causes:
   - Element is inside an iframe → use page.frameLocator('iframe').getByRole(...)
   - Element is conditionally hidden (aria-hidden=true)
-  - Shadow DOM boundary → use page.locator('custom-element').shadowRoot
+  - Shadow DOM → Playwright CSS/role locators already pierce OPEN shadow roots (there is no
+    .shadowRoot locator API); if still missing, the root is likely CLOSED → see playwright-shadow-dom
+  - Inside an iframe, frame unknown → page.frameLocator().getByRole(...) (v1.63: no selector = search all frames)
   - Snapshot taken before element rendered → add waitFor before snapshot
 ```
 
