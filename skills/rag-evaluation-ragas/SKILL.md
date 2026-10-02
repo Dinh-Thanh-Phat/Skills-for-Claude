@@ -34,10 +34,42 @@ All metrics ✗                        → chunking strategy broken; debug chunk
 ## Setup
 
 ```bash
-pip install ragas datasets
+pip install ragas   # 0.4.x is current (0.4.3, 2026-01-13)
 ```
 
-## Evaluate a RAG Pipeline
+## Evaluate a RAG Pipeline (Ragas 0.4 collections API — preferred)
+
+Ragas 0.4 moved metrics to `ragas.metrics.collections` (class-based, `await metric.ascore(...)` /
+`.score(...)`, result in `.value`) and replaces `evaluate()` with the `@experiment()` decorator.
+The legacy `from ragas.metrics import faithfulness` + `Dataset.from_dict({"question", "answer",
+"contexts", "ground_truth"})` pattern below is the 0.1-era API — deprecated in 0.4 and slated for
+removal in 1.0.
+
+```python
+from openai import AsyncOpenAI
+from ragas.llms import llm_factory
+from ragas.metrics.collections import Faithfulness, AnswerRelevancy
+
+llm = llm_factory("gpt-4o-mini", client=AsyncOpenAI())   # judge LLM — pick a cross-family model
+
+faith = await Faithfulness(llm=llm).ascore(
+    user_input="What is the refund window?",
+    response="You can return items within 30 days of purchase.",
+    retrieved_contexts=["Our policy allows refunds within 30 days of purchase."],
+)
+rel = await AnswerRelevancy(llm=llm).ascore(
+    user_input="What is the refund window?",
+    response="You can return items within 30 days of purchase.",
+)
+result = {"faithfulness": faith.value, "answer_relevancy": rel.value}
+# ContextPrecision / ContextRecall also live in ragas.metrics.collections
+# (UNVERIFIED: their exact ascore() kwargs — check the metric's docs page before use).
+```
+
+For batch runs use `from ragas import experiment` + `@experiment(ResultModel)` per the official
+v0.3→v0.4 migration guide.
+
+### Legacy API (Ragas ≤0.3 — deprecated, kept for old pipelines)
 
 ```python
 # eval_rag.py
