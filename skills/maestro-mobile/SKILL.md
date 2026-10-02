@@ -981,6 +981,17 @@ isn't installed, the error names the exact `--device-os` string to pass — copy
     text: "Loading..."
     visible: false    # wait for loading to disappear
 
+# ❌ Don't fake a wait with a held swipe (start == end + duration) — it is a LONG-PRESS.
+#    Measured 2026-10-02 on Audiobrary PROD: a 5s hold at 90%,50% hit a track's ⋮ button and
+#    opened "Add to a Playlist" — near-mutation on production data.
+- swipe: { start: 90%, 50%, end: 90%, 50%, duration: 5000 }
+
+# ✓ Wait on a condition (or, if you truly need a fixed delay, an element that never appears)
+- extendedWaitUntil:
+    visible: "__never__"
+    timeout: 5000
+    optional: true
+
 # ❌ Don't select by index — fragile
 - tapOn:
     text: "Button"
