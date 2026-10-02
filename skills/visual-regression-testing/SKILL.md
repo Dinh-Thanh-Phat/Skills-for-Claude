@@ -304,7 +304,7 @@ Native Playwright visual comparison is free and sufficient for many projects. Mo
 
 **Percy (BrowserStack)** — DOM snapshot model: captures DOM → renders in real cloud browsers → compares. More deterministic than local screenshots. Free tier: "5,000 snapshots/month, unlimited users" (UNVERIFIED — check current pricing). Best for straightforward CI/CD pipelines.
 
-**Applitools Eyes** — AI visual engine (not pixel comparison): understands layout vs. content changes, supports Strict / Layout / Content / Dynamic modes, handles cross-browser font rendering without false positives. Genuine 2026 differentiator: Figma plugin (Eyes 10.22, Jan 2026) lets you compare designs directly against screenshots — no equivalent in Percy or Chromatic. Most expensive; justified for large design systems with frequent multi-browser coverage requirements.
+**Applitools Eyes** — AI visual engine (not pixel comparison): understands layout vs. content changes, supports Strict / Layout / Content / Dynamic modes, handles cross-browser font rendering without false positives. Claimed 2026 differentiator (UNVERIFIED): Figma plugin ("Eyes 10.22, Jan 2026") to compare designs directly against screenshots. Most expensive; justified for large design systems with frequent multi-browser coverage requirements.
 
 ### Percy Integration (Playwright)
 

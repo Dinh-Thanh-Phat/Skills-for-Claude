@@ -47,6 +47,9 @@ Nhưng nó **khuếch đại chất lượng instruction theo cả hai chiều**
 → Thấy câu mặc định của platform, hỏi: **"instruction thiếu câu mẫu cho tình huống nào?"**
 Đừng hỏi "làm sao chặn chuỗi này".
 
+> ⚠️ Mâu thuẫn với memory `lesson_platform-guard-outranks-prompt` (nói ngược lại: chuỗi ra y hệt
+> = guard platform) — cần reconcile.
+
 ---
 
 ## Triệu chứng → nghi can
@@ -95,5 +98,5 @@ Hỏi **cùng một nội dung** bằng **tên đầy đủ bản ghi** và bằ
 
 Lưu bảng kiểm kê vào `~/.claude/shared-context/knowledge/[project].md` kèm ngày.
 
-Liên quan: `chatbot-instruction-authoring`, `chatbot-kb-file-design`,
-`verify-the-instrument-before-the-finding`, `diagnosis-before-fixing`.
+Liên quan: skill `chatbot-instruction-authoring`, `chatbot-kb-file-design`; memory (không phải
+skill) `lesson_verify-the-instrument-before-the-finding.md`, `feedback_diagnosis-before-fixing.md`.
