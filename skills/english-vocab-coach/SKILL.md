@@ -153,7 +153,11 @@ tree on timeout so a hang degrades to a logged PARTIAL, never a silent scheduler
    quiz grades (`rung` / `next_due` from Mode 4); only the interactive quiz uses those.
 4. Fold new words into `progress.json` (dedup by word, scheduled due today).
 5. Write Google Sheet tabs **"New Words"** and **"To Review"** via `sheets_lib.py`
-   (local Google token — works headless, no browser).
+   (local Google token — works headless, no browser). "To Review" is skipped if column A
+   already has today's date, so a retry after a PARTIAL run doesn't duplicate rows.
+   ⚠️ The script writes 9 columns in "New Words", but memory
+   `feedback_vocab-sheet-format-confirmed` says the confirmed sheet has 13 columns with a
+   light-blue header. Reconcile the two before changing either.
 6. Save `progress.json`; append a line to `run_log.csv`.
 
 **Config** lives at `<workspace>/config.json` (created with defaults on first run):
