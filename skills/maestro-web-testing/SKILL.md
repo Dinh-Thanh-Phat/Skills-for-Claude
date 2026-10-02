@@ -145,9 +145,10 @@ YAML selectors). The `--screen-size` value format (`WxH`) is UNVERIFIED — chec
 |---|---|
 | Browser engine | Chromium only (Firefox/Safari: not yet supported) |
 | Locale | Fixed to `en-US` |
-| Viewport size | Preset (limited configurability) |
+| Viewport size | Docs: preset. CLI has `--screen-size` (+ `--headless`) for the headless window |
 | First-run setup | Downloads Chromium on first `launchApp` |
-| Multi-tab flows | Not yet supported |
+| Multi-tab flows | Limited — CHANGELOG: "support cases where a new tab is opened from the page"; full multi-tab control UNVERIFIED |
+| iframes | Supported since 2.4.0 |
 | WebSocket / HAR inspection | Not available (use Playwright for this) |
 
 ---
