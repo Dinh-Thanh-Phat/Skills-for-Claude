@@ -37,9 +37,9 @@ Use for: date pickers that default to "today", greeting banners, date-formatted 
 
 ---
 
-## 2. `install` + `fastForward` — Advance Time, Skip Intermediate Timers
+## 2. `install` + `fastForward` — Jump Ahead, Fire Due Timers At Most Once
 
-`fastForward` jumps the clock to the target time. Timers that would have fired between now and then are **not** called.
+`fastForward` jumps the clock forward. Timers that became due during the jump **are fired, but each at most once** — equivalent to the user closing the laptop lid and reopening it. A `setInterval(fn, 1000)` crossed by a 30-minute jump fires once, not 1800 times. Use `runFor` when every tick matters.
 
 ```typescript
 test('session expiry warning appears at 25 minutes', async ({ page }) => {
