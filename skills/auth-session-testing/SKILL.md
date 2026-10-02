@@ -285,10 +285,15 @@ await page.fill('#email', process.env.TEST_EMAIL!);
 await page.fill('#email', 'admin@example.com');
 ```
 
-- sessionStorage is NOT captured by storageState (tab-scoped). Inject manually:
+- sessionStorage is NOT captured by storageState (tab-scoped). Inject it after navigating to the
+  origin — with the Web Storage API (1.61+) instead of `page.evaluate`:
   ```typescript
-  await page.evaluate(() => sessionStorage.setItem('key', 'value'));
+  await page.goto('/');
+  await page.sessionStorage.setItem('key', 'value');   // also page.localStorage.getItem/items()
   ```
+- Newer storageState options: `storageState({ credentials: true })` persists virtual WebAuthn
+  passkeys (1.62, see `context.credentials` 1.61), and `opfs` includes the origin private file
+  system (1.63). Check the exact option shape in the BrowserContext.storageState docs before use.
 
 ## Gotchas
 
