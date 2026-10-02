@@ -957,7 +957,8 @@ a deprecation warning — migrate to `--device-os`.
 
 | Version | Date | What it added that changes how you write flows |
 |---|---|---|
-| **2.10.0** | 9 Sep 2026 | `--device-os` accepts full `system-images;<api>;<tag>;<abi>` path (not just bare API level); legacy `--android-api-level`/`--ios-version`/`--os-version` now deprecated |
+| **2.11.0** | 29 Sep 2026 | Android 17 (API 37) in `start-device`; physical iPhones no longer listed — runs fail early "Physical iOS devices are not yet supported"; `setDarkMode`/`setAirplaneMode` accept ONLY `enabled`/`disabled` + honour `optional: true`; `start`/`end` inside element selectors now REJECTED (was silently ignored); recording `metadata.startedAtEpochMs` in artifact manifest; Windows fix for `maestro cloud` + `runFlow` with complex paths |
+| 2.10.0 | 9 Sep 2026 | `--device-os` accepts full `system-images;<api>;<tag>;<abi>` path (not just bare API level); legacy `--android-api-level`/`--ios-version`/`--os-version` now deprecated |
 | 2.9.0 | 31 Aug 2026 | `setDarkMode`/`toggleDarkMode`/`assertDarkMode`/`assertLightMode` — switch + assert theme mid-run (iOS/Android/Web) |
 | 2.8.0 | 6 Aug 2026 | `point` inside a `from:` selector for swipes; variables/JS expressions in `permissions` values and in `thresholdPercentage`; Cloud upload + report fixes |
 | 2.7.0 | 27 Jul 2026 | Redesigned per-flow debug bundle for AI-agent debugging of failing Cloud runs; automatic per-step screenshots + failure hierarchy; leaner artifacts; Android native SIGSEGV crash detection; `maestro chat` discontinued |
