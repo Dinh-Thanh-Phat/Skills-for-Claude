@@ -1,23 +1,19 @@
 ---
 name: playwright-component-testing
-description: >-
-  Playwright experimental component testing — mount real UI components in a real browser without
-  a full app server. Use when writing isolated component tests for React, Vue, Svelte, or Solid;
-  testing component props, events, slots, accessibility, and UI states; or migrating from
-  Vitest/JSDOM or Cypress Component Testing to Playwright CT. Triggers on: "component test
-  playwright", "mount component", "@playwright/experimental-ct", "playwright CT", "test React
-  component in browser", "playwright component", "CT setup".
+description: Playwright component testing with the stories-and-gallery model (Playwright 1.62+) — the built-in `mount('story/id', props)` fixture from plain @playwright/test mounts a story rendered by YOUR dev server, in a real browser. Use when writing isolated component tests for React, Vue, Svelte, Solid or any framework; testing component props, state transitions, accessibility and visual states; migrating off the frozen @playwright/experimental-ct-* packages; or choosing between Playwright CT and Vitest/JSDOM. Triggers on: "component test playwright", "mount component", "@playwright/experimental-ct", "playwright CT", "story gallery playwright", "*.story.tsx", "Fixtures.mount", "test React component in browser", "playwright component", "CT setup", "migrate experimental-ct".
 ---
 
-# Playwright Component Testing (Experimental CT)
+# Playwright Component Testing (Stories & Gallery, 1.62+)
 
-Mount a real component in Chromium/Firefox/WebKit — no full app, no dev server. Same Playwright locators, traces, and CI pipeline as your E2E suite.
+A component test is a **regular Playwright test** that runs against a small **story gallery** page served by **your own dev server**. No dedicated CT runtime, no bundler integration, no extra npm packages — the built-in `mount` fixture of `@playwright/test` drives it.
+
+> **Status (as of 2026-10-02, Playwright 1.63):** the old `@playwright/experimental-ct-react` / `-ct-react17` / `-ct-vue` packages **will no longer be updated** (npm latest: 1.62.1; `-ct-svelte` stopped at 1.58.2; `-ct-solid` is deprecated). Main-branch docs say they are removed — "stay on Playwright 1.62 until you have migrated". New work: use the model below. See "Legacy CT (≤1.62)" at the end.
 
 ## When to Use CT vs E2E
 
 | Use CT when… | Use E2E when… |
 |---|---|
-| Testing a component in isolation (props, slots, events) | Testing user flows across pages/routes |
+| Testing a component in isolation (props, states, events) | Testing user flows across pages/routes |
 | Multiple visual variants / states | Integration with backend / auth |
 | Accessibility of a single component | Full-stack data flows |
 | Faster feedback on UI logic | Confirming the whole app works together |
@@ -26,209 +22,213 @@ Mount a real component in Chromium/Firefox/WebKit — no full app, no dev server
 
 See also `vitest-unit-testing`. Pick by **rendering environment**, not by the phrase "component test":
 - **`vitest-unit-testing`** — JSDOM (simulated DOM), fastest, best for logic, hooks, and components that don't depend on real layout/paint. Default for unit + most component tests.
-- **`playwright-component-testing`** (this skill) — real browser engine. Use when the test needs real CSS/layout, true browser events, visual states, or Playwright locators/traces. Slower than JSDOM; reserve for components where simulated DOM is not faithful enough.
+- **`playwright-component-testing`** (this skill) — real browser engine. Use when the test needs real CSS/layout, true browser events, visual states, or Playwright locators/traces.
+
+## The Model — Three Concepts
+
+- **Story** — a tiny wrapper component that embeds the component under test in **one** scenario: hard-coded props, mock data, providers, recorded callbacks. Lives next to the component in `*.story.tsx` (or `.ts/.jsx/.js/.vue`); **each named export is one story**.
+- **Gallery** — one page served by your dev server (under `playwright/gallery/`) exposing `window.mount({ story, props })` and `window.unmount()`, rendering into `#root`. Framework-specific, **owned by you**.
+- **`mount` fixture** — navigates to the gallery (`baseURL`), calls `window.mount()` with the story id + props, returns a **Locator** for the gallery root.
+
+Everything the component needs is set up **inside the story** (runs in the browser). Everything the test asserts is observable **through the page** (DOM, URL, network).
 
 ## Setup
 
-```bash
-# For React
-npm install --save-dev @playwright/experimental-ct-react vite @vitejs/plugin-react
+### 1. Get a gallery
 
-# For Vue
-npm install --save-dev @playwright/experimental-ct-vue vite @vitejs/plugin-vue
+The fastest route, per the official docs: `npx playwright init-skills`, then ask your coding agent *"Set up component testing using the playwright-component-testing skill."* (Note: Playwright's installed skill has the **same name** as this local skill.) `init-skills` appears in main-branch docs; whether it ships in 1.63 is UNVERIFIED — check `npx playwright --help`.
 
-# For Svelte
-npm install --save-dev @playwright/experimental-ct-svelte vite @sveltejs/vite-plugin-svelte
-```
+Gallery contract if you write it by hand (a few dozen lines):
+- Single page under `playwright/gallery/`, served by **your** dev server (Vite apps reuse the running dev server; other setups run a small standalone Vite server next to the app).
+- Discovers `*.story.*` files; `window.mount({ story, props })` renders the story into `#root`; `window.unmount()` tears down. Unknown story / render error → rejects → the test's `mount()` throws.
+- **Reuses the rendering root** across calls so `component.update(props)` reconciles instead of remounting (state preserved).
+- Imports your global CSS like the app entry does; the body of `window.mount` is where app-wide setup (old `beforeMount`/`afterMount`) goes.
 
-Create `playwright-ct.config.ts` (separate from your E2E config):
+### 2. Configure Playwright (plain `@playwright/test`)
 
 ```typescript
-import { defineConfig, devices } from '@playwright/experimental-ct-react';
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './src',           // co-locate tests next to components
-  testMatch: '**/*.ct.tsx',  // or *.ct.spec.tsx
-  use: {
-    ctPort: 3100,
-    ctViteConfig: {
-      // treat as a normal Vite project — aliases, env vars, plugins all work
-      resolve: {
-        alias: { '@': new URL('./src', import.meta.url).pathname },
+  projects: [
+    {
+      name: 'components',
+      testDir: './tests/components',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:5173/playwright/gallery/index.html', // mount() navigates here
+        serviceWorkers: 'block',  // app SW must not shadow page.route() mocks
+        reuseContext: true,       // reuse context per worker — big speedup for CT suites
       },
     },
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173/playwright/gallery/index.html',
+    reuseExistingServer: !process.env.CI,
+  },
 });
 ```
 
-Run CT:
+Run: `npx playwright test --project=components` (add `--ui` for UI mode).
 
-```bash
-npx playwright test --config playwright-ct.config.ts
-npx playwright test --config playwright-ct.config.ts --ui   # UI mode
+## Writing Stories and Tests
+
+```tsx
+// src/components/Button.story.tsx — one export per scenario
+import { Button } from './Button';
+
+export const Primary  = () => <Button title="Submit" />;
+export const Disabled = () => <Button title="Submit" disabled />;
 ```
-
-## Writing Tests — the `mount` Fixture
 
 ```typescript
-// components/Button.ct.tsx
-import { test, expect } from '@playwright/experimental-ct-react';
-import Button from './Button';
+// tests/components/button.spec.ts
+import { test, expect } from '@playwright/test';
 
-test('renders with label', async ({ mount }) => {
-  const component = await mount(<Button label="Save" />);
-
-  await expect(component).toContainText('Save');
-  await expect(component.getByRole('button')).toBeEnabled();
+test('renders primary button', async ({ mount }) => {
+  const component = await mount('components/Button/Primary');
+  await expect(component.getByRole('button')).toHaveText('Submit');
 });
 
-test('calls onClick when clicked', async ({ mount }) => {
-  let clicked = false;
-  const component = await mount(
-    <Button label="Save" onClick={() => { clicked = true; }} />
-  );
-
-  await component.getByRole('button').click();
-  expect(clicked).toBe(true);
-});
-
-test('disabled state', async ({ mount }) => {
-  const component = await mount(<Button label="Save" disabled />);
-
+test('disabled button is disabled', async ({ mount }) => {
+  const component = await mount('components/Button/Disabled');
   await expect(component.getByRole('button')).toBeDisabled();
 });
 ```
 
-## Provider Setup with `beforeMount`
+**Story ids** = path under `src/` without `.story.*` + export name (`components/Button/Primary`); any unique suffix also works (`mount('Button/Primary')`). Ids are strings → renaming a story breaks specs at **runtime**.
 
-Wrap all components in providers (theme, router, i18n, store) via `playwright/index.tsx`:
+## Testing Patterns
+
+### Callbacks / events → record state into a hidden input
+
+No callback marshalling across Node.js/browser. The **story owns the state** and records the observable outcome; the test asserts with a retrying web-first assertion:
+
+```tsx
+// src/components/Button.story.tsx
+import { useState } from 'react';
+import { Button } from './Button';
+
+export const CountsClicks = () => {
+  const [clicks, setClicks] = useState(0);
+  return <>
+    <Button title="Submit" onClick={() => setClicks(c => c + 1)} />
+    <form hidden><input data-testid="click-count" readOnly value={String(clicks)} /></form>
+  </>;
+};
+```
 
 ```typescript
-// playwright/index.tsx  ← Playwright CT picks this up automatically
-import { beforeMount, afterMount } from '@playwright/experimental-ct-react/hooks';
-import { MemoryRouter } from 'react-router-dom';
-import { ThemeProvider } from './theme';
-
-beforeMount(async ({ App }) => {
-  return (
-    <MemoryRouter>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
-    </MemoryRouter>
-  );
+test('counts clicks', async ({ mount }) => {
+  const component = await mount('components/Button/CountsClicks');
+  await component.getByRole('button').click();
+  await expect(component.getByTestId('click-count')).toHaveValue('1');
 });
 ```
 
-## Network Mocking — `router` Fixture
+One `data-testid` input per observed value (`String(...)` scalars, `JSON.stringify(...)` payloads). Negative case: act, then assert the value did **not** change.
 
-The experimental `router` fixture intercepts fetch/XHR inside the component — same API as `page.route()`:
+### Per-test props (typed)
+
+```tsx
+export const WithTitle = ({ title = 'Default' }: { title?: string }) => <Button title={title} />;
+```
 
 ```typescript
-import { test, expect } from '@playwright/experimental-ct-react';
-import ProductCard from './ProductCard';
+import type { WithTitle } from '../../src/components/Button.story';
+const component = await mount<typeof WithTitle>('Button/WithTitle', { title: 'Hello' });
+```
 
-test('shows product name from API', async ({ mount, router }) => {
-  // intercept before mounting
-  await router.route('/api/product/42', async route => {
-    await route.fulfill({
-      json: { id: 42, name: 'Widget Pro', price: 9.99 },
-    });
-  });
+Props must be plain serializable data — callbacks belong inside the story. (1.63: story ids can also be typed via the generated `Stories` registry.)
 
-  const component = await mount(<ProductCard productId={42} />);
+### Prop transitions without remount — `update()` / `unmount()`
 
-  await expect(component.getByTestId('product-name')).toHaveText('Widget Pro');
-  await expect(component.getByTestId('product-price')).toHaveText('$9.99');
-});
+```typescript
+const component = await mount('components/Counter/Default', { value: 1 });
+await expect(component.getByTestId('value')).toHaveText('1');
+await component.update({ value: 2 });          // same root, state preserved
+await expect(component.getByTestId('value')).toHaveText('2');
+await component.unmount();
+```
 
-test('shows error state on API failure', async ({ mount, router }) => {
-  await router.route('/api/product/42', route => route.fulfill({ status: 500 }));
+### Network mocking — plain `page.route()` before `mount()`
 
-  const component = await mount(<ProductCard productId={42} />);
-
-  await expect(component.getByRole('alert')).toBeVisible();
+```typescript
+test('renders the error state', async ({ page, mount }) => {
+  await page.route('**/api/items', route => route.fulfill({ status: 500 }));
+  const component = await mount('components/ItemList/Default');   // mount navigates
+  await expect(component.getByRole('alert')).toContainText('Something went wrong');
 });
 ```
 
-## Re-Rendering and Updating Props
+MSW users can start `setupWorker` inside a story/decorator instead.
+
+### Visual states
 
 ```typescript
-test('updates when props change', async ({ mount }) => {
-  const component = await mount(<Badge count={0} />);
-  await expect(component).toContainText('0');
-
-  await component.update(<Badge count={5} />);
-  await expect(component).toContainText('5');
-});
+await expect(await mount('Button/Primary')).toHaveScreenshot('primary.png');
+await expect(await mount('Button/Disabled')).toHaveScreenshot('disabled.png');
 ```
 
-## Accessibility Testing in CT
+Screenshot the returned root locator, not the page.
+
+### Accessibility
 
 ```typescript
 import AxeBuilder from '@axe-core/playwright';
 
 test('button has no a11y violations', async ({ mount, page }) => {
-  await mount(<Button label="Delete" variant="danger" />);
-  const results = await new AxeBuilder({ page }).analyze();
+  await mount('components/Button/Primary');
+  const results = await new AxeBuilder({ page }).include('#root').analyze();
   expect(results.violations).toEqual([]);
 });
 ```
 
-## Custom Fixtures for Repeated Setup
+### Debugging a story
 
-```typescript
-// fixtures.ts
-import { test as baseTest } from '@playwright/experimental-ct-react';
-
-type Fixtures = { authedComponent: typeof baseTest['mount'] };
-
-export const test = baseTest.extend<Fixtures>({
-  authedComponent: async ({ mount }, use) => {
-    // wrap every mount call in an AuthProvider
-    const authedMount = (component: JSX.Element) =>
-      mount(<AuthProvider user={testUser}>{component}</AuthProvider>);
-    await use(authedMount as any);
-  },
-});
-```
+Open the gallery URL in a browser and run `await window.mount({ story: 'components/Button/Primary' })` in DevTools — exactly what the fixture does. Drop the `hidden` attribute on the recording form while developing to watch state live.
 
 ## Anti-Patterns
 
 ```typescript
-// ❌ Don't test implementation details (internal state, refs)
-expect(component._reactInternals.state.count).toBe(3);
+// ❌ Reaching into internals (instance, refs, state) — not supported
+// ✓ Record effects into the DOM via the story, assert through the page
 
-// ✓ Test from the user's perspective
-await expect(component.getByRole('status')).toHaveText('3 items');
+// ❌ One parameterized mega-story driven by many props
+// ✓ One named export per scenario (Primary, Disabled, WithLongTitle) — the story file IS the spec
 
-// ❌ Don't mount the entire app for a component test — defeats the purpose
-await mount(<App />);
+// ❌ Registering page.route() after mount() — mount navigates, the request already happened
+// ✓ Route first, then mount
 
-// ✓ Mount only the component under test
-await mount(<DataTable rows={mockRows} />);
-
-// ❌ Don't use hardcoded waits
-await page.waitForTimeout(1000);
-
-// ✓ Await Playwright's auto-waiting locators
-await expect(component.getByRole('row')).toHaveCount(5);
+// ❌ page.waitForTimeout(1000)
+// ✓ Web-first assertions: await expect(component.getByRole('row')).toHaveCount(5)
 ```
 
-## CI Integration
+## Legacy CT (≤1.62) — `@playwright/experimental-ct-*`
 
-```yaml
-# .github/workflows/ct.yml
-- name: Run Component Tests
-  run: npx playwright test --config playwright-ct.config.ts
-  # CT runs in Node — no emulator, no full server needed
-  # Artifacts: traces, screenshots captured same as E2E
-```
+Only for projects pinned to ≤1.62. Old style: JSX inline in the test (`mount(<Button onClick={spy} />)`), a separate `playwright-ct.config.ts` with `ctPort` / `ctViteConfig`, `playwright/index.tsx` with `beforeMount`/`afterMount`, an experimental `router` fixture.
+
+Migration map (official):
+
+| Experimental CT | Story gallery |
+|---|---|
+| `mount(<Button onClick={spy} />)` | Stateful story records the effect in a hidden input; assert with `toHaveValue()` |
+| Plain data props | `mount(id, props)` |
+| JSX children / slots | One story export per composition (Vue: `.story.vue` for slot-heavy cases) |
+| `component.update(<Button count={2} />)` | `component.update({ count: 2 })` |
+| `component.unmount()` | `component.unmount()` |
+| `beforeMount` / `afterMount` | Body of the gallery's `window.mount` (global) or story decorators |
+| `hooksConfig` | Props interpreted by the story: `mount('App/Routing', { route: '/dashboard' })` |
+| `router` fixture | `page.route()` in the test, or MSW `setupWorker` in a story |
+| `playwright/index.html` | Gallery's `index.html` + entry imports |
+| `ctViteConfig`, `ctPort`, `ctTemplateDir` | Gone — your dev server; port lives in `webServer` / `baseURL` |
+| `defineConfig` from the ct package | Plain `defineConfig` from `@playwright/test` |
+
+Migrate incrementally while pinned to 1.62: add the gallery + `components` project next to the old CT project, port spec by spec, then remove the `@playwright/experimental-ct-*` dependency, `playwright/index.html`, `playwright/index.ts`, `playwright/.cache`, and upgrade.
 
 ## Sources
-- https://playwright.dev/docs/test-components — Official Playwright CT docs
-- https://www.browserstack.com/guide/component-testing-react-playwright — BrowserStack 2026 guide
-- https://getautonoma.com/blog/playwright-best-practices-2026 — Playwright best practices 2026
+- https://github.com/microsoft/playwright/blob/main/docs/src/test-components-js.md — official component testing guide + migration table (read 2026-10-02)
+- https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md — 1.62 (stories model), 1.63 (experimental packages no longer updated)
+- npm registry: @playwright/experimental-ct-react / -vue latest 1.62.1, -svelte 1.58.2, -solid deprecated (checked 2026-10-02)

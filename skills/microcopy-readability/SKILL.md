@@ -25,6 +25,16 @@ concrete. Companion to [[ux-heuristic-evaluation]] (heuristic H2 "match the real
 | Generic link text | 0 | "click here" / "read more" / "learn more" hurt scanning & a11y |
 | Jargon / internal terms | 0 surfaced to users | DB codes, acronyms, vendor-speak |
 
+## ⚠️ Language check FIRST — Flesch/FK are English-only
+The Flesch formulas, the syllable heuristic, the passive-voice regex and `textstat`'s English defaults
+are calibrated for **English** only. Vietnamese (and other) copy produces meaningless numbers: Vietnamese
+syllables are written as separate space-separated tokens, so "words" and "syllables" don't line up
+with what the formula assumes. For **Vietnamese UI copy**: do NOT report an FK grade. Report only the
+language-independent signals — sentence length in syllables/tokens, paragraph length (walls of text),
+generic link/button text ("Xem thêm", "Bấm vào đây"), unexplained jargon/abbreviations, ALL-CAPS —
+and mark tone/clarity judgments PREDICTED for a native reviewer. Mixed-language pages: score only the
+English blocks.
+
 ## How to measure (no install needed — formula is simple)
 Extract the user-facing text (headings, body, labels, button text) from the live page, then:
 
