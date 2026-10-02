@@ -1,12 +1,6 @@
----
+﻿---
 name: form-validation-testing
-description: >-
-  Patterns for testing form validation UI in Playwright — inline error messages, required fields,
-  submit button states, async server-side validation, multi-field dependencies. Use when writing
-  tests for any form with validation: login, registration, settings, or any form that shows
-  inline error messages or disables the submit button. Triggers on: "form validation", "inline
-  error", "required field", "submit button disabled", "validation message", "async validation",
-  "email already taken", "field error".
+description: Patterns for testing form validation UI in Playwright — inline error messages, required fields, submit button states, async server-side validation, multi-field dependencies. Use when writing tests for any form with validation: login, registration, settings, or any form that shows inline error messages or disables the submit button. Triggers on: "form validation", "inline error", "required field", "submit button disabled", "validation message", "async validation", "email already taken", "field error".
 ---
 
 # Form Validation Testing
@@ -27,11 +21,14 @@ Also cover **paste** and **autofill** — they may skip onChange/onBlur and sile
 
 ```typescript
 // Paste — may not fire onChange in some React forms
+// Clipboard API needs permission (Chromium); use ControlOrMeta so it also works on macOS
+await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
 await page.getByLabel('Email').focus();
 await page.evaluate(() => navigator.clipboard.writeText('test@example.com'));
-await page.keyboard.press('Control+V');
+await page.keyboard.press('ControlOrMeta+V');
 await page.getByLabel('Email').press('Tab');
-await expect(page.getByText('Invalid')).toBeHidden();
+await expect(page.getByLabel('Email')).toHaveValue('test@example.com'); // prove paste happened
+await expect(page.getByText('Invalid')).toBeHidden();                  // otherwise this passes vacuously
 
 // Autofill — Chrome auto-fills without firing some events
 await page.locator('input[autocomplete="email"]').evaluate(
