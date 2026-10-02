@@ -492,17 +492,6 @@ runs it once before the first question; set `TEST_EMAIL` / `TEST_PASSWORD` env v
 }
 ```
 
-```python
-async def _do_login(self, page):
-    if not self.cfg.get("login_steps"): return
-    s = self.cfg["login_steps"]
-    await page.goto(s["url"])
-    await page.fill(s["email_selector"], os.environ["TEST_EMAIL"])
-    await page.fill(s["password_selector"], os.environ["TEST_PASSWORD"])
-    await page.click(s["submit_selector"])
-    await page.wait_for_selector(s["post_login_wait_for"], timeout=30000)
-```
-
 ## Citation / Source Extraction
 
 Many RAG chatbots show citations in the response (links, footnotes). Extract them so the
@@ -527,7 +516,8 @@ result['citations'] = sources
 3. Set `custom_selectors.input` in config
 
 **If response is cut off:**
-- Increase `stability_check_interval` (default 500ms) or `stability_checks` count
+- Raise `check_interval_ms` (default 500) or `stability_checks` (default 3) in the
+  `wait_for_stable_response(...)` call inside `_ask_once` — they are function args, not config keys
 - Increase `response_timeout_s` for slow backends
 
 **If questions fail intermittently:**
