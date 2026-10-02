@@ -61,8 +61,6 @@ import pandas as pd
 import glob
 from pathlib import Path
 from datetime import datetime
-import warnings
-warnings.filterwarnings('ignore')
 
 # ─── CONFIG — SỬA CHỖ NÀY ────────────────────────────────────────────────────
 INPUT_PATTERN  = "data/inputs/*.xlsx"   # Hoặc list file: ["file1.xlsx", "file2.xlsx"]
@@ -81,23 +79,31 @@ def load_all(pattern) -> pd.DataFrame:
         raise FileNotFoundError(f"Không tìm thấy file nào: {pattern}")
 
     print(f"Tìm thấy {len(files)} file:")
-    dfs = []
+    dfs, failed = [], []
     for f in files:
         try:
-            if str(f).endswith(('.xlsx', '.xls')):
+            if str(f).endswith(('.xlsx', '.xls')):      # .xls cần thêm: pip install xlrd
                 df = pd.read_excel(f, sheet_name=SHEET_NAME)
             else:
                 df = pd.read_csv(f, encoding='utf-8-sig')
-            df['_nguon_file'] = Path(f).name
-            dfs.append(df)
-            print(f"  ✓ {Path(f).name}: {len(df):,} dòng")
         except Exception as e:
+            failed.append((f, e))
             print(f"  ✗ {f}: {e}")
+            continue
+        # Normalize column names TRƯỚC khi concat — nếu không, "Doanh Thu" và "doanh_thu"
+        # thành 2 cột khác nhau và dữ liệu bị tách / NaN
+        df.columns = [str(c).strip().lower().replace(' ', '_') for c in df.columns]
+        df['_nguon_file'] = Path(f).name
+        dfs.append(df)
+        print(f"  ✓ {Path(f).name}: {len(df):,} dòng")
 
-    combined = pd.concat(dfs, ignore_index=True)
-    # Normalize column names
-    combined.columns = [c.strip().lower().replace(' ', '_') for c in combined.columns]
-    return combined
+    if not dfs:
+        raise RuntimeError(f"Không đọc được file nào ({len(failed)} lỗi)")
+    if failed:
+        # Không im lặng bỏ qua — báo rõ để user quyết định chạy tiếp hay không
+        print(f"⚠️  {len(failed)}/{len(files)} file lỗi, KẾT QUẢ THIẾU dữ liệu từ: {[str(f) for f, _ in failed]}")
+
+    return pd.concat(dfs, ignore_index=True)
 
 def remove_duplicates(df: pd.DataFrame):
     key_cols = [c for c in KEY_COLUMNS if c in df.columns]

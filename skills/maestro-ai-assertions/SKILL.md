@@ -110,21 +110,38 @@ Takes a screenshot and runs it through a pre-built LLM prompt that checks for co
 
 ## Configuration (AI Backend)
 
-```yaml
-# In your Maestro workspace config or via CLI flag:
-# MAESTRO_CLOUD_API_KEY=<key> maestro test flow.yaml
+All AI commands are routed through **Maestro Cloud** (managed model). A **free** Maestro Cloud
+account is enough to use AI commands; running tests *on* Cloud still needs a paid plan.
 
-# Or set locally for dev:
-# export MAESTRO_AI_API_KEY=<your-openai-or-maestro-cloud-key>
+```bash
+# Option 1 — interactive (session shared by CLI and Maestro Studio)
+maestro login
+
+# Option 2 — CI / non-interactive
+export MAESTRO_CLOUD_API_KEY=<your_maestro_key>
+maestro test flow.yaml
 ```
 
-Refer to [Maestro AI configuration docs](https://docs.maestro.dev/api-reference/configuration/ai-configuration) for provider setup.
+> `MAESTRO_CLI_AI_KEY` / `MAESTRO_CLI_AI_MODEL` are **no longer used** — you cannot plug in your own
+> OpenAI/Anthropic key or a local LLM. Old configs setting them do nothing.
+
+### Whole-flow AI analysis: `--analyze` (Beta)
+
+```bash
+maestro test login_flow.yaml --analyze
+# → prints a file:// link to insights-report.html (UI regressions, spelling, i18n, layout breaks)
+
+export MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true   # hide the "Analyzing Flow..." notice in CI logs
+```
+
+Docs: [AI test analysis](https://docs.maestro.dev/maestro-flows/workspace-management/ai-test-analysis.md).
 
 ---
 
 ## Sources
 - [assertWithAI — Maestro Docs](https://docs.maestro.dev/reference/commands-available/assertwithai)
 - [extractTextWithAI — Maestro Docs](https://docs.maestro.dev/reference/commands-available/extracttextwithai)
-- [assertNoDefectsWithAi — Maestro Docs](https://docs.maestro.dev/api-reference/commands/assertnodefectswithai)
+- [assertNoDefectsWithAI — Maestro Docs](https://docs.maestro.dev/reference/commands-available/assertnodefectswithai) (old `/api-reference/commands/...` URL is dead)
+- [AI test analysis — auth, managed model, `--analyze`](https://docs.maestro.dev/maestro-flows/workspace-management/ai-test-analysis.md) (re-checked 2026-10-02)
 - [AI Features and MCP Server — DeepWiki / Maestro](https://deepwiki.com/mobile-dev-inc/Maestro/6.5-ai-features-and-mcp-server)
 - [Advanced Maestro Testing: Event Validation & AI-Powered Test Generation — Trendyol Tech / Medium](https://medium.com/trendyol-tech/advanced-maestro-testing-event-validation-ai-powered-test-generation-0bb86f3ca481)
