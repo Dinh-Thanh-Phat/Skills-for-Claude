@@ -130,7 +130,7 @@ test.describe('Port Management', () => {
     // Same seeded data
     await page.goto('/admin/ports');
     await page.getByPlaceholder('search').fill('CMIT');
-    expect(page.getByText('CMIT')).toBeVisible();
+    await expect(page.getByText('CMIT')).toBeVisible();
   });
 });
 ```
@@ -155,7 +155,7 @@ test.describe('User Management', () => {
   test.beforeEach(async ({ request }) => {
     // Start transaction
     const txnResponse = await request.post('/api/admin/transaction/begin');
-    transactionIds.push(txnResponse.json().txn_id);
+    transactionIds.push((await txnResponse.json()).txn_id);
   });
 
   test.afterEach(async ({ request }) => {

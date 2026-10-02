@@ -1,7 +1,8 @@
 ---
 name: maestro-mcp-workflow
 description: |
-  Drive Maestro mobile tests via Claude Code using the Maestro MCP server (slapglif/maestro-mcp).
+  DEPRECATED — for new setups use the official built-in `maestro mcp` server (skill: maestro-viewer).
+  Drive Maestro mobile tests via Claude Code using the community MCP server (slapglif/maestro-mcp).
   Use when you want to: generate Maestro YAML flows by describing them in natural language, run/debug
   flows live against a connected emulator or device from Claude Code, inspect the UI hierarchy to fix
   broken selectors, or automate mobile exploratory testing via conversational commands.

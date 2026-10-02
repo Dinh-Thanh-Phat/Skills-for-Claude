@@ -157,7 +157,7 @@ Workflow: write tests in VS Code, keep UI Mode open in a side window — save th
 
 ## Sources
 
-- https://github.com/microsoft/playwright/blob/main/docs/src/test-ui-mode-js.md
+- https://github.com/microsoft/playwright/blob/main/docs/src/test-ui-mode-js.md (project-dependency caveat + `0.0.0.0` security note added 2026-10-02)
 - https://playwright.dev/docs/test-ui-mode
 - https://playwright.dev/docs/running-tests
 - https://software-testing-tutorials-automation.com/2026/05/playwright-test-runner-tutorial.html
