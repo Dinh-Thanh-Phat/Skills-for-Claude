@@ -1,11 +1,6 @@
----
+﻿---
 name: login-verification
-description: >-
-  Always verify test credentials work manually before writing automated login tests — prevents
-  entire suites failing because of invalid accounts. Use when setting up a new test environment,
-  when all tests fail at beforeEach, or when writing login helper functions. Triggers on:
-  "writing login helper", "test credentials", "all tests fail beforeEach", "login not working",
-  "beforeEach fails", "test account", "staging credentials", "auth smoke".
+description: Always verify test credentials work manually before writing automated login tests — prevents entire suites failing because of invalid accounts. Use when setting up a new test environment, when all tests fail at beforeEach, or when writing login helper functions. Triggers on: "writing login helper", "test credentials", "all tests fail beforeEach", "login not working", "beforeEach fails", "test account", "staging credentials", "auth smoke".
 type: skill
 scope: playwright, e2e, automation, test-setup
 triggers:
@@ -76,11 +71,18 @@ async function login(page: Page): Promise<void> {
   await page.getByLabel('Password').fill(process.env.TEST_PASSWORD!);
   await page.getByRole('button', { name: 'Login' }).click();
 
-  if (page.url().includes('/login')) {
-    const errorMsg = await page
-      .locator('[role="alert"], .error, .notification--error')
-      .first().textContent().catch(() => '(no error message found)');
-    throw new Error(`Login failed. Page shows: "${errorMsg}". Check credentials and account status.`);
+  // ⚠️ Do NOT check `page.url()` right after click() — the redirect hasn't happened yet,
+  // so the URL is still /login even on a SUCCESSFUL login → false "Login failed".
+  // Wait (web-first) for the redirect; only on failure read the on-page error and rethrow.
+  try {
+    await expect(page).not.toHaveURL(/\/login/, { timeout: 30_000 });
+  } catch (e) {
+    const alerts = page.locator('[role="alert"], .error, .notification--error');
+    const errorMsg = (await alerts.allTextContents()).join(' | ') || '(no error message found)';
+    throw new Error(
+      `Login failed. Page shows: "${errorMsg}". Check credentials and account status.`,
+      { cause: e },
+    );
   }
 }
 ```
