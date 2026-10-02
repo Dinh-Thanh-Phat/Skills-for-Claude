@@ -54,7 +54,7 @@ Legacy layout — **2 separate Excel files**:
 1. `test_cases_automation_[YYYYMMDD].xlsx` — Bot/automation test cases
 2. `test_cases_manual_[YYYYMMDD].xlsx` — Manual test cases
 
-## Column Format (exact order)
+## Column Format (LEGACY 11 cột — exact order)
 
 | # | Column Name | Description |
 |---|------------|-------------|
