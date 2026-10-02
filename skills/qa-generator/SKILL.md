@@ -416,7 +416,7 @@ for k, n in target.items():
 
 If a bucket is short, regenerate just that difficulty.
 
-### Re-enrichment (70b)
+### Re-enrichment (ENRICHMENT_MODEL)
 - **Guard against REFUSE**: nếu answer chứa "không đề cập / không tìm thấy" → mark failed, KHÔNG lưu
 - **Max tokens 500** khi enrich để tránh cắt giữa chừng (lesson: 300 tokens quá nhỏ cho câu dài)
 - **Exponential backoff + jitter** khi gặp rate limit 429
