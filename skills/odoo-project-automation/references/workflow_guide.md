@@ -282,7 +282,8 @@ Details:
   "project": "Soundwise",
   "task_name": "Login button not responding on mobile",
   "assignee": "Phuc Do",
-  "tags": ["bug", "mobile"],
+  "tags": ["bug"],
+  "priority": "3",
   "created_at": "2026-05-05T10:30:45.123456"
 }
 ```
@@ -296,9 +297,9 @@ Details:
    - ✅ "Fix login button not responding on mobile Safari"
 
 2. **Use Appropriate Priority**
-   - 0 for production-blocking issues
-   - 2 for normal work
-   - 4 for backlog items
+   - "3" (Urgent) for production-blocking issues
+   - "1" (Medium) for normal work
+   - "0" (Low) for nice-to-have items — never for critical
 
 3. **Include Context in Notes**
    - When moving tasks, add notes explaining why

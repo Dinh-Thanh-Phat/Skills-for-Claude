@@ -244,11 +244,18 @@ User nói: "test mobile", "maestro", "test app"
                     ↓
     ⚠️ VERSION GATE — check TRƯỚC khi đổ lỗi cho test/app:
     Android targetSdk 36 / device API 36 → android-16-qa-gate
+    Android targetSdk 37 / device API 37 → android-17-qa-gate
     iOS 26 + Xcode 26.x            → ios-26-test-gotchas
+    iOS 27 + Xcode 27.x            → ios-27-test-gotchas
+                    ↓
+         maestro-element-harvest (module chưa có ELEMENT_MAP → harvest selector 1 lượt)
                     ↓
          maestro-mobile (viết/chạy flow) — đọc "🚦 MANDATORY gate" đầu skill
          TRƯỚC khi viết/chạy flow đầu tiên (check flow đã lưu, harvest 1 lần,
          group auth-state, canary-only rerun)
+                    ↓
+         Suite chậm / nhiều flow / nhiều account → maestro-speed-optimization
+         (deep-link openLink, parallel sharding, auth Group A/B/C qua executionOrder)
                     ↓
     User nói "full"/"toàn bộ" → xem thêm Hard-block "full case(s)" ở bảng
     CRITICAL RULES — áp dụng CẢ cho manual/exploratory trên device thật
@@ -326,6 +333,8 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 - Chạy test có sẵn (web): `qa-router` → `qa-preflight` (Rule P0 #3: background nếu >90s/full) → execute → `qa-quick-report`
 - Viết/chạy test (mobile): `qa-router` → `qa-preflight` → version gate → `maestro-mobile` (MANDATORY gate trong skill)
 - Đánh giá UX (flow RIÊNG, chạy độc lập): `qa-router` → `ux-heuristic-evaluation` (feature đúng nhưng bất tiện)
-- Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck` → fix xong → rerun canary-only (`feedback_test-rerun-discipline`)
+- Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck` → fix xong → rerun canary-only (`test-rerun-discipline`)
+- Chatbot/LLM: `qa-router` → `chatbot-platform-config-audit` (nếu sửa bot) → `chatbot-tester` / `llm-*` tương ứng
+- Regression/release: `qa-router` → `qa-regression` (+ `smoke-test-gating`, `test-impact-analysis`)
 - Bug report: `qa-router` → `bug-repro-isolation` (cô lập nguyên nhân) → `qa-bug-report` → `odoo-project-automation`
 - Close: `qa-router` → `qa-session-close` → `beads`
