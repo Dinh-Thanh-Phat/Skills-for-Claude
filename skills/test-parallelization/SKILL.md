@@ -234,6 +234,8 @@ jobs:
 
 ### Optimal shard count (2026 guidance)
 
+> UNVERIFIED rule-of-thumb numbers from blog posts — measure your own suite before relying on them.
+
 The sweet spot for most teams is **4–6 shards × 2–4 workers each** — yields ~80% time reduction without runaway CI costs. Scale up shards (not workers) once a single machine can't finish in your time budget (~5–10 min threshold).
 
 | Suite size | Recommended config | Wall time reduction |
