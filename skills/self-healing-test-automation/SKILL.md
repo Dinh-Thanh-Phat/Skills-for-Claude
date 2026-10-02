@@ -154,7 +154,9 @@ export const test = base.extend<HealingFixtures>({
         } catch (e) {
           const healed = await healLocator(page, selector, `click on ${selector}`);
           console.warn(`[self-heal] ${selector} → ${healed}`);
-          return await page.locator(healed).click(opts);
+          const healedLoc = toLocator(page, healed);
+          await expect(healedLoc).toHaveCount(1); // fail loud if the heal is ambiguous
+          return await healedLoc.click(opts);
         }
       };
       return loc;
