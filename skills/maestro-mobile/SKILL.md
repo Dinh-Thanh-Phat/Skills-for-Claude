@@ -933,6 +933,11 @@ real content before asserting/screenshotting visuals:
 - takeScreenshot: "dark"
 ```
 
+`assertDarkMode` also passes when the app **ignores the system theme entirely** — measured on
+Soundwise WL staging (2026-10-02): system nav bar went black, app UI stayed light, assert green.
+To test that an app *supports* dark mode, compare screenshots (or `assertScreenshot`) — the assert
+only proves the device setting.
+
 Same trap after `launchApp` on a real device: the first screenshot can still show the previous
 foreground app. Gate it on an `extendedWaitUntil` too.
 
