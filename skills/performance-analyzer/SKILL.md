@@ -1,13 +1,6 @@
 ---
 name: performance-analyzer
-description: >-
-  Analyze chatbot performance metrics including response times (p50/p95/p99), accuracy
-  distribution by category/difficulty, and success rates. Generates statistical summaries and PNG
-  visualizations using matplotlib. Use when you need performance charts or percentile
-  calculations from chatbot test results. Triggers on: "analyze chatbot performance", "calculate
-  response time percentiles", "generate performance metrics", "create accuracy charts", "p95
-  response time chatbot". Used as Step 5 in chatbot testing pipeline. Outputs JSON metrics and
-  PNG charts.
+description: Analyze chatbot performance metrics including response times (p50/p95/p99), accuracy distribution by category/difficulty, and success rates. Generates statistical summaries and PNG visualizations using matplotlib. Use when you need performance charts or percentile calculations from chatbot test results. Triggers on: "analyze chatbot performance", "calculate response time percentiles", "generate performance metrics", "create accuracy charts", "p95 response time chatbot". Used as Step 5 in chatbot testing pipeline. Outputs JSON metrics and PNG charts.
 ---
 
 # Performance Analyzer
@@ -146,7 +139,7 @@ class PerformanceAnalyzer:
         metrics = {
             "summary": {
                 "total_questions": len(evaluations),
-                "success_rate": round(sum(1 for r in responses if r.get("success")) / len(responses) * 100, 1),
+                "success_rate": round(sum(1 for r in responses if r.get("success")) / len(responses) * 100, 1) if responses else 0,
                 "pass_rate": round(len(passed) / len(evaluations) * 100, 1) if evaluations else 0,
                 "avg_score": round(avg_score, 1),
                 "hallucination_rate": round(len(hallucinations) / len(evaluations) * 100, 1) if evaluations else 0
@@ -161,8 +154,10 @@ class PerformanceAnalyzer:
             "thresholds": {
                 "accuracy_threshold": self.accuracy_threshold,
                 "response_time_threshold_ms": self.rt_threshold,
-                "accuracy_passed": avg_score >= self.accuracy_threshold,
-                "response_time_passed": rt_metrics.get("p95_ms", 0) <= self.rt_threshold
+                # No data must FAIL, never pass silently (fail-loud)
+                "accuracy_passed": bool(scores) and avg_score >= self.accuracy_threshold,
+                "response_time_passed": ("p95_ms" in rt_metrics) and rt_metrics["p95_ms"] <= self.rt_threshold,
+                "no_timing_data": not rt_metrics,
             },
             "charts": chart_paths
         }
