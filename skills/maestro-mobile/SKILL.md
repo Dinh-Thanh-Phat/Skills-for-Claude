@@ -83,7 +83,7 @@ suite**, on every project, no exception:
    wasn't covered in the original pass). Re-harvesting an already-mapped screen "just to be safe"
    every run is exactly the waste this gate exists to prevent — trust the saved file until it's proven
    stale (an element it documents no longer matches).
-2. **Group flows by auth state before writing them** — `maestro-auth-state-strategy`. One login per
+2. **Group flows by auth state before writing them** — `maestro-speed-optimization` (auth Group A/B/C via `executionOrder`). One login per
    account/session, chain everything that account needs via `runFlow` attach (no `launchApp`/
    `clearState`) instead of a fresh login per flow. If you're about to write a flow that starts with
    `launchApp: {clearState: true}` + a login `runFlow`, stop and check whether it can instead attach
@@ -209,8 +209,8 @@ This lets one flow cover both branches from CI instead of duplicating the file �
 `LOCATION_PERM=allow` and `LOCATION_PERM=deny`.
 
 > `clearState: true` also clears the login session. If a flow assumes a logged-in user, either log
-> in inside the flow or omit `clearState` — see the auth-state grouping strategy in the
-> `maestro-auth-state-strategy` notes rather than paying a full login on every flow.
+> in inside the flow or omit `clearState` — see the auth-state grouping strategy (Group A/B/C via
+> `executionOrder`) in `maestro-speed-optimization` rather than paying a full login on every flow.
 
 ## Element Selection (Priority Order)
 
@@ -267,15 +267,18 @@ Key commands: `tapOn`, `inputText`, `scrollUntilVisible`, `swipe`, `assertVisibl
 
 Maestro auto-retry ~5s mặc định. Mạng chậm hoặc staging API không ổn định cần chiến lược rõ ràng hơn.
 
-**Tầng 1 — CLI retry (đơn giản nhất, áp dụng cả flow)**
+**Tầng 1 — `retry` command trong flow (Maestro không có flag CLI retry)**
 
-```bash
-# Retry toàn bộ flow khi thất bại (tối đa 2 lần)
-maestro test --retry-on-failure 2 flows/
+> ⚠️ `maestro test --retry-on-failure` **không tồn tại** — kiểm bằng `maestro test --help` trên CLI 2.11.0 (2026-10-02). Retry nằm trong flow:
 
-# Hoặc trong CI script
-maestro test --retry-on-failure 2 --format junit --output results.xml flows/
+```yaml
+- retry:
+    maxRetries: 2
+    commands:
+      - runFlow: subflows/login.yaml
 ```
+
+Cloud runs có retry tự động riêng. Đừng bọc cả suite trong vòng lặp shell — che mất flaky thật.
 
 **Tầng 2 — Assertion timeout (chờ API response cụ thể)**
 

@@ -262,13 +262,13 @@ test.describe('TC-LINK: Link Audit', () => {
   test('TC-LINK-CRAWL: BFS crawl + full site check', async ({ page, request }) => {
     test.setTimeout(300_000); // 5 min
     
-    const { visited, sourceMap } = await crawlSite(page);
+    const { visited, sourceMap, crawlErrors } = await crawlSite(page);
     console.log(`Crawled: ${visited.size} pages, ${sourceMap.size} unique links`);
     
-    const broken: string[] = [];
+    const broken: string[] = crawlErrors.map(e => `CRAWL ERROR → ${e}`);
     for (const [url, sources] of sourceMap.entries()) {
       if (isBotProtected(url)) continue;
-      const status = await checkUrl(request, url);
+      const status = await checkLink(page, request, url);
       if (typeof status !== 'number' || status >= 400) {
         broken.push(`HTTP ${status} → ${url.replace(BASE, '')} ← ${sources[0]}`);
       }
@@ -278,13 +278,13 @@ test.describe('TC-LINK: Link Audit', () => {
   });
 
   // Quick check: just seed pages
-  test('TC-LINK-SEEDS: All known pages return 200', async ({ request }) => {
+  test('TC-LINK-SEEDS: All known pages return 200', async ({ page, request }) => {
     test.setTimeout(60_000);
     const seeds = ['/', '/about', '/contact', '/services']; // add your pages
     const broken: string[] = [];
     
     for (const path of seeds) {
-      const status = await checkUrl(request, `${BASE}${path}`);
+      const status = await checkLink(page, request, `${BASE}${path}`); // internal → browser + content check
       if (typeof status !== 'number' || status >= 400) {
         broken.push(`${status} → ${path}`);
       }

@@ -532,9 +532,11 @@ In `run_chatbot_test.py`, choose API caller vs UI automator based on config:
 
 ```python
 def get_caller_config(user_config: dict) -> str:
-    if user_config.get("use_ui_automator") or not user_config.get("api_endpoint"):
+    # chatbot-tester's input contract has only `chatbot_url` (no `api_endpoint`).
+    # Opt into the UI path explicitly; API is the default.
+    if user_config.get("use_ui_automator"):
         return "ui"  # use chatbot_ui_automator.py
-    return "api"     # use chatbot_caller.py
+    return "api"     # use chatbot_caller.py (needs api_config.json or a JSON endpoint)
 
 # Step 3 dispatch
 if caller_mode == "ui":
