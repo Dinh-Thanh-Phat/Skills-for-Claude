@@ -1,9 +1,6 @@
 ---
 name: test-debug-checklist
-description: >-
-  Quick stop-and-diagnose checklist when a single test fails — prevent jumping to fixes without
-  evidence. Use as a quick reference when debugging one specific failing test. Triggers on: "test
-  fail", "debug test", "why test", "test not passing", single test failure scenarios.
+description: Quick stop-and-diagnose checklist when a single test fails — prevent jumping to fixes without evidence. Use as a quick reference when debugging one specific failing test. Triggers on: "test fail", "debug test", "why test", "test not passing", single test failure scenarios.
 ---
 
 # Test Debug Checklist — Stop & Diagnose
@@ -72,7 +69,7 @@ Element not found?
   - Inspect DOM: Does element exist?
   - Check console: Any errors?
 
-- [ ] Run test in isolation: `npx playwright test --grep "^Test Name$"`
+- [ ] Run test in isolation: `npx playwright test path/to/file.spec.ts:LINE` (or `-g "Test Name"` — no `^…$` anchors: grep matches against "project file describe title tags", so `^Test Name$` never matches)
   - Passes alone? → State ripple issue (previous test left bad state)
   - Fails alone? → Inherent test bug
 
