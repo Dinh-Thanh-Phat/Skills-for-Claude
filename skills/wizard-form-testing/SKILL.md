@@ -143,11 +143,15 @@ test('Resume wizard after closing browser', async ({ browser }) => {
   await page.getByLabel('Full Name').fill('Alice');
   await page.getByRole('button', { name: 'Next' }).click();
   await page.getByLabel('Street').fill('123 Main');
+  // ⚠️ A brand-new context has EMPTY cookies/localStorage. If the draft lives in
+  // localStorage (or behind a session cookie), carry it over with storageState —
+  // otherwise this test can only pass for server-side drafts tied to a logged-in user.
+  const state = await ctx.storageState();
   // Close mid-wizard
   await ctx.close();
 
   // New session — wizard should offer to resume
-  const ctx2 = await browser.newContext();
+  const ctx2 = await browser.newContext({ storageState: state });
   const page2 = await ctx2.newPage();
   await page2.goto('/wizard');
   await expect(page2.getByText(/resume|continue/i)).toBeVisible();
