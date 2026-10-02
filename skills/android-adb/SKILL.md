@@ -23,6 +23,8 @@ input simulation, and full device control.
 ```bash
 # Verify adb is available
 adb version
+# Platform-tools latest: 37.0.1 (July 2026). AVOID 36.0.1 — it truncated the last character of
+# files pushed/pulled on Windows (fixed in 36.0.2). Source: developer.android.com/tools/releases/platform-tools
 
 # List connected devices/emulators
 adb devices
