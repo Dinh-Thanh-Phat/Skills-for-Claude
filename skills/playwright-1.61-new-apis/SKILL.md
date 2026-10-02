@@ -205,11 +205,14 @@ await context.tracing.stop({ path: './cdp-artifacts/session.zip' });
 
 ## 9. `screencast.showActions()` — `cursor` Option
 
-Adds a visual cursor decoration over recorded pointer actions, useful for demo/bug-repro recordings where a reviewer needs to see exactly where clicks landed:
+Controls the cursor decoration rendered for pointer actions, useful for demo/bug-repro recordings where a reviewer needs to see exactly where clicks landed. Values: `'pointer'` (default — a mouse pointer animating from the previous action point to the next) or `'none'`:
 
 ```typescript
-await page.screencast.showActions({ cursor: true });
+await page.screencast.showActions({ position: 'top-right', cursor: 'pointer' });
+await page.screencast.showActions({ cursor: 'none' });   // annotations without cursor
 ```
+
+Also in 1.61: the `screencast.start({ onFrame })` callback's frame object gains a `timestamp` (ms since epoch, when the browser presented the frame).
 
 ## 10. `-G` Shorthand for `--grep-invert`
 
@@ -220,9 +223,9 @@ npx playwright test -G @slow
 
 Same behavior as `--grep-invert @slow`, just terser for frequent CLI use (e.g. excluding a smoke-only tag during full-suite local runs).
 
-## 11. `FullConfig.argv` and `FullConfig.configFile` — Reporter Introspection
+## 11. `FullConfig.argv` — Reporter Introspection
 
-Two new fields on the `FullConfig` object passed to custom reporters:
+`FullConfig.argv` is new in 1.61. (`FullConfig.configFile` is a much older field, shown here only because the two pair well.)
 
 ```typescript
 // custom-reporter.ts
