@@ -158,10 +158,15 @@ Run this checklist before saying "coverage is complete":
 ```
 [ ] POS count > 0 for every module
 [ ] NEG count > 0 for every module
-[ ] UI count > 0 for every module with a distinct screen
+[ ] EDGE count > 0 for every module
 [ ] SEC count > 0 for every module with user input or login
-[ ] PERF count > 0 for every module with lists, galleries, calendars
 [ ] A11Y count > 0 for at least core flows (login, main CRUD action)
+[ ] BOUNDARY count > 0 for every module with limited inputs
+[ ] STATE count > 0 for every module that creates/changes data or has statuses
+[ ] ERROR count > 0 for every module that calls the network/API
+--- optional ---
+[ ] UI count > 0 for every module with a distinct screen
+[ ] PERF count > 0 for every module with lists, galleries, calendars
 [ ] Platform count > 0 for any feature marked platform-specific in scope
 ```
 
