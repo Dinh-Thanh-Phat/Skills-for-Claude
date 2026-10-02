@@ -200,12 +200,18 @@ test('B: Delete all users', async ({ page }) => {
 
 **Detection:** Run tests in different order
 ```bash
-# Run in reverse
-npx playwright test --order=reverse
+# Randomize order (prints the seed; pass it back to reproduce the same order)
+npx playwright test --shuffle
+npx playwright test --shuffle 12345
 
-# Run with randomized seed
-npx playwright test --order=random
+# Isolate: does it pass alone?
+npx playwright test -g "B: Delete all users" --workers=1
 ```
+
+> There is NO `--order` flag in Playwright. `--shuffle [seed]` is documented in the current CLI
+> docs (test-cli-js.md) but is absent from 1.60's `--help` — check `npx playwright test --help`
+> on your version. Fallback on older versions: `--workers=1` + `--repeat-each` + running files in
+> a different order manually.
 
 ---
 
