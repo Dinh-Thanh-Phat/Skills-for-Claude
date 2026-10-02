@@ -361,14 +361,13 @@ Real devices need:
 ## Network Conditioner (Throttle Real Network for Tests)
 
 ```bash
-# Install Network Link Conditioner (one-time, on macOS host)
+# Install Network Link Conditioner (one-time, on macOS host; ships in "Additional Tools for Xcode" — path UNVERIFIED)
 open /Applications/Xcode.app/Contents/Applications/Network\ Link\ Conditioner.prefPane
-
-# Programmatically toggle a profile (3G, Edge, etc.)
-sudo nlc start "3G"
-# ... run tests ...
-sudo nlc stop
 ```
+
+Toggle profiles (3G, Edge, …) from the System Settings pane. There is **no `nlc` CLI** — don't script
+`sudo nlc start/stop`. For deterministic slow-network tests prefer a mock server delay
+(`maestro-network-mocking`, WireMock `fixedDelayMilliseconds`).
 
 Simulators inherit host network conditions.
 
@@ -502,9 +501,14 @@ echo "▶ Installing app: $APP_PATH"
 xcrun simctl install $UDID "$APP_PATH"
 
 echo "▶ Granting permissions..."
-for service in location-always location-when-in-use notifications camera photos microphone; do
-  xcrun simctl privacy $UDID grant $service $BUNDLE_ID 2>/dev/null || true
-  echo "  ✓ $service"
+# Run `xcrun simctl help privacy` for the valid names on YOUR Xcode. Report failures honestly —
+# printing ✓ unconditionally hides rejected services (fail-loud).
+for service in location-always photos microphone contacts; do
+  if xcrun simctl privacy $UDID grant $service $BUNDLE_ID; then
+    echo "  ✓ $service"
+  else
+    echo "  ✗ $service REJECTED (invalid name on this Xcode, or app not installed)" >&2
+  fi
 done
 
 echo ""
