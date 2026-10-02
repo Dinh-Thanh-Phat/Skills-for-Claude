@@ -87,40 +87,46 @@ workers: process.env.CI ? 4 : 2,
 
 ### Problem: Multiple workers logging in simultaneously can cause session conflicts.
 
-### Solution A: One shared read-only auth state
+### Solution A: One shared read-only auth state (setup project)
 ```typescript
-// global-setup.ts — runs ONCE before all workers
-import { chromium } from '@playwright/test';
+// tests/auth.setup.ts — runs ONCE before the dependent project
+// (a setup project gets baseURL/fixtures; a hand-launched browser in globalSetup does NOT,
+//  so a relative page.goto('/login') there fails)
+import { test as setup, expect } from '@playwright/test';
 
-export default async function globalSetup() {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  
+setup('authenticate', async ({ page }) => {
   await page.goto('/login');
-  await page.fill('[name="email"]', process.env.TEST_EMAIL!);
-  await page.fill('[name="password"]', process.env.TEST_PASSWORD!);
-  await page.click('[type="submit"]');
+  await page.getByLabel('Email').fill(process.env.TEST_EMAIL!);
+  await page.getByLabel('Password').fill(process.env.TEST_PASSWORD!);
+  await page.getByRole('button', { name: 'Log in' }).click();
   await page.waitForURL('/dashboard');
-  
+
   // Save auth state — workers will READ this, not modify it
   await page.context().storageState({ path: 'tests/.auth/user.json' });
-  await browser.close();
-}
+});
 ```
 
 ```typescript
 // playwright.config.ts
-globalSetup: './tests/global-setup.ts',
-use: {
-  storageState: 'tests/.auth/user.json', // all workers share this READ-ONLY
-},
+projects: [
+  { name: 'setup', testMatch: /auth\.setup\.ts/ },
+  {
+    name: 'chromium',
+    use: { storageState: 'tests/.auth/user.json' }, // all workers share this READ-ONLY
+    dependencies: ['setup'],
+  },
+],
 ```
+Full pattern (roles, OAuth, expiry): `auth-session-testing`.
 
 ### Solution B: Per-worker auth (for tests that modify auth state)
 ```typescript
-// Each worker gets its own test user
-const workerIndex = parseInt(process.env.TEST_WORKER_INDEX || '0');
-const testEmail = `test-worker-${workerIndex}@test.example.com`;
+// Each worker gets its own test user.
+// Use parallelIndex (0..workers-1, REUSED when a worker restarts after a failure),
+// NOT workerIndex (TEST_WORKER_INDEX) — that gets a NEW unique value after every restart,
+// so you'd run out of pre-provisioned users.
+const parallelIndex = test.info().parallelIndex; // or process.env.TEST_PARALLEL_INDEX
+const testEmail = `test-worker-${parallelIndex}@test.example.com`;
 ```
 
 ---
