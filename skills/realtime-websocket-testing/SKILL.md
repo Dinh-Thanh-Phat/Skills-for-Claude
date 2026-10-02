@@ -39,8 +39,8 @@ await expect(page.getByText('Hi there')).toBeVisible();
 ### 3. Simulate server-side events in response to user action
 ```typescript
 await page.routeWebSocket('**/ws', ws => {
-  ws.onmessage(frame => {
-    const msg = JSON.parse(frame.payload as string);
+  ws.onMessage(message => {           // message: string | Buffer
+    const msg = JSON.parse(message.toString());
     if (msg.type === 'subscribe') {
       ws.send(JSON.stringify({ type: 'data', value: 42.5 }));
     }
