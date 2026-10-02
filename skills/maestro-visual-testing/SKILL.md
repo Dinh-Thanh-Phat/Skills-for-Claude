@@ -246,5 +246,6 @@ confirm a red run) before accepting the new baseline.
 
 ## Sources
 - https://maestro.dev/blog/visual-testing — `thresholdPercentage` is the percentage match required to pass; default `95.0`; raise to 98/99 for pixel-sensitive components like charts and custom illustrations
-- https://docs.maestro.dev/reference/commands-available/assertscreenshot — params `path`, `cropOn`, `thresholdPercentage`, `label`; threshold accepts a variable or JS expression resolving to a number; invalid resolution raises `Invalid thresholdPercentage for assertScreenshot` instead of using the default
+- https://docs.maestro.dev/reference/commands-available/assertscreenshot — params `path`, `cropOn`, `thresholdPercentage`, `label`; threshold accepts a variable or JS expression resolving to a number; invalid resolution raises `Invalid thresholdPercentage for assertScreenshot` instead of using the default; "will fail if the comparison image is too dissimilar, or doesn't exist"; reference "likely created by a takeScreenshot invocation in a previous run" (re-checked 2026-10-02)
+- Maestro CHANGELOG — `assertScreenshot` relative paths from flows, extension optional, fails on dimension mismatch
 - https://maestro.dev/blog — CLI 2.8.0 (Aug 6, 2026): variables in permissions and screenshot thresholds
