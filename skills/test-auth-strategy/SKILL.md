@@ -30,7 +30,7 @@ Is this a test ABOUT authentication itself?
   NO  →
     Is there a valid cached token for this role + env?
       YES → reuse it (verify exp first)
-      NO  → authenticate once in global setup, cache result
+      NO  → authenticate once in a setup project, cache result
             → all tests in this run share the cached state (read-only)
 ```
 
