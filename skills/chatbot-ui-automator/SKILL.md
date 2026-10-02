@@ -476,7 +476,8 @@ playwright install firefox webkit
 
 ## Chatbot Needs Login
 
-Add a `login_steps` block to config and run it once on page load:
+Add a `login_steps` block to config. `ChatbotUIAutomator._do_login()` (in the script above)
+runs it once before the first question; set `TEST_EMAIL` / `TEST_PASSWORD` env vars:
 
 ```json
 {
