@@ -19,9 +19,15 @@ embeds a live iOS simulator, Android emulator, or physical device inside your co
 window, letting you watch every MCP command execute in real time.
 
 > **When to use this skill vs `maestro-mcp-workflow`:**
-> This skill covers the **official** `mobile-dev-inc/maestro-mcp` server (run via `maestro mcp`).
-> The `maestro-mcp-workflow` skill covers the **community** `slapglif/maestro-mcp` server (npm clone).
-> The official server requires only CLI 2.6.0 and is the recommended starting point for new setups.
+> This skill covers the **official** MCP server that ships inside the Maestro CLI (run via `maestro mcp`).
+> The old standalone repo `mobile-dev-inc/maestro-mcp` is **archived** (last push 2025-06-23) — do not
+> clone it; upgrading the CLI upgrades the MCP server.
+> The `maestro-mcp-workflow` skill covers the **community** `slapglif/maestro-mcp` server (now deprecated
+> in favour of this one).
+>
+> **Physical iOS devices are NOT supported** — CLI 2.11.0 stops listing physical iPhones and fails runs
+> early with "Physical iOS devices are not yet supported". Use an iOS simulator, Android emulator/device,
+> or Chromium (web).
 
 ---
 
