@@ -37,7 +37,8 @@ Takes a screenshot of the current screen and asks an LLM whether the natural-lan
 - Write assertions as declarative present-tense facts, not questions.
 - Be specific — "3 line items" is better than "some items".
 - Default `optional: true` lets the flow continue on failure; logs the result in the run report.
-- Requires Maestro Cloud AI backend or a configured local LLM.
+- Requires Maestro Cloud authentication (free account is enough) — there is no local/bring-your-own LLM option. See Configuration below.
+- Reports: `~/.maestro/tests/<timestamp>/ai-(<flow name>).json` + `ai-report-(<flow name>).html`.
 
 ---
 
