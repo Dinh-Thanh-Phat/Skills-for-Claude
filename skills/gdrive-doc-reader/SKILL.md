@@ -72,6 +72,9 @@ class GDriveReader:
         creds = None
         if TOKEN_PATH.exists():
             creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
+        if creds and not creds.valid and creds.refresh_token:
+            # Headless refresh — do NOT open a browser just because the access token expired
+            creds.refresh(Request())
         if not creds or not creds.valid:
             flow = InstalledAppFlow.from_client_secrets_file(str(CRED_PATH), SCOPES)
             creds = flow.run_local_server(port=0)
