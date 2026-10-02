@@ -1,14 +1,6 @@
 ---
 name: llm-structured-output-testing
-description: >-
-  Test and validate LLM structured output quality using Pydantic schemas and the Instructor
-  library — track schema pass-rate as a CI gate, monitor retry rate as a prompt-health signal,
-  and design schemas for testability. Use when adding structured output to an LLM pipeline, when
-  a structured-output prompt starts failing validation, when setting up CI gates for a new LLM
-  feature, or when diagnosing why a model keeps needing retries. Triggers on: "structured
-  output", "Pydantic LLM", "Instructor library", "schema validation LLM", "JSON schema LLM",
-  "response_model", "validation error LLM", "schema pass rate", "structured output CI gate", "LLM
-  output validation".
+description: Test and validate LLM structured output quality using Pydantic schemas and the Instructor library — track schema pass-rate as a CI gate, monitor retry rate as a prompt-health signal, and design schemas for testability. Use when adding structured output to an LLM pipeline, when a structured-output prompt starts failing validation, when setting up CI gates for a new LLM feature, or when diagnosing why a model keeps needing retries. Triggers on: "structured output", "Pydantic LLM", "Instructor library", "schema validation LLM", "JSON schema LLM", "response_model", "validation error LLM", "schema pass rate", "structured output CI gate", "LLM output validation".
 ---
 
 # LLM Structured Output Testing
@@ -123,15 +115,15 @@ Each retry costs tokens and latency. Track retry rate as a leading indicator:
 
 ```python
 import instructor
-from instructor import patch
 
-# Instrument retry count
-client_instrumented = instructor.from_anthropic(
-    anthropic.Anthropic(),
-    hooks=instructor.Hooks(
-        on_error=lambda e, n_attempts: print(f"retry #{n_attempts}: {e}"),
-    )
-)
+client_instrumented = instructor.from_anthropic(anthropic.Anthropic())
+
+# Instrument retry count — Instructor's documented hook API is client.on(<event>, handler)
+def on_retry_error(error, *, attempt_number, max_attempts, is_last_attempt):
+    print(f"retry #{attempt_number}/{max_attempts}: {error}")
+
+client_instrumented.on("completion:error", on_retry_error)        # each failed attempt
+client_instrumented.on("parse:error", lambda e: print(f"schema violation: {e}"))  # Pydantic validation failed
 ```
 
 **Retry rate interpretation:**
