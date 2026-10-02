@@ -283,7 +283,7 @@ if ALT_ROW_COLOR and USE_BANDING:
 
 ## Lưu ý
 
-- Script **idempotent** cho hầu hết operations (chạy lại không hại). Riêng `addConditionalFormatRule` sẽ duplicate — xóa rules cũ trước nếu cần rerun:
+- Script **idempotent** cho hầu hết operations (chạy lại không hại). Hai ngoại lệ: `addBanding` sẽ **lỗi** nếu range đã có banding (xoá bằng `deleteBanding` trước — xem mục addBanding), và `addConditionalFormatRule` sẽ duplicate — xóa rules cũ trước nếu cần rerun:
   ```python
   # Xóa toàn bộ conditional rules của sheet trước khi add mới
   meta = sheets.get(spreadsheetId=SPREADSHEET_ID, includeGridData=False).execute()
