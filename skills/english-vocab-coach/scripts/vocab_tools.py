@@ -63,10 +63,12 @@ def build_deck(args):
     out.parent.mkdir(parents=True, exist_ok=True)
 
     # Anki front/back format. Front = word + IPA. Back = gloss + example + collocations.
-    # We use tab-safe fields inside a CSV; Anki reads CSV fine with quoting.
+    # Anki 2.1.54+ file headers (https://docs.ankiweb.net/importing/text-files.html):
+    # declare separator/HTML/columns instead of a plain "Front,Back" row, which would
+    # otherwise risk being imported as a card.
     with out.open("w", encoding="utf-8", newline="") as f:
+        f.write("#separator:Comma\n#html:true\n#columns:Front,Back\n")
         w = csv.writer(f)
-        w.writerow(["Front", "Back"])
         for i, item in enumerate(words):
             word = (item.get("word") or "").strip()
             gloss = (item.get("gloss_vi") or "").strip()
