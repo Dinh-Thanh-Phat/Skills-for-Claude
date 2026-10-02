@@ -252,5 +252,5 @@ Sau khi tạo: cập nhật `capabilities.md` (theo CLAUDE.md Self-Update), và 
 **User:** "Tôi cần tính tăng ca cho công nhân, mỗi ngày chấm vào giờ, giờ tăng ca tính 1.5x, cuối tháng ra bảng lương"
 
 → Claude hỏi thêm: "File chấm công có cột giờ vào/ra không? Hay chỉ có tổng giờ?"  
-→ User trả lời → Claude tạo `timesheet-processor.md`  
+→ User trả lời → Claude tạo `timesheet-processor/SKILL.md`  
 → Lưu vào cả 2 nơi → ghi log → thông báo có thể dùng ngay
