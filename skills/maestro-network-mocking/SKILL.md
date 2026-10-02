@@ -16,6 +16,10 @@ Maestro tests the UI layer. But if the app talks to a real API, tests can fail b
 flakiness, data mutations, or unavailability. Network mocking isolates the UI from the backend:
 the app calls the mock server, gets predictable JSON, and Maestro asserts the UI result.
 
+> **Maestro has NO built-in network mocking/interception** (no mocking page in docs.maestro.dev,
+> nothing in the CHANGELOG through 2.11.0). Everything below happens *outside* Maestro: a mock
+> server or proxy, plus a way to point the **app** at it. Maestro only drives the UI.
+
 ## Decision table — pick an approach
 
 | Approach | App code change needed | Best for | Tool |
