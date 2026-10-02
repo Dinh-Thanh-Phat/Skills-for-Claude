@@ -91,7 +91,7 @@ test('VR-002: Button states', async ({ page }) => {
   await page.goto('/components');
 
   const button = page.locator('[data-testid="primary-button"]');
-  await expect(button).toMatchSnapshot('primary-button.png');
+  await expect(button).toHaveScreenshot('primary-button.png');
 });
 ```
 
@@ -100,8 +100,10 @@ test('VR-002: Button states', async ({ page }) => {
 ## Stability Checklist Before Taking Snapshots
 
 ### 1. Disable CSS animations
+`toHaveScreenshot` already defaults to `animations: 'disabled'` (finite animations fast-forwarded,
+infinite ones reset). Only inject CSS for edge cases it misses (e.g. JS-driven transitions):
 ```typescript
-// In beforeEach or test setup
+// In beforeEach or test setup — optional, edge cases only
 await page.addStyleTag({
   content: `
     *, *::before, *::after {

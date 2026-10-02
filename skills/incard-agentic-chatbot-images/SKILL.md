@@ -198,7 +198,7 @@ every returned id; a picture that "looks right" in a thumbnail can be the wrong 
 
 `GET /dashboard/chatbot/train/gdrive-image/list?id=<botid>` (send header
 `X-Requested-With: XMLHttpRequest`) returns `{ type, data:[ { db_id, gdrive_file_id,
-file_name, s3_url, thumbnail_url, status } … ] }`. Use it to: audit which 64 files are
+file_name, s3_url, thumbnail_url, status } … ] }`. Use it to: audit which files are
 trained, build the 5.E link table (`file_name => s3_url`), find stale/broken records,
 and diff against the live Drive folder. Fetch it in-page with `fetch()` while on the
 dashboard (cookies are sent automatically).
