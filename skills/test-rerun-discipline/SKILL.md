@@ -124,6 +124,8 @@ export default defineConfig({
 
 Local retries hide flaky tests and double DB writes. Fail fast = find root cause fast.
 
+In CI, also consider `retryStrategy: 'isolated'` (1.62+ — runs all retries at the end, one by one in a single worker, so a retry isn't disturbed by the rest of the suite) and `failOnFlakyTests: true` / `--fail-on-flaky-tests` (a test that only passed on retry fails the run instead of silently going green).
+
 ---
 
 ## Decision Table
@@ -132,7 +134,7 @@ Local retries hide flaky tests and double DB writes. Fail fast = find root cause
 |---|---|
 | Starting a fix session | `npx playwright test` (once) |
 | After full run — before fixing | Batch triage ALL failures first |
-| System bug confirmed | `test.skip(true, 'reason')` + qa-quick-report |
+| System bug confirmed | `test.fail(true, 'BUG-xxx: reason')` + qa-quick-report (see `skip-vs-fail`) |
 | Mid-fix iteration (test bugs only) | `npx playwright test --last-failed` |
 | Fixing one specific module | `npx playwright test --grep "@tag"` |
 | All test bugs resolved | `npx playwright test` (final verify, once) |
