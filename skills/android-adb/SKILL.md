@@ -409,7 +409,7 @@ adb -s emulator-5556 shell am instrument ...
 | `INSTALL_FAILED_INSUFFICIENT_STORAGE` | Device full | `adb shell pm clear com.example.app` or use emulator with more space |
 | App crashes immediately | Missing permission or network | Check `adb logcat -v time AndroidRuntime:E *:S` |
 | `adb shell am start` - no effect | Activity name wrong | `adb shell pm dump com.example.app \| grep activity` |
-| Emulator very slow | No KVM / hardware accel | Enable KVM on Linux, HAXM on Windows |
+| Emulator very slow | No KVM / hardware accel | Linux: enable KVM. Windows: enable **Windows Hypervisor Platform (WHPX)** — HAXM is gone, and the Android Emulator hypervisor driver (AEHD) is sunset 2026-12-31 (developer.android.com/studio/run/emulator-acceleration) |
 | Wireless ADB drops often | Network instability | Prefer USB for reliability; `adb reconnect` to recover |
 
 ## Script: Cấp Quyền Tự Động Trước Khi Maestro Chạy
