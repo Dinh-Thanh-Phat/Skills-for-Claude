@@ -37,7 +37,7 @@ Source: https://baymard.com/lists/cart-abandonment-rate , https://baymard.com/bl
 - [ ] Trust signals near payment (HTTPS lock, security/badge, return policy) → 🚩 if absent
 - [ ] Step count shown / progress indicator on multi-step → 🚩 if missing
 
-**Touch (if mobile applies)** — tap targets ≥ 44 pt; numeric keypad for numeric fields.
+**Touch (if mobile applies)** — tap targets ≥ 44 pt (Apple HIG; WCAG 2.2 AA floor is 24×24 CSS px); numeric keypad for numeric fields.
 
 ## How to run (read-only)
 Navigate to the flow with Playwright (do NOT submit real data). For each step:
