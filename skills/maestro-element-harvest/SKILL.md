@@ -98,10 +98,14 @@ match bằng `text:`+`below:`. Kèm ngày + build versionCode. **Đây là ngu�
 ## Deep link — bỏ luôn bước nav (nhanh nhất)
 Nếu app có scheme (vd `olivia://`), nhảy thẳng vào màn cần thay vì tap nav:
 ```yaml
+# flow (YAML) — chỉ chứa lệnh Maestro
 - openLink: "olivia://clients/new"   # thẳng tới form, bỏ Home→tab→add
-- maestro hierarchy > dumps/crm-create.json
 ```
-Xem `[[maestro-test-scaling]]` (deep-link bỏ nav ~70%).
+```bash
+# shell — `maestro hierarchy` là lệnh CLI, KHÔNG đặt trong YAML
+maestro hierarchy --compact > dumps/crm-create.json
+```
+Xem memory `reference_maestro-test-scaling.md` (KHÔNG phải skill; deep-link bỏ nav ~70%).
 
 ---
 
