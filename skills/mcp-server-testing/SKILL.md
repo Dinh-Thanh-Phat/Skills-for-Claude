@@ -117,3 +117,6 @@ Token handling additionally requires expiration/rotation enforcement on the serv
 - https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/clients/cli/README.md
 - https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md
 - https://labs.cloudsecurityalliance.org/agentic/agentic-mcp-security-best-practices-v1/
+- Inspector v1→v2 migration (exit codes, Node floor, `--config` vs `--catalog`): https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/docs/v1-to-v2-migration.md
+- MCP Python SDK v2 client docs ("In tests": `Client(mcp)`, `structured_content`, `is_error`): https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/docs/client/index.md
+- MCP conformance suite: https://github.com/modelcontextprotocol/conformance ; spec releases: https://github.com/modelcontextprotocol/modelcontextprotocol/releases
