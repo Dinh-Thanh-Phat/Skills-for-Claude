@@ -1,11 +1,6 @@
----
+﻿---
 name: e2e-test-stability
-description: >-
-  Fix and prevent flaky Playwright E2E tests — race conditions, stale element references,
-  networkidle timeouts, CI vs local differences. Use when tests pass locally but fail in CI, when
-  tests are intermittently failing, or when fixing timing-related test failures. Triggers on:
-  "flaky test", "intermittent failure", "race condition", "networkidle timeout", "detached
-  element", "passes locally fails CI", "CI failure", "element timing", "auto-wait".
+description: Fix and prevent flaky Playwright E2E tests — race conditions, stale element references, networkidle timeouts, CI vs local differences. Use when tests pass locally but fail in CI, when tests are intermittently failing, or when fixing timing-related test failures. Triggers on: "flaky test", "intermittent failure", "race condition", "networkidle timeout", "detached element", "passes locally fails CI", "CI failure", "element timing", "auto-wait".
 origin: research
 scope: testing, playwright, stability, flaky
 triggers:
@@ -23,14 +18,15 @@ triggers:
 
 ## Core Principle
 
-Wait for **STATE**, not **TIME**. `waitForSelector` > `waitForTimeout`.
+Wait for **STATE**, not **TIME**. Web-first assertions (`await expect(locator).toBeVisible()`) > `waitForTimeout`.
+(`page.waitForSelector` is *discouraged* in the Playwright API docs and `networkidle` is marked **DISCOURAGED** — use web-first assertions or `locator.waitFor()`.)
 
 ## Root Causes
 
 | Cause | Symptom | Fix |
 |---|---|---|
-| `networkidle` hangs | Timeout on goto | Use `domcontentloaded` + `waitForSelector` |
-| Element in animation | Click hits wrong position | `waitForSelector` + check stable |
+| `networkidle` hangs | Timeout on goto | `goto` (default `load`) + `await expect(locator).toBeVisible()` |
+| Element in animation | Click hits wrong position | Locator actions already wait for "stable"; assert the target state with `expect` |
 | Toast disappears before assertion | `toBeVisible` fails intermittently | Use `page.clock` or assert immediately |
 | Parallel tests share state | Random failures | Isolated contexts per test |
 | CI slower than local | Passes local, fails CI | Environment-aware timeouts |
