@@ -1,16 +1,6 @@
 ---
 name: playwright-snapshot-parser
-description: >-
-  Parse Playwright accessibility snapshots (aria tree / UI tree) to extract validated selectors,
-  generate multiple selector strategies, detect ARIA violations, generate toMatchAriaSnapshot
-  assertions, find elements by intent, and debug failed locators. Use this skill whenever you
-  have a Playwright accessibility snapshot (the tree with roles/labels/refs), need to write
-  locators from snapshot output, get "element not found" errors and have the snapshot, want to
-  audit UI for accessibility issues, need toMatchAriaSnapshot assertion templates, or are trying
-  to figure out which getByRole/getByLabel/locator to use. Trigger on: "parse snapshot",
-  "accessibility tree", "aria snapshot", "ref=e", "getByRole from snapshot", "snapshot selector",
-  "debug locator from tree", "why can't playwright find", "what selector should I use",
-  "toMatchAriaSnapshot", "snapshot output from Playwright".
+description: Parse Playwright accessibility snapshots (aria tree / UI tree) to extract validated selectors, generate multiple selector strategies, detect ARIA violations, generate toMatchAriaSnapshot assertions, find elements by intent, and debug failed locators. Use this skill whenever you have a Playwright accessibility snapshot (the tree with roles/labels/refs), need to write locators from snapshot output, get "element not found" errors and have the snapshot, want to audit UI for accessibility issues, need toMatchAriaSnapshot assertion templates, or are trying to figure out which getByRole/getByLabel/locator to use. Trigger on: "parse snapshot", "accessibility tree", "aria snapshot", "ref=e", "getByRole from snapshot", "snapshot selector", "debug locator from tree", "why can't playwright find", "what selector should I use", "toMatchAriaSnapshot", "snapshot output from Playwright".
 ---
 
 # Playwright Snapshot Parser
@@ -61,7 +51,7 @@ await expect(page.locator('body')).toMatchAriaSnapshot('');
 // Then run: npx playwright test --update-snapshots
 ```
 
-> **Note:** `page.accessibility.snapshot()` is the older JSON API — it still works but the YAML-based `ariaSnapshot()` is the current standard (v1.49+). Prefer `ariaSnapshot()`.
+> **Note:** `page.accessibility.snapshot()` was **removed in v1.57** (deprecated for 3 years) — calling it throws. Use `ariaSnapshot()` (YAML, v1.49+; `page.ariaSnapshot()` and the `mode`/`depth` options since v1.59) or `ariaSnapshotJSON()` (v1.63) for a JSON tree. For a11y audits use Axe.
 
 ---
 
