@@ -1,11 +1,6 @@
 ---
 name: qa-quick-report
-description: >-
-  Show quick test results inline in Claude Code extension FIRST before any file output. Use when
-  running automation tests, viewing test results, or exporting reports. Keywords: "chạy test",
-  "run tests", "test results", "xuất report", "automation results", "kết quả test", "test
-  report". Excel export ONLY when user explicitly asks ("xuất excel", "export excel", "tạo file
-  excel").
+description: Show quick test results inline in Claude Code extension FIRST before any file output. Use when running automation tests, viewing test results, or exporting reports. Keywords: "chạy test", "run tests", "test results", "xuất report", "automation results", "kết quả test", "test report". Excel export ONLY when user explicitly asks ("xuất excel", "export excel", "tạo file excel").
 ---
 
 # QA Quick Report Skill
@@ -56,6 +51,7 @@ Output a formatted summary directly in chat — readable in the Claude Code exte
 | Total       | X     |
 | ✅ PASS     | Y     |
 | ❌ FAIL     | Z     |
+| ⚠️ FLAKY    | F     |
 | ⏭️ SKIP    | N     |
 
 **Pass Rate:** X% — [✅ ALL PASS / ❌ FAILURES DETECTED]
@@ -67,7 +63,7 @@ Output a formatted summary directly in chat — readable in the Claude Code exte
 
 ### Next Steps
 - [if FAIL] Run `test-failure-triage` to batch categorize: test bugs vs system bugs
-  - System bugs → `test.skip(true, 'reason')` + report to user
+  - System (product) bugs → lock with `test.fail()` + bug ID annotation (see `skip-vs-fail`) + report to user — **never `test.skip` a known product bug** (skip hides it; `test.fail()` alerts when it gets fixed)
   - Test bugs → fix with `npx playwright test --last-failed`
 - [if all PASS] Ready for release check with `qa-regression` skill
 ```
@@ -77,7 +73,7 @@ Output a formatted summary directly in chat — readable in the Claude Code exte
 - Use markdown table (renders in Claude Code extension)
 - Keep inline report under 50 lines — link to full log if verbose
 - List FAILED tests: filename:line, suite path, first error line only
-- Show ✅ ❌ ⏭️ emojis for fast visual scanning
+- Show ✅ ❌ ⚠️ ⏭️ emojis for fast visual scanning (FLAKY = passed only on retry — never count it as a clean PASS)
 
 ---
 
@@ -88,11 +84,17 @@ Only generate Excel files if the user says:
 - "tạo file excel" / "tạo excel report"
 - "create excel file" / "generate excel report"
 
-If requested, invoke `qa-excel-export` skill logic to create both files:
-1. `test_cases_automation_[YYYYMMDD].xlsx`
-2. `test_cases_manual_[YYYYMMDD].xlsx`
+If requested, invoke the `qa-excel-export` skill and follow its default format
+(`qa-excel-export/references/deliverable-format.md` — one sheet per module). Do not use the legacy
+2-file `test_cases_automation_*` / `test_cases_manual_*` layout unless the user explicitly asks for it.
 
 **Do NOT auto-generate Excel files.** The inline report is always enough unless Excel is asked for.
+
+### Shareable report (for team / client)
+
+When the user wants a report to share (not just the inline summary) → push it to a **separate Google Sheet**
+(one spreadsheet per test run, never a new tab in the original test-case sheet) via `gsheet-safe-write`, then
+format with `gsheet-formatter`. Produce an HTML report only if the user explicitly asks for HTML.
 
 ---
 
