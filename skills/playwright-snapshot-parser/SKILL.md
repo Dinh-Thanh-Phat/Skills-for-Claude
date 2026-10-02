@@ -130,7 +130,8 @@ Element: [role] "[name]" (ref=eN)
 Path: document > main > region"Filters" > button
   [1] getByRole: page.getByRole('button', { name: 'Apply' })
   [2] scoped:    page.getByRole('region', { name: 'Filters' }).getByRole('button', { name: 'Apply' })
-  [3] chained:   page.locator('region >> text=Apply')
+  [3] chained:   page.getByRole('region', { name: 'Filters' }).getByText('Apply')
+                 // NOT page.locator('region >> text=Apply') — "region" is parsed as a CSS tag name, matches nothing
   Confidence: HIGH / MEDIUM / LOW (based on name uniqueness in tree)
 ```
 

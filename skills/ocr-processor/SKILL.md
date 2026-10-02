@@ -491,16 +491,18 @@ pip install requests
 
 ## Integration with chatbot-tester Pipeline
 
-When `gdrive-doc-reader` downloads files that include scanned PDFs or images, run `ocr_processor.py` first:
+> ⚠️ **Known limitation:** `gdrive-doc-reader` extracts text in memory and does NOT save the
+> source files, so there is no `./downloaded_docs/` for this step to read. Today Step 0 only
+> works on files you downloaded manually (or with your own script). Also, `qa-generator` has
+> no `qa_generator.py` CLI — its code is a template; feed `ocr_output.txt` to it the same way
+> you feed `docs_content.txt` (e.g. concatenate both, then run your generator).
 
 ```bash
-# Step 0: OCR (only when source docs are scanned)
+# Step 0: OCR (only when source docs are scanned; input = locally downloaded files)
 python ocr_processor.py ./downloaded_docs/ ocr_output.txt ocr_quality_report.json
 
-# Step 1: QA generation uses OCR output instead of docs_content.txt
-python qa_generator.py ocr_output.txt test_questions.json
-
-# Steps 2-6 continue normally...
+# Then: merge ocr_output.txt into docs_content.txt (same "=== filename ===" format)
+# and continue with qa-generator → chatbot-api-caller → ... as usual.
 ```
 
 The `chatbot-tester` orchestrator should check for scanned content:
