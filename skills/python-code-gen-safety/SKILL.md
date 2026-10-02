@@ -174,14 +174,14 @@ When you need to **extend** an existing Python codebase (add new functions, new 
 ## RULE 8 — Verify Dependencies Installed Before Running
 
 ```python
-import importlib, sys
-REQUIRED = ['openpyxl', 'pandas', 'pdfminer.six']
+import importlib.util, sys
+# pip distribution name → import name (they often differ: pdfminer.six → pdfminer,
+# python-docx → docx, Pillow → PIL, opencv-python → cv2). Never derive one from the other.
+REQUIRED = {'openpyxl': 'openpyxl', 'pandas': 'pandas', 'pdfminer.six': 'pdfminer'}
 
 def check_deps():
-    missing = []
-    for pkg in REQUIRED:
-        try: importlib.import_module(pkg.replace('.', '_').replace('-', '_'))
-        except ImportError: missing.append(pkg)
+    missing = [dist for dist, mod in REQUIRED.items()
+               if importlib.util.find_spec(mod) is None]
     if missing:
         print(f"Missing deps: {missing}\nRun: pip install {' '.join(missing)}")
         sys.exit(1)
