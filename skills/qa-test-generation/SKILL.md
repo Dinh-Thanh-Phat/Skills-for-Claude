@@ -243,7 +243,7 @@ After generating **manual test cases only**:
 Saved to: `data/outputs/test-cases-[feature]-[YYYYMMDD].md`
 
 > Manual test cases đã xong. Vui lòng review và confirm khi nào tôi sẽ viết automation tests.
-> To export Excel: say "xuất excel" or "export excel"
+> (Deliverable từ spec đã kèm xlsx 1 sheet/module. Case lẻ: nói "xuất excel" nếu cần Excel.)
 ```
 
 3. **STOP HERE** — Do not write any automation code until user confirms.
