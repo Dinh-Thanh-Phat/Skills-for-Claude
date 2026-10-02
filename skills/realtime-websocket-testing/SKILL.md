@@ -26,12 +26,10 @@ await expect(page.getByText('New order received')).toBeVisible();
 ### 2. Simulate timed message sequence
 ```typescript
 await page.routeWebSocket('**/ws/chat', ws => {
-  ws.onopen(() => {
-    ws.send(JSON.stringify({ user: 'Alice', text: 'Hello' }));
-    setTimeout(() => {
-      ws.send(JSON.stringify({ user: 'Bob', text: 'Hi there' }));
-    }, 100);
-  });
+  ws.send(JSON.stringify({ user: 'Alice', text: 'Hello' }));
+  setTimeout(() => {
+    ws.send(JSON.stringify({ user: 'Bob', text: 'Hi there' }));
+  }, 100);
 });
 await page.goto('/chat');
 await expect(page.getByText('Hello')).toBeVisible();
