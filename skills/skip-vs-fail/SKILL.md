@@ -25,7 +25,7 @@ test('SE-017: bilingual template', async ({ page }) => {
   await page.goto('/send-email');
   const template = page.getByRole('option').filter({ hasText: /bilingual/i }).first();
   
-  if (!await template.isVisible({ timeout: 3000 })) {
+  if (!await template.isVisible({ timeout: 3000 })) { // (timeout is ignored — isVisible never waits)
     test.skip(); // ← Bug: if template fails to load due to a real bug, test silently skips
     return;
   }
