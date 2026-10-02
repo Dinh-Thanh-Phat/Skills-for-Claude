@@ -248,6 +248,7 @@ class CustomReporter implements Reporter {
 **Use case**: custom reporters that need to know exactly how the run was invoked (e.g. `npx playwright test -- --env=staging`) or which config file was resolved, without duplicating CLI-argument parsing logic.
 
 ## Sources
+- https://github.com/microsoft/playwright/blob/main/docs/src/api/class-credentials.md, class-webstorage.md, class-screencast.md, test-use-options-js.md#video-modes (corrected 2026-10-02)
 - https://github.com/microsoft/playwright/releases/tag/v1.61.0
 - https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
 - https://raw.githubusercontent.com/microsoft/playwright/v1.61.0/docs/src/release-notes-js.md
