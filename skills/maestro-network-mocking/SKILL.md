@@ -126,17 +126,27 @@ adb shell setprop debug.app.api_url http://10.0.2.2:8080
 
 ### Maestro flow using mocked API
 
+> ⚠️ A flow-level `env:` block only defines **Maestro variables** (`${API_BASE_URL}` inside the YAML).
+> The app never sees it. To hand the URL to the app, pass it as a **launch argument** — documented
+> `launchApp.arguments` (string/boolean/double/integer), read by the app via `intent.extras` (Android)
+> / launch arguments (iOS). The app must be coded to honour it (debug builds only).
+
 ```yaml
 # flows/product-list-empty-state.yaml
 appId: com.example.app
 env:
-  API_BASE_URL: http://10.0.2.2:8080   # WireMock address
+  MOCK_URL: http://10.0.2.2:8080       # Maestro variable (Android emulator → host)
 ---
 - launchApp:
     clearState: true
+    arguments:
+      apiBaseUrl: ${MOCK_URL}          # app reads intent.extras?.getString("apiBaseUrl")
 - assertVisible:
     text: "No products found"    # rendered from the empty-state JSON stub
 ```
+
+Variable interpolation inside `arguments` values is UNVERIFIED — if it doesn't resolve, hard-code the
+URL or use a mock-pointed build flavor.
 
 ### Partial mocking — proxy pass-through
 
