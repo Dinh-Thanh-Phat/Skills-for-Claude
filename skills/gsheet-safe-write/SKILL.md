@@ -41,6 +41,8 @@ for i, row in enumerate(sample.get('values', [])):
 ### Bước 2 — Validate trước khi ghi (dry-run)
 
 ```python
+import sys
+
 def dry_run_preview(rows_to_write: list, label="DRY RUN"):
     print(f"\n=== {label}: {len(rows_to_write)} rows ===")
     for i, row in enumerate(rows_to_write[:5]):  # in 5 dòng đầu
@@ -121,7 +123,11 @@ print("\n=== PREVIEW CHANGES ===")
 # Print changes trước khi apply
 
 # === STEP 4: APPLY (sau khi confirm) ===
+
+# === STEP 5: FORMAT NGAY SAU KHI GHI → chạy skill gsheet-formatter ===
 ```
+
+> **→ Ghi xong phải format ngay:** chạy skill `gsheet-formatter` cho đúng tab vừa ghi (wrap, width, header, conditional color) — đừng để sheet thô cho user tự sửa (memory `feedback_gsheet-append-phantom-rows`: "luôn format ngay sau khi write").
 
 ## Checklist trước khi chạy sheet script
 
