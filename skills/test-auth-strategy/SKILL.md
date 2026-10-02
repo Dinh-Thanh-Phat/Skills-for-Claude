@@ -160,6 +160,6 @@ await page.fill('#email', 'admin@example.com');
 | Test ABOUT logout | Re-authenticate after logout | Session invalidated |
 | Test for token expiry | Re-authenticate with short-lived token | Need controlled expiry |
 | Performance test — throughput | Reuse token pool | Avoid overloading auth service |
-| CI pipeline (each run independent) | Re-authenticate in global setup | No cross-run state |
+| CI pipeline (each run independent) | Re-authenticate in the setup project | No cross-run state |
 | Parallel workers (same run) | Share same state file (read-only) | One login, many readers |
 
