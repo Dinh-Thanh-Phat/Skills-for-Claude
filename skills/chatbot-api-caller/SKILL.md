@@ -179,7 +179,7 @@ class ChatbotAPICaller:
         return results
 
     def run(self, questions_file: str, output_file: str = "raw_responses.json") -> list:
-        questions = json.loads(Path(questions_file).read_text())
+        questions = json.loads(Path(questions_file).read_text(encoding="utf-8"))  # Windows default cp1252 breaks Vietnamese
         return asyncio.run(self.run_all(questions, output_file))
 
 
