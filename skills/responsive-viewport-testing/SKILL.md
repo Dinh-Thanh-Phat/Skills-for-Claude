@@ -77,8 +77,9 @@ test('swipe gesture works on mobile', async ({ browser }) => {
   const page = await ctx.newPage();
   await page.goto('/carousel');
   await page.locator('.carousel').tap();
-  // swipe
   await page.touchscreen.tap(200, 400);
+  // Note: Playwright has no built-in swipe — touchscreen only taps. For a swipe, dispatch
+  // TouchEvents (touchstart/touchmove/touchend) via locator.dispatchEvent or page.evaluate.
 });
 ```
 
