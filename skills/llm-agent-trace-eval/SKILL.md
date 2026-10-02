@@ -163,3 +163,4 @@ def test_agent(golden: Golden):
 - [LLM Tracing — DeepEval](https://deepeval.com/docs/evaluation-llm-tracing)
 - [AI Agent Evaluation Metrics — DeepEval](https://deepeval.com/guides/guides-ai-agent-evaluation-metrics)
 - [Best LLM Evaluation Tools for AI Agents 2026 — Confident AI](https://www.confident-ai.com/knowledge-base/compare/best-llm-evaluation-tools-for-ai-agents)
+- deepeval 4.2.7 wheel (PyPI, 2026-09-29) — `deepeval/tracing/__init__.py`, `tracing.py` (`observe(metrics=, type=)`), `context.py` (`update_current_span`), `dataset/dataset.py` (`evals_iterator`): https://pypi.org/project/deepeval/
