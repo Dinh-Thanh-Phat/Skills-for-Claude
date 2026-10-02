@@ -160,15 +160,27 @@ def ocr_tesseract(img: np.ndarray, languages: list = None) -> tuple:
     return text, avg_conf
 
 
+_EASYOCR_READERS = {}
+_EASYOCR_LOCK = __import__("threading").Lock()
+
+
+def _get_easyocr_reader(langs: tuple):
+    """Build each EasyOCR Reader ONCE (model load is slow) and reuse across threads/pages."""
+    import easyocr
+    with _EASYOCR_LOCK:
+        if langs not in _EASYOCR_READERS:
+            _EASYOCR_READERS[langs] = easyocr.Reader(list(langs), gpu=False, verbose=False)
+        return _EASYOCR_READERS[langs]
+
+
 def ocr_easyocr(img: np.ndarray, languages: list = None) -> tuple:
     """Returns (text, avg_confidence). Secondary engine (deep learning)."""
-    import easyocr
     langs = languages or ["vi", "en"]
     # Map tesseract lang codes to easyocr codes
     lang_map = {"vie": "vi", "eng": "en", "vi": "vi", "en": "en"}
-    langs = [lang_map.get(l, l) for l in langs]
+    langs = tuple(lang_map.get(l, l) for l in langs)
 
-    reader = easyocr.Reader(langs, gpu=False, verbose=False)
+    reader = _get_easyocr_reader(langs)
     results = reader.readtext(img, batch_size=4)
     # results: [(bbox, text, confidence), ...]
     if not results:
