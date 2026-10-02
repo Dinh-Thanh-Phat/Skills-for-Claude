@@ -50,7 +50,7 @@ where the PNG was written after the record run and move it next to the flows if 
 
 ```yaml
 - assertScreenshot:
-    path: checkout-screen        # baseline filename, no extension
+    path: baselines/checkout-screen   # existing reference image, relative to the flow; extension optional
     thresholdPercentage: 98      # require 98% pixel match — STRICTER than the 95 default
     cropOn:
       id: "payment-form"
@@ -59,9 +59,9 @@ where the PNG was written after the record run and move it next to the flows if 
 
 | Option | Type | Default | Notes |
 |---|---|---|---|
-| `path` | string | — | Baseline filename without extension; may include subdirectories. Supports JS expressions |
+| `path` | string | — | **Required.** Existing reference image (usually from a prior `takeScreenshot`), relative to the flow; extension optional; may include subdirectories. Supports JS expressions. Missing file ⇒ assertion fails |
 | `thresholdPercentage` | number | `95` | **Percentage match required to pass.** Higher = stricter. Accepts a variable or JS expression that resolves to a number |
-| `cropOn` | selector | — | Compare only this element's bounds |
+| `cropOn` | selector | — | Compare only this element's bounds. The reference image must have been cropped the same way |
 | `label` | string | — | Message displayed when the assertion runs |
 
 ### Picking a threshold
