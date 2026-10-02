@@ -151,6 +151,10 @@ await expect(page).toHaveURL(/dashboard/);  // refresh succeeded, no redirect to
 
 ## Pattern 5b: JWT Expiry via `page.clock`
 
+> `page.clock` only fakes time INSIDE the browser. It works when expiry is enforced client-side
+> (the SPA reads `exp` and redirects). If the server rejects the token, faking browser time
+> does nothing — issue a genuinely short-lived token instead.
+
 ```typescript
 // Issue a short-lived token, fast-forward, watch behavior
 await page.clock.install();
