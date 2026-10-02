@@ -276,7 +276,8 @@ npx playwright test --shuffle
 | "Element not found" in second run | Test doesn't clean up, next test sees leftover | Add afterEach cleanup |
 | "Session expired" or "Already logged in" | Workers share mutable auth state | Use read-only storageState or per-worker users |
 | "Port already in use" | Two workers start test server on same port | Use dynamic port assignment |
-| "File already exists" | Two workers write to same output file | Include worker index in file path |
+| "File already exists" | Two workers write to same output file | Include `testInfo.parallelIndex` (or `testInfo.outputPath()`) in file path |
+| Two tests flip the same global setting | Shared external resource | `{ lock: 'name' }` on those tests (1.63+) |
 
 ---
 
@@ -337,10 +338,31 @@ export const test = base.extend<{}, { dbClient: DbClient }>({
 ```typescript
 test.describe.configure({ mode: 'serial' });
 test('step 1', async ({ page }) => { ... });
-test('step 2', async ({ page }) => { ... });   // runs in order, shares page
+test('step 2', async ({ page }) => { ... });   // runs in order — but gets a FRESH page (nothing shared but server state)
 ```
 
 Use only when state intentionally chains across tests (rare — usually a smell).
+
+## Test Locks — Serialize Only the Tests That Share a Resource (1.63+)
+
+When a few tests touch one shared external resource (a global account setting, a single
+sandbox merchant, a rate-limited third-party account), don't make the whole file serial or drop
+to `--workers=1`. Give them a named `lock`: tests holding the same lock never run concurrently —
+across files, workers and projects — while everything else stays parallel.
+
+```typescript
+test('update user settings', { lock: 'user-settings' }, async ({ page }) => {
+  // never runs at the same time as other tests holding 'user-settings'
+});
+
+test.describe('billing sandbox', { lock: 'stripe-sandbox' }, () => {
+  // every test in this group holds the lock
+});
+```
+
+A test can hold multiple locks. Locks fix *concurrency* collisions only — the test must still
+clean up after itself (see `test-data-lifecycle`). Source: Playwright 1.63 release notes,
+playwright.dev/docs/test-parallel#test-locks.
 
 ## fullyParallel + Serial Mix
 
