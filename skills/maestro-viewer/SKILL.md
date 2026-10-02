@@ -149,8 +149,10 @@ cloud run without shelling out to `maestro cloud`:
 |---|---|
 | `run_on_cloud` | Submit a flow + app binary to Maestro Cloud asynchronously; returns a dashboard URL |
 | `get_cloud_run_status` | Poll a cloud run's status and per-flow results |
-| `describe_cloud_run` | New in **2.7.0** — inspect the status and results of a Maestro Cloud run (per the official CHANGELOG). Overlaps in description with `get_cloud_run_status`; the changelog doesn't state whether it replaces or supplements that tool, and the official MCP docs page 403'd to verification — if both appear in your agent's tool list, prefer whichever one is actually offered and treat the other as possibly deprecated. |
-| `list_cloud_devices` | List valid `{platform, model, supported_os}` triples for the `device_model` param on `run_on_cloud` |
+| `list_cloud_devices` | List valid `{ device_model, device_os }` pairs — call before `run_on_cloud`; pass OS verbatim (e.g. `iOS-17-5`, `android-34`) |
+| `describe_cloud_run` | Listed in CHANGELOG 2.7.0 but **NOT** in the official docs tool table (checked 2026-10-02). Use it only if your agent's tool list actually shows it; otherwise poll `get_cloud_run_status` (every ~60s until `SUCCESS`/`ERROR`/`CANCELED`/`WARNING`) |
+
+Cloud tools require `maestro login` (or `MAESTRO_CLOUD_API_KEY` for non-interactive environments).
 
 This is useful when you want the agent to kick off a full-device-matrix cloud run (instead of the
 single local simulator/emulator `run` targets) and report back once it completes — e.g. "run this
@@ -162,7 +164,7 @@ flow on cloud against an iPhone 15 and an iPhone 13 Mini, then tell me if either
 
 When a flow fails, the agent automatically:
 
-1. Calls `inspect_hierarchy` to get the current live element tree.
+1. Calls `inspect_screen` to get the current live element tree.
 2. Cross-references the failing step's selector against what's actually on screen.
 3. Proposes the corrected `id:` or `text:` value.
 4. Re-runs the flow to confirm the fix.
