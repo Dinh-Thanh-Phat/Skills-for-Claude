@@ -125,6 +125,14 @@ pip install hypothesis pytest
 from hypothesis import given, settings, strategies as st
 import pytest
 
+# ⚠️ @given + a FUNCTION-scoped pytest fixture fails Hypothesis's
+# `function_scoped_fixture` health check (the fixture is NOT reset between examples).
+# Use a module/session-scoped client, or explicitly opt out with
+# @settings(suppress_health_check=[HealthCheck.function_scoped_fixture]) if that is intended.
+@pytest.fixture(scope="module")
+def client():
+    ...
+
 @given(
     name=st.text(min_size=1, max_size=100),
     age=st.integers(min_value=0, max_value=130),
@@ -142,6 +150,20 @@ def test_create_user_round_trip(client, name, age):
 
 Hypothesis maintains a **database of found failures** between runs — previously discovered
 edge cases are always re-run first.
+
+## Schemathesis (OpenAPI-driven, Python) — for the "Schema compliance" invariant
+
+If the API has an OpenAPI/GraphQL schema, Schemathesis (current major **4.x**, 4.29 on PyPI)
+generates requests from the schema itself (built on Hypothesis) and checks responses for 5xx,
+schema conformance, status-code and content-type mismatches — no hand-written arbitraries.
+
+```bash
+pip install schemathesis
+schemathesis run https://staging.example.com/openapi.json   # CLI, against a TEST env only
+```
+
+It sends many write requests — point it at an isolated environment, never production.
+Exact v4 CLI flags change between minors: check `schemathesis run --help` for your installed version.
 
 ## Migration Playbook (adding PBT to existing API tests)
 
