@@ -1,11 +1,6 @@
----
+﻿---
 name: responsive-viewport-testing
-description: >-
-  Patterns for responsive and viewport testing in Playwright — mobile emulation, breakpoint
-  testing, hamburger menus, touch targets, device descriptors. Use when writing tests for mobile
-  layouts, responsive design breakpoints, or touch interactions. Triggers on: "mobile test",
-  "responsive", "viewport", "hamburger menu", "mobile layout", "breakpoint", "setViewportSize",
-  "mobile emulation", "touch", "tablet", "device".
+description: Patterns for responsive and viewport testing in Playwright — mobile emulation, breakpoint testing, hamburger menus, touch targets, device descriptors. Use when writing tests for mobile layouts, responsive design breakpoints, or touch interactions. Triggers on: "mobile test", "responsive", "viewport", "hamburger menu", "mobile layout", "breakpoint", "setViewportSize", "mobile emulation", "touch", "tablet", "device".
 triggers:
   - "mobile test"
   - "responsive"
@@ -33,7 +28,9 @@ export default defineConfig({
   projects: [
     { name: 'desktop', use: { viewport: { width: 1280, height: 720 } } },
     { name: 'mobile-chrome', use: { ...devices['Pixel 7'] } },
-    { name: 'tablet', use: { ...devices['iPad Pro'] } },
+    { name: 'tablet', use: { ...devices['iPad Pro 11'] } },
+    // ⚠️ devices['iPad Pro'] does NOT exist — spreading undefined silently gives a desktop project.
+    // Valid names live in Playwright's deviceDescriptorsSource.json ('iPad Pro 11', 'iPad Mini', 'iPad (gen 11)'...)
   ],
 });
 
