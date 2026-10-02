@@ -169,12 +169,12 @@ def run_agent(user_input: str) -> str:
 - Human annotation UI for labelling production traces
 - Dataset management (good/bad example collection)
 - Export to CSV/JSON for offline eval
+- SDK experiments + batch evaluation (`langfuse.experiment`, `langfuse.batch_evaluation`, with a `RegressionError` for gating) in the v4 Python SDK
 
 **What it lacks vs. Braintrust/Latitude:**
 - No automatic issue clustering (must review traces manually)
-- No automatic eval generation
-- No multi-turn simulation runner
-- Requires your own Kubernetes/Postgres infra to self-host
+- No built-in multi-turn user-simulation runner (bring your own, as with Latitude)
+- Self-hosting needs Postgres + ClickHouse + Redis/Valkey (+ blob storage): Docker Compose for local/single-VM, Helm/Kubernetes or cloud templates for production
 
 ---
 
