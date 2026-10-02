@@ -18,7 +18,7 @@ task_type: "bug"
 description: "Button click doesn't work on mobile"
 assignee: "Phuc Do"
 tags: ["bug", "mobile"]
-priority: "0"  # 0=Critical, 2=Medium, 4=Backlog
+priority: "3"  # Odoo 19 project.task.priority: "0"=Low, "1"=Medium, "2"=High, "3"=Urgent
 
 # Optional technical context (for bug type only — helps AI find & fix quickly)
 page_url: "https://app.soundwise.com/login"
