@@ -43,6 +43,7 @@ Skill này pull context từ session trước để Claude không bắt đầu m
 | TetherTails, TetherTails app | `tethertails.md` |
 | TetherTails Portal | `tethertails-portal.md` |
 | Soundwise | `soundwise.md` |
+| TRS, Two Raw Sisters | `trs.md` |
 
 Knowledge dir: `C:\Users\wi\.claude\shared-context\knowledge\`
 
