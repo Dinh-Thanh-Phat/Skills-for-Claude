@@ -1,14 +1,6 @@
 ---
 name: playwright-test-steps
-description: >-
-  Use Playwright's test.step() to structure tests into named, nestable groups that show up in the
-  HTML report and Trace Viewer — including the box option (collapse helper internals in stack
-  traces), the per-step timeout option, and step.skip() to disable an in-progress step. Use when
-  a test's failure trace is hard to read, when a helper function's internal call stack pollutes
-  error messages, or when a Page Object method should read as one report line instead of ten raw
-  actions. Triggers on: "playwright test.step", "test step timeout", "step.skip", "boxed steps
-  playwright", "box: true", "playwright report step", "structure playwright test", "group test
-  actions".
+description: Use Playwright's test.step() to structure tests into named, nestable groups that show up in the HTML report and Trace Viewer — including the box option (collapse helper internals in stack traces), the per-step timeout option, and step.skip() to disable an in-progress step. Use when a test's failure trace is hard to read, when a helper function's internal call stack pollutes error messages, or when a Page Object method should read as one report line instead of ten raw actions. Triggers on: "playwright test.step", "test step timeout", "step.skip", "boxed steps playwright", "box: true", "playwright report step", "structure playwright test", "group test actions".
 ---
 
 # Playwright Test Steps
@@ -122,11 +114,12 @@ Every decorated method reports as `LoginPage.signIn` in the HTML report and Trac
 | Fail fast on one slow phase without inflating the whole test's timeout | `{ timeout: ms }` |
 | Conditionally skip one step, with a visible reason | `step.skip(condition, reason)` |
 | Auto-step every Page Object method without manual wrapping | class-method decorator (§5) |
+| Attach structured data to a step for reporters / trace (v1.63+) | `{ subtitle: 'as admin', params: { user: 'admin' } }` — see `playwright-1.63-new-apis` |
 
 Not a substitute for `test.step.skip()` at the top level or `test.skip()` — those skip declaration-time; `step.skip()` inside a running step is for conditional, runtime skip decisions.
 
 ## Sources
-- https://raw.githubusercontent.com/microsoft/playwright/v1.61.0/docs/src/test-api/class-test.md (Added in: v1.10 for `test.step()`, v1.50 for `timeout` option and `step.skip()`)
+- https://raw.githubusercontent.com/microsoft/playwright/v1.61.0/docs/src/test-api/class-test.md (Added in: v1.10 for `test.step()`, v1.50 for the `timeout` option and `test.step.skip()`, v1.51 for the `step` argument (TestStepInfo) with `step.skip()` / `step.attach()`, v1.63 for `subtitle`/`params`)
 - https://github.com/microsoft/playwright/issues/33475 (timeout option for test.step)
 - https://github.com/microsoft/playwright/issues/19332 (step.skip feature request/implementation)
 - https://timdeschryver.dev/blog/keep-your-playwright-tests-structured-with-steps
