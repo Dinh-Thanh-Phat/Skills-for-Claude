@@ -117,6 +117,8 @@ CONDITIONAL_RULES = [
 
 # Alternating row color (hàng chẵn) — set None để tắt
 ALT_ROW_COLOR = {"red": 0.94, "green": 0.96, "blue": 0.99}
+# True (mặc định) = dùng addBanding 1 request; False = loop repeatCell từng hàng
+USE_BANDING = True
 ```
 
 ---
@@ -188,7 +190,10 @@ for col in CENTER_COLS:
     }})
 
 # --- Alternating row colors ---
-if ALT_ROW_COLOR:
+# Ưu tiên addBanding (1 request, xem mục "addBanding" bên dưới).
+# Loop repeatCell này tạo ~NUM_ROWS/2 request — chỉ dùng khi sheet đã có banding
+# mà không muốn xoá, hoặc cần tô màu "cứng" vào cell.
+if ALT_ROW_COLOR and not USE_BANDING:
     for row in range(1, NUM_ROWS):
         if row % 2 == 0:
             requests.append({"repeatCell": {
