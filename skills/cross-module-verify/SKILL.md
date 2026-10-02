@@ -1,10 +1,6 @@
 ---
 name: cross-module-verify
-description: >-
-  Enforce cross-module verification in E2E tests for workflows that span multiple app areas. Use
-  when testing any workflow where action in Module A should produce visible results in Module B.
-  Triggers on: "test workflow", "test send", "test create", "test integration", multi-step
-  workflow tests.
+description: Enforce cross-module verification in E2E tests for workflows that span multiple app areas. Use when testing any workflow where action in Module A should produce visible results in Module B. Triggers on: "test workflow", "test send", "test create", "test integration", multi-step workflow tests.
 ---
 
 # Cross-Module Verification Skill
@@ -63,7 +59,7 @@ Module A: Subscriptions
 
 Module B: Transactions
   ❌ Format check only: amount matches $XX.XX → ALWAYS PASSES even with wrong amount
-  ✅ Business check: amount > $80 for YEARLY plan (not $29 monthly price)
+  ✅ Business check: THIS yearly subscriber's transaction amount == YEARLY_PRICE (not MONTHLY_PRICE)
 ```
 
 ### Implementation
@@ -78,13 +74,12 @@ test('YEARLY subscription → transaction amount is yearly price (not monthly)',
   // Navigate to downstream module
   await page.goto('/transactions');
 
-  // Collect all unique amounts — business validation
-  const amounts = await getAllTransactionAmounts(page);
-  const uniqueAmounts = [...new Set(amounts)];
-
-  // KEY: validate VALUE correctness, not just format
-  const hasYearlyAmount = uniqueAmounts.some(a => a > 50);
-  expect(hasYearlyAmount, 'At least one yearly transaction must show yearly price (>$50)').toBe(true);
+  // KEY: validate the VALUE of THIS entity's record — not "some row somewhere > N"
+  // (`amounts.some(a => a > 50)` passes as long as ANY other row is big, even if this one is wrong)
+  const row = page.getByRole('row').filter({ hasText: yearlyPractitioner! });
+  await expect(row).toHaveCount(1);
+  await expect(row.getByRole('cell', { name: /\$/ })).toHaveText(formatUsd(YEARLY_PRICE)); // exact price from the price list / API
+  await expect(row).not.toContainText(formatUsd(MONTHLY_PRICE));
 });
 ```
 
