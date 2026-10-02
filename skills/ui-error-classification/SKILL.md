@@ -49,7 +49,7 @@ User provided valid/correct input?
 │
 └── YES → Did the operation succeed?
           ├── YES → ✅ Pass
-          └── NO  → 🔴 BUG → file bug report, write failing test to document it
+          └── NO  → 🔴 BUG → file bug report, write the expected-behavior test locked with test.fail(true, 'BUG-xxx')
 ```
 
 ---
