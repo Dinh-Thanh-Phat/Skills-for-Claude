@@ -230,3 +230,6 @@ experiment.log(
 - [AI Agent Eval Frameworks 2026: Testing Guide — Digital Applied](https://www.digitalapplied.com/blog/ai-agent-eval-frameworks-testing-guide-2026)
 - [Langfuse vs Braintrust Alternatives 2026 — Langfuse](https://langfuse.com/faq/all/best-braintrustdata-alternatives)
 - [Top 6 Agent Observability Platforms 2026 — Laminar](https://laminar.sh/article/2026-04-23-top-6-agent-observability-platforms)
+- Braintrust Python SDK (`init()` signature, `init_experiment` alias) + CLI flags: https://github.com/braintrustdata/braintrust-sdk-python (`py/src/braintrust/logger.py`, `cli/eval.py`); PR action: https://github.com/braintrustdata/eval-action
+- Latitude V2 docs (simulations, signals, evaluations/custom scripts, deployment): https://docs.latitude.so/llms.txt , https://docs.latitude.so/test-and-fix/simulations.md ; `latitude-sdk` 9.15.0 wheel (PyPI)
+- Langfuse Python SDK v4.16.0 (`from langfuse import observe, get_client`; `score_current_trace`): https://github.com/langfuse/langfuse-python ; self-hosting requirements: https://langfuse.com/self-hosting
