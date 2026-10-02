@@ -1,6 +1,6 @@
 ---
 name: playwright-1.60-new-apis
-description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic drag-and-drop on upload zones, tracing.startHar() for unified HAR+trace recording, test.abort() to abort a test from a fixture/hook, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
+description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic external file/data drop on upload zones, tracing.startHar() for on-demand HAR recording, test.abort() to fail a test immediately from a fixture/hook/route handler, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
 ---
 
 # Playwright 1.60 New APIs
@@ -144,9 +144,9 @@ The Trace Viewer network panel now has a pretty-print toggle for JSON response b
 
 | Feature | API / Flag | Use When |
 |---------|-----------|----------|
-| Drop files/data on element | `locator.drop({ files })` | Upload zones, Kanban drag-and-drop |
-| HAR inside trace | `tracing.startHar()` / `stopHar()` | Unify network capture + trace |
-| Abort test at runtime | `testInfo.abort(message)` | Feature flag off, missing seed data |
+| Drop files/data on element | `locator.drop({ files, data })` | Upload/drop zones (element→element drag: `dragTo`) |
+| On-demand HAR recording | `tracing.startHar(path)` / `stopHar()` | Start/stop HAR mid-test without `recordHar` |
+| Fail test at runtime | `test.abort(message)` | Detected misuse (forbidden endpoint); preconditions → `test.skip(cond)` |
 | ARIA layout assertions | `page.ariaSnapshot({ boxes: true })` | AI-driven tests, layout verification |
 | Richer assertion errors | automatic via `errorContext` | Always on in 1.60+ |
 
