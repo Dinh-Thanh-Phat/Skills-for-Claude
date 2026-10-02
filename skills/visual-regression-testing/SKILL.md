@@ -260,9 +260,10 @@ tests/
 ## Checklist — Before Committing Visual Tests
 
 - [ ] Viewport locked in config (not relying on default)
-- [ ] CSS animations disabled for stable comparison
+- [ ] Using `toHaveScreenshot` (not `toMatchSnapshot`) for page/locator screenshots
+- [ ] Animations disabled (default in `toHaveScreenshot`; CSS injection only for edge cases)
 - [ ] Dynamic content masked (timestamps, avatars, live counters)
-- [ ] `networkidle` or explicit element wait before snapshot
+- [ ] Explicit element / ready-signal wait before snapshot (NO `networkidle`)
 - [ ] Baseline generated on target platform (Linux/Docker for CI)
 - [ ] `updateSnapshots: 'none'` in CI config
 - [ ] Baseline files committed to git
