@@ -464,13 +464,13 @@ Task: Dark mode support
 Type: enhance
 Description: Add system dark mode detection and theme toggle
 Assignee: Anh Huynh
-Tags: [enhance, ui, ux]
-Status: Todo
+Tags: [Enhancement]
+Status: TODO
 
-# Later: Move to Develop
+# Later: Move to DEVELOPED
 Project: TRS
 Task: Dark mode support
-New Status: Develop
+New Status: DEVELOPED
 
 # Complete feature
 Project: TRS
