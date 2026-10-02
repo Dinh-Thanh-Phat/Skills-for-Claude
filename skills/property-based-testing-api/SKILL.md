@@ -16,7 +16,9 @@ Property-based testing (PBT) defines **invariants** — rules that must always h
 the framework auto-generate hundreds of random inputs to find violations. When a failure occurs,
 the framework **shrinks** the input to the simplest reproducing case automatically.
 
-35–50% higher edge-case defect detection vs. example-based tests alone (IEEE Software).
+⚠️ **Test data:** every create-style property runs 50–200+ times against a real API. Use an
+isolated test environment, prefix generated data (e.g. `AT-PBT-<timestamp>`), and delete what
+each run created (track created ids → delete in teardown) — otherwise PBT floods the database.
 
 ## Core API Invariants to Catalogue
 
@@ -51,10 +53,14 @@ const userArb = fc.record({
 });
 
 // Property: create → fetch round-trip
+const createdIds: string[] = [];
+afterAll(async () => { for (const id of createdIds) await deleteUser(id); }); // cleanup
+
 test('created user is always retrievable', async () => {
   await fc.assert(
     fc.asyncProperty(userArb, async (user) => {
       const created = await createUser(user);
+      createdIds.push(created.id);
       const fetched = await getUser(created.id);
       expect(fetched.email).toBe(user.email);
     }),
@@ -69,9 +75,12 @@ test('created user is always retrievable', async () => {
 test('GET is idempotent', async () => {
   await fc.assert(
     fc.asyncProperty(fc.uuid(), async (id) => {
-      const r1 = await getUser(id).catch(() => null);
-      const r2 = await getUser(id).catch(() => null);
-      expect(r1).toEqual(r2);
+      // Compare status + body — don't swallow errors with .catch(() => null):
+      // a 500 on both calls would then look "idempotent" and pass silently.
+      const r1 = await getUserRaw(id);   // returns { status, body } without throwing on 4xx
+      const r2 = await getUserRaw(id);
+      expect(r1.status).toBeLessThan(500);
+      expect(r2).toEqual(r1);
     }),
     { numRuns: 100 }
   );

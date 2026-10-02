@@ -1,13 +1,6 @@
 ---
 name: playwright-trace-viewer
-description: >-
-  Debug failed Playwright tests with Trace Viewer — configure trace recording modes, read
-  time-travel DOM/network/console snapshots, download CI artifacts, and identify root causes
-  without re-running tests. Use when a test fails in CI and you need to understand why, when
-  investigating flaky tests, or when setting up trace collection for a new test suite. Triggers
-  on: "trace viewer", "playwright trace", "trace.zip", "show-trace", "test failed in CI", "debug
-  CI failure", "retain-on-failure", "on-first-retry trace", "time-travel debugging", "trace
-  artifact".
+description: Debug failed Playwright tests with Trace Viewer — configure trace recording modes, read time-travel DOM/network/console snapshots, download CI artifacts, and identify root causes without re-running tests. Use when a test fails in CI and you need to understand why, when investigating flaky tests, or when setting up trace collection for a new test suite. Triggers on: "trace viewer", "playwright trace", "trace.zip", "show-trace", "test failed in CI", "debug CI failure", "retain-on-failure", "on-first-retry trace", "time-travel debugging", "trace artifact".
 ---
 
 # Playwright Trace Viewer
@@ -32,13 +25,29 @@ export default defineConfig({
     trace: {
       mode: 'on-first-retry',
       screenshots: true,   // screenshot at every action (on by default)
-      snapshots: true,     // DOM snapshots before/after each action (on by default)
+      snapshots: true,     // DOM snapshots before/after each action (on by default; true = { dom: true })
       sources: true,       // embed test source code (on by default)
-      attachments: true,   // include test.info().attach() data
+      attachments: true,   // include test.info().attach() data (on by default)
     },
   },
 });
 ```
+
+**1.63+: choose snapshot types per action** — `snapshots` also accepts an object:
+
+```typescript
+use: {
+  trace: {
+    mode: 'retain-on-failure',
+    snapshots: { dom: true, aria: true, screen: true },
+    // dom    = DOM snapshot + network activity
+    // aria   = aria (accessibility-tree) snapshot of the page per action
+    // screen = screenshot of the page per action
+  },
+},
+```
+
+With `aria` + `screen` recorded, the trace viewer's **Display Aria** mode shows the action screenshot side by side with the aria snapshot; hovering an aria node highlights it on the screenshot — fast way to spot accessible-name/role regressions.
 
 ---
 
@@ -46,11 +55,15 @@ export default defineConfig({
 
 | Mode | Records when | Artifact size | Best for |
 |------|-------------|---------------|----------|
-| `'retain-on-failure'` | Every run, discards if pass | Low | Default CI — zero overhead on green runs |
-| `'on-first-retry'` | First retry only | Very low | CI with `retries: 2` — only traces actual failures |
-| `'retain-on-failure-and-retries'` | All retries of a failing test | Medium | Flake forensics — compare first-fail vs. later-pass |
-| `'on'` | Every test, always | High | Active debugging sessions; not suitable for long-term CI |
+| `'retain-on-failure'` | Every run; keeps runs that failed (even if a later retry passes) | Low | Default CI — no artifacts on green runs (recording cost still paid) |
+| `'retain-on-first-failure'` | First run only; keeps it if it failed | Low | Cheap failure forensics without retry traces |
+| `'on-first-retry'` | First retry only; always kept | Very low | CI with `retries ≥ 1` — only traces tests that needed a retry |
+| `'on-all-retries'` | Every retry; always kept | Low–Medium | Many retries, want each retry's trace |
+| `'retain-on-failure-and-retries'` | Every run; keeps any failed run **or** any retry | Medium | Flake forensics — compare first-fail vs. later-pass |
+| `'on'` | Every run, always kept | High | Active debugging sessions; not suitable for long-term CI |
 | `'off'` | Never | None | Performance benchmarks where trace overhead matters |
+
+(Semantics per the official `TestOptions.trace` reference.)
 
 **Rule:** Start with `retain-on-failure`. Switch to `on-first-retry` once you enable `retries: 1` or higher. Use `retain-on-failure-and-retries` when you need to distinguish a genuine failure from a flaky retry pass.
 
@@ -63,7 +76,8 @@ export default defineConfig({
 | **Action Timeline** | Every Playwright action — duration, status, locator | Spot which step failed and how long it took |
 | **DOM Snapshots** | Complete page state before AND after each action (Before / After tabs) | Verify the element existed, check DOM structure changes |
 | **Network Activity** | All HTTP requests — headers, payloads, status codes, timing | Find failed API calls that prevent buttons from loading |
-| **Console Logs** | JS errors, auto-wait explanation messages, `console.log` | Surface hidden JS exceptions; read auto-wait timeout reasons |
+| **Console Logs** | Browser + test-file `console.*` output, JS errors | Surface hidden JS exceptions |
+| **Log (per action)** | Playwright's internal action log — scrolling into view, waiting for visible/enabled/stable | Read auto-wait timeout reasons |
 | **Source Code** | Test code linked to the currently selected action | Jump directly to the failing test line without leaving the viewer |
 
 ---
@@ -131,9 +145,12 @@ After the CI run:
 
 The Timeline view doubles as a lightweight performance profiler:
 
-- **Slow actions** — hover each timeline item; actions > 2s highlight in yellow
+- **Slow actions** — the Actions list shows each action's duration; scan for outliers (any color-coding threshold is UNVERIFIED)
 - **Waiting on network** — cross-reference the action duration with the Network tab; if the action waited and a slow API call happened simultaneously, the backend is the bottleneck
-- **Auto-wait storms** — Console tab shows repeated `"waiting for element to be visible"` messages; indicates selector matches a different element than intended
+- **Auto-wait storms** — the action's **Log** tab (not Console) shows repeated `waiting for element to be visible/enabled/stable` lines; indicates the selector matches a different element than intended, or an overlay/animation blocks it
+- **Step labels (1.63+)** — API steps show their target locator/URL as a subtitle next to the step title, and custom `test.step(..., { subtitle, params })` values render there too
+
+For a whole-run timeline across workers, the built-in `perfetto` reporter (1.63) writes a Trace Event file viewable in ui.perfetto.dev.
 
 For full performance testing, use `performance-analyzer` (Playwright-based metrics) or `llm-load-testing` (for LLM endpoints). Trace Viewer is for per-test forensics, not load simulation.
 
@@ -142,6 +159,7 @@ For full performance testing, use `performance-analyzer` (Playwright-based metri
 ## Sources
 
 - [Trace Viewer — Playwright Docs](https://playwright.dev/docs/trace-viewer)
+- https://github.com/microsoft/playwright/blob/main/docs/src/test-api/class-testoptions.md (trace modes, snapshots object) + release-notes-js.md 1.63 — updated 2026-10-02
 - [Trace Viewer Intro — Playwright Docs](https://playwright.dev/docs/trace-viewer-intro)
 - [Playwright Trace Viewer Complete 2026 Guide — qaskills.sh](https://qaskills.sh/blog/playwright-trace-viewer-complete-guide-2026)
 - [Ultimate Guide to Playwright Trace Viewer: Master Time-Travel Debugging — Momentic](https://momentic.ai/blog/the-ultimate-guide-to-playwright-trace-viewer-master-time-travel-debugging)

@@ -61,10 +61,11 @@ When the fallback chain exhausts all candidates, capture a lightweight DOM snaps
 ```typescript
 // playwright-helpers/ai-healer.ts
 import Anthropic from '@anthropic-ai/sdk';
+import type { Locator, Page } from '@playwright/test';
 
 const client = new Anthropic();
 
-async function healLocator(
+export async function healLocator(
   page: Page,
   failedSelector: string,
   stepDescription: string,
@@ -93,7 +94,7 @@ Return ONLY a valid Playwright locator call (e.g. getByRole('button', { name: '.
 // The LLM returns a JS expression such as `getByRole('button', { name: 'Save' })`.
 // That is NOT a selector string — `page.locator(healed)` would throw "invalid selector".
 // Map it to a real Locator through a whitelist instead of eval:
-function toLocator(page: Page, healed: string): Locator {
+export function toLocator(page: Page, healed: string): Locator {
   const m = healed.match(/^getByRole\('([a-z]+)',\s*\{\s*name:\s*'([^']+)'\s*\}\)$/);
   if (m) return page.getByRole(m[1] as Parameters<Page['getByRole']>[0], { name: m[2], exact: true });
   const t = healed.match(/^getByTestId\('([^']+)'\)$/);
