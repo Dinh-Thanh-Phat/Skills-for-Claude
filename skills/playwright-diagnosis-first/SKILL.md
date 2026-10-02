@@ -173,5 +173,5 @@ Triage step (do this before touching any test):
 
 Helper-bug smells: a locator that resolves to **0 elements** then an action/assertion
 **hangs to timeout**; `^anchored` getByText against text that has whitespace/icons/CSS
-`text-transform`; invalid pseudo-locators (`visible=true`); a `.catch(()=>{})` swallowing
+`text-transform`; misused pseudo-locators (`visible=true` inside `filter({ has })`); a `.catch(()=>{})` swallowing
 the real error. See also `dom-inspect-first` and `safe-locators`.
