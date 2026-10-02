@@ -110,7 +110,7 @@ Token handling additionally requires expiration/rotation enforcement on the serv
 
 - **Not** `playwright-mcp-server` / `maestro-mcp-workflow` — those document *consuming* a first-party MCP server as an automation tool. This skill is for testing an MCP server (yours, or a third party's) as the thing under test.
 - **Not** `llm-red-teaming` — that skill red-teams an LLM/chatbot's *conversational* output (jailbreaks, prompt injection into the model). MCP server testing is protocol/contract/transport-level, closer to API testing than to LLM-judge evaluation, though the two overlap where a tool-poisoning payload is itself a prompt-injection vector.
-- **Not** a conformance certification — as of this writing the MCP spec's official conformance test-suite is roadmapped but not yet shipped; Inspector's CLI mode is the closest available tool for protocol-level checks today.
+- **Not** a conformance certification by itself — the official suite now exists at **github.com/modelcontextprotocol/conformance** (releases since early 2026, v0.1.16 as of 2026-03); use it for protocol-level conformance and Inspector's CLI for your server's own tool/resource contracts. Latest spec revision: **2026-07-28**. (UNVERIFIED: the conformance runner's exact CLI invocation — read its README before wiring into CI.)
 
 ## Sources
 - https://github.com/modelcontextprotocol/inspector
