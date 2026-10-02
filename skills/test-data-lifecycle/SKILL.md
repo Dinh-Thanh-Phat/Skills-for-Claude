@@ -1,10 +1,6 @@
 ---
 name: test-data-lifecycle
-description: >-
-  Enforce test data cleanup strategy to prevent DB accumulation and flaky tests. Use when writing
-  tests that create any persistent data (accounts, lists, records). Triggers on: "test data
-  cleanup", "generateTestEmail", "random email", "test data accumulate", "cleanup strategy",
-  "leftover data", "database cleanup", any test creating real data.
+description: Enforce test data cleanup strategy to prevent DB accumulation and flaky tests. Use when writing tests that create any persistent data (accounts, lists, records). Triggers on: "test data cleanup", "generateTestEmail", "random email", "test data accumulate", "cleanup strategy", "leftover data", "database cleanup", any test creating real data.
 ---
 
 # Test Data Lifecycle Skill
@@ -64,8 +60,11 @@ test.describe('Email Lists', () => {
     if (createdListName) {
       const listPage = new EmailListPage(page);
       await listPage.goto();
-      await listPage.deleteList(createdListName).catch(() => {});
-      createdListName = ''; // reset so next test starts clean
+      const name = createdListName;
+      createdListName = ''; // reset first so a failed cleanup can't leak into the next test
+      // No `.catch(() => {})` — a failed cleanup must be LOUD (it means data is leaking).
+      // Playwright reports an afterEach error against this test, with the cause.
+      await listPage.deleteList(name);
     }
   });
 
