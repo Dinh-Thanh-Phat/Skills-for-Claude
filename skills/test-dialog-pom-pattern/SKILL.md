@@ -139,7 +139,7 @@ async answerPrompt(trigger: Locator, answer: string) {
 
 - [ ] Dialog handling code lives **ONLY in POM**, never in tests
 - [ ] Test code calls POM method, not direct dialog handlers
-- [ ] Each POM action that triggers dialog uses `Promise.all([waitForEvent, click])`
+- [ ] Each POM action that triggers a dialog registers the handler (`page.once('dialog', …)` or an un-awaited `waitForEvent` promise) BEFORE the click, and accepts BEFORE awaiting the click — never `await Promise.all([waitForEvent, click])` then accept (deadlock)
 - [ ] No `page.once('dialog')` in test code
 - [ ] No `page.on('dialog')` listeners outside POM
 - [ ] POM method name makes dialog expectation clear: `deleteUser()`, `confirmAction()`, etc.

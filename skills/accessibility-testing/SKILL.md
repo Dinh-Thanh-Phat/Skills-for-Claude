@@ -113,8 +113,18 @@ test('A11Y-001: Login page has no critical violations', async ({ page }) => {
 | `wcag22aa` | WCAG 2.2 Level AA | Latest standard (2023) |
 | `best-practice` | axe best practices | Beyond WCAG |
 
-**Recommended minimum for new projects:** `['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']`
-(WCAG 2.2 AA is the current legal standard in many regions as of 2025+.)
+**Recommended minimum for new projects:** `['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']`
+(WCAG 2.2 AA is the current W3C Recommendation and the compliance target.)
+
+**WCAG 3.0 status (2026-10):** still a W3C **Working Draft** (latest WD 2026-09-10; Candidate
+Recommendation expected ~2027, final no earlier than 2028). It is NOT a compliance target — don't
+tag tests or bugs against WCAG 3 requirements.
+
+**axe-core version note:** current `axe-core` / `@axe-core/playwright` = **4.13.0**. Minor axe
+upgrades add/deprecate rules (e.g. 4.12 added `aria-tab-name`, deprecated
+`landmark-complementary-is-top-level`), so violation counts and rule IDs can shift after an upgrade —
+pin the version and re-baseline any `exclude`/known-issue lists when you bump it.
+Source: https://github.com/dequelabs/axe-core/releases
 
 ---
 

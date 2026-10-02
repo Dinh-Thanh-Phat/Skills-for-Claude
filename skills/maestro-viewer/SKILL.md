@@ -43,26 +43,30 @@ curl -fsSL "https://get.maestro.mobile.dev" | bash
 maestro upgrade
 ```
 
-### 2 — Start the MCP server
+### 2 — Wire `maestro mcp` into your coding agent
+
+`maestro mcp` is a stdio MCP server — the agent launches it; you don't run it by hand.
+
+**Claude Code CLI** (official docs command):
 
 ```bash
-maestro mcp
-# → Starts the official MCP server on stdio (no port binding)
-# → Prints the JSON config block to paste into your agent
+claude mcp add maestro -- maestro mcp
+# add --scope user / --scope project as needed
 ```
 
-### 3 — Wire into your coding agent
+> Do NOT put `mcpServers` in `~/.claude/settings.json` — Claude Code does not read MCP servers from there.
+> After upgrading the CLI: `/mcp` → select **maestro** → **Reconnect**.
 
-Paste the config the command prints, or add manually:
-
-**Claude Code / Claude Desktop (`~/.claude/settings.json` or project `.claude/settings.json`)**
+**Claude Desktop** (`claude_desktop_config.json`; Windows: `%APPDATA%\Claude\claude_desktop_config.json`).
+Desktop launches from a minimal shell, so use the full binary path and pass `JAVA_HOME`:
 
 ```json
 {
   "mcpServers": {
     "maestro": {
-      "command": "maestro",
-      "args": ["mcp"]
+      "command": "<full path to maestro binary>",
+      "args": ["mcp"],
+      "env": { "JAVA_HOME": "<full JAVA_HOME directory>" }
     }
   }
 }
