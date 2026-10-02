@@ -24,28 +24,29 @@ export class AdminPage {
   constructor(private page: Page) {}
 
   async deleteUser(email: string) {
-    // POM handles dialog internally
-    const [dialog] = await Promise.all([
-      this.page.waitForEvent('dialog'),
-      this.page.getByRole('button', { name: /delete|remove/i })
-        .filter({ hasText: email })
-        .click(),
-    ]);
-    
-    await dialog.accept();  // Accept or dismiss based on action
-    await this.page.waitForLoadState('networkidle');
+    // POM handles dialog internally.
+    // ⚠️ Native dialogs BLOCK the page: click() does not resolve until the dialog is
+    // handled. Never `await Promise.all([waitForEvent('dialog'), click()])` and accept
+    // afterwards — that deadlocks until timeout (playwright.dev/docs/dialogs).
+    // Register the handler BEFORE the click instead:
+    this.page.once('dialog', (dialog) => dialog.accept());  // Accept or dismiss based on action
+    await this.page.getByRole('row').filter({ hasText: email })
+      .getByRole('button', { name: /delete|remove/i })
+      .click();
+    // Wait for the real outcome, not networkidle (DISCOURAGED in Playwright docs)
+    await expect(this.page.getByRole('row').filter({ hasText: email })).toHaveCount(0);
   }
 
   async deleteContact(name: string) {
-    const [dialog] = await Promise.all([
-      this.page.waitForEvent('dialog'),
-      this.page.getByText(name)
-        .locator('..')  // Parent card
-        .getByRole('button', { name: /delete/i })
-        .click(),
-    ]);
-    
-    await dialog.accept();
+    // Variant when you need the Dialog object (e.g. to assert its message):
+    const dialogPromise = this.page.waitForEvent('dialog');
+    const clickPromise = this.page.getByText(name)
+      .locator('..')  // Parent card
+      .getByRole('button', { name: /delete/i })
+      .click();
+    const dialog = await dialogPromise;
+    await dialog.accept();   // unblocks the page
+    await clickPromise;      // click resolves only after the dialog was handled
   }
 }
 ```

@@ -163,7 +163,9 @@ await page.goto('/app');
 await page.clock.install();
 ```
 
-`setFixedTime` is the exception — it can be called after `goto()` when you only need to fix the date display, not control timers.
+**If you use `install` at all, it MUST be the first clock call** (official clock guide) — calling `fastForward`/`runFor`/`pauseAt`/`setSystemTime` etc. before `install` is undefined behavior. The page also must not have created its timers before `install` overrides the native clock functions.
+
+Official recommendation: use `setFixedTime` when you only need a fixed date (it keeps all timers running on the real schedule); reach for `install` only when you need to pause, fast-forward or tick time. Calling `setFixedTime` after `goto()` without `install` is UNVERIFIED as a safe pattern — set it before navigation when the page reads the date on load.
 
 ---
 
