@@ -44,28 +44,20 @@ Tags: ["Task"]
 ```
 Project: "TRS"
 Task Name: "Database migration"
-Current Status: "Todo"
-New Status: "In Progress"
+Current Status: "TODO"
+New Status: "INPROGRESS"
 Notes: "Starting implementation - database schema finalized"
 ```
 
-**Workflow Rules:**
+**Stages (Soundwise/Olivia share these ids):**
 ```
-Backlog   →  Todo
-  ↑                    ↑
-  └──────────┬──────────┘
-             ↓
-          In Progress
-             ↑  ↓
-             └──┘
-          Develop
-             ↓
-           Done (terminal)
+BackLog (175) → TODO (176) → INPROGRESS (177) → DEVELOPED (180) → READY FOR TEST (181) → DONE (182)
 ```
+Odoo allows moving to any stage (forward, back, or reopening from DONE) — there is no enforced transition rule. Stage names are UPPERCASE; search with `ilike`. Other projects may have their own stages — query `project.task.type` with `project_ids in [project_id]`.
 
 **What Happens:**
 1. Validates project exists
-2. Validates status transition is valid → ❌ Error if invalid
+2. Validates the target stage exists in that project → ❌ Error if not found
 3. Shows confirmation with current → new status
 4. ⏳ **WAITS FOR YOUR CONFIRMATION**
 5. ✅ Moves task to new status

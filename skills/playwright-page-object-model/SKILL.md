@@ -163,7 +163,8 @@ test.describe('Template management', () => {
   });
 
   test.afterEach(async () => {
-    await templatePage.deleteIfExists(templateName).catch(() => {});
+    // No silent .catch — a failed cleanup must surface (it leaks data into the next run)
+    await templatePage.deleteIfExists(templateName);
   });
 
   test('create template', async () => {
