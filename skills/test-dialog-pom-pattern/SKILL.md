@@ -152,6 +152,7 @@ async answerPrompt(trigger: Locator, answer: string) {
 | `"Cannot handle dialog, another handler was already registered"` | `page.on()` + `waitForEvent()` | Use only one approach |
 | `"Dialog was closed"` | Dialog dismissed before handler could accept | Ensure handler registered BEFORE click |
 | `"Timeout waiting for event 'dialog'"` | No dialog appeared | Check selector, verify action triggers dialog |
+| `click` times out although the dialog appeared | Dialog listener did not handle it (e.g. `Promise.all([waitForEvent, click])` then accept) | Accept inside the handler / before awaiting the click |
 
 ## Modal Dialog Components (NOT native — React/Vue/Radix)
 

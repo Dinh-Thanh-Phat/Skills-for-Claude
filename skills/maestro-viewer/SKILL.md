@@ -92,21 +92,18 @@ No `pnpm install`, no cloning a repo — the CLI IS the server.
 
 ## Maestro Viewer
 
-Once the MCP server is running, open Maestro Viewer:
+Maestro Viewer is a web app exposed through the `open_maestro_viewer` MCP tool, which returns the
+running Viewer URL. To open it, ask your agent:
 
-```bash
-# The Viewer URL is printed when the MCP server starts, typically:
-open http://localhost:9999/viewer
+> open the maestro viewer
 
-# Or open from within your coding agent:
-# "Open Maestro Viewer"  → agent calls the open_viewer MCP tool
-```
+There is no fixed port/URL to hard-code — always get it from `open_maestro_viewer`. The Viewer
+requires an AI coding agent with Maestro MCP installed.
 
-**What Viewer shows:**
-- Live render of the connected device (simulator, emulator, or physical device)
-- Each MCP tool call highlighted in real time as the agent executes it
-- Tap/type directly in the Viewer to interact manually alongside the agent
-- Screenshot preview after every `take_screenshot` call
+**What Viewer shows (per docs/blog):**
+- Live embedded device (simulator, emulator, or Android physical device — not physical iOS, see above)
+- The exact commands Maestro MCP runs, in real time
+- Full manual interaction with the embedded device alongside the agent
 
 **Why it matters:** You can iterate on a mobile feature or debug a failing test and see the exact
 device state the agent sees — no mental model, no lag, no surprise failures.
@@ -115,20 +112,20 @@ device state the agent sees — no mental model, no lag, no surprise failures.
 
 ## Key MCP Tools (available to your agent)
 
-**As of CLI 2.5.0, the tool surface was consolidated from 15 down to 8 tools** — the separate
-`run_flow` and `run_flow_files` tools were merged into a single `run` tool that mirrors the shape
-of the `maestro test` CLI command (pass either a flow file or a directory):
+**As of CLI 2.5.0, the tool surface was consolidated** — `run_flow`/`run_flow_files` merged into
+`run`, and `tap_on`, `input_text`, `back`, `launch_app`, `stop_app`, `check_flow_syntax`,
+`start_device`, `query_docs` were dropped. Interactions (tap, type, assert) now go through `run`
+with inline YAML. Official tool list (docs.maestro.dev/get-started/maestro-mcp):
 
 | Tool | What it does |
 |---|---|
-| `run` | Execute a Maestro YAML flow file or directory (replaces the old `run_flow`/`run_flow_files`) |
-| `take_screenshot` | Capture and return device screenshot (auto-downscaled to 2000px to avoid LLM token limits) |
-| `inspect_hierarchy` | Dump the full UI element tree (element IDs, text, bounds) |
-| `tap_on` | Tap an element by id, text, or coordinates |
-| `input_text` | Type into the focused element |
-| `assert_visible` | Assert an element is visible; returns pass/fail |
-| `open_viewer` | Open Maestro Viewer in the system browser |
-| `validate_flow` | Validate YAML syntax before running |
+| `list_devices` | List local devices (Android emulators, iOS simulators, Chromium for web) |
+| `inspect_screen` | Current screen's view hierarchy as compact JSON — call before targeting elements, re-call after UI changes |
+| `take_screenshot` | Screenshot of the current screen (auto-downscaled to 2000px to save vision tokens) |
+| `run` | Execute flows. Exactly one of `{ yaml }` (inline YAML, preferred for exploration), `{ files }`, or `{ dir, include_tags, exclude_tags }`. Syntax is validated as part of the call |
+| `cheat_sheet` | Maestro command/syntax cheat sheet — call before authoring unfamiliar commands (no Cloud auth needed) |
+| `open_maestro_viewer` | Returns the running Viewer URL |
+| `list_cloud_devices` / `run_on_cloud` / `get_cloud_run_status` | Maestro Cloud (see below) |
 
 `take_screenshot` **downscales** images before returning them — this is a deliberate design
 choice so screenshot calls don't burn through LLM vision-token budgets in long agent sessions.
