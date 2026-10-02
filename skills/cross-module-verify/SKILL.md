@@ -140,7 +140,7 @@ await sendEmail(page, { subject, to });
 
 // Module B: Campaign History
 await page.goto('/campaign-history');
-await expect(page.locator(`text="${subject}"`)).toBeVisible();
+await expect(page.getByRole('row').filter({ hasText: subject })).toHaveCount(1);
 
 // Module C: Analytics (if applicable)
 await page.goto('/analytics');
