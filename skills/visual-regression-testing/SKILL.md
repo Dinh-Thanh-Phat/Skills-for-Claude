@@ -210,15 +210,18 @@ Screenshots differ between macOS, Linux, and Windows (pixel rounding, font rende
 
 **Option A: Run visual tests in Docker (recommended for CI)**
 ```bash
-# Use same Docker image locally and in CI
-docker run --rm -v $(pwd):/work mcr.microsoft.com/playwright:v1.44.0-jammy npx playwright test --project=chromium
+# Use same Docker image locally and in CI.
+# The image tag MUST match the @playwright/test version in package.json
+# (check: npx playwright --version). Example for 1.63 — exact tag name UNVERIFIED,
+# confirm at https://mcr.microsoft.com/en-us/artifact/mar/playwright/tags :
+docker run --rm -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.63.0-noble npx playwright test --project=chromium
 ```
 
 **Option B: Store platform-specific baselines**
 ```
-tests/__snapshots__/
-  login-page-linux.png    # CI baseline
-  login-page-darwin.png   # local Mac baseline
+tests/visual/login.visual.spec.ts-snapshots/
+  login-page-chromium-linux.png    # CI baseline (default template appends browser+platform)
+  login-page-chromium-darwin.png   # local Mac baseline
 ```
 
 **Option C: Use maxDiffPixelRatio to absorb font rendering differences**
