@@ -209,11 +209,15 @@ The colored circle (bottom-right of each task card) = `state` field. **Not** `ka
 ## Projects & Team
 
 ### Available Projects
-| Project | Code | Description |
+| Project | project_id | Description |
 |---------|------|-------------|
-| **Soundwise** | - | Main application |
+| **Soundwise** | 76 | Main application |
 | **TRS** | - | Task/Resource System |
-| **Olivia - CRM App** | - | CRM application |
+| **Olivia - CRM App** | 64 | CRM application (BackLog stage 175, assignee via `user_ids`) |
+| **Website InApps** | 79 | Company website (bug tag id 5) |
+| **FCCX** | 80 | i18n RU/UA |
+
+Not exhaustive — resolve any other project by `search_records` on `project.project` (`ilike`) and confirm with the user.
 
 ### Available Assignees
 - Phuc Do (Lead Backend)
