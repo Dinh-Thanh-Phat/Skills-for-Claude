@@ -408,3 +408,8 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - promptmap (utkusen) — black-box LLM security scanner: https://github.com/utkusen/promptmap
 - OWASP Top 10 for Agentic Applications 2026 (released 2025-12-09, ASI01-ASI10): https://genai.owasp.org/2025/12/09/owasp-top-10-for-agentic-applications-the-benchmark-for-agentic-security-in-the-age-of-autonomous-ai/
 - Promptfoo's ASI-to-plugin mapping table (ASI01-ASI10 → plugin names, verbatim source for the table above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/owasp-agentic-ai.md
+- garak 0.17.0 README (`--target_type`/`--target_name`, `--spec probes.*`) + `garak/cli.py` deprecation notices: https://github.com/NVIDIA/garak
+- PyRIT (moved to microsoft/PyRIT; `pyrit/executor/attack/__init__.py`, `multi_turn/crescendo.py`): https://github.com/microsoft/PyRIT
+- DeepTeam README + `deepteam/vulnerabilities`, `attacks/multi_turn`, `red_teamer.py`: https://github.com/confident-ai/deepteam
+- Promptfoo multi-turn strategies (`crescendo`, `goat`, …): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/strategies/multi-turn.md
+- Promptfoo CLI (`PROMPTFOO_PASS_RATE_THRESHOLD`, exit code 100, `redteam report`): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/usage/command-line.md

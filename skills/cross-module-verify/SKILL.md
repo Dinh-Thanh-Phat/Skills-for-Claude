@@ -87,7 +87,7 @@ test('YEARLY subscription → transaction amount is yearly price (not monthly)',
 
 | Entity in Module A | Attribute | Module B | Value Rule |
 |---|---|---|---|
-| Subscription | plan = YEARLY | Transactions | amount ≥ yearly_price (NOT monthly_price) |
+| Subscription | plan = YEARLY | Transactions | amount == yearly_price (NOT monthly_price) |
 | Subscription | any | Subscriptions | Start date AND End date must be valid dates |
 | User | role = Admin | Admin portal | has admin-only controls visible |
 | Campaign | status = Sent | Analytics | sent count > 0 |
@@ -98,8 +98,8 @@ test('YEARLY subscription → transaction amount is yearly price (not monthly)',
 // ❌ Format-only — always passes even when value is wrong
 expect(amount).toMatch(/^\$\d+\.\d{2}$/);  // "$29.00" passes — but it's the wrong amount!
 
-// ✅ Business validation — fails when value is incorrect for entity type
-expect(amount).toBeGreaterThan(50);  // fails when yearly plan shows monthly price
+// ✅ Business validation — exact expected value for the entity type (no arbitrary "> N", see `soft-assertion-ban`)
+expect(amount).toBe(formatUsd(YEARLY_PRICE));  // fails when yearly plan shows monthly price
 ```
 
 ---
