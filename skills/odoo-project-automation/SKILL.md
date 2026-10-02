@@ -53,16 +53,22 @@ Priority stars are **auto-assessed** from description + error_message + api_endp
 
 | Stars | When | Keywords |
 |-------|------|----------|
-| ⭐⭐⭐ 3 | Critical | crash, 500, payment, data loss, all users, security, cannot login, auth |
-| ⭐⭐ 2 | High | broken, invalid, error, wrong data, stale, 404, timeout, always, 100% |
-| ⭐ 1 | Normal | everything else (cosmetic, minor UI) |
+| ⭐⭐⭐ → `priority="3"` (Urgent) | Critical | crash, 500, payment, data loss, all users, security, cannot login, auth |
+| ⭐⭐ → `priority="2"` (High) | High | broken, invalid, error, wrong data, stale, 404, timeout, always, 100% |
+| ⭐ → `priority="1"` (Medium) | Normal | everything else (cosmetic, minor UI) |
+
+Odoo 19 `project.task.priority` selection (verified in 19.0 source): `"0"`=Low, `"1"`=Medium, `"2"`=High, `"3"`=Urgent. There is no `"4"`, and `"0"` is the LOWEST — never use `"0"` for critical.
 
 Override: pass `priority` explicitly if needed.
 
 ## Auto-Tag
 
-- `type=bug` → tag `"bugs"` added automatically
-- `type=task/enhance/refactor/docs` → tag `"task"` added automatically
+Real `project.tags` records on erp.inapps.net (per Olivia/Soundwise memories): `bug`=5, `Task`=6, `Enhancement`=27, `Feedback`=28, `Customer`=1.
+
+- `type=bug` → tag `bug` (id 5) added automatically
+- `type=task/enhance/refactor/docs` → tag `Task` (id 6) added automatically (`Enhancement` id 27 for `enhance` if the project uses it)
+- Older notes call the bug tag `"bugs"` — the live record name is `bug`. Resolve tags by `search_records` on `project.tags` (`ilike`) before writing; never invent a tag.
+- Add with `[(4, tag_id)]`, replace with `[(6, 0, [ids])]`.
 
 ---
 
