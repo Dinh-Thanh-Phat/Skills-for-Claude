@@ -155,6 +155,7 @@ Mock only specific endpoints; let everything else hit the real API:
 ```json
 // mappings/passthrough.json — catch-all proxy to real API
 {
+  "priority": 10,
   "request": {
     "urlPattern": ".*"
   },
@@ -164,7 +165,10 @@ Mock only specific endpoints; let everything else hit the real API:
 }
 ```
 
-Add targeted stubs **before** the catch-all mapping (WireMock evaluates in file order).
+WireMock does **not** match in file order. Give the catch-all a low priority (higher number, e.g.
+`"priority": 10`) and leave targeted stubs at the default/higher priority (lower number wins); without
+priorities, the most recently added matching stub wins. (From WireMock docs knowledge — re-check
+https://wiremock.org/docs/stubbing/ ; UNVERIFIED this session.)
 
 ### WireMock scenario-based stateful mocking
 
