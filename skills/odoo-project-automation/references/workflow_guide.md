@@ -170,29 +170,27 @@ Suggestion: List all tasks in project first or verify task name spelling.
 
 ### Priority Levels
 
-| Level | Name | Use When |
-|-------|------|----------|
-| **0** | Critical | Blocking production, urgent security |
-| **1** | High | High impact, needed soon |
-| **2** | Medium | Normal priority (default) |
-| **3** | Low | Nice to have, can defer |
-| **4** | Backlog | Future consideration |
+Odoo 19 `project.task.priority` (verified in 19.0 source):
+
+| Value | Odoo label | Stars | Use When |
+|-------|------|-------|----------|
+| **"3"** | Urgent | ⭐⭐⭐ | Blocking production, crash, payment, security |
+| **"2"** | High | ⭐⭐ | Broken feature, wrong data, needed soon |
+| **"1"** | Medium | ⭐ | Normal / cosmetic (default for bugs) |
+| **"0"** | Low | — | Nice to have, can defer |
+
+There is no `"4"`; `"0"` is the LOWEST.
 
 ### Available Tags
 
-**Suggested Tags:**
-- `bug` - Defect/issue
-- `task` - Feature/work
-- `enhance` - Enhancement/optimization
-- `backend` - Backend/server code
-- `frontend` - Frontend/UI code
-- `mobile` - Mobile-specific
-- `performance` - Performance-related
-- `security` - Security-related
-- `database` - Database/data
-- `documentation` - Docs/comments
-- `urgent` - Time-critical
-- `review` - Needs review
+**Confirmed live `project.tags`:**
+- `bug` (id 5) - Defect/issue (older notes say `"bugs"` — live name is `bug`)
+- `Task` (id 6) - Feature/work
+- `Enhancement` (id 27) - Enhancement/optimization
+- `Feedback` (id 28)
+- `Customer` (id 1)
+
+Other names (`backend`, `frontend`, `mobile`, `performance`, `security`, `database`, `documentation`, `urgent`, `review`) are UNVERIFIED — search `project.tags` before using; don't create tags silently.
 
 ---
 
