@@ -259,7 +259,7 @@ python pipeline/fix_citations.py <slug>     # fix format + re-enrich problematic
 ```
 
 ## Key Principles
-- Never skip steps even if partial results exist (unless user explicitly says `--resume`)
+- Never silently skip a step — a step may only be skipped when its output already exists and is valid (resume)
 - Always report the final report path so user can open it immediately
 - If any step fails, write a partial report with results so far and a clear error section
 - Config is optional — always have sensible defaults so the user can start with just a URL and Drive link
