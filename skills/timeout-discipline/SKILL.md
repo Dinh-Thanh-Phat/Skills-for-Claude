@@ -83,16 +83,14 @@ await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => 
 If `networkidle` is timing out frequently, you need to know — not hide it.
 
 ```typescript
-// ✅ Option A: If networkidle truly doesn't matter, remove it
+// ✅ Remove networkidle and wait for the real outcome instead
 await this.submitButton.click();
+await expect(this.page.getByRole('status')).toHaveText(/saved/i);
 // Let Playwright web-first assertions do the waiting
-
-// ✅ Option B: If you need to handle it, log it
-await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(e => {
-  console.warn('networkidle timeout — proceeding:', e.message);
-  // intentionally not re-throwing: we proceed to assertion anyway
-});
 ```
+
+Do NOT "log and proceed" (`.catch(e => console.warn(...))`) — that is still swallowing the
+error and is banned by `fail-loud`.
 
 ---
 
