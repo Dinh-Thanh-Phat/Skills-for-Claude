@@ -88,7 +88,7 @@ Takes a screenshot and runs it through a pre-built LLM prompt that checks for co
     optional: false
 ```
 
-**Output:** Generates an **HTML + JSON** report in the individual test-run folder, listing detected defects with screenshot crops.
+**Output:** Generates an **HTML + JSON** report under `~/.maestro/tests/<timestamp>/` (same `ai-…` naming as `assertWithAI`). The "screenshot crops" detail is UNVERIFIED.
 
 **Key rules:**
 - Treat as a smoke check, not a pixel-perfect visual diff — it detects layout breakage, not minor spacing regressions.
