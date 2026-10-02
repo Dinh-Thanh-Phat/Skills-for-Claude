@@ -395,7 +395,7 @@ tests/
 
 | Step | Trigger Type | How to trigger |
 |------|-------------|----------------|
-| Take snapshot | **Manual** — run script | `bash scripts/take-snapshot.ts <url> <output>` |
+| Take snapshot | **Manual** — run script | `npx tsx scripts/take-snapshot.ts <url> <output>` |
 | Parse snapshot | **Manual** — invoke Claude | "Parse this snapshot + export selector map" |
 | Generate manual tests | **Manual** — invoke Claude | Skill `qa-test-generation` with requirements |
 | Generate automation | **Manual** — invoke Claude | "Phase 2" after confirming test cases |
