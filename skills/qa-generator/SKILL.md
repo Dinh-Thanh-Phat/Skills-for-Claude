@@ -232,8 +232,8 @@ from pathlib import Path
 from groq import Groq
 
 BASE = Path('D:/HK8/Learning/DQ/Agentic')
-GENERATION_MODEL  = "llama-3.1-8b-instant"
-ENRICHMENT_MODEL  = "llama-3.3-70b-versatile"
+GENERATION_MODEL  = "openai/gpt-oss-20b"   # llama-3.1-8b-instant shut down 2026-08-16
+ENRICHMENT_MODEL  = "openai/gpt-oss-120b"  # llama-3.3-70b-versatile shut down 2026-08-16
 BATCH_SIZE        = 5
 MAX_DOC_CHARS     = 3000
 SLEEP_S           = 12
