@@ -1,13 +1,6 @@
 ---
 name: playwright-clock-testing
-description: >-
-  Playwright Clock API for time-sensitive test scenarios — freeze Date.now(), advance timers with
-  fastForward/runFor, test session timeouts, countdown timers, scheduled tasks, and
-  timezone-dependent UIs without real waiting. Use when tests depend on the current date/time,
-  need to fast-forward through waiting periods, or verify timer-driven behavior. Triggers on:
-  "playwright clock", "page.clock", "setFixedTime", "fastForward", "runFor", "fake clock", "time
-  control test", "test timer", "test countdown", "test session timeout", "test auto logout",
-  "mock date".
+description: Playwright Clock API for time-sensitive test scenarios — freeze Date.now(), advance timers with fastForward/runFor, test session timeouts, countdown timers, scheduled tasks, and timezone-dependent UIs without real waiting. Use when tests depend on the current date/time, need to fast-forward through waiting periods, or verify timer-driven behavior. Triggers on: "playwright clock", "page.clock", "setFixedTime", "fastForward", "runFor", "fake clock", "time control test", "test timer", "test countdown", "test session timeout", "test auto logout", "mock date".
 ---
 
 # Playwright Clock API
@@ -21,9 +14,9 @@ Installs a fake implementation of `Date`, `setTimeout`, `setInterval`, `requestA
 | Goal | Method | Timers fire? |
 |------|--------|--------------|
 | Fix today's date in UI (datepickers, "Today" labels) | `setFixedTime` | Real schedule |
-| Skip forward in time without triggering mid-period timers | `install` + `fastForward` | Only at target time |
-| Simulate passage of time, fire all intermediate timers | `install` + `runFor` | Yes, in order |
-| Pause at a specific instant to inspect state | `install` + `pauseAt` | No |
+| Jump ahead like "laptop lid closed for a while" | `install` + `fastForward` | Each due timer fires **at most once** |
+| Simulate passage of time, fire all intermediate timers | `install` + `runFor` | Yes, every callback, in order |
+| Jump to a specific instant and freeze there | `install` + `pauseAt` | Due timers at most once while jumping; then none until `runFor`/`fastForward`/`pauseAt`/`resume` |
 | Resume after pausing | `resume()` | Real schedule |
 
 ---
