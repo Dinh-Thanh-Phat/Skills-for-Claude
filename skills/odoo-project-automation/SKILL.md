@@ -199,9 +199,10 @@ The colored circle (bottom-right of each task card) = `state` field. **Not** `ka
 | `03_approved` | Approved | Green |
 | `1_done` | Done | Green (checkmark) |
 | `1_canceled` | Cancelled | Red |
+| `04_waiting_normal` | Waiting | (blocked by dependencies) |
 
 **To mark tasks "Done" (circle):** set `state = '1_done'`  
-**To bulk mark:** `models.execute_kw(DB, uid, TOKEN, 'project.task', 'write', [task_ids, {'state': '1_done'}])`
+**To bulk mark:** one `mcp__odoo__validate_write` → `execute_approved_write` with `model="project.task"`, `operation="write"`, `record_ids=[...all ids...]`, `values={"state": "1_done"}`
 
 ---
 
