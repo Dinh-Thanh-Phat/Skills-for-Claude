@@ -312,7 +312,7 @@ Details:
 5. **Review Before Confirming**
    - Read auto-expanded description
    - Check assignee and tags
-   - Verify status transition validity
+   - Verify the target stage name exists
 
 ---
 
