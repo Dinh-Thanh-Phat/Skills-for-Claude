@@ -2,15 +2,19 @@
 
 ## 🎯 What This Skill Does
 
-Automates task and bug management in your Odoo ERP system at `https://erp.inapps.net/odoo/`.
+Automates task and bug management in the InApps Odoo 19 ERP (`https://erp.inapps.net`, DB `inapps`).
+
+**Trigger rule:** only when the user's message contains "Odoo" or "ERP". Project names alone (Soundwise, TRS, HVS…) never trigger it.
 
 **Core Features:**
-- ✅ Create tasks/bugs with auto-expanded descriptions
-- ✅ Move tasks through workflow states (Backlog → Todo → In Progress → Develop → Done)
-- ✅ Close tasks with completion summaries
-- ✅ Update task details (assignee, tags, description)
+- ✅ Create tasks/bugs with auto-expanded HTML descriptions
+- ✅ Move tasks through stages (BackLog → TODO → INPROGRESS → DEVELOPED → READY FOR TEST → DONE)
+- ✅ Close tasks with completion summaries (`state = "1_done"`)
+- ✅ Update task details (assignee via `user_ids`, tags via `tag_ids`, description)
 - ✅ Smart confirmation workflow (always asks before executing)
 - ✅ Comprehensive error handling with helpful suggestions
+
+SKILL.md is the source of truth if anything here disagrees.
 
 ---
 
@@ -18,14 +22,14 @@ Automates task and bug management in your Odoo ERP system at `https://erp.inapps
 
 ```
 odoo-project-automation/
-├── SKILL.md                          # Main skill documentation
+├── SKILL.md                          # Main skill documentation (source of truth)
 ├── README.md                         # This file
 ├── evals/
 │   └── evals.json                   # Test cases
 ├── scripts/
-│   ├── odoo_manager.py              # Core Odoo API manager (mock + real)
-│   └── skill_handler.py             # Skill handler with confirmation flow
+│   └── __pycache__/                 # Leftover bytecode only — no .py sources, not used
 └── references/
+    ├── quick_reference.md           # Syntax cheat-sheet
     └── workflow_guide.md            # Complete workflow guide
 ```
 
@@ -40,26 +44,26 @@ Task Name: Login button not responding
 Task Type: bug
 Description: Button click doesn't work on mobile
 Assignee: Phuc Do
-Tags: ["bug", "mobile"]
-Priority: 0 (Critical)
+Tags: ["bug"]
+Priority: "3" (Urgent)
 ```
 
 **What Happens:**
-1. Skill validates project & assignee exist
+1. Skill validates project & assignee exist (`mcp__odoo__search_records`)
 2. Shows confirmation dialog with auto-expanded description
 3. Waits for your "yes" or "no"
-4. Creates task in Odoo (if confirmed)
+4. Creates task in Odoo (if confirmed) via `validate_write` → `execute_approved_write`
 
 ### 2. Move Task Through Workflow
 ```
 Project: TRS
 Task Name: Database migration
 Action: move
-New Status: In Progress
+New Status: INPROGRESS
 Notes: Schema design approved
 ```
 
-**Workflow:** Backlog → Todo → In Progress → Develop → Done
+**Stages:** BackLog → TODO → INPROGRESS → DEVELOPED → READY FOR TEST → DONE
 
 ### 3. Close Task with Summary
 ```
@@ -73,11 +77,15 @@ Summary: ✅ Feature complete, tested with 50+ records
 
 ## 📋 Available Projects
 
-| Project | Purpose |
-|---------|---------|
-| **Soundwise** | Main application |
-| **TRS** | Task/Resource System |
-| **Olivia - CRM App** | CRM application |
+| Project | project_id | Purpose |
+|---------|-----|---------|
+| **Soundwise** | 76 | Main application |
+| **TRS** | - | Task/Resource System |
+| **Olivia - CRM App** | 64 | CRM application |
+| **Website InApps** | 79 | Company website |
+| **FCCX** | 80 | i18n RU/UA |
+
+Not exhaustive — resolve others with an `ilike` search on `project.project`.
 
 ---
 
@@ -105,19 +113,33 @@ Summary: ✅ Feature complete, tested with 50+ records
 | **refactor** | Code cleanup | Objective + Plan + Risks |
 | **docs** | Documentation | Scope + Format + Audience |
 
+## 🔢 Priority (Odoo 19 `project.task.priority`)
+
+| Value | Label | Stars |
+|---|---|---|
+| `"3"` | Urgent | ⭐⭐⭐ |
+| `"2"` | High | ⭐⭐ |
+| `"1"` | Medium | ⭐ |
+| `"0"` | Low | — |
+
+No `"4"`; `"0"` is the LOWEST — never use it for critical.
+
+## 🏷️ Tags
+
+Confirmed live: `bug` (5), `Task` (6), `Enhancement` (27), `Feedback` (28), `Customer` (1). Older notes say `"bugs"` — the live record name is `bug`. Any other tag name: search `project.tags` first.
+
 ---
 
-## 📊 Workflow States
+## 📊 Workflow Stages
 
 ```
-Backlog → Todo → In Progress → Develop → Done
+BackLog (175) → TODO (176) → INPROGRESS (177) → DEVELOPED (180) → READY FOR TEST (181) → DONE (182)
 ```
 
 **Rules:**
-- Can move forward one state at a time
-- Can move back one state at a time
-- Cannot skip states
-- Cannot leave Done (terminal state)
+- Stage names are UPPERCASE — search with `ilike`
+- Odoo allows moving to any stage (forward, back, or reopening DONE) — there is no enforced transition rule
+- The done "circle" is the separate `state` field (`1_done`), not a stage and not `kanban_state`
 
 ---
 
@@ -148,7 +170,7 @@ Backlog → Todo → In Progress → Develop → Done
 ### 3. **Error Handling**
 - Validates project exists → ❌ Error if not
 - Validates assignee exists → ❌ Error if not
-- Validates workflow transitions → ❌ Error if invalid
+- Validates target stage exists in the project → ❌ Error if not
 - Provides helpful suggestions in error messages
 
 ### 4. **Dual Output Format**
@@ -159,33 +181,15 @@ Backlog → Todo → In Progress → Develop → Done
 
 ## 📝 Implementation Details
 
-### Files
-
-**odoo_manager.py** (Core Manager)
-- `OdooManager` class handles all Odoo operations
-- Supports mock mode (default) and real API mode
-- Methods:
-  - `create_task()` - Create new task/bug
-  - `move_task()` - Move to different status
-  - `close_task()` - Mark as Done
-  - `update_task()` - Update details
-  - `list_projects()` - List all projects
-  - `validate_inputs()` - Validate project/assignee
-
-**skill_handler.py** (User Interface)
-- `OdooSkillHandler` class orchestrates user interactions
-- Methods:
-  - `show_confirmation_dialog()` - Show preview
-  - `execute_create_task()` - Create with confirmation
-  - `execute_move_task()` - Move with confirmation
-  - `execute_close_task()` - Close with confirmation
-  - `process_confirmation()` - Handle "yes"/"no" response
+### How it talks to Odoo
+- All reads/writes via **`mcp__odoo__*`** tools: `search_records` → `preview_write` / `validate_write` → `execute_approved_write` (`confirm=true`); chatter via `chatter_post`.
+- The old `scripts/odoo_manager.py` / `scripts/skill_handler.py` no longer exist — don't look for them.
+- Fallback only: Python XML-RPC for binary image attachments (`ir.attachment` + `message_post`) — see SKILL.md "Bulk Operations → Fallback".
 
 ### API Connection
-- **Endpoint:** `https://erp.inapps.net/odoo/`
-- **Authentication:** XML-RPC with token
-- **Token:** Securely stored in skill handler
-- **Mode:** Mock (testing) or Real (production)
+- **Endpoint:** `https://erp.inapps.net` (API calls must NOT use `/odoo/` — 303 redirect)
+- **API key:** never stored in this skill folder — read at runtime from a local credentials file / env var
+- **Deprecation:** XML-RPC/JSON-RPC (`/xmlrpc`, `/xmlrpc/2`, `/jsonrpc`) are scheduled for removal in Odoo 22 (fall 2028); replacement is `POST /json/2/<model>/<method>` with `Authorization: bearer <API_KEY>`
 
 ---
 
@@ -193,15 +197,15 @@ Backlog → Todo → In Progress → Develop → Done
 
 ### Example 1: Report Critical Bug
 ```
-I found a critical bug in Soundwise - the payment webhook is timing out 
+I found a critical bug in Soundwise on Odoo - the payment webhook is timing out 
 after 5 seconds. This is blocking all transactions.
 
 Details:
 - Task: Payment webhook timeout
 - Type: bug
 - Assignee: Phuc Do
-- Tags: bug, payment, critical
-- Priority: 0 (Critical)
+- Tags: bug
+- Priority: "3" (Urgent)
 ```
 
 **Skill Response:**
@@ -212,14 +216,14 @@ Details:
 
 ### Example 2: Create Enhancement
 ```
-We want to add caching to our search queries for better performance.
+On Odoo: we want to add caching to our search queries for better performance.
 
 Details:
 - Project: TRS
 - Task: Add caching to search queries
 - Type: enhance
 - Assignee: Anh Huynh
-- Tags: enhance, performance
+- Tags: Enhancement
 ```
 
 **Skill Response:**
@@ -228,17 +232,17 @@ Details:
 3. Waits for confirmation
 4. Creates task
 
-### Example 3: Move Task to Production
+### Example 3: Move Task to DONE
 ```
-Move "User profile page" in Olivia - CRM App from Develop to Done
+Move "User profile page" in Olivia - CRM App on Odoo from DEVELOPED to DONE
 Summary: Feature complete, tested with 50+ user profiles, performance <2s
 ```
 
 **Skill Response:**
 1. Shows confirmation with task details
-2. Displays: Current status → New status
+2. Displays: Current stage → New stage
 3. Waits for confirmation
-4. Moves task to Done with summary
+4. Moves task to DONE with summary
 
 ---
 
@@ -257,9 +261,9 @@ Summary: Feature complete, tested with 50+ user profiles, performance <2s
   Task Name:   Payment webhook timeout
   Type:        bug
   Assignee:    Phuc Do
-  Status:      Todo
-  Tags:        bug, payment, critical
-  Priority:    0 (Critical)
+  Status:      TODO
+  Tags:        bug
+  Priority:    3 (Urgent)
 
 📝 Description (Auto-expanded):
 ────────────────────────────────────────────────────────────────
@@ -295,7 +299,7 @@ Payment webhook is timing out after 5 seconds, blocking transactions
 ### Project Not Found
 ```
 ❌ ERROR: Project 'InvalidName' not found
-Available: Soundwise, TRS, Olivia - CRM App
+Available: Soundwise, TRS, Olivia - CRM App, Website InApps, FCCX, ...
 ```
 **Fix:** Use exact project name
 
@@ -306,12 +310,12 @@ Available: Phuc Do, Phat Dinh, Anh Hoang, Anh Huynh, ...
 ```
 **Fix:** Use exact assignee name
 
-### Invalid Status Transition
+### Stage Not Found
 ```
-❌ ERROR: Cannot move from 'Done' to 'In Progress'
-Done is terminal state (final)
+❌ ERROR: Stage 'Develop' not found
+Available: BackLog, TODO, INPROGRESS, DEVELOPED, READY FOR TEST, DONE
 ```
-**Fix:** Create new task instead
+**Fix:** Use the real UPPERCASE stage name
 
 ---
 
@@ -328,8 +332,9 @@ Done is terminal state (final)
 
 ## 📚 Documentation
 
-- **SKILL.md** - Main skill reference with all features
-- **workflow_guide.md** - Complete workflow examples and troubleshooting
+- **SKILL.md** - Main skill reference with all features (source of truth)
+- **references/quick_reference.md** - Syntax cheat-sheet
+- **references/workflow_guide.md** - Complete workflow examples and troubleshooting
 - **evals.json** - Test cases showing real usage scenarios
 
 ---
@@ -338,12 +343,12 @@ Done is terminal state (final)
 
 ### With Claude Code
 ```
-I need to create a bug in Soundwise project...
+I need to create a bug in Soundwise project on Odoo...
 ```
-Skill automatically triggers and handles the request.
+Skill triggers because the message contains "Odoo".
 
 ### With Odoo
-Tasks are created directly in Odoo ERP at `https://erp.inapps.net/odoo/`
+Tasks are created directly in Odoo ERP (UI: `https://erp.inapps.net/odoo/`)
 
 ### Output Formats
 - **Display:** Emoji + formatted text (user-friendly)
@@ -351,23 +356,4 @@ Tasks are created directly in Odoo ERP at `https://erp.inapps.net/odoo/`
 
 ---
 
-## ✨ Summary
-
-This **odoo-project-automation** skill provides a complete, user-friendly interface to Odoo task management with:
-
-- ✅ Smart auto-expansion of descriptions (5 task types)
-- ✅ Confirmation workflow (prevents accidents)
-- ✅ Full error handling (helpful error messages)
-- ✅ Workflow state management (linear progression)
-- ✅ Team management (9 assignees)
-- ✅ Multi-format output (human-readable + JSON)
-- ✅ Comprehensive documentation (SKILL.md + guides)
-
-**Ready to use!** Just invoke the skill and let it guide you through creating, moving, and closing tasks in Odoo.
-
----
-
-**API Endpoint:** `https://erp.inapps.net/odoo/`  
-**Authentication:** Secure token-based  
-**Mode:** Mock (default, testing) or Real API (production)  
-**Status:** ✅ Complete and ready for deployment
+**Endpoint:** `https://erp.inapps.net` · **Odoo:** 19.0 · **Access:** `mcp__odoo__*` tools (XML-RPC fallback only for binary attachments)
