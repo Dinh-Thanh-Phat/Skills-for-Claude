@@ -62,33 +62,32 @@ await using har = await context.tracing.startHar('trace.har');
 
 ---
 
-## 3. `test.abort()` — Test Guardrails from Fixtures and Hooks
+## 3. `test.abort()` — Fail Fast on Unrecoverable Misuse
 
-Aborts the currently running test (marks it as `skipped` with a message) from inside a fixture, `beforeEach`, or route handler. Use as a guard when a precondition is not met and continuing would produce misleading failures.
+`test.abort(message?)` aborts the currently running test **by throwing** — the test is immediately marked **failed** (not skipped), and the message is included in the failure error. Callable from a fixture, hook, or route handler. There is no `testInfo.abort()`.
+
+Use it as a guardrail when the test is doing something it must never do (e.g. hitting a shared/production endpoint):
 
 ```typescript
-// In a fixture — abort if feature flag is off
-const test = base.extend<{ featureEnabled: void }>({
-  featureEnabled: async ({ page }, use, testInfo) => {
-    const flags = await page.evaluate(() => window.__featureFlags);
-    if (!flags.newCheckout) {
-      await testInfo.abort('Skipping — newCheckout flag is off in this environment');
-      return;
-    }
-    await use();
-  },
-});
-
-// In beforeEach — abort if seed data missing
-test.beforeEach(async ({ page }, testInfo) => {
-  const count = await page.locator('[data-testid="product-card"]').count();
-  if (count === 0) {
-    await testInfo.abort('No products seeded — cannot run cart tests');
-  }
+test('does not publish to the shared page', async ({ page }) => {
+  await page.route('**/publish', route => {
+    test.abort('Tests must not publish to the shared page. Use the `clone` option.');
+    return route.abort();
+  });
+  // ...
 });
 ```
 
-> `test.abort()` is NOT the same as `test.skip()`. `skip()` is a static compile-time declaration; `abort()` fires at runtime based on actual conditions. Aborted tests show as skipped with the abort message in the HTML report.
+**Precondition not met (feature flag off, seed data missing)? That is a skip, not an abort** — use runtime `test.skip(condition, reason)`:
+
+```typescript
+test.beforeEach(async ({ page }) => {
+  const count = await page.locator('[data-testid="product-card"]').count();
+  test.skip(count === 0, 'No products seeded — cannot run cart tests');
+});
+```
+
+> `test.abort()` = "this test is broken/misused → FAIL now". `test.skip(cond)` = "this environment can't run it → SKIP". Using abort for env preconditions turns infra gaps into red builds; using skip for misuse hides real problems (see `skip-vs-fail`).
 
 ---
 

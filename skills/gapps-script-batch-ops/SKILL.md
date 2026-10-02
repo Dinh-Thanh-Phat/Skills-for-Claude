@@ -1,12 +1,6 @@
 ---
 name: gapps-script-batch-ops
-description: >-
-  Google Apps Script performance and quota patterns for Sheets automation — batch reads/writes,
-  parallel HTTP, trigger design, and Cloud Logging. Use when writing Apps Script code for Google
-  Sheets, hitting 6-minute execution limits, needing to process large datasets inside Sheets, or
-  scheduling automated Workspace tasks. Triggers on: "Apps Script", "google apps script",
-  "SpreadsheetApp", "getValues", "setValues", "onEdit trigger", "time-driven trigger", "apps
-  script quota", "batch update sheets script".
+description: Google Apps Script performance and quota patterns for Sheets automation — batch reads/writes, parallel HTTP, trigger design, and Cloud Logging. Use when writing Apps Script code for Google Sheets, hitting 6-minute execution limits, needing to process large datasets inside Sheets, or scheduling automated Workspace tasks. Triggers on: "Apps Script", "google apps script", "SpreadsheetApp", "getValues", "setValues", "onEdit trigger", "time-driven trigger", "apps script quota", "batch update sheets script".
 ---
 
 # Google Apps Script — Batch Operations & Performance
@@ -98,11 +92,18 @@ const results = responses.map((resp, i) => {
 
 | Limit | Consumer Google account | Google Workspace |
 |---|---|---|
-| Script execution time | 6 min / run | 6 min / run |
+| Script runtime | 6 min / execution | 6 min / execution |
+| Custom function runtime (`=MYFUNC()` in a cell) | 30 sec / execution | 30 sec / execution |
+| Triggers total runtime | 90 min / day | 6 hr / day |
+| Triggers | 20 / user / script | 20 / user / script |
+| Simultaneous executions | 30 / user | 30 / user |
 | `UrlFetchApp.fetch` calls | 20,000 / day | 100,000 / day |
-| Spreadsheet read/write calls | Effectively unlimited when batched | Same |
-| Email sent via `MailApp` | 100 / day | 1,500 / day |
-| Triggers | 20 total per account | 20 total per account |
+| Email recipients via `MailApp` | 100 / day | 1,500 / day |
+| Properties read/write | 50,000 / day | 500,000 / day |
+| Spreadsheets created | 250 / day | 3,200 / day |
+| Spreadsheet read/write calls | No published daily cap; batching is what keeps you under the 6-min runtime | Same |
+
+Source: https://developers.google.com/apps-script/guides/services/quotas (values can change — re-check before relying on an exact number). Note the chunk-by-trigger pattern below spends **Triggers total runtime** (90 min/day on consumer accounts), and each chunk's `PropertiesService` cursor read/write counts toward the Properties quota.
 
 When a script approaches 6 minutes, break work across multiple time-driven trigger runs using `PropertiesService` as a cursor:
 
@@ -142,13 +143,19 @@ function createDailyTrigger() {
     .create();
 }
 
-// onEdit — fires on any cell edit in the spreadsheet
+// onEdit — simple trigger, fires on a USER's cell edit in the spreadsheet
 function onEdit(e) {
   if (e.range.getSheet().getName() !== 'Orders') return;
   if (e.range.getColumn() !== 3) return;   // only column C
   // handle the edit
 }
 ```
+
+### Simple-trigger limits (`onEdit`, `onOpen`, …)
+From https://developers.google.com/apps-script/guides/triggers:
+- "They can't run for longer than 30 seconds." — keep `onEdit` tiny; push heavy work to a time-driven trigger.
+- "They can't access services that require authorization" (e.g. can't send email). Need `MailApp`/`UrlFetchApp`? Create an **installable** edit trigger: `ScriptApp.newTrigger('handleEdit').forSpreadsheet(SpreadsheetApp.getActive()).onEdit().create()`.
+- "Script executions and API requests don't cause triggers to run. For example, calling Range.setValue() to edit a cell does not cause the spreadsheet's onEdit trigger to run." — so writes from a Python Sheets API script or another Apps Script function will NOT fire `onEdit`; don't build a pipeline that relies on it.
 
 ## Cloud Logging for Debugging
 
