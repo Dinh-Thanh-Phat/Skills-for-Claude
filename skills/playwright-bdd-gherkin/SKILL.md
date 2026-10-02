@@ -35,6 +35,8 @@ Viewer, parallelism, and web-first assertions, without a separate Cucumber proce
 
 ## Setup
 
+Version baseline (checked 2026-10-02): **playwright-bdd v9.2.1** (supports Playwright 1.63). v9 requires **Node.js ≥ 20**, enforces strict Cucumber-compatible step arity checks (disable via `arityCheck` option), and ships its own `playwright-bdd` agent skill. The next (unreleased) version raises the minimum Playwright to 1.53 and adds `bddgen --watch`.
+
 ```bash
 npm install -D @playwright/test playwright-bdd
 npx playwright install chromium   # if not already installed
@@ -47,9 +49,9 @@ import { defineConfig, devices } from '@playwright/test';
 import { defineBddConfig } from 'playwright-bdd';
 
 const testDir = defineBddConfig({
-  paths: ['features/**/*.feature'],  // .feature files
-  require: ['steps/**/*.ts'],         // step definitions
-  // importTestFrom: 'fixtures.ts',  // uncomment if using custom fixtures
+  features: 'features/**/*.feature',   // .feature files   (old `paths` = deprecated)
+  steps: ['steps/**/*.ts', 'fixtures.ts'], // step defs + the file exporting createBdd(test) (old `require`/`import` = deprecated)
+  // importTestFrom: not needed since v7 — custom `test` is auto-detected from step definitions
 });
 
 export default defineConfig({
