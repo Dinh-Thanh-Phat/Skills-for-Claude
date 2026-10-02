@@ -127,3 +127,4 @@ Prefer this over `browser.newContext()` when your test needs to verify behavior 
 - [Playwright v1.59.0 Release — GitHub](https://github.com/microsoft/playwright/releases/tag/v1.59.0)
 - [Playwright 1.59 Release: New Features for Agentic Testing — TestDino](https://testdino.com/blog/playwright-release-guide)
 - [What's New in Playwright 1.59 — Bug0](https://bug0.com/blog/whats-new-playwright-1-59)
+- API: https://github.com/microsoft/playwright/blob/main/docs/src/api/class-screencast.md, class-browsercontext.md#browser-context-set-storage-state (corrected 2026-10-02)
