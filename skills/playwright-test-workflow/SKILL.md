@@ -157,7 +157,8 @@ test.describe('[Feature Name]', () => {
 
   test.afterEach(async ({ page }) => {
     if (createdItemName) {
-      // Prefer API: await page.request.delete(`/api/items/${createdItemName}`).catch(() => {});
+      // Prefer API: const res = await page.request.delete(`/api/items/${createdItemName}`);
+      //             expect(res.ok(), `cleanup failed for ${createdItemName}`).toBeTruthy(); // no silent catch
       // Fallback UI: navigate → find → delete
       createdItemName = '';
     }

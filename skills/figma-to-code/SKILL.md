@@ -40,15 +40,32 @@ List every section top-to-bottom:
 ```
 
 ### 1b. Design tokens
-Extract from the design before touching Tailwind:
+**Check `package.json` first** — is `tailwindcss` a dependency, and which major version? The styling approach follows the project, not this skill:
+- **Tailwind v4** → tokens go in CSS with `@theme` (no `tailwind.config.js`; v4 only reads a JS config if loaded via `@config`).
+- **Tailwind v3** → `theme.extend` in `tailwind.config.js`.
+- **No Tailwind** → plain CSS custom properties on `:root` + CSS modules / plain CSS. **Homerun FE is NOT Tailwind** (memory `project_homerun-design`: Vite + React 19 + TS) — don't add Tailwind classes there.
 
-| Token | Value | Tailwind equiv |
-|---|---|---|
-| Primary color | #F97316 | orange-500 |
-| Background | #0A6B78 | custom inline |
-| Body font | Inter | font-sans |
-| Display font | Dancing Script | custom Google Font |
-| Card radius | 16px | rounded-2xl |
+Extract from the design (prefer `get_variable_defs` output) before writing styles:
+
+| Token | Value | Tailwind v4 `@theme` | Plain CSS |
+|---|---|---|---|
+| Primary color | #F97316 | `--color-primary: #F97316;` → `bg-primary` | `--color-primary: #F97316;` |
+| Background | #0A6B78 | `--color-teal: #0A6B78;` | `--color-teal: #0A6B78;` |
+| Body font | Inter | `--font-sans: "Inter", sans-serif;` | `--font-body: "Inter", sans-serif;` |
+| Display font | Dancing Script | `--font-display: "Dancing Script", cursive;` → `font-display` | `--font-display: …` |
+| Card radius | 16px | `--radius-card: 16px;` → `rounded-card` | `--radius-card: 16px;` |
+
+```css
+/* src/index.css — Tailwind v4 */
+@import "tailwindcss";
+@theme {
+  --color-primary: #F97316;
+  --color-teal: #0A6B78;
+  --font-display: "Dancing Script", cursive;
+  --radius-card: 16px;
+}
+```
+Source: https://tailwindcss.com/docs/theme
 
 ### 1c. Navbar behavior — CRITICAL
 Answer these before coding:
