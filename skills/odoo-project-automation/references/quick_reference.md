@@ -1,5 +1,7 @@
 # Odoo Project Automation - Quick Reference
 
+> Trigger rule: only when the user's message contains "Odoo" or "ERP". All reads/writes go through `mcp__odoo__*` (search_records → preview_write/validate_write → execute_approved_write). SKILL.md is the source of truth if anything here disagrees.
+
 ## Create Task Syntax
 
 ```
@@ -7,10 +9,10 @@ project: "PROJECT_NAME"
 task_name: "TASK_TITLE"
 task_type: "TYPE"              # bug | task | enhance | refactor | docs
 description: "SHORT_DESC"
-assignee: "ASSIGNEE_NAME"
-tags: ["TAG1", "TAG2"]         # Optional
-priority: "0"                  # Optional: 0=Critical, 2=Medium (default), 4=Backlog
-status: "Todo"                 # Optional: default is Todo
+assignee: "ASSIGNEE_NAME"      # written to user_ids (many2many)
+tags: ["TAG1", "TAG2"]         # Optional — resolve via project.tags first
+priority: "1"                  # Optional: Odoo 19 → "0"=Low, "1"=Medium, "2"=High, "3"=Urgent
+status: "TODO"                 # Optional: real stage name; TODO (176) is the usual default
 ```
 
 ## Move Task Syntax
@@ -19,7 +21,7 @@ status: "Todo"                 # Optional: default is Todo
 project: "PROJECT_NAME"
 task_name: "TASK_TITLE"
 action: "move"
-new_status: "NEW_STATUS"       # Todo | In Progress | Develop | Done
+new_status: "NEW_STATUS"       # BackLog | TODO | INPROGRESS | DEVELOPED | READY FOR TEST | DONE
 notes: "REASON_FOR_MOVE"       # Optional
 ```
 
@@ -36,9 +38,15 @@ summary: "COMPLETION_SUMMARY"  # Optional but recommended
 
 ## Project Names (Exact Spelling)
 
-- `Soundwise`
-- `TRS`
-- `Olivia - CRM App`
+| Project | project_id |
+|---|---|
+| `Soundwise` | 76 |
+| `TRS` | - |
+| `Olivia - CRM App` | 64 |
+| `Website InApps` | 79 |
+| `FCCX` | 80 |
+
+Not exhaustive — resolve others with `search_records` on `project.project` (`ilike`).
 
 ## Assignee Names (Exact Spelling)
 
@@ -62,30 +70,32 @@ summary: "COMPLETION_SUMMARY"  # Optional but recommended
 | `refactor` | Objective + Plan | Code cleanup |
 | `docs` | Scope + Format | Documentation |
 
-## Priority Levels
+## Priority Levels (Odoo 19 `project.task.priority`)
 
-| Level | Name | Use When |
-|-------|------|----------|
-| `0` | Critical | Production blocking |
-| `1` | High | High impact, urgent |
-| `2` | Medium | Normal priority (default) |
-| `3` | Low | Nice to have |
-| `4` | Backlog | Future work |
+| Value | Odoo label | Stars | Use When |
+|-------|------|-------|----------|
+| `"3"` | Urgent | ⭐⭐⭐ | Production blocking, crash, payment, security, cannot login |
+| `"2"` | High | ⭐⭐ | Broken feature, wrong data, 404, timeout |
+| `"1"` | Medium | ⭐ | Cosmetic / minor UI (default for bugs) |
+| `"0"` | Low | — | Nice to have |
 
-## Workflow States
+There is no `"4"`. `"0"` is the LOWEST priority — never use it for critical.
+
+## Workflow States (stages)
 
 ```
-Backlog → Todo → In Progress → Develop → Done
+BackLog (175) → TODO (176) → INPROGRESS (177) → DEVELOPED (180) → READY FOR TEST (181) → DONE (182)
 ```
 
 **Rules:**
-- Move forward: Todo → In Progress, In Progress → Develop, Develop → Done
-- Move back: In Progress → Todo, Develop → In Progress
-- Cannot skip states or leave Done
+- Stage names are UPPERCASE in Odoo — search with `ilike`.
+- Odoo allows moving a task to any stage (forward, back, or reopening from DONE). There is no enforced "terminal" stage.
+- The "done" circle is a separate field: `state = "1_done"` (not `kanban_state`, which doesn't exist in Odoo 19).
 
 ## Available Tags
 
-`bug`, `task`, `enhance`, `refactor`, `docs`, `backend`, `frontend`, `mobile`, `performance`, `security`, `database`, `urgent`, `review`
+Confirmed live `project.tags`: `bug` (5), `Task` (6), `Enhancement` (27), `Feedback` (28), `Customer` (1).
+Other names (`refactor`, `docs`, `backend`, `frontend`, `mobile`, `performance`, `security`, `database`, `urgent`, `review`) are UNVERIFIED — search `project.tags` before using.
 
 ---
 
@@ -98,8 +108,8 @@ task_name: "Payment button crashes"
 task_type: "bug"
 description: "Clicking pay button causes app to crash on iOS"
 assignee: "Phuc Do"
-tags: ["bug", "critical", "mobile"]
-priority: "0"
+tags: ["bug"]
+priority: "3"
 ```
 
 ### 2. Create Feature for Next Sprint
@@ -109,9 +119,9 @@ task_name: "Add user activity logging"
 task_type: "task"
 description: "Track all user actions for audit trail compliance"
 assignee: "Anh Huynh"
-tags: ["task", "backend"]
-priority: "2"
-status: "Todo"
+tags: ["Task"]
+priority: "1"
+status: "TODO"
 ```
 
 ### 3. Create Performance Enhancement
@@ -121,8 +131,8 @@ task_name: "Optimize search queries"
 task_type: "enhance"
 description: "Add database indexing for faster search performance"
 assignee: "Hoa Tran"
-tags: ["enhance", "performance", "database"]
-priority: "2"
+tags: ["Enhancement"]
+priority: "1"
 ```
 
 ### 4. Start Working (Move Task)
@@ -130,7 +140,7 @@ priority: "2"
 project: "Soundwise"
 task_name: "Payment button crashes"
 action: "move"
-new_status: "In Progress"
+new_status: "INPROGRESS"
 notes: "Starting investigation and fix"
 ```
 
@@ -155,9 +165,9 @@ Task: Payment button crashes
 Task ID: 1001
 Type: bug
 Assignee: Phuc Do
-Status: Todo
-Tags: bug, critical, mobile
-Priority: 0 (Critical)
+Status: TODO
+Tags: bug
+Priority: 3 (Urgent)
 
 Created: 2026-05-05T10:30:45
 ```
@@ -182,11 +192,11 @@ Available assignees:
 
 ## Confirmation Flow
 
-1. **Skill validates inputs** → Project/assignee exist?
-2. **Shows confirmation dialog** → Review auto-expanded description
-3. **Waits for response** → "yes"/"confirm" or "no"/"cancel"
-4. **Executes action** → Creates/moves/closes task
-5. **Shows result** → Success or error message
+1. **Validate inputs** → Project/assignee/stage/tags exist? (`search_records`)
+2. **Show confirmation** → Review auto-expanded description (bugs: Actual and Expected on separate labelled lines)
+3. **Wait for response** → "yes"/"confirm" or "no"/"cancel"
+4. **Execute** → `validate_write` → `execute_approved_write` (`confirm=true`)
+5. **Show result** → Success or verbatim error
 
 ---
 
@@ -194,9 +204,9 @@ Available assignees:
 
 | Problem | Solution |
 |---------|----------|
-| "Project not found" | Use exact project name (case-sensitive) |
+| "Project not found" | Use exact project name, or `ilike` search |
 | "Assignee not found" | Use exact assignee name from list |
-| "Cannot move to status" | Check workflow rules - can only move forward/back one state |
+| "Stage not found" | Use the real UPPERCASE stage name (`ilike`) |
 | "Task not found" | Verify exact task name spelling |
 | Task created but not visible | Wait 30 seconds, refresh Odoo page |
 
@@ -208,13 +218,13 @@ Available assignees:
 - Use specific descriptions (auto-expansion quality depends on it)
 - Review confirmation dialog before confirming
 - Add context in notes when moving tasks
-- Use appropriate priority level
+- Use the correct priority value ("3" = Urgent)
 - Tag consistently across tasks
 
 ❌ **DON'T:**
 - Use wrong project/assignee names
 - Skip the confirmation dialog
-- Try to move Done tasks backwards
+- Use `"0"` for critical bugs (it means Low)
 - Leave descriptions empty
 - Use inconsistent tag names
 
@@ -224,15 +234,15 @@ Available assignees:
 
 ### Claude Code
 ```
-"I need to create a bug for the login issue in Soundwise project..."
-→ Skill triggers automatically
+"I need to create a bug for the login issue in Soundwise project on Odoo..."
+→ Skill triggers (message contains "Odoo")
 → Shows confirmation
 → Creates task in Odoo
 ```
 
 ### Natural Language
 ```
-"Move the user profile page task in Olivia to In Progress - I'm starting implementation"
+"Move the user profile page task in Olivia to INPROGRESS on Odoo - I'm starting implementation"
 → Skill parses request
 → Shows confirmation
 → Moves task
@@ -240,8 +250,8 @@ Available assignees:
 
 ### With Details
 ```
-"Create enhancement in TRS: Add dark mode support, assign to Anh Huynh, mark as medium priority"
-→ Skill validates
+"Create enhancement in TRS on ERP: Add dark mode support, assign to Anh Huynh, medium priority"
+→ Skill validates (priority "1" = Medium)
 → Shows confirmation with auto-expanded description
 → Creates task
 ```
@@ -250,6 +260,6 @@ Available assignees:
 
 ## For More Information
 
-- **SKILL.md** - Complete feature reference
+- **SKILL.md** - Complete feature reference (source of truth)
 - **workflow_guide.md** - Detailed workflows and examples
-- **README.md** - Implementation overview
+- **README.md** - Overview
