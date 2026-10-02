@@ -207,9 +207,10 @@ npm install -g @mockoon/cli
 # Then start headlessly
 mockoon-cli start --data mockoon-data.json --port 3001
 
-# In Maestro flow
-env:
-  API_BASE_URL: http://10.0.2.2:3001
+# In Maestro flow — pass to the APP via launch arguments (flow env alone does nothing for the app)
+- launchApp:
+    arguments:
+      apiBaseUrl: "http://10.0.2.2:3001"
 ```
 
 Mockoon GUI (desktop app) lets you visually define routes and responses, then export the JSON for
