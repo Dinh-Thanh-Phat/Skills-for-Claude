@@ -149,10 +149,11 @@ def ocr_tesseract(img: np.ndarray, languages: list = None) -> tuple:
 
     data = pytesseract.image_to_data(pil_img, lang=lang_str, config=config,
                                      output_type=pytesseract.Output.DICT)
+    # conf may be float or numeric string depending on version → float(), never int()
     texts = [data["text"][i] for i in range(len(data["text"]))
-             if int(data["conf"][i]) > 0 and data["text"][i].strip()]
-    confs = [int(data["conf"][i]) for i in range(len(data["conf"]))
-             if int(data["conf"][i]) > 0 and data["text"][i].strip()]
+             if float(data["conf"][i]) > 0 and data["text"][i].strip()]
+    confs = [float(data["conf"][i]) for i in range(len(data["conf"]))
+             if float(data["conf"][i]) > 0 and data["text"][i].strip()]
 
     text = " ".join(texts)
     avg_conf = (sum(confs) / len(confs)) if confs else 0
