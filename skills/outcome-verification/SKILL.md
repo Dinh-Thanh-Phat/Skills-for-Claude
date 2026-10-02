@@ -79,8 +79,8 @@ test('send email creates campaign history entry', async ({ page }) => {
 
   // ASSERT B — real business outcome (REQUIRED)
   await page.goto('/campaign-history');
-  const row = page.locator('tbody tr').first();
-  await expect(row).toContainText(subject);
+  const row = page.getByRole('row').filter({ hasText: subject }); // unique subject → unique row
+  await expect(row).toHaveCount(1);   // exactly one entry — no duplicates, no "any row"
   await expect(row.locator('.status')).toHaveText('Sent');
 });
 ```
