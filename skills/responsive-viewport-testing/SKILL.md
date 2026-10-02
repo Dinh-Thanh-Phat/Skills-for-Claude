@@ -156,6 +156,6 @@ test('mobile dark mode layout', async ({ browser }) => {
 - [ ] Touch interactions: `hasTouch: true` + `isMobile: true` in context
 - [ ] Breakpoints: testing just below AND just above CSS breakpoint values
 - [ ] Hamburger: tested open AND closed states
-- [ ] Touch targets: `boundingBox()` ≥ 44×44px for interactive elements
+- [ ] Touch targets: `boundingBox()` ≥ 24×24px (WCAG 2.2 AA, 2.5.8); ≥ 44×44px if targeting AAA (2.5.5) / Apple HIG
 - [ ] Fresh navigation before each viewport test (no state carryover)
 
