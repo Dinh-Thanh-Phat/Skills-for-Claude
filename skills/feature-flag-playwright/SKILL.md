@@ -1,10 +1,6 @@
 ---
 name: feature-flag-playwright
-description: >-
-  Use when writing or reviewing Playwright tests for features that are gated behind feature flags
-  (LaunchDarkly, Flagsmith, Unleash, PostHog, or env-var toggles). Triggers on: "feature flag
-  test", "toggle-aware test", "LaunchDarkly playwright", "test flag on and off", "skip test when
-  flag disabled", "flag fixture".
+description: Use when writing or reviewing Playwright tests for features that are gated behind feature flags (LaunchDarkly, Flagsmith, Unleash, PostHog, or env-var toggles). Triggers on: "feature flag test", "toggle-aware test", "LaunchDarkly playwright", "test flag on and off", "skip test when flag disabled", "flag fixture".
 ---
 
 # Feature Flag Testing with Playwright
@@ -72,7 +68,10 @@ const PROJECT = 'my-app';
 const ENV     = 'test';
 const FLAG    = 'new-checkout-flow';
 
-test.describe('new checkout flow (flag=on)', () => {
+// Playwright 1.63+: `lock` — every test/group that reads OR flips this flag holds the same lock
+// name, so they never run concurrently across files/workers/projects (other tests stay parallel).
+// Without it, a parallel worker can observe the flag mid-flip even with afterAll restore.
+test.describe('new checkout flow (flag=on)', { lock: `ld-flag-${FLAG}` }, () => {
   let originalState: boolean;
 
   test.beforeAll(async () => {
@@ -93,9 +92,15 @@ test.describe('new checkout flow (flag=on)', () => {
 });
 ```
 
-### 3. Env-var driven — backend-rendered flags
+> Give the flag=off group (and any test that depends on this flag's value) the SAME
+> `{ lock: 'ld-flag-new-checkout-flow' }`. Whether a describe-level lock also spans its
+> `beforeAll`/`afterAll` hooks is UNVERIFIED — check the "Test locks" section of
+> playwright.dev/docs/test-parallel on your version. Pre-1.63: put flag-flipping specs in a
+> dedicated project with `workers: 1`, or `test.describe.configure({ mode: 'serial' })` plus `--workers=1`.
 
-When flags are server-rendered at request time via an env var:
+### 3. Header / request-driven — backend-rendered flags
+
+When the backend reads the flag per request (e.g. from a header your test env honors):
 
 ```typescript
 // playwright.config.ts
@@ -161,7 +166,7 @@ for (const flagOn of [true, false]) {
 ## Rules
 
 - **One flag per test** — isolating tests to a single flag makes failures unambiguous.
-- **Always restore** — use `afterAll`/`afterEach` to reset flags; a leaked state bleeds into other parallel tests.
+- **Always restore** — use `afterAll`/`afterEach` to reset flags. Restore alone does NOT stop parallel workers seeing the flipped state mid-run — also serialize with a 1.63 `lock` (above).
 - **Use the test environment** — never toggle flags in production or staging shared with users.
 - **Don't hardcode API keys** — store LD_API_KEY in CI secrets; read via `process.env`.
 - **Prefer mock > API** where flag complexity is low; API control is only needed when the backend reads the flag server-side.
