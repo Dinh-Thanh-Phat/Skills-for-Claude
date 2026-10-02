@@ -25,7 +25,8 @@ new_code = """
 def my_func():
     cases.append(tc(
         'ID', 'Module',
-        'Description with \\n in it',   # ← \n becomes literal newline in the string
+        'Description with \n in it',   # ← single \n becomes a REAL newline in new_code
+                                       #   (writing \\n would be safe — easy to get wrong)
         ...
     ))
 """
@@ -82,7 +83,7 @@ def foo():
 "
 ```
 
-**Why it fails:** OS has a command-line length limit (varies, ~8KB on Windows). Long code → `ENAMETOOLONG` or silent truncation.
+**Why it fails:** OS has a command-line length limit (cmd.exe ~8 KB, CreateProcess ~32 K chars on Windows). Long code → `[WinError 206] The filename or extension is too long` (Windows) / `E2BIG` (POSIX), plus shell quoting mangles quotes and `$`.
 
 **Rule:** If code is > 3 lines, write it to a `.py` file first, then run the file:
 ```bash

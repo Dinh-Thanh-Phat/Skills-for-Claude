@@ -123,10 +123,9 @@ test('update user settings', { lock: 'user-settings' }, async ({ page }) => { /*
 
 // a group (a test can hold several locks: lock: ['user-settings', 'billing'])
 test.describe('billing admin', { lock: 'billing' }, () => { /* ... */ });
-
-// all tests in the current scope
-test.describe.configure({ lock: 'user-settings' });
 ```
+
+(`test.describe.configure({ lock })` appears in main-branch docs as **since 1.64** — not released yet, don't use.)
 
 Use for: one shared staging account, a global account setting, a rate-limited 3rd-party sandbox, a singleton seed. Still prefer per-test data isolation (`test-isolation`) when possible — a lock removes the race, not the coupling.
 
