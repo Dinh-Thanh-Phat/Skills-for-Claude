@@ -33,7 +33,7 @@ stack_trace: "at LoginButton.handleClick (login.js:42)"
 project: "TRS"
 task_name: "Database migration"
 action: "move"
-new_status: "In Progress"
+new_status: "INPROGRESS"   # real stage names: BackLog, TODO, INPROGRESS, DEVELOPED, READY FOR TEST, DONE
 notes: "Schema design approved, starting implementation"
 ```
 
