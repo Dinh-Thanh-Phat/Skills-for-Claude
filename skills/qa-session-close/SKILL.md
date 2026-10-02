@@ -104,7 +104,10 @@ bd list --status=in_progress  # issues đang làm dở
 ### Resume
 
 ```
+# Web (Playwright)
 npx playwright test [spec-file] --grep "[test name pattern]"
+# Mobile (Maestro)
+maestro test [flows/path/flow.yaml]            # hoặc: maestro test [flows/dir] --include-tags [tag]
 ```
 
 **Next priority:**
@@ -138,7 +141,18 @@ bd create --title="[Project] BUG-XX: [mô tả ngắn]" \
 **3d. Push:**
 ```bash
 bd dolt push
+git pull --rebase && git push   # CLAUDE.md: session chưa xong khi git push chưa thành công
 ```
+
+**3e. Cập nhật project knowledge** (để `qa-session-start` Bước 0 đọc được trạng thái mới):
+
+Sửa `C:\Users\wi\.claude\shared-context\knowledge\<slug>.md` (slug theo bảng trong `qa-session-start`):
+```markdown
+**Last session:** [DATE] — [1 câu: đã test gì, kết quả X pass / Y fail]
+**Left off at:** [trạng thái / spec hoặc flow đang dở]
+**Next step:** [việc quan trọng nhất tiếp theo + resume command]
+```
+Sửa tại chỗ các dòng này (không append bản trùng). Project chưa có file knowledge → báo user.
 
 ---
 
