@@ -56,7 +56,7 @@ Common sources of test timeout:
 | Source | Symptoms | Fix |
 |--------|----------|-----|
 | Server cold start (Replit/staging) | First test slow, rest fast | Warm-up request in global-setup |
-| `networkidle` consuming test budget | Test timeout = networkidle + assertion | Reduce networkidle or separate budgets |
+| `networkidle` consuming test budget | Test timeout = networkidle + assertion | Remove `networkidle` (DISCOURAGED in Playwright docs) — wait on the ready-state element with a web-first assertion |
 | Wrong assertion target | Element never appears | Fix selector, not timeout |
 | Missing `await` | Assertion resolves too fast | Add proper awaits |
 | Shared test state | Depends on previous test | Fix test isolation |
