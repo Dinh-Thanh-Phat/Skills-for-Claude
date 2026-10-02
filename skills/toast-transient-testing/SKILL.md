@@ -176,6 +176,6 @@ await expect(page.locator('[data-toast-type="success"]')).toHaveAttribute('role'
 - [ ] Asserting on `getByRole('alert')` or `getByRole('status')` — not CSS class
 - [ ] No `waitForTimeout` between action and toast assertion
 - [ ] Toast appears AND disappears both tested (lifecycle complete)
-- [ ] Slow CI: `page.clock.install()` used to freeze auto-dismiss
+- [ ] Slow CI: `page.clock.install()` BEFORE `goto` + `page.clock.pauseAt()` used to freeze auto-dismiss
 - [ ] Multiple toasts: using `filter({ hasText })` to target correct one
 

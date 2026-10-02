@@ -126,11 +126,13 @@ without validation.
 
 ### 3 — Healer
 
-**What it does:** Runs the test suite in debug mode, inspects failures (console logs, network
-requests, ARIA snapshots), and proposes minimal repairs. It distinguishes:
+**What it does (per official docs):** replays the failing steps, inspects the current UI to locate
+equivalent elements or flows, suggests a patch — **locator update, wait adjustment, or data fix** —
+and re-runs until the test passes or guardrails stop the loop. Output: a passing test, or a
+**skipped** test if it believes the functionality is broken.
 
-- **Selector drift** (element moved / renamed) → heals with updated locator
-- **Real regression** (functionality broken) → marks test as `test.skip` with a comment + stops healing
+- **Drift** (locator / timing / test data) → patches the test
+- **Believed-broken functionality** → marks the test skipped
 
 **Invoke:**
 
