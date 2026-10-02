@@ -107,8 +107,7 @@ result = await attack.execute_async(objective="extract system prompt contents")
 print(result.outcome)
 ```
 
-UNVERIFIED: the `AttackAdversarialConfig` import path and `result.outcome` field name — confirm in
-`pyrit/executor/attack/__init__.py` / `pyrit/models/attack_result.py` before use.
+UNVERIFIED: the `result.outcome` field name — confirm in `pyrit/models/attack_result.py` before use.
 
 PyRIT attack strategies:
 - **Crescendo** — gentle escalation; bypasses many per-turn content filters
