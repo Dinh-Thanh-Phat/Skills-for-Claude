@@ -1,13 +1,6 @@
 ---
 name: playwright-1.60-new-apis
-description: >-
-  Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic drag-and-drop on upload
-  zones, tracing.startHar() for unified HAR+trace recording, test.abort() to abort a test from a
-  fixture/hook, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer
-  assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording
-  with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA
-  context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace",
-  "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
+description: Playwright 1.60 (May 2026) new APIs — locator.drop() for synthetic drag-and-drop on upload zones, tracing.startHar() for unified HAR+trace recording, test.abort() to abort a test from a fixture/hook, ARIA bounding boxes for AI-friendly assertions, and errorContext for richer assertion failure diagnostics. Use when testing file-drop upload zones, unifying HAR recording with traces, aborting tests on precondition failure, or diagnosing assertion failures with ARIA context. Triggers on: "locator.drop", "drop file", "tracing.startHar", "HAR trace", "test.abort", "abort test", "ARIA bounding box", "errorContext", "Playwright 1.60".
 ---
 
 # Playwright 1.60 New APIs
@@ -21,18 +14,21 @@ Released May 2026. Six headline features that improve drag-and-drop testing, HAR
 Simulates an external drag-and-drop onto an element. Dispatches `dragenter`, `dragover`, and `drop` with a synthetic `DataTransfer` — works across Chromium, Firefox, and WebKit. Ideal for testing file-upload zones that use `drop` events instead of `<input type=file>`.
 
 ```typescript
-// Drop a file onto an upload zone
+// Drop a file onto an upload zone (files: path | path[] | {name,mimeType,buffer} | array of those)
 await page.getByTestId('upload-zone').drop({
   files: [{ name: 'report.csv', mimeType: 'text/csv', buffer: Buffer.from('a,b\n1,2') }],
 });
 await expect(page.getByText('report.csv')).toBeVisible();
 
-// Drop text data (e.g., dragging a card onto a Kanban column)
-await page.getByTestId('card-123').drop({
-  target: page.getByTestId('column-done'),
+// Drop clipboard-like data (mime-type → string map)
+await page.getByTestId('upload-zone').drop({
+  data: { 'text/plain': 'hello world', 'text/uri-list': 'https://example.com' },
 });
-await expect(page.getByTestId('column-done').getByText('Task title')).toBeVisible();
 ```
+
+Payload is `{ files?, data? }`; other options: `position`, `timeout`. There is **no** `target` option — `drop()` simulates an *external* drop. For element-to-element drag (e.g. Kanban card → column) use `locator.dragTo(target)`.
+
+If the target's `dragover` listener does not call `preventDefault()`, Playwright treats the drop as rejected, dispatches `dragleave`, and `drop()` **throws**.
 
 > Use `locator.drop()` for upload-zone tests instead of `setInputFiles()` — `setInputFiles()` only works on `<input type=file>` elements, not custom drop targets.
 
