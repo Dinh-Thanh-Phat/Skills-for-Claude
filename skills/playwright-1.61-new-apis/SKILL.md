@@ -90,7 +90,11 @@ const cartJson = await page.localStorage.getItem('cart');
 
 // Inspect all entries
 const all = await page.localStorage.items();
-// Returns: { authToken: 'test-jwt-abc123', userId: '42', ... }
+// Returns an ARRAY of name/value pairs:
+// [{ name: 'authToken', value: 'test-jwt-abc123' }, { name: 'userId', value: '42' }, ...]
+
+await page.localStorage.removeItem('userId');
+await page.localStorage.clear();
 
 // sessionStorage — same API, tab-scoped
 await page.sessionStorage.setItem('step', '2');
@@ -100,14 +104,17 @@ await page.sessionStorage.setItem('step', '2');
 
 ## 3. Video Retention Modes
 
-| Mode | Records | Keeps video when... |
-|------|---------|---------------------|
-| `'off'` | Never | — |
-| `'on'` | Always | Always |
-| `'retain-on-failure'` | Yes | Test failed (any attempt) |
-| `'retain-on-first-failure'` | Yes | **First** attempt fails only |
-| `'on-all-retries'` | Yes | **Retries only** (skips initial pass) |
-| `'retain-on-failure-and-retries'` | Yes | First failure + all retry attempts |
+1.61 makes `video` support the same modes as `trace` (new: `'on-all-retries'`, `'retain-on-first-failure'`, `'retain-on-failure-and-retries'`). Official table:
+
+| Mode | Records a video on | Keeps the video when |
+|------|--------------------|----------------------|
+| `'off'` | never | — |
+| `'on'` | every run | always |
+| `'retain-on-failure'` | every run | that run failed |
+| `'retain-on-first-failure'` | first run only | the first run failed |
+| `'retain-on-failure-and-retries'` | every run | that run failed, or it is a retry |
+| `'on-first-retry'` | first retry only | always |
+| `'on-all-retries'` | every retry | always |
 
 ```typescript
 // playwright.config.ts
