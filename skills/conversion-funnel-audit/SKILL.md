@@ -12,8 +12,8 @@ description: >-
 # Conversion / Funnel Audit
 
 Conversion flows leak users to fixable friction. Avg cart abandonment is **70.22%** (Baymard, 50
-studies); top *fixable* causes: extra costs 39%, **forced account 19%**, distrust 19%, **too long/
-complex 18%**. Cutting a form 11→4 fields ≈ **+120%** conversions (HubSpot). This skill flags those
+studies; Baymard's own 2025 data point: 71.72%); top *fixable* causes: extra costs 40%,
+**forced account 18%**, distrust 19%, **too long/complex 17%** (Baymard list updated 2025-09-22). Cutting a form 11→4 fields ≈ **+120%** conversions (HubSpot). This skill flags those
 risks structurally. Companion to [[ux-heuristic-evaluation]] (and [[form-validation-testing]] for the
 functional side).
 
