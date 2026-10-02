@@ -360,11 +360,13 @@ def test_indirect_injection(chatbot_fn):
 - name: LLM Red Team (Promptfoo)
   run: |
     npx promptfoo redteam run --config promptfooconfig.yaml
-    npx promptfoo redteam report --output ./security-report.html
-  # Fail pipeline if critical vulnerabilities found
+  # Exit code 100 = at least one failing test / pass rate below threshold (1 = other error)
   env:
-    PROMPTFOO_FAIL_THRESHOLD: "0"   # 0 critical issues allowed
+    PROMPTFOO_PASS_RATE_THRESHOLD: "100"   # percent; 100 = zero failures allowed (default)
 ```
+
+There is no `PROMPTFOO_FAIL_THRESHOLD`, and `redteam report` has no `--output` (it starts a local
+browser UI) — export results with `--output results.json` on the run instead.
 
 ## Severity Triage
 
