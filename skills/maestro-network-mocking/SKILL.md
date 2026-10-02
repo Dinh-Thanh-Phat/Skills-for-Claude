@@ -115,9 +115,11 @@ project/
 # Android emulator: 10.0.2.2 → host machine localhost
 # iOS simulator: 127.0.0.1 works (shares host network)
 
-# Pass base URL via environment variable (most common pattern)
-export API_BASE_URL=http://10.0.2.2:8080   # Android emulator
-export API_BASE_URL=http://127.0.0.1:8080  # iOS simulator
+# A host-shell env var does NOT reach an app on a device. Use it only at BUILD time
+# (e.g. baked into a debug flavor / .env read by the bundler), or pass at runtime via
+# Maestro `launchApp: arguments:` (see flow below).
+export API_BASE_URL=http://10.0.2.2:8080   # Android emulator — build-time only
+export API_BASE_URL=http://127.0.0.1:8080  # iOS simulator — build-time only
 
 # OR: use a debug/test build flavor that reads BASE_URL from BuildConfig
 # OR: use ADB to set a system property the app reads
