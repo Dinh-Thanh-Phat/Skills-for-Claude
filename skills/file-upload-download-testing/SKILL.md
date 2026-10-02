@@ -351,7 +351,7 @@ await page.route('**/api/upload', route =>
 | CMS image/logo field saves `null` after `setInputFiles` | It's an upload-RELATIONSHIP field — open the "Create New" drawer and upload inside it (see Pattern 6) |
 | Drawer's Save does nothing | Media collection has required fields (Alt) — fill them before Save |
 | `filechooser` event never fires | App uses FSA API (`showOpenFilePicker`) — `filechooser` does not cover it; disable FSA in test config |
-| `DataTransfer` drop fails in Safari/WebKit | `DataTransfer` works only in Chromium + Firefox — run that test project on Chromium |
+| `DataTransfer` drop fails in Safari/WebKit | Use `locator.drop()` (1.60+, cross-browser); manual `DataTransfer` works only in Chromium + Firefox |
 | iframe widget upload "not found" | Use `page.frameLocator(...)` and wait for a UI signal INSIDE the frame, not the iframe tag |
 | `<img>` visible but image is broken | Visibility ≠ loaded — assert `complete && naturalWidth > 0` (see Pattern 15) |
 | Cropper: original file persists, not the crop | Must confirm the crop modal; assert the final `src` changed (see Pattern 10) |
