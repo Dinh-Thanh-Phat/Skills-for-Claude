@@ -86,7 +86,7 @@ await expect(locator).toBeVisible({ timeout: 5000 });
 
 When you find yourself writing `A || B` it means one of:
 - You don't know what the expected behavior is → **ask the dev/BA**
-- The app is inconsistent → **file a bug, then assert the correct behavior**
+- The app is inconsistent → **file a bug, then assert the correct behavior** (lock with `test.fail(true, 'BUG-xxx')` while it's open — see `skip-vs-fail`)
 - You're trying to handle two edge cases → **split into two separate tests**
 
 ---
