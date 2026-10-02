@@ -1,10 +1,6 @@
 ---
 name: test-parallelization
-description: >-
-  Playwright parallel test execution — workers, sharding, isolation strategies. Use when
-  configuring parallel tests, debugging parallel failures, setting up CI sharding, or ensuring
-  test isolation for concurrent execution. Triggers on: "parallel tests", "test workers",
-  "shard", "run tests in parallel", "chạy test song song", "test worker", "CI sharding".
+description: Playwright parallel test execution — workers, sharding, isolation strategies. Use when configuring parallel tests, debugging parallel failures, setting up CI sharding, or ensuring test isolation for concurrent execution. Triggers on: "parallel tests", "test workers", "shard", "run tests in parallel", "chạy test song song", "test worker", "CI sharding".
 triggers:
   - "parallel tests"
   - "test workers"
@@ -57,14 +53,17 @@ export default defineConfig({
 
 ### Mode 3: Serial within describe
 ```typescript
-test.describe.serial('Checkout flow', () => {
-  // These 3 tests share state and must run in order
+// `test.describe.serial` is DISCOURAGED in the API docs — use describe.configure instead
+test.describe('Checkout flow', () => {
+  test.describe.configure({ mode: 'serial' }); // run in order; if one fails, the rest are skipped
   test('Step 1: Add to cart', async ({ page }) => { ... });
   test('Step 2: Enter shipping', async ({ page }) => { ... });
   test('Step 3: Confirm order', async ({ page }) => { ... });
 });
 ```
-**Use sparingly** — serial describes block parallel speedup.
+**Use sparingly** — serial describes block parallel speedup. Note: serial mode does NOT share
+the `page` — each test still gets a fresh page/context. Only server-side state chains between
+tests (prefer one test with `test.step()` for a real multi-step flow).
 
 ---
 
