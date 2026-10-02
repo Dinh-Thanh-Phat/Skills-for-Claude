@@ -163,7 +163,7 @@ npx playwright test --last-failed
 ## Checklist Before Each Run
 
 - [ ] Did I triage ALL failures before starting to fix?
-- [ ] Are system bugs skipped with `test.skip(true, reason)`?
+- [ ] Are system bugs locked with `test.fail(true, 'BUG-xxx: reason')` (not skipped)?
 - [ ] Am I mid-fix? → `--last-failed`, NOT full run
 - [ ] Is `retries: 0` locally in `playwright.config.ts`?
 - [ ] Is this the final check? → full run (once only)
