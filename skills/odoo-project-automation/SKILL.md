@@ -299,9 +299,9 @@ Task: Login button not responding
 Task ID: 1000
 Type: bug
 Assignee: Phuc Do
-Status: Todo
+Status: TODO
 Tags: bug, mobile
-Priority: 0 (Critical)
+Priority: 3 (Urgent)
 
 Created: 2026-05-05T10:30:45.123456
 ```
