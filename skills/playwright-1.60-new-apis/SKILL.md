@@ -155,3 +155,4 @@ The Trace Viewer network panel now has a pretty-print toggle for JSON response b
 - [Playwright 1.60 Release — TestDino](https://www.testdino.com/blog/playwright-1-60-release)
 - [Release v1.60.0 — GitHub microsoft/playwright](https://github.com/microsoft/playwright/releases/tag/v1.60.0)
 - [Release Notes — Playwright Docs](https://playwright.dev/docs/release-notes)
+- API: https://github.com/microsoft/playwright/blob/main/docs/src/api/class-locator.md (drop), class-tracing.md (startHar), test-api/class-test.md (abort) — corrected 2026-10-02
