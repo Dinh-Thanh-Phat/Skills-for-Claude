@@ -255,8 +255,8 @@ Task: Login button not responding on mobile
 Task ID: 1001
 Type: bug
 Assignee: Phuc Do
-Status: Todo
-Tags: bug, mobile
+Status: TODO
+Tags: bug
 
 Created: 2026-05-05T10:30:45.123456
 ```
