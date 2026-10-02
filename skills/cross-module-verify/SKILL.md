@@ -39,7 +39,7 @@ A test that never reaches Module B cannot catch bugs in Module B.
 | Submit form | Admin panel / records view → entry created |
 | Delete record | List page → record gone (even after refresh) |
 | Change settings | Pages that USE the setting → reflect new value |
-| Subscribe to YEARLY plan | Transactions page → amount must be yearly price (≥ $80), NOT monthly price |
+| Subscribe to YEARLY plan | Transactions page → amount must equal the yearly price, NOT the monthly price |
 | Subscribe to MONTHLY plan | Transactions page → amount must match monthly price |
 | Any subscription created | Subscriptions page → Start date AND End date show valid dates (not "Invalid Date") |
 
