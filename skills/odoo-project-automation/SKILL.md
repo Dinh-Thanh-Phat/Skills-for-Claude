@@ -231,7 +231,8 @@ Not exhaustive — resolve any other project by `search_records` on `project.pro
 - InApps Customer Success (Support)
 
 ### Available Tags
-`bug`, `task`, `enhance`, `refactor`, `docs`, `backend`, `frontend`, `mobile`, `performance`, `security`, `database`, `urgent`, `review`
+Confirmed live `project.tags`: `bug` (5), `Task` (6), `Enhancement` (27), `Feedback` (28), `Customer` (1).
+Other names seen in older notes (`enhance`, `refactor`, `docs`, `backend`, `frontend`, `mobile`, `performance`, `security`, `database`, `urgent`, `review`) are UNVERIFIED — search `project.tags` before using them; don't create new tags silently.
 
 ---
 
