@@ -1,9 +1,6 @@
 ---
 name: test-rerun-discipline
-description: >-
-  Prevent unnecessary full-suite re-runs when fixing failing tests. Use whenever fixing test
-  failures, running automation during development, or debugging a test suite. Triggers on: "fix
-  test", "re-run tests", "chạy lại test", "fix failing", "test suite bị fail", "sửa test".
+description: Prevent unnecessary full-suite re-runs when fixing failing tests. Use whenever fixing test failures, running automation during development, or debugging a test suite. Triggers on: "fix test", "re-run tests", "chạy lại test", "fix failing", "test suite bị fail", "sửa test".
 ---
 
 # Test Rerun Discipline Skill
@@ -57,10 +54,11 @@ Output two lists:
 npx playwright test --last-failed   # run only failures, repeat until clean
 ```
 
-**System bugs → skip + report:**
+**System bugs → test.fail-lock + report:**
 ```typescript
-// Mark as skipped immediately so --last-failed stops including them
-test.skip(true, 'system bug: [short description]')
+// Lock as expected-to-fail: the test now "passes" while the bug exists,
+// so --last-failed stops including it — but it is NOT hidden like a skip
+test.fail(true, 'BUG-xxx: [short description]')
 ```
 Then send `qa-quick-report` to user with all system bugs in one batch — not one by one.
 
