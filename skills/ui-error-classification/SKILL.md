@@ -182,12 +182,13 @@ if (has404) {
 When some widgets fail but the page is still usable:
 ```typescript
 // Dashboard with 5 widgets, 1 fails
+// Name the widget you made fail (e.g. by mocking its API to 500) — no arbitrary "≥ N" counts
 const widgets = page.locator('[data-widget]');
 const failed = widgets.filter({ has: page.locator('[data-error]') });
-const ok = await widgets.count() - await failed.count();
-// Verify: most widgets work, failed widgets show error state, not blank
-expect(ok).toBeGreaterThanOrEqual(3);
-await expect(failed.first().getByRole('button', { name: /retry/i })).toBeVisible();
+await expect(widgets).toHaveCount(5);                 // exact layout
+await expect(failed).toHaveCount(1);                  // exactly the one we broke
+await expect(page.locator('[data-widget="revenue"] [data-error]')).toBeVisible(); // the RIGHT one
+await expect(failed.getByRole('button', { name: /retry/i })).toBeVisible();        // unique after toHaveCount(1)
 ```
 
 ## Filing a Bug vs Fixing the Test
