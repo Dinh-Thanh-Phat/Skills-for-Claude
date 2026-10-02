@@ -46,9 +46,11 @@ Before writing any Python script for Excel export, follow the `python-code-gen-s
 6. **Never pass long Python code via Bash `-c`** — write to file first, then `python file.py`.
 7. **Grep for uniqueness before Edit tool** — `old_string` must appear exactly once.
 
-## Output Files
+## Output Files (LEGACY — chỉ dùng khi user yêu cầu rõ format cũ)
 
-Always generate **2 separate Excel files**:
+> ⚠️ Mặc định hiện tại là **1 file, MỖI MODULE 1 SHEET** (xem "CHUẨN MẶC ĐỊNH" ở trên). Layout 2 file bên dưới là LEGACY.
+
+Legacy layout — **2 separate Excel files**:
 1. `test_cases_automation_[YYYYMMDD].xlsx` — Bot/automation test cases
 2. `test_cases_manual_[YYYYMMDD].xlsx` — Manual test cases
 
