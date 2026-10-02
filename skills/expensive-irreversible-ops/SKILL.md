@@ -81,7 +81,7 @@ Does this action cost money / publish externally / create undeletable data?
 | "It worked once, the retry will too" | Variable backends: 30s once, >4 min next. One green run ≠ reliable. |
 
 ## Related
-- `warn-environment-factors` (P0) — warn before env/cost-affected runs.
+- `qa-preflight` + memory `feedback_warn-environment-factors.md` (P0) — warn before env/cost-affected runs.
 - `test-data-lifecycle` / `test-data-lifecycle-strategy` — cleanup strategies.
 - `ask-when-stuck` (P0) — stop after 1–2 failures; don't loop.
 - `synthetic-click-limits` — when the delete control itself can't be automated.
