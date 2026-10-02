@@ -17,9 +17,9 @@ Three clear tiers in early 2026:
 
 | Tier | Tools | Best for |
 |------|-------|---------|
-| Agent-native SaaS | Latitude, Maxim AI | Multi-turn agents, tool-calling, causal traces |
+| Agent-native (Latitude V2 is MIT OSS, cloud or self-host) | Latitude, Maxim AI | Multi-turn agents, tool-calling, causal traces |
 | Experiment-first SaaS | Braintrust | Pre-deploy prompt experiments, dataset management |
-| Open-source self-hosted | Langfuse | Full control, no vendor lock-in, budget teams |
+| Open-source self-hosted | Langfuse (also Latitude V2) | Full control, no vendor lock-in, budget teams |
 
 ---
 
