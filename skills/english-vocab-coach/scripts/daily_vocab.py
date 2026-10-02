@@ -253,6 +253,11 @@ def publish(config, new_cards, review_cards):
 
     sheets_lib.ensure_tab(sheets, sid, "To Review")
     sheets_lib.write_header(sheets, sid, "To Review", REVIEW_HEADER)
+    # A PARTIAL run already published today's review list; the retry (next trigger)
+    # must not append the same rows again.
+    if sheets_lib.has_rows_for_date(sheets, sid, "To Review", d):
+        print("To Review already published today — not appending again.")
+        return sid
     rev_rows = []
     for c in review_cards:
         acc = round(c["correct"] / c["seen"], 2) if c.get("seen") else 0
