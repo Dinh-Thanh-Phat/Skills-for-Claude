@@ -21,14 +21,22 @@ triggers:
 I tried ~10 ways to open an agent card's `⋯` (kebab) menu — locator click,
 coordinate click dead-center (confirmed by screenshot the cursor was ON the button),
 hover-then-click, force click. The click *landed* but the menu **never opened**.
-The control only responds to a **trusted user event**; Playwright's synthetic
-dispatch doesn't trigger it. I burned a large budget before accepting this.
+I burned a large budget before accepting that more clicking would not help.
+
+**What is (and isn't) going on.** `locator.click()` is NOT a synthetic DOM event: per the
+Playwright docs it scrolls the element into view and uses `page.mouse` to click its center —
+real browser input, so the events are `isTrusted: true`. Only `locator.dispatchEvent()` is
+programmatic (untrusted, like `element.click()` in JS). So when a real `click()` lands and
+nothing opens, the usual cause is that the control's handler is bound to something a single
+click doesn't reproduce: `pointerdown`/`mousedown` with a specific button/pointerType, a hover
+or focus state that must precede it, a timing guard (open-then-close on the same click via
+outside-click listener), or a re-render that swaps the node between mousedown and mouseup.
 
 The lesson: when a click clearly hits the right element but nothing happens, the
-problem may not be your selector — the control may be **un-automatable by click**.
-Recognize it fast, switch technique, or declare it manual.
+problem may not be your selector — the control may need a **different input sequence**, or be
+**effectively un-automatable by click**. Recognize it fast, switch technique, or declare it manual.
 
-## Signs you've hit a trusted-event / synthetic-click wall
+## Signs you've hit a click-doesn't-open wall
 
 - The element is found and the click reports success, **but no menu/popover/dropdown appears**.
 - A screenshot taken right after the click shows the button but **no opened menu**.
