@@ -123,28 +123,24 @@ Offline (already-captured) traces/spans can be scored with `deepeval.tracing.eva
 ```python
 # test_agent_evals.py
 import pytest
-import deepeval
 from deepeval import assert_test
-from deepeval.test_case import LLMTestCase
-from deepeval.metrics import TaskCompletionMetric, ToolCorrectnessMetric
+from deepeval.dataset import EvaluationDataset, Golden
+from deepeval.metrics import TaskCompletionMetric
 
-@pytest.mark.parametrize("query,expected_tool", [
-    ("Search for flights to Paris", "search_flights"),
-    ("Book hotel in London", "book_hotel"),
+dataset = EvaluationDataset(goldens=[
+    Golden(input="Search for flights to Paris"),
+    Golden(input="Book hotel in London"),
 ])
-def test_agent_tool_selection(query, expected_tool):
-    with deepeval.collect_traces() as traces:
-        run_agent(query)
 
-    tool_spans = [s for t in traces for s in t.spans if s.type == "tool"]
-    assert any(s.name == expected_tool for s in tool_spans), \
-        f"Expected tool '{expected_tool}' not called for: {query}"
-
-    assert_test(
-        test_case=LLMTestCase(input=query, actual_output=traces[0].output),
-        metrics=[TaskCompletionMetric(threshold=0.7)]
-    )
+# Run with: deepeval test run test_agent_evals.py
+@pytest.mark.parametrize("golden", dataset.goldens)
+def test_agent(golden: Golden):
+    run_agent(golden.input)   # @observe'd — span metrics (tool/retriever) evaluated too
+    assert_test(golden=golden, metrics=[TaskCompletionMetric(threshold=0.7)])
 ```
+
+> UNVERIFIED: the exact `assert_test(golden=..., metrics=...)` signature for traced apps — confirm
+> against https://deepeval.com/docs/evaluation-unit-testing-in-ci-cd before relying on it in CI.
 
 ## When to Use Trace vs Span Eval
 
