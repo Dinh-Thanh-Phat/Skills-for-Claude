@@ -137,4 +137,4 @@ Dò mù N cách là nút thắt lớn nhất. Xem skill `[[ask-when-stuck]]`, me
 - ❌ `uiautomator dump` cho RN → tree rỗng, tưởng app hỏng
 - ❌ Full-suite rerun để verify 1 selector — chạy canary 1 flow thôi
 
-Liên quan: `[[maestro-studio]]` (§Element discovery), `[[maestro-speed-optimization]]`, `[[maestro-test-scaling]]`.
+Liên quan: skill `[[maestro-studio]]` (§Element discovery), skill `[[maestro-speed-optimization]]`, memory `reference_maestro-test-scaling.md` (không phải skill).
