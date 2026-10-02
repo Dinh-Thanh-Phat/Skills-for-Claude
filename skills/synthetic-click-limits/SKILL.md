@@ -64,7 +64,7 @@ in order:
 3. **Direct route**: skip the menu entirely — use the underlying URL/endpoint the
    menu item triggers (e.g. a `/delete/{id}` link) or an API call, if one exists.
 4. **Declare it manual**: if none work, mark the case **un-automatable** and move it
-   to the manual test set with a note ("⋯ menu responds only to trusted clicks").
+   to the manual test set with a note ("⋯ menu does not open from automated input — tried click / keyboard / hover+press").
    Do not keep grinding — see `ask-when-stuck` (P0).
 
 ## Don't confuse this with a selector bug
