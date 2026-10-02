@@ -36,7 +36,7 @@ outputDir: 'D:/HK8/Learning/DQ/test/test-results',
 | Môi trường | video | screenshot | trace |
 |---|---|---|---|
 | Local dev | `retain-on-failure` | `only-on-failure` | `retain-on-failure` |
-| CI | `off` | `only-on-failure` | `on-first-retry` |
+| CI | `off` | `only-on-failure` | `on-first-retry` (or `retain-on-first-failure`, v1.44+) |
 | Debug | `on` | `on` | `on` |
 
 ---
@@ -66,7 +66,7 @@ if (Test-Path $outputDir) {
 {
   "scripts": {
     "test": "playwright test",
-    "test:clean": "node scripts/cleanup-artifacts.js && playwright test",
+    "test:clean": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cleanup-artifacts.ps1 && playwright test",
     "clean:artifacts": "rimraf test-results/ && rimraf playwright-report/"
   }
 }
