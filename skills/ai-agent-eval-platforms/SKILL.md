@@ -54,7 +54,7 @@ experiment.summarize()
 
 ### Sandboxed Custom Scorers
 
-Braintrust is the only commercial platform (as of 2026) that runs custom scorer code in an isolated environment — meaning your scoring logic can call external APIs or run Python packages without your infra.
+Braintrust can run custom scorer code server-side in an isolated environment — your scoring logic can call external APIs or run Python packages without your infra. (Not unique: Latitude V2 also runs custom JavaScript detector scripts as an evaluation method.)
 
 ```python
 # Define a scorer in Braintrust UI (Python, runs in Braintrust cloud)
