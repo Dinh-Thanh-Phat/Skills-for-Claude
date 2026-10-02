@@ -268,7 +268,7 @@ Created: 2026-05-05T10:30:45.123456
 Project 'InvalidName' not found.
 
 Details:
-  - Available projects: Soundwise, TRS, Olivia - CRM App
+  - Available projects: Soundwise, TRS, Olivia - CRM App, Website InApps, FCCX, ...
 ```
 
 ### Both Formats

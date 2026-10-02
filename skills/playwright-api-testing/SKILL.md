@@ -1,13 +1,6 @@
 ---
 name: playwright-api-testing
-description: >-
-  Playwright API testing using the built-in request fixture and APIRequestContext — test REST and
-  GraphQL endpoints directly without a browser, share auth state with browser sessions, and
-  combine API setup with UI validation in a single test file. Use when testing REST APIs, GraphQL
-  endpoints, or hybrid flows where API data setup precedes UI verification. Triggers on:
-  "playwright API testing", "request fixture playwright", "APIRequestContext", "test API without
-  browser playwright", "playwright REST test", "playwright GraphQL test", "API setup before UI
-  test".
+description: Playwright API testing using the built-in request fixture and APIRequestContext — test REST and GraphQL endpoints directly without a browser, share auth state with browser sessions, and combine API setup with UI validation in a single test file. Use when testing REST APIs, GraphQL endpoints, or hybrid flows where API data setup precedes UI verification. Triggers on: "playwright API testing", "request fixture playwright", "APIRequestContext", "test API without browser playwright", "playwright REST test", "playwright GraphQL test", "API setup before UI test".
 ---
 
 # Playwright API Testing (APIRequestContext)
@@ -113,15 +106,23 @@ export const test = base.extend({
 // Sign in via UI, save storage state, reuse in API calls
 test.use({ storageState: "auth.json" });
 
-test("API call inherits browser auth cookies", async ({ request, page }) => {
+test("API call inherits browser auth cookies", async ({ page }) => {
   // page is already authenticated from auth.json
   await page.goto("/dashboard");
 
-  // request context automatically carries the same cookies
-  const res = await request.get("/api/dashboard/stats");
+  // page.request (= context.request) shares the browser context's cookie jar, live:
+  // sends its cookies and stores any Set-Cookie back into the browser.
+  const res = await page.request.get("/api/dashboard/stats");
   expect(res.ok()).toBeTruthy();
 });
 ```
+
+> The standalone `request` fixture is an **isolated** `APIRequestContext`
+> (`playwright.request.newContext()`): it does NOT stay in sync with the page's cookies. Use
+> `page.request` / `context.request` when API and UI must share a session
+> (api-testing docs, "Context request vs global request").
+>
+> v1.63+: request methods take a response type — `const res = await request.get<User>('/api/users/42'); const user = await res.json(); // typed User`.
 
 ## API Setup + UI Validation (Hybrid Pattern)
 
