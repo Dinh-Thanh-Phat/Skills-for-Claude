@@ -172,24 +172,16 @@ Nếu mô tả còn chung chung, hỏi thêm:
 
 ### Bước 1b — Kiểm Tra Skill Đã Tồn Tại (LUÔN LÀM TRƯỚC KHI TẠO MỚI)
 
-So sánh mô tả của user với 14 skills hiện có:
+So sánh mô tả của user với **toàn bộ** skill hiện có — discover, không dùng danh sách gõ cứng:
 
-| Nếu yêu cầu liên quan đến... | Skill đã có | Hành động |
-|---|---|---|
-| Tạo báo giá, tra giá, discount | `quote-builder` | Suggest mở rộng |
-| Bảng giá, so sánh giá cũ/mới | `price-list-manager` | Suggest mở rộng |
-| Phân loại khách, VIP, churn | `customer-segmentation` | Suggest mở rộng |
-| Pipeline, deal, forecast | `sales-pipeline-tracker` | Suggest mở rộng |
-| Hoa hồng, commission, tier | `commission-calculator` | Suggest mở rộng |
-| Đơn trả, hoàn tiền, refund | `returns-processor` | Suggest mở rộng |
-| Follow-up khách, tái đơn | `reorder-suggester` | Suggest mở rộng |
-| Giao hàng, tài xế, tuyến | `delivery-scheduler` | Suggest mở rộng |
-| Hợp đồng, công nợ, quá hạn | `contract-tracker` | Suggest mở rộng |
-| Gộp file đơn nhiều nhân viên | `order-aggregation` | Suggest mở rộng |
-| Kiểm đơn, soát đơn trước duyệt | `order-verification` | Suggest mở rộng |
-| Đối chiếu đơn vs giao/thanh toán | `order-reconciliation` | Suggest mở rộng |
-| Báo cáo doanh số, pivot | `order-reporting` | Suggest mở rộng |
-| VLOOKUP, so sánh file | `file-aggregation-comparison` | Suggest mở rộng |
+```bash
+ls C:/Users/wi/.claude/skills                                   # tên thư mục = skill loadable
+ls C:/Users/wi/.claude/skills/*.md                              # file phẳng (KHÔNG loadable, xem cảnh báo ở Bước 1)
+grep -il "<keyword>" C:/Users/wi/.claude/skills/*/SKILL.md      # skill có nhắc keyword
+grep -h "^description:" C:/Users/wi/.claude/skills/*/SKILL.md | grep -i "<keyword>"   # overlap description/trigger
+```
+
+Dùng 2-3 keyword chính từ yêu cầu (cả tiếng Việt lẫn tiếng Anh). Skill nào khớp → đọc `SKILL.md` để ước lượng overlap.
 
 **Nếu overlap > 50%:** Đề xuất mở rộng skill cũ:
 > "Skill [tên] đã xử lý việc này một phần. Tôi có thể thêm trường hợp [X] vào skill đó thay vì tạo skill mới — như vậy gọn hơn. Bạn có đồng ý không?"
@@ -198,8 +190,12 @@ So sánh mô tả của user với 14 skills hiện có:
 
 ### Bước 2 — Đặt Tên Skill
 
-Tên file theo format: `[động-từ]-[danh-từ].md`  
-Ví dụ: `timesheet-processor.md`, `supplier-payable.md`, `inventory-tracker.md`
+Tên **thư mục** kebab-case: `C:\Users\wi\.claude\skills\<kebab-name>\SKILL.md`  
+Ví dụ: `timesheet-processor/SKILL.md`, `supplier-payable/SKILL.md`, `inventory-tracker/SKILL.md`
+
+> ⚠️ **KHÔNG tạo file `.md` phẳng ở gốc `skills/`** (vd `timesheet-processor.md`). Claude Code chỉ load skill dạng
+> `<name>/SKILL.md` — file phẳng tồn tại trên đĩa nhưng không bao giờ kích hoạt (13 file business cũ đang bị như vậy).
+> Tên thư mục phải trùng `name:` trong frontmatter và không trùng thư mục đã có (`ls` để kiểm tra).
 
 ### Bước 3 — Tạo File Skill
 
@@ -207,11 +203,14 @@ Dùng cấu trúc chuẩn:
 
 ```markdown
 ---
-name: [skill-name]
-description: [mô tả 1 dòng]
+name: [skill-name]            # = tên thư mục
+description: [mô tả 1 dòng — "Use when … Triggers on: …"]
+triggers:
+  - "[cụm từ kích hoạt 1]"
+  - "[cụm từ kích hoạt 2]"
+scope: [global | tên project]
 origin: PT
-tools: [tools MCP cần dùng]
-mcp_server: https://excel-mcp-server-dawn-star-9929.fly.dev
+tools: [tools MCP cần dùng — chỉ ghi nếu thật sự dùng]
 ---
 
 # [Tên Skill]
