@@ -123,18 +123,19 @@ Catch subtle regressions when upgrading React Native, Flutter, or a UI component
 # flows/visual-smoke.yaml
 appId: com.example.app
 ---
+# References recorded beforehand with takeScreenshot (see Basic Usage)
 - launchApp
-- assertScreenshot            # Home screen baseline
+- assertScreenshot: baselines/home            # Home screen
 
 - tapOn: "Products"
-- assertScreenshot            # Products listing
+- assertScreenshot: baselines/products        # Products listing
 
 - tapOn: "Item 1"
-- assertScreenshot            # Product detail
+- assertScreenshot: baselines/product-detail  # Product detail
 
 - tapOn: "Add to Cart"
 - assertScreenshot:
-    path: cart-badge
+    path: baselines/cart-badge   # reference must also be cropped to cart-badge
     cropOn:
       id: "cart-badge"        # Only check the cart counter, not full screen
 ```
@@ -187,13 +188,15 @@ env:
 
 ## Managing Baselines
 
-Baselines are stored in `.maestro/screenshots/` by default. Commit them to source control so CI comparisons are deterministic:
+There is no default baseline folder and `assertScreenshot` never writes one. Keep references in a
+folder you choose next to the flows (e.g. `flows/baselines/`) and commit them so CI comparisons are
+deterministic:
 
 ```bash
-# After intentional UI changes, delete and re-record baselines
-rm .maestro/screenshots/<flow-name>/*.png
-maestro test flows/visual-smoke.yaml   # saves new baselines
-git add .maestro/screenshots/
+# After an INTENTIONAL UI change, re-record with the takeScreenshot flow, on the pinned device
+maestro test flows/visual-record.yaml        # takeScreenshot writes the new references
+# confirm where the PNGs landed (output dir), move into flows/baselines/ if needed
+git add flows/baselines/
 git commit -m "update visual baselines: new product card design"
 ```
 
