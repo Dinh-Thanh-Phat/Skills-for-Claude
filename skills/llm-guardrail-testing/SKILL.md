@@ -294,3 +294,6 @@ python scripts/compare_asr.py results-baseline.json results-$(date +%Y-%m-%d).js
 - https://www.digitalapplied.com/blog/llm-guardrails-production-safety-layers-reference-2026
 - https://blog.nviso.eu/2026/02/05/an-introduction-to-automated-llm-red-teaming/
 - https://arxiv.org/pdf/2604.01473
+- Promptfoo guardrails guide source (HTTP provider `transformResponse`, `guardrails`/`not-guardrails`, `guardrails-eval`): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/guides/testing-guardrails.md
+- Promptfoo CLI (`view`, exit code 100) + red-team config (`redteam.purpose`, `graderExamples`): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/usage/command-line.md , https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/red-team/configuration.md
+- UNVERIFIED: NeMo `rails.generate_async(messages=...)` return type in nemoguardrails 0.24.1 — if it returns a message dict, use `response["content"]` before `.lower()` in section 4.
