@@ -320,6 +320,7 @@ class ChatbotUIAutomator:
             browser = await browser_launcher.launch(headless=self.headless)
             context = await browser.new_context(viewport={"width": 1280, "height": 720})
             page = await context.new_page()
+            await self._do_login(page)  # no-op when login_steps is not configured
 
             print(f"Opening: {self.url}")
             await page.goto(self.url, wait_until="domcontentloaded")
