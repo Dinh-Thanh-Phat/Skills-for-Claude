@@ -1,11 +1,6 @@
 ---
 name: figma-design-tokens
-description: >-
-  Figma → design token pipeline using Token Studio + Style Dictionary to generate CSS custom
-  properties, Tailwind config, and TypeScript definitions for React. Use when syncing Figma
-  design tokens to a React codebase, setting up a design-system token pipeline, or eliminating
-  design-to-code drift. Triggers on: "design tokens", "Figma to React", "Token Studio", "Style
-  Dictionary", "sync Figma with code", "design system tokens".
+description: Figma → design token pipeline using Token Studio + Style Dictionary to generate CSS custom properties, Tailwind config, and TypeScript definitions for React. Use when syncing Figma design tokens to a React codebase, setting up a design-system token pipeline, or eliminating design-to-code drift. Triggers on: "design tokens", "Figma to React", "Token Studio", "Style Dictionary", "sync Figma with code", "design system tokens".
 ---
 
 # Figma Design Tokens Pipeline
@@ -30,18 +25,22 @@ Figma (source of truth)
 3. Use **semantic naming** — never raw values:
    - ✅ `color.background.primary`, `color.text.muted`, `spacing.md`, `radius.button`
    - ❌ `blue-500`, `14px`, `#3b82f6`
-4. Map Figma Variables / Styles to tokens; Token Studio exports them as W3C Design Tokens JSON.
+4. Map Figma Variables / Styles to tokens. Tokens Studio's default export is its **own** JSON format (W3C/DTCG `$value` format is an opt-in setting) — Style Dictionary needs `@tokens-studio/sd-transforms` to read it correctly (math, references, typography/shadow composites). Source: https://docs.tokens.studio/transform-tokens/style-dictionary
+
+### API limits — read before scripting against Figma
+- **Variables REST API (`GET /v1/files/:key/variables/local|published`) is Enterprise-only** (scope `file_variables:read`) — https://developers.figma.com/docs/rest-api/variables/. On Starter/Professional/Organization, export via the Tokens Studio plugin or read variables with the official Figma MCP `get_variable_defs`.
+- REST rate limits depend on plan **and seat** (effective 2025-11-17, https://developers.figma.com/docs/rest-api/rate-limits/); View/Collab seats get very low caps. Local lesson: Starter + View seat locked for ~4.6 days after ~8 REST calls. Never poll Figma REST from CI — let Tokens Studio push `tokens.json` to Git and build from that.
 
 ## Step 2: Style Dictionary Config
 
 ```bash
-npm install --save-dev style-dictionary
+npm install --save-dev style-dictionary @tokens-studio/sd-transforms
 ```
 
 ```js
-// sd.config.js
-import StyleDictionary from 'style-dictionary';
-
+// sd.config.js  (Style Dictionary v4, ESM)
+// Register Tokens Studio transforms per @tokens-studio/sd-transforms README
+// (e.g. register(StyleDictionary) + transformGroup 'tokens-studio') when tokens come from Tokens Studio.
 export default {
   source: ['tokens/**/*.json'],
   platforms: {
@@ -54,16 +53,20 @@ export default {
     tailwind: {
       transformGroup: 'js',
       buildPath: 'src/styles/',
-      files: [{ destination: 'tailwind-tokens.js', format: 'javascript/module' }],
+      // javascript/module = CommonJS with FULL token objects (value + attributes metadata) — unusable as Tailwind theme values.
+      // javascript/esm + stripMeta → plain ESM object; or use javascript/module-flat for flat key → value.
+      files: [{ destination: 'tailwind-tokens.js', format: 'javascript/esm', options: { stripMeta: true } }],
     },
     ts: {
       transformGroup: 'js',
       buildPath: 'src/styles/',
-      files: [{ destination: 'tokens.ts', format: 'typescript/module-declarations' }],
+      // .d.ts for the CommonJS module format; docs: "does not generate 100% accurate d.ts"
+      files: [{ destination: 'tokens.d.ts', format: 'typescript/module-declarations' }],
     },
   },
 };
 ```
+Format reference: https://styledictionary.com/reference/hooks/formats/predefined/
 
 ```bash
 npx style-dictionary build --config sd.config.js
@@ -80,6 +83,33 @@ Output (`src/styles/tokens.css`):
 ```
 
 ## Step 3: Tailwind Integration
+
+Check `package.json` for the Tailwind major version first.
+
+### Tailwind v4 (CSS-first — default for new projects)
+v4 defines theme values in CSS with `@theme`; a `tailwind.config.js` is not read unless loaded with `@config`. Generate the `@theme` block with a CSS-variables file (no prefix, Tailwind namespaces) and import it:
+
+```js
+// sd.config.js — extra platform for Tailwind v4
+tailwind4: {
+  transformGroup: 'css',
+  buildPath: 'src/styles/',
+  files: [{
+    destination: 'theme.css',
+    format: 'css/variables',
+    options: { selector: '@theme', outputReferences: true },
+  }],
+},
+```
+
+```css
+/* src/index.css */
+@import "tailwindcss";
+@import "./styles/theme.css";   /* emits @theme { --color-background-primary: …; --spacing-md: …; } */
+```
+Name tokens so the variables land in Tailwind namespaces (`--color-*`, `--spacing-*`, `--radius-*`, `--font-*`) → utilities like `bg-background-primary`, `rounded-button`. The `selector: '@theme'` trick is UNVERIFIED against every SD version — check the generated file once. Source: https://tailwindcss.com/docs/theme
+
+### Tailwind v3 (legacy `tailwind.config.js`)
 
 ```js
 // tailwind.config.js
