@@ -347,7 +347,7 @@ await page.route('**/api/upload', route =>
 | `page.on('filechooser')` never fires | App uses File System Access API — disable it in test config |
 | Download race condition: click then waitForEvent | Always `Promise.all([waitForEvent, click])` — both start together |
 | `suggestedFilename()` ≠ saved file path | They're different values — don't mix them up |
-| `locator.drop()` not available | Requires Playwright v1.44+ — update if needed |
+| `locator.drop()` not available | Requires Playwright v1.60+ — update, or use the `DataTransfer` fallback (Pattern 8) |
 | CMS image/logo field saves `null` after `setInputFiles` | It's an upload-RELATIONSHIP field — open the "Create New" drawer and upload inside it (see Pattern 6) |
 | Drawer's Save does nothing | Media collection has required fields (Alt) — fill them before Save |
 | `filechooser` event never fires | App uses FSA API (`showOpenFilePicker`) — `filechooser` does not cover it; disable FSA in test config |
