@@ -168,10 +168,10 @@ as a candidate bug to triage, not a fix.
 ```
 1. Start dev server:   npm run dev   (or your equivalent)
 2. Plan:               "Planner: explore the registration flow"
-                        → produces test-plan.md
-3. Review:             Edit test-plan.md if needed (remove or clarify steps)
-4. Generate:           "Generator: create tests from test-plan.md"
-                        → produces registration.spec.ts
+                        → produces specs/registration.md
+3. Review:             Edit specs/registration.md if needed (remove or clarify steps)
+4. Generate:           "Generator: create tests from specs/registration.md"
+                        → produces tests/registration/*.spec.ts
 5. Run:                npx playwright test registration.spec.ts
 6. Heal (if failures): "Healer: fix failing tests in registration.spec.ts"
 7. Commit:             tests/ directory → PR
