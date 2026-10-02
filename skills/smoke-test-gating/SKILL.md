@@ -1,11 +1,6 @@
----
+﻿---
 name: smoke-test-gating
-description: >-
-  Run a smoke test project before the full suite — gate the full run on basic health checks
-  passing. Use when setting up any Playwright test suite in CI, configuring playwright.config.ts
-  projects, or when environment issues are causing mass test failures. Triggers on: "smoke test",
-  "test gating", "playwright projects", "CI pipeline tests", "all tests failing environment",
-  "gate full suite", "dependencies between projects".
+description: Run a smoke test project before the full suite — gate the full run on basic health checks passing. Use when setting up any Playwright test suite in CI, configuring playwright.config.ts projects, or when environment issues are causing mass test failures. Triggers on: "smoke test", "test gating", "playwright projects", "CI pipeline tests", "all tests failing environment", "gate full suite", "dependencies between projects".
 type: skill
 scope: playwright, e2e, automation, ci-cd
 triggers:
@@ -29,14 +24,18 @@ Prevent wasting time running 33+ tests when the environment is broken, login is 
 // playwright.config.ts
 export default defineConfig({
   projects: [
+    { name: 'setup', testMatch: '**/auth.setup.ts' },   // login once → .auth/user.json (see auth-session-testing)
     {
       name: 'smoke',
-      testMatch: '**/*.smoke.ts',
+      testMatch: '**/*.smoke.ts',      // file MUST be named e.g. tests/env.smoke.ts
       retries: 0,                      // No retries — must pass first try
+      use: { storageState: '.auth/user.json' },
+      dependencies: ['setup'],
     },
     {
       name: 'full-suite',
       testMatch: '**/*.spec.ts',
+      use: { storageState: '.auth/user.json' },
       dependencies: ['smoke'],         // Full suite ONLY runs if smoke passes
     },
   ],
@@ -46,7 +45,7 @@ export default defineConfig({
 ## Smoke Test File (Minimal — max 5 assertions)
 
 ```typescript
-// tests/smoke.ts
+// tests/env.smoke.ts   ← name must match testMatch '**/*.smoke.ts' (a plain smoke.ts is never picked up)
 import { test, expect } from '@playwright/test';
 
 test('env: app is reachable', async ({ page }) => {
@@ -55,16 +54,20 @@ test('env: app is reachable', async ({ page }) => {
   await expect(page).toHaveTitle(/.+/); // any title = app responded
 });
 
-test('env: login works', async ({ page }) => {
+test('env: login works', async ({ browser }) => {
+  // Fresh, logged-OUT context — the project-level storageState would skip the login form
+  const ctx = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+  const page = await ctx.newPage();
   await page.goto('/login');
   await page.getByLabel('Email').fill(process.env.TEST_EMAIL!);
   await page.getByLabel('Password').fill(process.env.TEST_PASSWORD!);
   await page.getByRole('button', { name: 'Login' }).click();
   await expect(page).not.toHaveURL(/login/, { timeout: 60000 });
+  await ctx.close();
 });
 
 test('env: dashboard loads after login', async ({ page }) => {
-  // This test uses storageState from auth setup
+  // Uses the project's storageState written by the 'setup' project dependency
   await page.goto('/dashboard');
   await expect(page.getByRole('main')).toBeVisible({ timeout: 10000 });
 });

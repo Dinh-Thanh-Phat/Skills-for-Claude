@@ -214,7 +214,7 @@ git commit -m "update visual baselines: new product card design"
   uses: actions/upload-artifact@v4
   with:
     name: visual-diff-report
-    path: .maestro/screenshots/
+    path: ~/.maestro/tests/      # run artifacts (debug output); adjust if you pass --test-output-dir
 ```
 
 ## Audit existing flows for the inversion trap
