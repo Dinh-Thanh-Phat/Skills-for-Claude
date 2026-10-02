@@ -24,7 +24,7 @@ run inside your AI coding tool (Claude Code, VS Code Copilot, etc.).
 
 - Playwright **v1.56+** (`npm install --save-dev @playwright/test`)
 - A running local dev server (agents browse it live)
-- A MCP-compatible coding tool: Claude Code, GitHub Copilot (VS Code), or OpenCode
+- A MCP-compatible coding tool: Claude Code, GitHub Copilot (VS Code ≥ 1.105), Codex, or OpenCode
 
 ---
 
@@ -32,17 +32,35 @@ run inside your AI coding tool (Claude Code, VS Code Copilot, etc.).
 
 ```bash
 # Generate agent definition files for your project
-npx playwright init-agents --loop=claude        # for Claude Code
-npx playwright init-agents --loop=vscode        # for GitHub Copilot (VS Code)
-
-# Creates in your project root:
-# .playwright/agents/planner.md
-# .playwright/agents/generator.md
-# .playwright/agents/healer.md
-# .playwright/agents/seed.spec.ts   ← template for generated specs
+npx playwright init-agents --loop=claude        # Claude Code
+npx playwright init-agents --loop=vscode        # GitHub Copilot (VS Code)
+npx playwright init-agents --loop=codex         # Codex
+npx playwright init-agents --loop=opencode      # OpenCode
 ```
 
-Regenerate whenever you update Playwright (`npm update @playwright/test && npx playwright init-agents`).
+What gets written (verified in playwright `lib/agents/generateAgents.js`):
+
+| Loop | Agent definitions | MCP config |
+|------|-------------------|------------|
+| `claude` | `.claude/agents/planner.md`, `generator.md`, `healer.md` | `.mcp.json` |
+| `vscode` | `.github/agents/*.agent.md` | `.vscode/mcp.json` |
+| `opencode` | `.opencode/prompts/*.md` | opencode config |
+
+Plus, if your test project has none, a default **seed test** (e.g. `tests/seed.spec.ts`) — the test the Planner runs first to get global setup, project dependencies, fixtures and hooks, and which it uses as the example for generated tests.
+
+Conventional layout afterwards:
+
+```
+repo/
+  .claude/agents/ (or .github/agents/)   # agent definitions
+  specs/                                 # Markdown test plans (Planner output)
+    basic-operations.md
+  tests/                                 # generated tests (Generator output)
+    seed.spec.ts
+  playwright.config.ts
+```
+
+Regenerate whenever you update Playwright (`npm update @playwright/test && npx playwright init-agents --loop=<same loop>`).
 
 ---
 
