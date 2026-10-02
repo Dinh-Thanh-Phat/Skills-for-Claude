@@ -1,9 +1,6 @@
 ---
 name: playwright-test-anti-patterns
-description: >-
-  Detect and fix Playwright test anti-patterns - soft assertions, nth locators, silent catches,
-  assertions inside expect(). Triggers on: "review test", "check test quality", "anti-pattern",
-  "test always pass", "viết test review".
+description: Detect and fix Playwright test anti-patterns - soft assertions, nth locators, silent catches, assertions inside expect(). Triggers on: "review test", "check test quality", "anti-pattern", "test always pass", "viết test review".
 type: skill
 triggers:
   - "review test"
@@ -80,22 +77,17 @@ if (!isVisible) { test.skip(); }  // Don't know WHY it failed
 
 **✅ CORRECT:**
 ```ts
-// Option 1: Explicit try/catch with logging
-try {
-  const isVisible = await element.isVisible({ timeout: 2_000 });
-  if (!isVisible) {
-    throw new Error('Element not visible - check selector or page state');
-  }
-} catch (e) {
-  test.fixme(true, `Requires: ${e.message}`);
-  return;
-}
+// Option 1 (default): let the web-first assertion fail loudly — message names locator + timeout
+await expect(element, 'Element should render after page load').toBeVisible({ timeout: 2_000 });
 
-// Option 2: Use test.skip() with reason
-const isVisible = await element.isVisible({ timeout: 2_000 }).catch(() => {
-  test.skip('Element selector not found on page');
-});
+// Option 2: precondition genuinely unavailable in this env → skip with an explicit, logged reason
+// (isVisible() never waits; its `timeout` option is deprecated and IGNORED — class-locator.md)
+const featurePresent = await element.isVisible();
+test.skip(!featurePresent, 'Feature X not deployed in this env — see skip-vs-fail');
 ```
+
+Never swallow the error with `.catch(() => …)` — not even to call `test.skip`. If the
+condition is a real bug, it must FAIL (see `fail-loud`, `skip-vs-fail`).
 
 **Why:** `.catch(() => false)` masks whether error is timeout, selector mismatch, or app bug. See: [Avoid Flaky Tests](https://betterstack.com/community/guides/testing/avoid-flaky-playwright-tests/)
 
