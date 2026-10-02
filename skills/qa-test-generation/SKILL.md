@@ -229,7 +229,7 @@ Output **manual test cases only** in this format. Do NOT include automation code
 
 After generating **manual test cases only**:
 
-1. **Write to `.md` file** — save all test cases to `data/outputs/test-cases-[feature]-[YYYYMMDD].md`
+1. **Write the deliverable** — từ spec: theo `deliverable-format.md` (markdown + xlsx 1 sheet/module); case lẻ: `data/outputs/test-cases-[feature]-[YYYYMMDD].md`
 2. **Show inline summary in chat:**
 
 ```
