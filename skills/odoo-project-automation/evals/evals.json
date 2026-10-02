@@ -4,29 +4,36 @@
     {
       "id": 1,
       "name": "create-critical-bug",
-      "prompt": "I found a critical bug in Soundwise - the login button is completely unresponsive on mobile devices. It's blocking users from signing in. Please log this as a critical bug and assign it to Phuc Do with bug tag and mobile tag.",
-      "expected_output": "Task created in Soundwise project with:\n- Title: 'Login button not responding on mobile'\n- Type: bug\n- Status: Todo\n- Priority: 0 (critical)\n- Assignee: Phuc Do\n- Tags: bug, mobile\n- Auto-expanded description with Steps to Reproduce, Expected Result, Actual Result sections",
+      "prompt": "I found a critical bug in Soundwise - the login button is completely unresponsive on mobile devices. It's blocking users from signing in. Please log this on Odoo as a critical bug and assign it to Phuc Do with the bug tag.",
+      "expected_output": "Task created in Soundwise project (id 76) with:\n- Title: 'Login button not responding on mobile'\n- Type: bug\n- Stage: TODO\n- Priority: \"3\" (Urgent)\n- Assignee: Phuc Do (user_ids)\n- Tags: bug (project.tags id 5)\n- Auto-expanded description with Steps to Reproduce, Expected Result, Actual Result sections",
       "files": []
     },
     {
       "id": 2,
       "name": "create-enhancement-task",
-      "prompt": "Can you create a task for the TRS project? We want to add caching to our search queries to improve performance. It's not urgent but important for our next sprint. Assign it to Anh Huynh and add enhance and performance tags.",
-      "expected_output": "Task created in TRS project with:\n- Title: 'Add caching to search queries'\n- Type: enhance\n- Status: Todo\n- Assignee: Anh Huynh\n- Tags: enhance, performance\n- Auto-expanded description with Implementation Plan, Success Criteria sections",
+      "prompt": "Can you create a task on Odoo for the TRS project? We want to add caching to our search queries to improve performance. It's not urgent but important for our next sprint. Assign it to Anh Huynh and add the Enhancement tag.",
+      "expected_output": "Task created in TRS project with:\n- Title: 'Add caching to search queries'\n- Type: enhance\n- Stage: TODO\n- Priority: \"1\" (Medium)\n- Assignee: Anh Huynh\n- Tags: Enhancement (project.tags id 27)\n- Auto-expanded description with Proposed Solution, Benefits, Acceptance Criteria sections",
       "files": []
     },
     {
       "id": 3,
       "name": "move-task-to-progress",
-      "prompt": "I'm starting work on the 'User profile page' task in the Olivia - CRM App project right now. Can you move it from Todo to In Progress and add a note that I'm beginning implementation?",
-      "expected_output": "Task moved in Olivia - CRM App project:\n- Task: 'User profile page' moved to 'In Progress' status\n- Note added: 'Beginning implementation'\n- Timestamp recorded",
+      "prompt": "I'm starting work on the 'User profile page' task in the Olivia - CRM App project on Odoo right now. Can you move it from TODO to INPROGRESS and add a note that I'm beginning implementation?",
+      "expected_output": "Task moved in Olivia - CRM App project (id 64):\n- Task: 'User profile page' moved to stage INPROGRESS (177)\n- Note added to chatter: 'Beginning implementation'",
       "files": []
     },
     {
       "id": 4,
       "name": "close-task-with-summary",
-      "prompt": "The 'Export to Excel' feature in Olivia - CRM App is now complete. I've tested it with 50+ records and performance is good. Can you mark it as Done and add a summary?",
-      "expected_output": "Task marked as Done in Olivia - CRM App project:\n- Task: 'Export to Excel' moved to Done status\n- Summary recorded with completion details\n- Status timestamp updated",
+      "prompt": "The 'Export to Excel' feature in Olivia - CRM App is now complete. I've tested it with 50+ records and performance is good. Can you mark it as Done on Odoo and add a summary?",
+      "expected_output": "Task closed in Olivia - CRM App project:\n- Task: 'Export to Excel' moved to stage DONE (182) and/or state = '1_done'\n- Summary posted to chatter with completion details",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "no-trigger-without-odoo-keyword",
+      "prompt": "Log a bug for Soundwise: the login button is unresponsive on mobile.",
+      "expected_output": "Skill does NOT trigger and no mcp__odoo__* tool is called, because the message contains neither 'Odoo' nor 'ERP'. Claude may ask where the bug should be logged.",
       "files": []
     }
   ]
