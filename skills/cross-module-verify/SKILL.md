@@ -190,8 +190,8 @@ export async function verifyEmailInHistory(
   { subject, recipient, status = 'Sent' }: EmailVerifyOptions
 ) {
   await page.goto('/campaign-history');
-  const row = page.locator('tbody tr').filter({ hasText: subject }).first();
-  await expect(row).toBeVisible();
+  const row = page.getByRole('row').filter({ hasText: subject });
+  await expect(row).toHaveCount(1); // `.first()` would hide a duplicate-send bug
   await expect(row.locator('.status')).toHaveText(status);
   await expect(row).toContainText(recipient);
 }
