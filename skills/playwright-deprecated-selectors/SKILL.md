@@ -1,11 +1,6 @@
 ---
 name: playwright-deprecated-selectors
-description: >-
-  Identifies and migrates away from removed Playwright selector engines — _react, _vue, and the
-  :light suffix. Use when a test throws "Unknown engine" errors, when upgrading Playwright, or
-  when reviewing tests that use component-based selectors. Triggers on: "_react selector", "_vue
-  selector", ":light selector", "Unknown engine", "selector engine removed", "migrate Playwright
-  selectors".
+description: Identifies and migrates away from removed Playwright selector engines — _react, _vue, and the :light suffix. Use when a test throws "Unknown engine" errors, when upgrading Playwright, or when reviewing tests that use component-based selectors. Triggers on: "_react selector", "_vue selector", ":light selector", "Unknown engine", "selector engine removed", "migrate Playwright selectors".
 ---
 
 # Playwright Deprecated Selectors — Migration Guide
@@ -18,7 +13,7 @@ Playwright has removed three selector engines across all language bindings (JS/T
 |---------|-------------|
 | `_react=ComponentName[prop=value]` | `getByTestId()`, `getByRole()`, or `getByText()` |
 | `_vue=component-name[prop=value]` | `getByTestId()`, `getByRole()`, or `getByText()` |
-| `:light` CSS suffix | Standard CSS selectors (`:light` was for non-Shadow-DOM piercing) |
+| `:light` CSS suffix | Standard CSS selectors (`:light` opted OUT of shadow-DOM piercing) |
 
 ## Migration Patterns
 
@@ -45,8 +40,8 @@ await page.getByText('Submit').click();
 // ❌ REMOVED — :light was used to stop CSS from piercing Shadow DOM
 await page.locator('div.card:light .title').click();
 
-// ✅ Replacement: use standard CSS; Playwright now handles Shadow DOM
-// piercing via its own engine. If you need to scope, use locator chaining:
+// ✅ Replacement: use standard CSS (removed in v1.58). Playwright's CSS engine has always pierced
+// open shadow roots by default; there is no longer a way to opt out. To scope, chain locators:
 await page.locator('div.card').locator('.title').click();
 
 // ✅ Or use getByRole scoped to the host:

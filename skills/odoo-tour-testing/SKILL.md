@@ -32,9 +32,11 @@ from odoo.tests import TransactionCase, tagged
 @tagged('post_install', '-at_install')   # run after all modules install
 class TestSaleOrderMargin(TransactionCase):
 
-    def setUp(self):
-        super().setUp()
-        self.product = self.env['product.product'].create({
+    @classmethod
+    def setUpClass(cls):
+        # Runs once per class; each test then runs inside a savepoint that is rolled back
+        super().setUpClass()
+        cls.product = cls.env['product.product'].create({
             'name': 'Widget',
             'list_price': 100.0,
             'standard_price': 60.0,
@@ -57,20 +59,23 @@ class TestSaleOrderMargin(TransactionCase):
 # Run only your module's tests
 python odoo-bin -d testdb --test-enable --stop-after-init -i my_module
 
-# Run only tests tagged 'post_install'
-python odoo-bin -d testdb --test-tags post_install -i my_module
+# Run only tests tagged 'post_install'  (--test-tags implies --test-enable)
+python odoo-bin -d testdb --test-tags post_install -i my_module --stop-after-init
 
 # Run a specific test class
-python odoo-bin -d testdb --test-tags /my_module.TestSaleOrderMargin -i my_module
+python odoo-bin -d testdb --test-tags /my_module.TestSaleOrderMargin -i my_module --stop-after-init
 ```
+
+Without `--stop-after-init` the server keeps running after the tests finish (CI job hangs).
 
 ### Key test base classes
 
 | Class | Rollback | HTTP | Use when |
 |---|---|---|---|
-| `TransactionCase` | Per test | No | ORM / business logic |
-| `SavepointCase` | Per class | No | Expensive setup shared across tests |
-| `HttpCase` | Per test | Yes | Controller endpoints, `browser_js` |
+| `TransactionCase` | Class-level `setUpClass` data; each test wrapped in a savepoint and rolled back | No | ORM / business logic (also for expensive shared setup — put it in `setUpClass`) |
+| `HttpCase` | Same as TransactionCase | Yes | Controller endpoints, `browser_js`, `start_tour` |
+
+`SavepointCase` no longer exists (absent from `odoo/tests/common.py` on 19.0) — its behaviour was folded into `TransactionCase`. Replace any `SavepointCase` import with `TransactionCase`.
 
 ---
 
