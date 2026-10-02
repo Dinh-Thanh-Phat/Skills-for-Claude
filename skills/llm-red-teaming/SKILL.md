@@ -1,16 +1,6 @@
 ---
 name: llm-red-teaming
-description: >-
-  Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection,
-  jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when
-  testing an AI application for security and responsibility vulnerabilities before deployment,
-  running adversarial red-team exercises, adding injection resistance checks to CI, or auditing
-  for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak
-  test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security
-  testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override",
-  "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin",
-  "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP
-  agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
+description: Adversarial security testing for LLM-powered chatbots and AI agents — prompt injection, jailbreaks, indirect injection, multi-turn escalation, bias/toxicity/PII leakage. Use when testing an AI application for security and responsibility vulnerabilities before deployment, running adversarial red-team exercises, adding injection resistance checks to CI, or auditing for EU AI Act compliance. Triggers on: "prompt injection test", "red team LLM", "jailbreak test", "adversarial chatbot test", "garak", "PyRIT", "DeepTeam", "promptmap", "AI security testing", "bias testing", "toxicity testing", "PII leakage test", "system prompt override", "encoding bypass test", "strategy chaining promptfoo", "promptfoo hydra", "promptfoo goblin", "jailbreak meta-agent", "promptfoo cloud red team", "black-box LLM endpoint scan", "OWASP agentic top 10", "ASI01", "agent goal hijack", "agentic security testing", "agent red team".
 ---
 
 # LLM Red Teaming
@@ -81,12 +71,16 @@ Run Garak + PyRIT + Promptfoo for security focus; add DeepTeam for responsibilit
 ```bash
 pip install garak
 # Probe an OpenAI-compatible endpoint for prompt injection + toxicity
-garak --model_type openai --model_name gpt-4o \
-  --probes promptinjection,toxicity,dan \
+garak --target_type openai --target_name gpt-4o \
+  --spec probes.promptinject,probes.realtoxicityprompts,probes.dan \
   --report_prefix ./garak-report
 ```
 
-Key probe categories: `promptinjection`, `dan` (Do Anything Now jailbreaks), `toxicity`, `malwaregen`, `knowledgegrounding` (hallucination).
+> garak ≥0.13.1 deprecated `--model_type`/`--model_name` (→ `--target_type`/`--target_name`), and
+> ≥0.15.1 deprecated `--probes` in favour of `--spec probes.<module>[.<Class>]` (old flags still map
+> over with a deprecation notice). Current: garak 0.17.0. Run `garak --list_probes` for the live list.
+
+Key probe modules: `promptinject`, `dan` (Do Anything Now jailbreaks), `realtoxicityprompts`, `malwaregen`, `encoding`. (There is no `promptinjection`, `toxicity`, or `knowledgegrounding` probe module.)
 
 ## PyRIT — Multi-Turn Attack Orchestration
 
