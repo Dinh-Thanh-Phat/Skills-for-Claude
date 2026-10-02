@@ -23,9 +23,16 @@ Optional config (prompt the user or use defaults):
   "max_retries": 3,
   "accuracy_threshold": 0.7,
   "response_time_threshold_ms": 3000,
-  "output_dir": "./chatbot-test-results"
+  "output_dir": "./chatbot-test-results",
+  "use_ui_automator": false,
+  "resume": true
 }
 ```
+
+`chatbot_url` is used by BOTH Step 3 variants: `use_ui_automator: true` → `chatbot_ui_automator.py`
+(web URL), otherwise `chatbot_caller.py` (JSON endpoint / `api_config.json`). There is no
+separate `api_endpoint` key. `resume: true` (default) skips a step whose output file already
+exists and is non-empty; set `false` to force a full re-run.
 
 ## Pipeline Steps
 
@@ -129,8 +136,8 @@ def run_pipeline(chatbot_url: str, gdrive_link: str, config: dict) -> str:
             "output": output_dir / "test_questions.json"
         },
         {
-            "name": "chatbot-api-caller",
-            "script": "chatbot_caller.py",
+            "name": "chatbot-ui-automator" if config.get("use_ui_automator") else "chatbot-api-caller",
+            "script": "chatbot_ui_automator.py" if config.get("use_ui_automator") else "chatbot_caller.py",
             "args": [str(output_dir / "test_questions.json"), chatbot_url, str(output_dir / "raw_responses.json")],
             "output": output_dir / "raw_responses.json"
         },
@@ -155,6 +162,9 @@ def run_pipeline(chatbot_url: str, gdrive_link: str, config: dict) -> str:
     ]
 
     for i, step in enumerate(steps, 1):
+        if config.get("resume", True) and step["output"].exists() and step["output"].stat().st_size > 0:
+            print(f"[{i}/6] ↷ {step['name']} — output exists, skipped (resume)")
+            continue
         print(f"[{i}/6] Running {step['name']}...")
         for attempt in range(config.get("max_retries", 3)):
             result = subprocess.run(
