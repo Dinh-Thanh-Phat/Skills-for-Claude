@@ -80,8 +80,8 @@ adb install -t app.apk              # allow test APK
 adb install -d app.apk              # allow version downgrade
 adb install --instant app.apk       # install as Instant App
 
-# Install to specific location
-adb install -s app.apk              # prefer SD card
+# Install to specific location — legacy; `-s` (SD card) behaviour on current adb is UNVERIFIED, avoid
+# adb install -s app.apk
 
 # Uninstall
 adb uninstall com.example.app
