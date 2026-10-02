@@ -360,7 +360,7 @@ await page.route('**/api/upload', route =>
 
 - [ ] Upload: targeting `input[type="file"]` directly (even hidden ones)
 - [ ] Virtual file used in CI (no real file dependency on disk)
-- [ ] Drag-and-drop: using `locator.drop()`, not manual `dispatchEvent`
+- [ ] Drag-and-drop: using `locator.drop({ files })` (1.60+), not manual `dispatchEvent`
 - [ ] CMS image/logo field: used the "Create New" drawer pattern, verified persistence via API, captured created media id for cleanup
 - [ ] No DOM input at all: `filechooser` event armed with `Promise.all` before the click
 - [ ] Pure dropzone (no input): `DataTransfer` + `dispatchEvent`, test runs on Chromium/Firefox
