@@ -315,10 +315,10 @@ Created: 2026-05-05T10:30:45.123456
   "project": "Soundwise",
   "task_name": "Login button not responding",
   "task_type": "bug",
-  "status": "Todo",
+  "status": "TODO",
   "assignee": "Phuc Do",
   "tags": ["bug", "mobile"],
-  "priority": "0",
+  "priority": "3",
   "created_at": "2026-05-05T10:30:45.123456"
 }
 ```
