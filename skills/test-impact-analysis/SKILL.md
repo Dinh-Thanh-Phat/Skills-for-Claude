@@ -59,10 +59,24 @@ Mitigations, use both:
 - Mark known blind spots (schema files, feature-flag config, shared fixtures) as **tracked files** that force a full run.
 - Schedule a full regression run on a cadence (nightly, pre-release) regardless of what TIA selected that day — treat TIA as a PR-feedback accelerant, not the system of record for "is this change safe."
 
+## Built-in option for Playwright suites: `--only-changed` (1.46+)
+
+Before adopting an external TIA platform for a Playwright E2E suite, try the native flag:
+
+```bash
+npx playwright test --only-changed=main   # files changed vs `main` + test files that import them
+npx playwright test --only-changed        # default: uncommitted changes
+```
+
+It is file/import-graph based (Git only), so it has the same blind spot as Approach 2: a change
+to app code that the spec files don't import (most E2E specs only import page objects) selects
+nothing. Treat it as a PR-feedback shortcut — keep the scheduled full run.
+
 ## Decision table
 
 | Situation | Use |
 |---|---|
+| Playwright E2E suite, quick win in CI | `--only-changed=<base>` for PR runs + nightly full run |
 | Single repo/service, coverage instrumentation already exists (Jest/pytest/JUnit coverage) | Coverage-based selective testing |
 | True monorepo with multiple independent packages/apps | Dependency-graph-based (Nx/Bazel/Turborepo affected) |
 | Payment/auth/destructive-action tests, regardless of which approach you adopt | Mark unskippable — don't trust the heuristic |
