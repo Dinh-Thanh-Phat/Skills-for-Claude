@@ -232,7 +232,7 @@ const broken: string[] = [];
 for (const [url, sources] of sourceMap.entries()) {
   if (isBotProtected(url)) continue;
 
-  const status = await checkUrl(request, url);
+  const status = await checkLink(page, request, url);
 
   // Soft assertion: continues checking even after failure
   expect.soft(

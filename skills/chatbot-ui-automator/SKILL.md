@@ -43,6 +43,7 @@ Write this script as `chatbot_ui_automator.py`:
 ```python
 import asyncio
 import json
+import os
 import re
 import sys
 import time
@@ -235,6 +236,7 @@ class ChatbotUIAutomator:
         self.custom_sel = config.get("custom_selectors", {})
         self.screenshot_dir = Path(config.get("screenshot_dir", "screenshots"))
         self.browser_type = config.get("browser", "chromium")
+        self.login_steps = config.get("login_steps")  # optional, see "Chatbot Needs Login"
         if self.save_screenshots:
             self.screenshot_dir.mkdir(parents=True, exist_ok=True)
 
