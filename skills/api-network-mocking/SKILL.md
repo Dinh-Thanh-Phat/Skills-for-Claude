@@ -233,7 +233,7 @@ test('CONTRACT-001: /api/users response matches schema', async ({ request }) => 
 
   expect(
     parsed.success,
-    `Schema validation failed: ${JSON.stringify(parsed.error?.errors)}`
+    `Schema validation failed: ${JSON.stringify(parsed.error?.issues)}` // Zod 4 removed .errors — use .issues
   ).toBe(true);
 });
 ```
@@ -243,15 +243,53 @@ test('CONTRACT-001: /api/users response matches schema', async ({ request }) => 
 ## WebSocket Mocking (`routeWebSocket`, Playwright 1.48+)
 
 ```typescript
+// Handler runs when the page opens the socket. WebSocketRoute has NO onopen/onmessage —
+// only send / onMessage / onClose / close / connectToServer / protocols / url.
 await page.routeWebSocket('wss://example.com/ws', ws => {
-  ws.onopen(() => ws.send(JSON.stringify({ type: 'hello' })));
-  ws.onmessage(frame => {
-    const msg = JSON.parse(frame.payload as string);
+  ws.send(JSON.stringify({ type: 'hello' }));
+  ws.onMessage(message => {                    // message: string | Buffer
+    const msg = JSON.parse(message.toString());
     if (msg.type === 'subscribe') ws.send(JSON.stringify({ type: 'data', value: 42 }));
   });
 });
 ```
 See also `realtime-websocket-testing` skill for complete patterns.
+
+## MSW (Mock Service Worker) — v3 (released 2026-09-28)
+
+Use MSW when the same mocks must be shared between unit/component tests (Vitest/Jest) and
+the browser. For Playwright-only E2E, `page.route()` above is simpler.
+
+**v3 breaking changes** (https://github.com/mswjs/msw/releases):
+- ESM-only package; Node.js **≥ 22**; TypeScript **≥ 5.9**
+- GraphQL handlers moved to `msw/graphql` (optional peer dependency)
+- WebSocket connection event renamed `connection` → `websocket:connection`
+- `worker.stop()` now returns a Promise — `await` it
+- Cookies are no longer managed in Node.js
+
+The v1 `rest.get(..., (req, res, ctx) => res(ctx.json(...)))` API is obsolete — use `http` + `HttpResponse`:
+
+```typescript
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+export const handlers = [
+  http.get('/api/users', () => HttpResponse.json({ users: [], total: 0 })),
+  http.post('/api/users', async ({ request }) => {
+    const body = await request.json();
+    return HttpResponse.json({ id: 'new-1', ...body }, { status: 201 });
+  }),
+  http.get('/api/broken', () => HttpResponse.error()), // network error
+];
+
+const server = setupServer(...handlers);
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+```
+
+⚠️ If the app registers the MSW service worker in the browser, `page.route()` may not see
+requests the worker handles — set `serviceWorkers: 'block'` in the Playwright context options.
 
 ## GraphQL Mocking — Match by operationName
 
