@@ -205,8 +205,8 @@ Estimated first-time coverage for a typical 5-scenario flow: **~15–30 minutes 
 ❌  Forgetting to regenerate agents after a Playwright version bump
     → Agents encode the version's tool schema; stale agents may use deprecated tools
 
-✓  Keep test-plan.md in version control — it's the spec artifact, not a temp file
-✓  Seed file (seed.spec.ts) controls imports/fixtures across all generated tests — customize it
+✓  Keep specs/*.md in version control — they're the spec artifacts, not temp files
+✓  Seed file (tests/seed.spec.ts) controls imports/fixtures across all generated tests — customize it
 ```
 
 ---
