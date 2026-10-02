@@ -93,7 +93,7 @@ Takes a screenshot and runs it through a pre-built LLM prompt that checks for co
 **Key rules:**
 - Treat as a smoke check, not a pixel-perfect visual diff — it detects layout breakage, not minor spacing regressions.
 - One invocation per screen state you want to certify; don't call it on every step.
-- Requires Maestro Cloud AI backend.
+- Requires Maestro Cloud authentication (see Configuration).
 
 ---
 
