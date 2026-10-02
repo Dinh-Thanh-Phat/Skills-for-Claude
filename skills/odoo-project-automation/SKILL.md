@@ -504,13 +504,13 @@ I need to log a bug in Soundwise project on Odoo:
 
 ### Move Task
 ```
-Move "Login button broken" in Soundwise from Todo to In Progress
+Move "Login button broken" in Soundwise on Odoo from TODO to INPROGRESS
 Notes: Investigation in progress
 ```
 
 ### Close Task
 ```
-Close "Payment webhook timeout" in Soundwise
+Close "Payment webhook timeout" in Soundwise on Odoo
 Summary: Fixed with retry logic, tested in production
 ```
 
