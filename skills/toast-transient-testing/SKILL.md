@@ -129,7 +129,7 @@ await expect(errorToast).not.toBeVisible(); // confirm no error toast
 | Race condition: toast gone before assertion | Assert immediately after action — no `waitForTimeout` between |
 | Multiple stacked toasts | `locator.filter({ hasText })` to target specific one |
 | Toast in DOM but invisible (`opacity: 0`) | Use `toBeVisible()` (checks CSS), not `toBeAttached()` |
-| `page.clock` stops all timers | Only use when you need to freeze — may affect other timers |
+| `page.clock.pauseAt` stops all timers | Only use when you need to freeze — may affect other timers. `install()` alone does NOT freeze |
 | Hardcoded `waitForTimeout` before assertion | Replace with `expect().toBeVisible({ timeout: N })` |
 
 ## Pattern 7: Toast With Action Button (Undo / Retry)

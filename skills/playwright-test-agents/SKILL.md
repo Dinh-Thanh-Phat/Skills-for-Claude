@@ -68,17 +68,18 @@ Regenerate whenever you update Playwright (`npm update @playwright/test && npx p
 
 ### 1 — Planner
 
-**What it does:** Browses the running app as a user would, captures the interaction flow, and writes
-`test-plan.md` with numbered scenarios, steps, and expected outcomes.
+**What it does:** Runs the seed test (global setup, fixtures, hooks), browses the running app as a
+user would, and writes a Markdown plan under `specs/` (e.g. `specs/checkout.md`) with numbered
+scenarios, steps, and expected outcomes. Optional input: a PRD for context.
 
 **Invoke:**
 
 ```
-// In your coding agent (e.g. Claude Code):
+// In your coding agent (e.g. Claude Code), with tests/seed.spec.ts in context:
 "Use the Playwright Planner to explore the checkout flow and write a test plan."
 ```
 
-**Output — `test-plan.md` (example):**
+**Output — `specs/checkout.md` (example):**
 
 ```markdown
 ## Scenario 1: Guest checkout with valid card
@@ -103,17 +104,19 @@ Expected: Order confirmation page with order number visible
 
 ### 2 — Generator
 
-**What it does:** Reads `test-plan.md`, generates `.spec.ts` files, and runs each scenario live in
-a browser to verify that selectors and assertions work before saving.
+**What it does:** Reads a plan from `specs/`, generates `.spec.ts` files under `tests/`, and performs
+each scenario live in a browser to verify selectors and assertions as it goes.
 
 **Invoke:**
 
 ```
-"Use the Playwright Generator to create tests from test-plan.md."
+"Use the Playwright Generator to create tests from specs/checkout.md."
 ```
 
-**Output:** executable `*.spec.ts` files seeded from your `seed.spec.ts` template, using
-`getByRole`, `getByLabel`, `getByText` locators verified against the live page.
+**Output:** executable `tests/**/*.spec.ts` files (header comments `// spec: specs/...` and
+`// seed: tests/seed.spec.ts`), using `getByRole`, `getByLabel`, `getByText` locators verified
+against the live page. Official docs note generated tests *may still include initial errors* — that
+is what the Healer is for.
 
 **What makes it different from Codegen:** The Generator verifies selectors by actually performing
 each interaction — it won't emit a selector that doesn't work on the running app. Codegen records
