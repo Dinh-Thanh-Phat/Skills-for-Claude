@@ -371,7 +371,7 @@ Summary: ✅ Feature complete. Tested with 500+ contacts.
 
 **Flow:**
 1. Task worked on, tested, ready
-2. Move to Done with detailed summary
+2. Move to DONE (and/or `state="1_done"`) with detailed summary
 3. Summary shows what was accomplished
 4. QA can review and verify
 
@@ -388,10 +388,10 @@ Summary: ✅ Feature complete. Tested with 500+ contacts.
 - Refresh Odoo page
 - Check correct project name
 
-### Cannot Move to Status
-- Check workflow rules above
-- Remember: can only move forward or back one state
-- Terminal states (Done) cannot be left
+### Cannot Move to Stage
+- Check the real stage names above (UPPERCASE, `ilike`)
+- Check the project actually has that stage (`project.task.type` with `project_ids in [project_id]`)
+- Odoo itself does not restrict stage transitions
 
 ### Assignee Not Available
 - List all available assignees
