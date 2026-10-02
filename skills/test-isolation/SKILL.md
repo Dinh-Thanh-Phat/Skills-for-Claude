@@ -104,10 +104,11 @@ This handles **auth isolation** automatically when using fixtures correctly.
 // playwright.config.ts
 export default defineConfig({
   use: {
-    storageState: 'auth.json', // login once, reuse auth state per test
+    storageState: '.auth/user.json', // written once by a setup project, loaded into each fresh context
   },
 });
 ```
+(The file must be produced by a `setup` project dependency — see `auth-session-testing`.)
 
 ## Pattern 5: API Setup Instead of UI Setup
 
