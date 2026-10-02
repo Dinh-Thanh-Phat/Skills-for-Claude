@@ -233,8 +233,10 @@ tools: [tools MCP cần dùng — chỉ ghi nếu thật sự dùng]
 
 ### Bước 4 — Lưu Vào 2 Nơi
 
-- `C:\Users\wi\.claude\skills\[skill-name].md` — để Claude dùng ngay
-- `D:\HK8\Learning\DQ\PT\skills\[skill-name].md` — bản backup
+- `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` — để Claude dùng ngay (dạng thư mục, loadable)
+- `D:\HK8\Learning\DQ\PT\skills\[skill-name]\SKILL.md` — bản backup
+
+Sau khi tạo: cập nhật `capabilities.md` (theo CLAUDE.md Self-Update), và nếu là skill QA → thêm 1 dòng route vào `qa-router`.
 
 ### Bước 5 — Ghi Log
 
