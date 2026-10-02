@@ -56,9 +56,11 @@ in order:
    await trigger.focus();
    await page.keyboard.press('Enter');
    ```
-2. **dispatchEvent / pointer sequence**: `trigger.dispatchEvent('pointerdown')`
-   then `'pointerup'`/`'click'`, or `page.mouse.move()→down()→up()` (real sequence,
-   not a single `click`).
+2. **Explicit real-input sequence**: `trigger.hover()` → `page.mouse.down()` → short
+   web-first wait → `page.mouse.up()`, or `trigger.click({ delay: 100 })` — this reproduces
+   handlers that key on hover/press duration. `trigger.dispatchEvent('pointerdown')` is a LAST
+   resort: it is *untrusted* and skips actionability, so it only helps when the handler
+   doesn't check `isTrusted` — and a pass obtained that way doesn't prove a user could do it.
 3. **Direct route**: skip the menu entirely — use the underlying URL/endpoint the
    menu item triggers (e.g. a `/delete/{id}` link) or an API call, if one exists.
 4. **Declare it manual**: if none work, mark the case **un-automatable** and move it
