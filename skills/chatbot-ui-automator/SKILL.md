@@ -363,6 +363,17 @@ class ChatbotUIAutomator:
         print(f"✓ {success}/{len(results)} successful → {output_file}")
         return results
 
+    async def _do_login(self, page: Page):
+        """Run once before the first question. Credentials come from env, never config."""
+        s = self.login_steps
+        if not s:
+            return
+        await page.goto(s["url"])
+        await page.fill(s["email_selector"], os.environ["TEST_EMAIL"])
+        await page.fill(s["password_selector"], os.environ["TEST_PASSWORD"])
+        await page.click(s["submit_selector"])
+        await page.wait_for_selector(s["post_login_wait_for"], timeout=30000)
+
     def run(self, questions_file: str, output_file: str = "raw_responses.json") -> list:
         questions = json.loads(Path(questions_file).read_text(encoding="utf-8"))
         return asyncio.run(self.run_all(questions, output_file))
