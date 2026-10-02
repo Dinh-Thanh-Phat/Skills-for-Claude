@@ -120,7 +120,7 @@ Use pre-seeded, well-known test data that already exists in the test environment
 // constants.ts — fixed test data that always exists
 export const TEST_LIST = 'Phat testing list';       // pre-seeded
 export const TEST_EMAILS = {
-  primary: 'thanhphat12tna234@gmail.com',           // pre-seeded account
+  primary: process.env.SEED_PRIMARY_EMAIL!,         // pre-seeded account — from .env, never a real address in code
 };
 
 // tests use it but NEVER modify or delete it
