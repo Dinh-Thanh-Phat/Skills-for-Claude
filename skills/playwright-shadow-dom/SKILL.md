@@ -1,11 +1,6 @@
 ---
 name: playwright-shadow-dom
-description: >-
-  Testing web components and Shadow DOM elements with Playwright — auto-piercing behavior,
-  locator patterns, closed root workarounds, and framework-specific strategies. Use when tests
-  target Lit, Shoelace, SAP UI5, Salesforce Lightning, or any app using custom HTML elements with
-  shadow roots. Triggers on: shadow DOM, web components, shadow root, custom elements, Shoelace,
-  Lit, SAP UI5, pierce, closed shadow.
+description: Testing web components and Shadow DOM elements with Playwright — auto-piercing behavior, locator patterns, closed root workarounds, and framework-specific strategies. Use when tests target Lit, Shoelace, SAP UI5, Salesforce Lightning, or any app using custom HTML elements with shadow roots. Triggers on: shadow DOM, web components, shadow root, custom elements, Shoelace, Lit, SAP UI5, pierce, closed shadow.
 ---
 
 # Playwright Shadow DOM & Web Components Testing
@@ -138,37 +133,37 @@ await expect(deepInput).toHaveValue('New name');
 ## 6. Framework-Specific Notes
 
 ### SAP UI5 / Fiori
-UI5 uses a custom patched shadow DOM with internal control IDs. Use the `playwright-sap` wrapper:
+UI5 uses a custom patched shadow DOM with internal control IDs. Use the `playwright-sap` wrapper (v1.1.6), which adds UI5-aware locators to `page`:
 
 ```bash
-npm install -D playwright-sap
+npm init playwright-sap@latest   # scaffolds config + example test
 ```
 
 ```typescript
-import { ui5 } from 'playwright-sap';
-
+// Locator API per https://playwright-sap.dev/locators/getByRoleUI5 and /locateUI5
 test('SAP UI5 input', async ({ page }) => {
   await page.goto('/fiori-app');
-  await ui5(page).locator({ id: 'username' }).fill('admin');
-  await ui5(page).locator({ controlType: 'sap.m.Button', text: 'Login' }).click();
+  await page.getByRoleUI5('Input', { label: 'First Name' }).fill('admin');   // control type + properties
+  await page.getByRoleUI5('Button', { text: 'Save' }).click();
+  await page.locateUI5('//HorizontalLayout[1]/Button[1]').click();          // control-centric XPath
 });
 ```
 
 ### Lit Component Isolation Testing
-For component-level (not E2E) testing of Lit elements, use `playwright-ct-web`:
+For component-level (not E2E) testing of Lit / native web components, use sand4rt's `@sand4rt/experimental-ct-web` (the old name `playwright-ct-web` is not on npm):
 
 ```bash
-npm install -D playwright-ct-web
+npm init playwright-sand4rt@latest -- --ct
+# or: npm i -D @sand4rt/experimental-ct-web
 ```
 
 ```typescript
-import { test, expect } from '@playwright/experimental-ct-web';
-import './my-button.js';
+import { test, expect } from '@sand4rt/experimental-ct-web';
+import { Button } from './components/Button';
 
-test('renders slot content', async ({ mount }) => {
-  const component = await mount(
-    '<my-button>Submit</my-button>'
-  );
+test('renders props', async ({ mount }) => {
+  // mount() takes the component class, not an HTML string
+  const component = await mount(Button, { props: { title: 'Submit' } });
   await expect(component).toContainText('Submit');
   await component.click();
   // assert side-effect
@@ -183,8 +178,8 @@ test('renders slot content', async ({ mount }) => {
 | Nested open shadow roots | Chain `locator().locator()` or `>>>` combinator |
 | XPath needed (Selenium migration) | Rewrite to CSS/role — no alternative |
 | Closed shadow root | `page.evaluate()` if component leaks ref; keyboard nav as fallback |
-| SAP UI5 / Fiori app | `playwright-sap` library |
-| Lit/web component isolation (not E2E) | `playwright-ct-web` mount fixture |
+| SAP UI5 / Fiori app | `playwright-sap` library (`page.getByRoleUI5` / `page.locateUI5`) |
+| Lit/web component isolation (not E2E) | `@sand4rt/experimental-ct-web` mount fixture |
 | `innerHTML()` content assertion fails | Use `textContent()` or `locator().textContent()` instead |
 
 ## 8. Common Pitfall: `innerHTML()` Is Empty
