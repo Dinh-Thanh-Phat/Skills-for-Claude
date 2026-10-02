@@ -116,11 +116,13 @@ maestro test flows/web-search.yaml
 # Run all flows (mix of mobile + web) in a folder
 maestro test flows/
 
-# Run with Maestro Studio (visual inspection + autocomplete)
-maestro studio flows/web-search.yaml
+# Headless with a fixed window size (CLI 2.11.0 options)
+maestro test --headless --screen-size 1440x900 flows/web-search.yaml
 ```
 
-Maestro Studio works on web flows and lets you click elements to generate YAML selectors.
+`maestro studio` was **removed from the CLI in 2.6.0** (it now only prints a download link). Use the
+**Maestro Studio desktop app**, which supports web flows (point-and-click element inspection →
+YAML selectors). The `--screen-size` value format (`WxH`) is UNVERIFIED — check `maestro test --help`.
 
 ---
 
