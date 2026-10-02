@@ -36,27 +36,29 @@ If the target's `dragover` listener does not call `preventDefault()`, Playwright
 
 ## 2. `tracing.startHar()` / `tracing.stopHar()` — HAR as First-Class Tracing API
 
-Before 1.60, capturing HAR required a separate `recordHar` option on `BrowserContext`, producing a parallel artifact. Now HAR is embedded directly into the trace:
+Before 1.60, capturing HAR required the `recordHar` context option set at context creation. Now HAR recording can be started/stopped on demand via the tracing API. Signature: `tracing.startHar(path, options?)` — the HAR is written to **that path** (a separate file, not embedded in `trace.zip`) when `stopHar()` is called or the returned `Disposable` is disposed. Only one HAR recording per `Tracing` instance at a time.
 
 ```typescript
-// ✅ 1.60+ — unified setup
-await context.tracing.start({ screenshots: true, snapshots: true });
-await context.tracing.startHar({ path: 'trace.har', urlFilter: '**/api/**' });
+// ✅ 1.60+
+await context.tracing.startHar('artifacts/network.har', { urlFilter: '**/api/**' });
 
 await page.goto('/dashboard');
 // ... test actions ...
 
-await context.tracing.stopHar();
-await context.tracing.stop({ path: 'trace.zip' });
-// HAR is now inside trace.zip — visible in Trace Viewer network panel
+await context.tracing.stopHar();   // network.har written here
+
+// Or scope it with explicit resource management:
+await using har = await context.tracing.startHar('trace.har');
+// HAR finalized when `har` goes out of scope
 ```
 
 **Options** (same as `recordHar`):
 | Option | Values | Effect |
 |--------|--------|--------|
-| `content` | `"omit"` \| `"embed"` \| `"attach"` | Response body inclusion |
-| `mode` | `"full"` \| `"minimal"` | Full HAR vs. headers only |
+| `content` | `"omit"` \| `"embed"` \| `"attach"` | Response body handling (default `attach` for `.zip` path, `embed` otherwise) |
+| `mode` | `"full"` \| `"minimal"` | `minimal` = only what is needed to replay/route from HAR (omits sizes, timing, cookies, security…) |
 | `urlFilter` | glob / RegExp | Only record matching URLs |
+| `resourcesDir` | path | With `content: 'attach'`, put bodies in this dir (not compatible with `.zip`) |
 
 ---
 
