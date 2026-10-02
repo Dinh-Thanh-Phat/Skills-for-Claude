@@ -1,6 +1,6 @@
 ---
 name: figma-to-code
-description: Use when implementing UI from a Figma file, Figma screenshot, or any visual design spec into React + Tailwind code. Use before writing any component code when a design reference exists.
+description: Use when implementing UI from a Figma file, Figma screenshot, or any visual design spec into React code (Tailwind v4 or plain CSS — follow the project). Enforces a Figma API budget step first. Use before writing any component code when a design reference exists.
 ---
 
 # Figma to Code
