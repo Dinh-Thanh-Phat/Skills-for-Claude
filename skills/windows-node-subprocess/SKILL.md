@@ -30,13 +30,18 @@ subprocess.run(['npx.cmd', 'playwright', 'test', '--list'], ...)
 
 ### 1. Detect platform trước
 ```python
-import sys, subprocess
+import shutil, subprocess
 
 def node_cmd(cmd: str | list, **kwargs):
     """Run npx/npm/node cross-platform."""
     if isinstance(cmd, list):
-        if sys.platform == 'win32':
-            cmd[0] = cmd[0] + '.cmd'
+        cmd = list(cmd)  # don't mutate the caller's list
+        # shutil.which honours PATHEXT: 'npx' → '...\\npx.CMD', 'node' → '...\\node.EXE'
+        # (blindly appending '.cmd' turns 'node' into a non-existent 'node.cmd')
+        resolved = shutil.which(cmd[0])
+        if resolved is None:
+            raise FileNotFoundError(f"{cmd[0]} not found on PATH")
+        cmd[0] = resolved
         return subprocess.run(cmd, **kwargs)
     else:
         # String command: dùng shell=True

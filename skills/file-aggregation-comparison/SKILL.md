@@ -181,9 +181,17 @@ new = pd.read_excel("bao_cao_thang_nay.xlsx")
 old = old.set_index("ma_don_hang").sort_index()
 new = new.set_index("ma_don_hang").sort_index()
 
-# So sánh chỉ phần chung
+# DataFrame.compare() yêu cầu key KHÔNG trùng + cùng tập cột — kiểm tra trước, nếu không sẽ lỗi
+assert old.index.is_unique and new.index.is_unique, "Key column bị trùng — dedup hoặc chọn key khác"
+cols_only_old = old.columns.difference(new.columns)
+cols_only_new = new.columns.difference(old.columns)
+if len(cols_only_old) or len(cols_only_new):
+    print(f"⚠️ Cột chỉ có ở file cũ: {list(cols_only_old)} · chỉ có ở file mới: {list(cols_only_new)}")
+common_cols = old.columns.intersection(new.columns)
+
+# So sánh chỉ phần chung (dòng chung × cột chung)
 common_idx = old.index.intersection(new.index)
-diff = old.loc[common_idx].compare(new.loc[common_idx], result_names=("Cũ", "Mới"))
+diff = old.loc[common_idx, common_cols].compare(new.loc[common_idx, common_cols], result_names=("Cũ", "Mới"))
 
 added   = new[~new.index.isin(old.index)]    # Dòng mới
 deleted = old[~old.index.isin(new.index)]    # Dòng bị xóa
