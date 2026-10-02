@@ -918,6 +918,24 @@ switch theme failed the whole flow):
     optional: true     # 2.11.0+: skip instead of fail where the platform can't switch
 ```
 
+**Measured 2026-10-02 (CLI 2.11.0, Samsung A51 / One UI, Settings app):** `assertDarkMode` passes
+as soon as the *system* setting flips — it does NOT prove the app has re-rendered. Android recreates
+the activity on the uiMode change, and a `takeScreenshot` straight after `setDarkMode` captured a
+blank white screen while `assertDarkMode` was green. Always follow a theme switch with a wait on
+real content before asserting/screenshotting visuals:
+
+```yaml
+- setDarkMode: enabled
+- assertDarkMode
+- extendedWaitUntil:          # activity recreation — wait for real content
+    visible: "Connections"
+    timeout: 10000
+- takeScreenshot: "dark"
+```
+
+Same trap after `launchApp` on a real device: the first screenshot can still show the previous
+foreground app. Gate it on an `extendedWaitUntil` too.
+
 Use this instead of the old workaround of duplicating a flow per theme or pre-setting device
 appearance outside Maestro (`adb shell cmd uimode night yes` / simulator defaults) — those still
 work but can't switch *within* a running flow to catch state that only breaks on the transition
