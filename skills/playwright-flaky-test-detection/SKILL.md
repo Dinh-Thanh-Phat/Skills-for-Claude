@@ -269,9 +269,8 @@ test('DEL-001: Delete user', async ({ page }) => {
   await admin.deleteUser(email);
   
   console.log('5. Verify deleted');
-  const exists = await page.getByText(email).isVisible({ timeout: 2_000 }).catch(() => false);
-  console.log('User exists after delete:', exists);
-  expect(exists).toBe(false);
+  // Web-first: retries until hidden, fails loudly with locator + timeout in the message
+  await expect(page.getByText(email)).toBeHidden();
 });
 ```
 
@@ -289,8 +288,9 @@ test('DEL-001: Delete user', async ({ page }) => {
 | Issue | Quick Fix |
 |-------|-----------|
 | Element not visible | `await expect(el).toBeVisible()` before action |
-| Dropdown not populated | `await page.waitForTimeout(500)` after fill |
-| Data not persisted | `await page.waitForLoadState('networkidle')` |
+| Dropdown not populated | `await expect(option).toBeVisible()` after fill (never `waitForTimeout`) |
+| Data not persisted | `await page.waitForResponse(r => r.url().includes('/api/…') && r.ok())` (never `networkidle`) |
+| Tests fight over one shared account/resource | Playwright 1.63 `test(..., { lock: 'name' }, ...)` — see `playwright-1.63-new-apis` |
 | Dialog not appearing | `await page.waitForEvent('dialog')` before click |
 | File not uploaded | Check upload progress, use `Promise.all([waitForEvent, click])` |
 
