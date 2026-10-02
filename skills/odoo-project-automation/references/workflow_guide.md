@@ -2,11 +2,11 @@
 
 ## Overview
 
-This skill automates task and bug management in your Odoo ERP instance at `https://erp.inapps.net/odoo/`.
+This skill automates task and bug management in your Odoo ERP instance at `https://erp.inapps.net` (UI at `/odoo/`; API calls must NOT use `/odoo/` — 303 redirect). It triggers only when the user's message contains "Odoo" or "ERP", and reads/writes via `mcp__odoo__*` tools. SKILL.md is the source of truth if anything here disagrees.
 
 It handles:
 - **Creating tasks/bugs** with auto-expanded descriptions
-- **Moving tasks** through workflow states (Backlog → Todo → In Progress → Develop → Done)
+- **Moving tasks** through stages (BackLog → TODO → INPROGRESS → DEVELOPED → READY FOR TEST → DONE)
 - **Closing tasks** with completion summaries
 - **Updating task details** (assignee, tags, description)
 - **Error handling** with helpful suggestions
