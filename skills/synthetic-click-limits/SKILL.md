@@ -70,13 +70,14 @@ in order:
 ## Don't confuse this with a selector bug
 
 First rule out the ordinary causes (1 quick check each), because those ARE fixable:
-- **Wrong element**: page has two matches (a banner + the real card). Use `.last()`,
-  scope to a section heading, or filter by a unique child ("Active" chip).
+- **Wrong element**: page has two matches (a banner + the real card). Scope to a section
+  heading or filter by a unique child ("Active" chip), then `await expect(loc).toHaveCount(1)` —
+  not `.last()` (see `safe-locators`).
 - **Overlay sibling**: the `⋯` is positioned over the card, not inside it —
   DOM `ancestor::*[.//button]` won't reach it; locate it by its own markup/role.
 - **Hidden until hover**: `hover()` the card first.
 
-If after fixing those the click still opens nothing → it's a trusted-event wall.
+If after fixing those the click still opens nothing → it's a click-doesn't-open wall (apply the 2-attempt rule).
 
 ## Related
 - `ask-when-stuck` (P0) — stop after 1–2 failures.
