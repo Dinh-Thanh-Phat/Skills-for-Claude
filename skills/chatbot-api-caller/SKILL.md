@@ -35,7 +35,7 @@ Sends test questions to a chatbot API, measures response times, and records all 
 }
 ```
 
-### GraphQL
+### GraphQL (config shape only — not implemented)
 ```json
 {
   "api_type": "graphql",
