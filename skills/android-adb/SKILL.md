@@ -213,10 +213,12 @@ adb shell screenrecord /sdcard/recording.mp4
 adb pull /sdcard/recording.mp4 ./recording.mp4
 
 # Recording with options
+# --time-limit is in seconds (max 180). Never put a comment after a trailing "\" —
+# it breaks the line continuation and the command ends early.
 adb shell screenrecord \
   --size 1080x1920 \
   --bit-rate 4000000 \
-  --time-limit 30 \       # seconds (max 180)
+  --time-limit 30 \
   /sdcard/recording.mp4
 
 # Non-interactive recording for CI
