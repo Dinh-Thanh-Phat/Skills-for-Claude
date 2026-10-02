@@ -168,7 +168,7 @@ Never `test.skip` a known bug — canonical policy: `skip-vs-fail`.
 Diagnosis: "Port import sometimes doesn't show on list"
 → Don't write test (it will be flaky)
 → Investigate: timing? cache? API response?
-→ Propose fix: add loading indicator? delay? refresh?
+→ Propose fix to dev: loading indicator? cache invalidation? (never "add a delay" in the test)
 → Test AFTER fix is verified
 ```
 
