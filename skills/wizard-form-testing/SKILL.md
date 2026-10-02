@@ -1,12 +1,6 @@
----
+﻿---
 name: wizard-form-testing
-description: >-
-  Patterns for testing multi-step forms and wizards in Playwright — step navigation, per-step
-  validation, back-button state preservation, step indicator assertions, completion redirect. Use
-  when writing tests for any wizard, stepper, multi-step form, onboarding flow, or checkout
-  process with multiple discrete steps. Triggers on: "wizard", "stepper", "multi-step form",
-  "onboarding", "checkout steps", "step navigation", "back button preserves", "step indicator",
-  "step validation".
+description: Patterns for testing multi-step forms and wizards in Playwright — step navigation, per-step validation, back-button state preservation, step indicator assertions, completion redirect. Use when writing tests for any wizard, stepper, multi-step form, onboarding flow, or checkout process with multiple discrete steps. Triggers on: "wizard", "stepper", "multi-step form", "onboarding", "checkout steps", "step navigation", "back button preserves", "step indicator", "step validation".
 ---
 
 # Multi-Step Wizard / Form Testing
@@ -47,8 +41,11 @@ Assert the wizard's own state machine is correct after each navigation:
 
 ```typescript
 // After clicking Next on Step 1:
+// Tab-style stepper → aria-selected
 await expect(page.getByRole('tab', { name: 'Step 2' })).toHaveAttribute('aria-selected', 'true');
-await expect(page.getByRole('tab', { name: 'Step 1' })).toHaveAttribute('aria-current', 'false');
+await expect(page.getByRole('tab', { name: 'Step 1' })).toHaveAttribute('aria-selected', 'false');
+// List/breadcrumb-style stepper → aria-current="step" on the active item only
+// await expect(page.getByRole('listitem').filter({ hasText: 'Step 2' })).toHaveAttribute('aria-current', 'step');
 
 // Or check progress bar
 await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
