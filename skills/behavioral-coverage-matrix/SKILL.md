@@ -271,11 +271,18 @@ Mỗi collection cần TỐI THIỂU các test này để đạt ~85%+ coverage:
 | Skill | Role |
 |---|---|
 | **this — `behavioral-coverage-matrix`** | State-transition + behavior inventory, coverage formula |
-| `qa-test-coverage-max` | 8-category matrix (POS/NEG/UI/EDGE/SEC/PERF/A11Y/Platform) — apply per behavior |
+| `qa-test-coverage-max` | 8-category matrix — apply per behavior |
 | `state-ripple-verify` | Each behavior in the inventory needs ripple assertions |
 | `qa-test-generation` | Writes the actual test cases from the inventory |
 
+**8 category BẮT BUỘC (canonical, giống `qa-router` + hook `qa-coverage`):** POS / NEG / EDGE / SEC / A11Y / BOUNDARY / STATE / ERROR.
+Cột **tuỳ chọn** (thêm khi liên quan, không tính là gap): UI / PERF / Platform.
+
 Workflow: **inventory (this) → 8-category coverage (qa-test-coverage-max) → write tests (qa-test-generation)**
+
+> **Thứ tự khi nào dùng skill nào:** có spec/PRD/Figma → `qa-test-coverage-max` trước (intake nguồn + matrix);
+> không có spec, chỉ có UI đang chạy → skill này trước (scan UI + inventory); có CẢ spec lẫn UI live → chạy cả hai,
+> inventory từ UI dùng để đối chiếu matrix từ spec.
 
 **Research sources:**
 - [State Transition Testing — Testsigma](https://testsigma.com/blog/state-transition-testing/)
