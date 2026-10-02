@@ -1,11 +1,6 @@
----
+﻿---
 name: test-isolation
-description: >-
-  Playwright test isolation patterns — prevent shared state, flaky tests from test order
-  dependency, use timestamps for unique data. Use when writing E2E tests that might interfere
-  with each other, when tests fail only in certain orders, or when adding beforeEach/afterEach.
-  Triggers on: "test isolation", "shared state", "test order", "flaky test", "beforeEach", "test
-  data cleanup", "parallel test fail".
+description: Playwright test isolation patterns — prevent shared state, flaky tests from test order dependency, use timestamps for unique data. Use when writing E2E tests that might interfere with each other, when tests fail only in certain orders, or when adding beforeEach/afterEach. Triggers on: "test isolation", "shared state", "test order", "flaky test", "beforeEach", "test data cleanup", "parallel test fail".
 type: qa-practice
 triggers:
   - "test isolation"
@@ -54,15 +49,18 @@ Never use hardcoded names like `"Test Template"` — multiple parallel runs coll
 
 ```typescript
 test.describe('Email Templates', () => {
+  let timestamp: number; // shared by beforeEach / test / afterEach of the SAME test
+
   test.beforeEach(async ({ page }) => {
+    timestamp = Date.now();
     // Always start from a clean, known state
     await page.goto('/templates');
-    await page.waitForLoadState('domcontentloaded');
+    await expect(page.getByRole('heading', { name: /templates/i })).toBeVisible();
     // If test needs a template: create it here, not in a previous test
   });
 
   test.afterEach(async ({ page }) => {
-    // Clean up data this test created
+    // Clean up data this test created (only names containing this test's timestamp)
     await deleteTestTemplates(page, timestamp);
   });
 });
