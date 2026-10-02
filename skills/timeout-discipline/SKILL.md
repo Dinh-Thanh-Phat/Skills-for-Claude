@@ -160,8 +160,8 @@ Instead of inflating timeouts to absorb cold-start:
 
 **What should have been done:**
 1. Add timing logs → discover networkidle = up to 15s, Replit cold start = up to 30s
-2. Set `assertStepIs` = 45s (30s cold start × 1.5) in ONE step
-3. Set test timeout = 90s (30s cold start + 15s networkidle + 45s assertion + buffer) in ONE step
+2. Remove `networkidle` (pure waste — 15s of budget for nothing); set `assertStepIs` = 45s (30s cold start × 1.5) in ONE step
+3. Set test timeout = 75s (30s cold start + 45s assertion buffer) in ONE step
 4. Add warm-up request in `global-setup.ts` to eliminate cold start entirely
 
 ---
