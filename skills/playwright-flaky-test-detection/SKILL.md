@@ -139,7 +139,7 @@ npx playwright test --workers=4
 // ❌ FLAKY: Network might be slow in CI
 await admin.createPort();
 await page.goto('/admin/ports');
-const visible = await page.getByText('port-name').isVisible({ timeout: 3_000 });
+const visible = await page.getByText('port-name').isVisible(); // no wait — reads state instantly
 ```
 
 **Fix:** Wait for the specific API response, NOT `networkidle`
