@@ -130,7 +130,7 @@ PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter
 
 ## Checklist trước mỗi lần chạy test để lấy kết quả
 
-- [ ] Bỏ `--reporter` flag trên CLI — dùng config mặc định
+- [ ] Bỏ `--reporter` flag trên CLI — dùng config mặc định (cần thêm reporter → `--add-reporter`, Playwright 1.63+)
 - [ ] Chạy: `npx playwright test tests/cms/` (không có flag thêm)
 - [ ] Sau khi xong: verify `results.json` có `expected > 0`
 - [ ] Nếu `expected == 0` và `duration < 5 phút` → auth failed, chạy setup riêng
