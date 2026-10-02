@@ -1,10 +1,6 @@
 ---
 name: vitest-unit-testing
-description: >-
-  Vitest unit and component testing patterns for TypeScript/React projects. Use when writing unit
-  tests, component tests, setting up Vitest, configuring coverage, or mocking modules with
-  Vitest. Triggers on: "vitest", "unit test", "component test", "jest.mock", "vi.mock", "test
-  coverage", "React Testing Library", "viết unit test", "viết component test".
+description: Vitest unit and component testing patterns for TypeScript/React projects. Use when writing unit tests, component tests, setting up Vitest, configuring coverage, or mocking modules with Vitest. Triggers on: "vitest", "unit test", "component test", "jest.mock", "vi.mock", "test coverage", "React Testing Library", "viết unit test", "viết component test".
 triggers:
   - "vitest"
   - "unit test"
@@ -35,6 +31,18 @@ Vitest is **~2.7x faster than Jest** — 500 tests in ~3s vs ~8s. Uses the same 
 ---
 
 ## Setup
+
+### Vitest 5 (v5.0.x, Sep 2026) — upgrade gotchas
+- Requires **Node ≥ 22.12** + **Vite ≥ 6.4** (`vite` is a peer dep — Yarn: `yarn add -D vite`)
+- `clearMocks: true` is now **default** → call history reset before each test. Calls made in setup files / `beforeAll` / module top level are gone before the test runs. `clearMocks: false` restores v4 behaviour.
+- `vi.mock` / `vi.unmock` / `vi.hoisted` inside `describe`/`it`/functions now **throw** — keep them top-level (`vi.doMock` is fine anywhere).
+- Un-awaited `expect(p).resolves/rejects` (and `toMatchFileSnapshot`) now **fails** the test (was a warning) — always `await`. `expect.poll` fails on timeout.
+- `coverage.include: ['src']` = `src/**` only (root-relative, stricter matching) — re-check the reported file set after upgrading.
+- Config files are no longer searched in parent folders — pass `--config ../vitest.config.ts`.
+- `-t` matches the full name joined with ` > `; `test.sequential` / `describe.sequential` removed.
+- Reports default to `.vitest/` (add to `.gitignore`); html reporter uses `outputDir`; json/junit write files, not stdout.
+- `vitest --ui` → open the printed `?token=` URL. `toThrow("")` now matches any message.
+- Source: https://vitest.dev/guide/migration · https://github.com/vitest-dev/vitest/releases/tag/v5.0.0
 
 ```bash
 npm install -D vitest @vitest/ui @testing-library/react @testing-library/user-event jsdom
@@ -266,7 +274,7 @@ npx vitest run --coverage
 npx vitest --coverage
 
 # UI mode (visual test runner)
-npx vitest --ui
+npx vitest --ui            # Vitest 5: open the printed ?token= URL
 ```
 
 **Coverage output:**
@@ -313,9 +321,10 @@ let users: User[];
 beforeEach(() => { users = []; });
 test('adds user', () => { users.push(newUser); expect(users).toHaveLength(1); });
 
-// ❌ Not cleaning up mocks — mock bleeds into next test
-vi.mock('./api');
-// ✅ Clean up explicitly if not using autoMocks
+// ℹ️ Vitest 5: call history is auto-cleared (clearMocks defaults to true).
+// ❌ Still a bleed risk: spies/implementations are NOT restored automatically
+vi.spyOn(api, 'get').mockResolvedValue(data);
+// ✅ Restore explicitly (or `restoreMocks: true` in config)
 afterEach(() => { vi.restoreAllMocks(); });
 ```
 
@@ -324,7 +333,7 @@ afterEach(() => { vi.restoreAllMocks(); });
 ## Checklist — Before Submitting Unit Tests
 
 - [ ] Tests isolated — no shared mutable state between tests
-- [ ] Mocks cleared in afterEach (or `restoreAllMocks: true` in config)
+- [ ] Spies restored in afterEach (or `restoreMocks: true`) — call history auto-clears in Vitest 5
 - [ ] Async tests use `await` (not `.then()` chains without return)
 - [ ] Testing behavior (what user sees) not implementation (internal state)
 - [ ] No snapshots for dynamic content
@@ -376,11 +385,12 @@ it('shows data after suspense resolves', async () => {
 ## MSW for Unit / Component Tests
 
 ```typescript
+// MSW v2+/v3 API (v1 `rest` + `ctx` is obsolete). v3: ESM-only, Node >= 22.
 import { setupServer } from 'msw/node';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 
 const server = setupServer(
-  rest.get('/api/users', (_, res, ctx) => res(ctx.json([{ id: 1, name: 'Test' }])))
+  http.get('/api/users', () => HttpResponse.json([{ id: 1, name: 'Test' }]))
 );
 
 beforeAll(() => server.listen());
