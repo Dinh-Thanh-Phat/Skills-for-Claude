@@ -113,7 +113,7 @@ subprocess.run('npx playwright test', shell=True, creationflags=flags)
 
 - [ ] Có `cwd=PROJECT_DIR` không?
 - [ ] Trên Windows: dùng `shell=True` hoặc `npx.cmd`?
-- [ ] Command có user input không? → Nếu có: KHÔNG dùng shell=True
+- [ ] Command có user/external input không? → Validate allow-list; ưu tiên `node.exe cli.js` thay vì `.cmd` (list KHÔNG chống injection với `.cmd`)
 - [ ] Có kiểm tra `returncode` không?
 - [ ] Output cần từ stdout hay stderr? (npx thường in lên stderr)
 - [ ] Output có ký tự non-ASCII? → set `encoding='utf-8', errors='replace'` + `PYTHONUTF8=1`
