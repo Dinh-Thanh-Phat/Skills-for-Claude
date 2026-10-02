@@ -197,10 +197,17 @@ Cross-ref `windows-node-subprocess`: never pass user-controlled strings via `she
 # ❌ DANGEROUS — user input
 subprocess.run(f"npx test {user_input}", shell=True)
 
-# ✅ Pass as list (no shell interpretation)
-subprocess.run(['npx', 'test', user_input])      # POSIX
-subprocess.run(['npx.cmd', 'test', user_input])  # Windows
+# ✅ POSIX: pass as list (no shell interpretation)
+subprocess.run(['npx', 'test', user_input])
 ```
+
+**Windows caveat — a list does NOT protect you for `.cmd`/`.bat`:** `npx.cmd`/`npm.cmd` are batch
+files, and Python docs state batch files "may be launched by the operating system in a system shell
+regardless of the arguments passed … without any escaping added by Python" (gh-114539, the
+"BatBadBut" class). So `['npx.cmd', 'test', user_input]` is still cmd.exe-injectable. On Windows:
+- Never pass untrusted input to a `.cmd`/`.bat` at all — validate against a strict allow-list (e.g. `^[\w./-]+$`).
+- Prefer calling the real executable: `['node', r'<project>\node_modules\@playwright\test\cli.js', 'test', arg]` (`node` is `node.exe`).
+- If you must run the batch file with external input, Python docs suggest `shell=True` so Python escapes special characters — still validate first.
 
 ## Pre-flight Checklist (run before saving any generated Python file)
 
