@@ -134,6 +134,7 @@ ENRICHMENT_MODEL  = "openai/gpt-oss-120b"  # Citation enrichment (chất lượn
 ```python
 # Small models (8b) follow English instructions better than Vietnamese
 # Vietnamese prompts → model echos prompt into output (prompt leaking)
+# (measured on Llama 3.x, re-verify với gpt-oss)
 # Thêm 2 ràng buộc mới: không lặp câu hỏi, câu trả lời phải đủ dài
 prompt = f"""You are a Vietnamese legal QA engineer.
 Document: {source_doc}
