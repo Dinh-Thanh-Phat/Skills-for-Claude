@@ -111,7 +111,6 @@ export default defineConfig({
 ```
 
 Use Strategy D in addition to Strategy A — not as a replacement. Strategy D cleans stale data from past runs; Strategy A prevents accumulation in the current run.
-```
 
 ### Strategy B — Seeded Data (For stable reference data)
 
