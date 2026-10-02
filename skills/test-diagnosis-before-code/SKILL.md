@@ -142,7 +142,8 @@ Create this for EVERY feature before writing tests:
 
 ### Test Strategy
 - Tests can focus on: [what's proven to work]
-- Tests should skip: [what's broken or flaky]
+- Tests to fail-lock: [what's broken → `test.fail(true, 'BUG-xxx')`, see `skip-vs-fail`]
+- Tests to hold back: [what's flaky — diagnose first, don't automate yet]
 - Tests need mock: [external services]
 ```
 
