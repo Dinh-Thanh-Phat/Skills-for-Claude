@@ -599,7 +599,9 @@ jobs:
       - name: Run Maestro
         run: |
           export SIM_UDID=$(cat /tmp/test-simulator-udid)
-          maestro test --retry-on-failure 2 flows/
+          # No --retry-on-failure flag exists (Maestro 2.11.0). Retry flaky steps inside the flow:
+          #   - retry: { maxRetries: 2, commands: [ ... ] }   (maxRetries 0–3)
+          maestro test --device "$SIM_UDID" flows/
 
       - name: Cleanup (always runs)
         if: always()                    # chạy dù test pass hay fail
