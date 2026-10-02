@@ -7,7 +7,7 @@ description: All-in-one English vocabulary learning coach for a Vietnamese learn
 
 A practical vocabulary coach for a Vietnamese learner of English. The goal is durable learning, so every mode leans on the two things that actually move the needle: **learning words in context** (collocations + real example sentences, never bare word→gloss) and **spaced repetition** (reviewing right before you forget).
 
-Detect the user's intent and pick one of the four modes below. When unsure which mode fits, ask one short question rather than guessing.
+Detect the user's intent and pick one of the five modes below. When unsure which mode fits, ask one short question rather than guessing.
 
 ## First: know the learner
 
@@ -147,8 +147,10 @@ tree on timeout so a hang degrades to a logged PARTIAL, never a silent scheduler
 1. Rotate to today's topic: `topics[ today.toordinal() % len(topics) ]`.
 2. `claude -p` → JSON array of `words_per_day` items (word, ipa, pos, gloss_vi, example,
    collocations, mnemonic). Read from stdout — no MCP dependency.
-3. Compute due-for-review words from `progress.json` (spaced repetition), *before*
-   adding today's new words.
+3. Compute due-for-review words from `progress.json`, *before* adding today's new words.
+   **Note:** this is a FIXED-interval passive schedule — a word resurfaces when its age
+   (days since `added`) is in `REVIEW_OFFSETS = {1, 3, 7, 16, 35, 75, 150}`. It ignores
+   quiz grades (`rung` / `next_due` from Mode 4); only the interactive quiz uses those.
 4. Fold new words into `progress.json` (dedup by word, scheduled due today).
 5. Write Google Sheet tabs **"New Words"** and **"To Review"** via `sheets_lib.py`
    (local Google token — works headless, no browser).
