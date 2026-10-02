@@ -178,10 +178,33 @@ assert_test(rag_case, [
 |---|---|---|
 | AnswerRelevancy | ≥ 0.6 | ≥ 0.75 |
 | Faithfulness (RAG) | ≥ 0.7 | ≥ 0.85 |
-| Hallucination | ≤ 0.2 (lower = better) | ≤ 0.1 |
+| Hallucination | ≥ 0.8 | ≥ 0.9 |
 | ContextualRecall | ≥ 0.65 | ≥ 0.80 |
 
+> ⚠️ **Since DeepEval 4.2.0 every metric is "higher is better"** — `HallucinationMetric`,
+> `BiasMetric`, `ToxicityMetric`, `MisuseMetric` were flipped (Hallucination = fraction of contexts
+> the output *agrees* with; `threshold` is always a minimum; `strict_mode` → threshold 1; a
+> `warn_score_direction_flipped` warning fires on construction). Old configs like
+> `HallucinationMetric(threshold=0.2)` now **pass almost everything silently** (0.2 is read as a
+> *minimum* agreement score) — the gate stops catching hallucinations with no error. Invert them
+> (0.2 → 0.8) when upgrading.
+> The ≥ 0.8 / ≥ 0.9 row above is the old ≤ 0.2 / ≤ 0.1 inverted — a starting point, not a documented default.
+
 Tighten after baseline runs; never set thresholds before collecting data on your system.
+
+## Quarantining Noisy Cases (`flaky=True`, v4.1.7+)
+
+```python
+test_case = LLMTestCase(input=..., actual_output=..., flaky=True)  # failure → warning, not AssertionError
+metric = GEval(..., flaky=True)  # never decides pass/fail; keep ≥1 non-flaky metric with a threshold
+```
+Still computed, recorded and logged to Confident AI — use for borderline cases that flip across runs,
+not to hide real regressions.
+
+## Newer (4.2.x) — opt-in
+- **Experimental mode (4.2.2+)**: `deepeval set-mode experimental` + `pip install typesafe-sdk` +
+  `TYPESAFE_API_KEY` — replaces yes/no verdicts in Faithfulness/QAG, GEval, DAG; fails loudly if missing.
+- **Classifiers (4.2.4)**: `from deepeval.classifiers import RefusalClassifier` → `.classify(test_case)` returns a label.
 
 ## Agent Evaluation Metrics
 
@@ -375,6 +398,8 @@ Strategy: use a lightweight judge for per-PR speed checks; use the strongest jud
 - https://deepeval.com/docs/getting-started-llm-arena
 - https://github.com/confident-ai/deepeval/issues/2143
 - https://github.com/confident-ai/deepeval
-- https://github.com/confident-ai/deepeval/releases (v4.1.3, July 12 2026)
+- https://github.com/confident-ai/deepeval/releases (v4.1.3 → python-v4.2.4, Sep 22 2026)
+- https://github.com/confident-ai/deepeval/pull/3102 — score-direction flip (4.2.0)
+- https://deepeval.com/docs/evaluation-test-cases#mark-test-cases-as-flaky
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/agent_loop_detection/agent_loop_detection.py
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/metrics/tool_permission/tool_permission.py
