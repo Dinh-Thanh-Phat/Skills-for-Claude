@@ -82,11 +82,13 @@ STEP 4: Selector Map + Tests → Automation [skill: qa-test-generation Phase 2 P
 
 **What to run:**
 ```typescript
-// Option A: Full page snapshot
-const snapshot = await page.accessibility.snapshot();
-console.log(JSON.stringify(snapshot, null, 2));
+// (page.accessibility.snapshot() was removed in Playwright 1.57 — do not use)
 
-// Option B: Aria snapshot (Playwright 1.40+) — preferred, tree format
+// Option A: AI-mode snapshot with [ref=eN] (Playwright 1.59+) — best for selector extraction
+const aiSnap = await page.ariaSnapshot({ mode: 'ai' });
+console.log(aiSnap);
+
+// Option B: Aria snapshot (Playwright 1.49+) — preferred for assertions, tree format
 const snap = await page.locator('body').ariaSnapshot();
 console.log(snap);
 
