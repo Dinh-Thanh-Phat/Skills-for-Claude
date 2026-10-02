@@ -101,7 +101,7 @@ Rule: **Each section = one file.** If an element floats between two sections, it
 
 ## Step 3: Build order
 
-1. Design tokens → `tailwind.config.js` + `index.html` (Google Fonts)
+1. Design tokens → `@theme` in the main CSS (Tailwind v4) / `tailwind.config.js` (v3 only) / `:root` custom properties (no Tailwind), + `index.html` (Google Fonts)
 2. Page shell (`App.tsx` / `Page.tsx`) importing all sections
 3. Navbar first (affects all other sections)
 4. Hero (background image + overlay)
