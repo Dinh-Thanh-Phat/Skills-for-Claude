@@ -207,3 +207,4 @@ npx vitest run --reporter=verbose  # see shrunk counterexamples in output
 - https://fast-check.dev/docs/introduction/what-is-property-based-testing/
 - https://github.com/dubzzz/fast-check
 - https://hypothesis.readthedocs.io/en/latest/
+- https://schemathesis.readthedocs.io/ (version 4.29.0 per https://pypi.org/project/schemathesis/)
