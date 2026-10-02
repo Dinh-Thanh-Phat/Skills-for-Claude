@@ -351,6 +351,30 @@ test('A11Y-005: Invalid email shows accessible error', async ({ page }) => {
 });
 ```
 
+### Structural a11y regression — `toMatchAriaSnapshot` / `ariaSnapshotJSON`
+
+axe finds rule violations; it does NOT notice that a heading, landmark, label or role silently
+changed. Lock the accessibility tree of critical regions with an aria snapshot (1.49+; works on a
+whole `page` since 1.60):
+
+```typescript
+test('A11Y-006: Checkout form accessible structure unchanged', async ({ page }) => {
+  await page.goto('/checkout');
+  await expect(page.getByRole('main')).toMatchAriaSnapshot(`
+    - heading "Checkout" [level=1]
+    - textbox "Email"
+    - textbox "Card number"
+    - button "Pay now"
+  `);
+});
+
+// 1.63+: JSON form for programmatic checks (e.g. every textbox has a name)
+const tree = await page.getByRole('main').ariaSnapshotJSON();
+```
+Store larger snapshots in separate YAML files (supported since 1.50) and update them with
+`--update-snapshots` after an intended change. 1.63 also adds standalone `reducedMotion`,
+`forcedColors` and `contrast` test options (`test.use({ forcedColors: 'active' })`).
+
 **Rule:** Run automated scan every PR. Run manual screen reader test every major feature release.
 
 ---
