@@ -157,16 +157,16 @@ test.beforeEach(async ({ context }) => {
 | Anti-Pattern | Fix |
 |---|---|
 | `waitForTimeout(1000)` anywhere | Replace with state/element wait |
-| `networkidle` for any navigation | Use `domcontentloaded` + selector wait |
+| `networkidle` / `waitForSelector` for any navigation | Web-first assertion on the ready-state element |
 | Shared auth state between parallel tests | Per-test fresh context or read-only storageState |
-| No `retries: 2` in CI | Infra noise causes false failures |
+| No CI retry, or `retries: 2+` | Use `retries: 1` in CI + `failOnFlakyTests` so infra noise is absorbed but flakes stay visible |
 | Hardcoded `timeout: 5000` everywhere | Use config-level environment-aware timeouts |
 
 ---
 
 ## Cross-references (unified flaky rules)
 
-**networkidle rule** — tất cả 3 skills dưới đây đều đồng ý: NO networkidle, dùng `domcontentloaded` + `waitForSelector`:
+**networkidle rule** — tất cả 3 skills dưới đây đều đồng ý: NO `networkidle`, NO `page.waitForSelector` (cả hai bị Playwright docs đánh dấu discouraged) — dùng web-first assertion `await expect(locator).toBeVisible()` / `waitForResponse`. **Retries:** CI `retries: 1`, local `0`:
 - **this skill** — patterns cho 7 flake sources phổ biến + CI vs local
 - **`flaky-test-prevention`** — 5-cause framework + selector priority
 - **`playwright-flaky-test-detection`** — diagnosis-from-symptom workflow

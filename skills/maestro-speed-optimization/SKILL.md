@@ -141,6 +141,8 @@ executionOrder:
     - auth/TC-M-AUTH-014_logout
 ```
 
+**Lưu ý:** tên dạng `auth/TC-...` ở trên là UNVERIFIED — docs chỉ nói tên file (không `.yaml`) hoặc `name:` của flow. Docs cũng khuyên mỗi flow chạy được trên device đã reset; dựa vào state flow trước là đánh đổi tốc độ lấy độ cô lập — chấp nhận có chủ đích.
+
 **Lưu ý quan trọng:** Maestro không share state giữa flows một cách explicit — nó chỉ không restart app giữa các flows khi không có `clearState`. Session trong app (cookie/token) vẫn còn nếu app chưa bị kill. Test nên idempotent — không dựa vào state từ flow trước, nhưng CÓ THỂ khai thác session còn sót để tránh login lại.
 
 ---
@@ -154,19 +156,21 @@ env:
   TEST_EMAIL: qa@test.com
   TEST_PASSWORD: Test@1234
 
-# Tắt animation trên emulator (không hoạt động trên real device — dùng ADB)
-# disableAnimations: true
+# KHÔNG có key `disableAnimations` trong config.yaml — tắt animation bằng ADB (Step 1).
 
-# Execution order để tái sử dụng state (tránh clearState)
-flows:
-  executionOrder:
-    continueOnFailure: true    # Tiếp tục khi 1 flow fail
-    flowsOrder:
-      - auth/TC-M-AUTH-001     # Tests cần fresh state đặt đầu
-      - auth/TC-M-AUTH-007     # Login test → tạo session
-      - auth/TC-M-AUTH-009     # Reuse logged-in state
-      - auth/TC-M-AUTH-008     # Wrong password (logout trước)
+# Execution order: `executionOrder` là key TOP-LEVEL (không lồng dưới `flows:`)
+executionOrder:
+  continueOnFailure: true    # Tiếp tục khi 1 flow fail (default true)
+  flowsOrder:
+    - TC-M-AUTH-001          # Tests cần fresh state đặt đầu
+    - TC-M-AUTH-007          # Login test → tạo session
+    - TC-M-AUTH-009          # Reuse logged-in state
+    - TC-M-AUTH-008          # Wrong password (logout trước)
 ```
+
+> Docs: entries là **tên file không có `.yaml`** hoặc `name:` trong flow. Dạng có thư mục
+> (`auth/TC-...`) như Step 2b dùng là UNVERIFIED — nếu flow không chạy theo thứ tự, đổi về tên file.
+> Flow không liệt kê sẽ chạy SAU dãy này, thứ tự ngẫu nhiên. (docs.maestro.dev/maestro-flows/workspace-management/sequential-execution)
 
 ---
 

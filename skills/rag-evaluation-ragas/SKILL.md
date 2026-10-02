@@ -171,7 +171,11 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=150)
 
 ## DeepEval Integration (pytest runner)
 
-RAGAS provides the metrics; DeepEval wraps them in pytest:
+DeepEval ships its **own** implementations of the same four RAG metrics (not wrappers around
+RAGAS — it only has a thin separate `deepeval/metrics/ragas.py` adapter) and runs them as pytest
+gates. `ContextualPrecisionMetric` and `ContextualRecallMetric` **require `expected_output`**
+(verified: `_required_params` = input, retrieval_context, expected_output in deepeval 4.2.7) —
+omitting it raises a missing-params error:
 
 ```python
 from deepeval.metrics import ContextualPrecisionMetric, ContextualRecallMetric, \
@@ -184,6 +188,7 @@ def test_rag_quality():
         LLMTestCase(
             input="What is the refund window?",
             actual_output="You can return items within 30 days.",
+            expected_output="30 days from purchase date",
             retrieval_context=["Our policy allows refunds within 30 days of purchase."],
         ),
         [
@@ -202,3 +207,7 @@ def test_rag_quality():
 - [RAG Evaluation Metrics & Frameworks 2026 — blog.premai.io](https://blog.premai.io/rag-evaluation-metrics-frameworks-testing-2026/)
 - [Chatbot Testing 2026 — Cekura](https://www.cekura.ai/blogs/complete-chatbot-testing-guide-ai-agents)
 - [Best RAG Evaluation Tools 2026 — Braintrust](https://www.braintrust.dev/articles/best-rag-evaluation-tools)
+- Ragas version (0.4.3): https://pypi.org/pypi/ragas/json
+- Ragas Faithfulness (collections API, `ascore`, `.value`): https://raw.githubusercontent.com/explodinggradients/ragas/main/docs/concepts/metrics/available_metrics/faithfulness.md
+- Ragas v0.3→v0.4 migration (`evaluate()` → `@experiment()`): https://raw.githubusercontent.com/explodinggradients/ragas/main/docs/howtos/migrations/migrate_from_v03_to_v04.md
+- DeepEval 4.2.7 wheel (`metrics/contextual_precision`, `contextual_recall` required params): https://pypi.org/project/deepeval/
