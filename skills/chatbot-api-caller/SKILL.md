@@ -96,14 +96,18 @@ class ChatbotAPICaller:
 
     def _build_request(self, question: str, question_id: str) -> dict:
         template = json.dumps(self.config.get("request_template", {"message": "{{question}}"}))
-        body = template.replace("{{question}}", question.replace('"', '\\"')).replace("{{id}}", question_id)
+        # json.dumps(...)[1:-1] escapes quotes, backslashes AND newlines correctly
+        body = template.replace("{{question}}", json.dumps(question)[1:-1]).replace("{{id}}", json.dumps(question_id)[1:-1])
         return json.loads(body)
 
     def _extract_response(self, data: dict) -> str:
+        # Supports list indices, e.g. "choices.0.message.content"
         path = self.config.get("response_path", "response")
         result = data
         for key in path.split("."):
-            if isinstance(result, dict):
+            if isinstance(result, list) and key.isdigit():
+                result = result[int(key)] if int(key) < len(result) else ""
+            elif isinstance(result, dict):
                 result = result.get(key, "")
             else:
                 return ""
