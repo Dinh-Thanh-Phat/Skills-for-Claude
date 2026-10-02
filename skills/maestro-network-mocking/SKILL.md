@@ -324,5 +324,6 @@ jobs:
 - https://medium.com/trendyol-tech/building-scalable-android-tests-with-maestro-structure-mocking-and-authentication-4920b498c832
 - https://yrkan.com/blog/mock-servers-mobile-dev/
 - https://wiremock.org/docs/
+- https://docs.maestro.dev/reference/commands-available/launchapp.md — `arguments` map (string/boolean/double/integer), received via `intent.extras` / launch args (re-checked 2026-10-02)
 - https://mockoon.com/cli/
 - https://requestly.io/docs/
