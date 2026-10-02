@@ -9,15 +9,37 @@ Maestro's `assertScreenshot` command captures a screenshot and compares it to a 
 
 ## Basic Usage
 
+> 🚨 **`assertScreenshot` does NOT create a baseline.** Per the docs it "will fail if the comparison
+> image is too dissimilar, **or doesn't exist**." The reference image must already exist — create it
+> with `takeScreenshot` in an earlier (recording) run. A bare `- assertScreenshot` with no path is not
+> a valid form; always give a path.
+
+**Step 1 — record the reference (one-off, on the pinned baseline device):**
+
 ```yaml
+# flows/visual-record.yaml
 appId: com.example.app
 ---
 - launchApp
 - tapOn: "Products"
-- assertScreenshot         # first run saves baseline; subsequent runs compare
+- takeScreenshot: baselines/products     # writes the reference image
 ```
 
-On the first execution Maestro saves the screenshot as the baseline. Subsequent runs compare against it and fail if the visual difference exceeds the threshold.
+**Step 2 — compare on every run:**
+
+```yaml
+# flows/visual-check.yaml
+appId: com.example.app
+---
+- launchApp
+- tapOn: "Products"
+- assertScreenshot: baselines/products.png   # fails if missing OR below threshold
+```
+
+The `path` resolves **relative to the flow file** (CHANGELOG: "allow relative paths from flows for
+reference images"); the file extension is optional. Whether `takeScreenshot` output lands at exactly
+that flow-relative path depends on your output-dir settings (`--test-output-dir`) — UNVERIFIED; check
+where the PNG was written after the record run and move it next to the flows if needed.
 
 ## Configuration Options
 
