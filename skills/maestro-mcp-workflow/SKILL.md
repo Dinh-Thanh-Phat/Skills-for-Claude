@@ -11,7 +11,14 @@ description: |
 
 # Maestro MCP Workflow
 
-The **maestro-mcp** MCP server exposes 47+ Maestro CLI operations as tools that Claude Code can call
+> ⛔ **DEPRECATED (2026-10-02) — prefer the official server built into the Maestro CLI.**
+> For any new setup use `claude mcp add maestro -- maestro mcp` and the `maestro-viewer` skill
+> (official tools: `list_devices`, `inspect_screen`, `take_screenshot`, `run`, `cheat_sheet`,
+> `open_maestro_viewer`, cloud tools). This skill covers only the **community** server
+> `slapglif/maestro-mcp` (2 stars, last push 2025-12-19 per GitHub API) — keep it only for an
+> existing setup that already depends on it.
+
+The community **slapglif/maestro-mcp** MCP server exposes 47+ Maestro CLI operations as tools that Claude Code can call
 directly. Instead of hand-authoring YAML, describe what you want in English — Claude generates the
 flow, runs it on your emulator, and iterates until it passes.
 
@@ -24,7 +31,14 @@ cd maestro-mcp/mcp
 pnpm install && pnpm build
 ```
 
-Add to Claude Code's MCP config (`~/.claude/settings.json` or project `.claude/settings.json`):
+Register it with Claude Code (MCP servers are NOT read from `~/.claude/settings.json`):
+
+```bash
+claude mcp add maestro-community -- node /absolute/path/to/maestro-mcp/mcp/dist/index.js
+```
+
+The README's alternatives: `claude plugins add local:maestro-mcp`, or this JSON block in a
+project `.mcp.json` (path per Claude Code MCP conventions):
 
 ```json
 {
@@ -97,7 +111,7 @@ Inspect the current screen hierarchy and suggest the correct selector.
 ```
 
 Claude will:
-1. Call `inspect-hierarchy` to get the live element tree.
+1. Call `maestro_hierarchy` (community server tool name per its README) to get the live element tree.
 2. Search for the element by label, text, or resource-id.
 3. Propose the corrected `id:` or `text:` value and update the YAML.
 
@@ -118,7 +132,7 @@ The approach that produced 30+ flows in three afternoons (real-world report):
    it can't verify selectors without a live hierarchy.
 
 ❌ Don't skip validation after generation:
-   maestro validate flows/my-flow.yaml  # always validate before committing
+   maestro check-syntax flows/my-flow.yaml  # always validate before committing (there is no `maestro validate`)
 
 ✓ Keep MCP sessions short for exploratory work; save the generated YAML 
   to your flows/ directory before ending the session.
