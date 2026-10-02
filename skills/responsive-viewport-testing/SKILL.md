@@ -110,16 +110,19 @@ for (const bp of BREAKPOINTS) {
 ## Pattern 5: Touch Target Size (Accessibility)
 
 ```typescript
-// WCAG 2.5.5 — minimum 44×44px touch targets
+// WCAG 2.2 SC 2.5.8 Target Size (Minimum) — Level AA: 24×24 CSS px (legal/compliance floor)
+// WCAG SC 2.5.5 Target Size (Enhanced)   — Level AAA: 44×44 CSS px (Apple HIG also 44pt; Material 48dp)
+const MIN = 24;            // use 44 if the project targets AAA / platform guidelines
 const buttons = page.getByRole('button');
 const count = await buttons.count();
 for (let i = 0; i < count; i++) {
   const box = await buttons.nth(i).boundingBox();
   if (box) {
-    expect(box.width, `Button ${i} too narrow`).toBeGreaterThanOrEqual(44);
-    expect(box.height, `Button ${i} too short`).toBeGreaterThanOrEqual(44);
+    expect(box.width, `Button ${i} too narrow`).toBeGreaterThanOrEqual(MIN);
+    expect(box.height, `Button ${i} too short`).toBeGreaterThanOrEqual(MIN);
   }
 }
+// (2.5.8 also passes undersized targets with enough spacing — a 24px circle must not overlap a neighbor)
 ```
 
 ## Pattern 6: Dark Mode + Viewport Combined
