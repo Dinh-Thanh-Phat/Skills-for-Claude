@@ -185,17 +185,17 @@ Team size / budget?
 ├── Solo / OSS / < $500/mo budget
 │   └── Langfuse (self-hosted, free)
 ├── Small team, pre-deploy focus, SaaS OK
-│   └── Braintrust ($249/mo, or free tier for < 1M spans)
+│   └── Braintrust (pricing UNVERIFIED — check braintrust.dev/pricing)
 └── Production agents, multi-turn, need simulation
-    └── Latitude (pricing: contact sales for enterprise)
+    └── Latitude V2 (MIT OSS: cloud or self-host)
 
 Primary concern?
 ├── "We want to compare prompts before shipping"
-│   └── Braintrust experiments
+│   └── Braintrust experiments / Langfuse experiments / Latitude Experiments
 ├── "Our agent breaks in long sessions"
-│   └── Latitude causal traces + session scoring
-├── "We need to auto-generate regression tests from failures"
-│   └── Latitude GEPA
+│   └── Latitude sessions + signals
+├── "We need regression datasets built from production failures"
+│   └── Latitude signals → dataset (or Langfuse annotation queues → dataset)
 └── "We need custom Python scorers in the cloud"
     └── Braintrust sandboxed scorers
 ```
