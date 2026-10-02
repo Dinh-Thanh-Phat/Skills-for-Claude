@@ -407,22 +407,22 @@ grant() {
     || echo "  ⚠ $service (skipped — app not installed yet or service unavailable)"
 }
 
-# Core permissions cần cho testing
+# Core permissions cần cho testing — tên service PHẢI khớp `xcrun simctl help privacy` của Xcode đang dùng.
+# Các tên dưới: location-always / media-library đã xác nhận trên Xcode 27 (PR #99 bên thứ 3);
+# những tên còn lại UNVERIFIED → script in ⚠ nếu bị từ chối, không giả ✓.
 grant location-always        # GPS / location services
-grant location-when-in-use   # location (foreground only)
-grant notifications          # push notifications
-grant camera
 grant photos
 grant microphone
 grant contacts
 grant calendar
 grant reminders
 grant motion                 # accelerometer / motion data
-grant medialibrary           # Apple Music library
-grant speech                 # speech recognition
+grant media-library          # Apple Music library (KHÔNG phải `medialibrary`)
+# notifications / camera / speech: simctl privacy có thể không hỗ trợ — UNVERIFIED; với Maestro dùng
+# `launchApp: permissions:` thay thế.
 
 echo ""
-echo "✅ Permissions granted. Launch app và Maestro sẽ không gặp permission dialog."
+echo "▶ Xong. Dòng nào ⚠ = service đó KHÔNG được grant — xử lý trước khi tin flow không gặp permission dialog."
 echo ""
 echo "Lưu ý: Nếu app chưa install thì một số permissions sẽ được grant sau khi install."
 echo "Chạy lại script này sau khi install nếu cần."
