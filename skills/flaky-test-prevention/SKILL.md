@@ -1,10 +1,6 @@
 ---
 name: flaky-test-prevention
-description: >-
-  Systematic approach to preventing and eliminating flaky Playwright/E2E tests. Use when tests
-  pass/fail inconsistently, when writing new tests to prevent flakiness, or diagnosing
-  intermittent failures. Triggers on: "flaky test", "intermittent failure", "test passes
-  sometimes", "test không ổn định", "test lúc pass lúc fail", "non-deterministic test".
+description: Systematic approach to preventing and eliminating flaky Playwright/E2E tests. Use when tests pass/fail inconsistently, when writing new tests to prevent flakiness, or diagnosing intermittent failures. Triggers on: "flaky test", "intermittent failure", "test passes sometimes", "test không ổn định", "test lúc pass lúc fail", "non-deterministic test".
 triggers:
   - "flaky test"
   - "intermittent failure"
@@ -90,13 +86,12 @@ await page.getByRole('button', { name: 'Submit' }).click();
 // ✅ When you must wait — wait for a specific signal
 await expect(page.getByRole('main')).toBeVisible();
 // or sync to a real API call:
-const [resp] = await Promise.all([
-  page.waitForResponse(r => r.url().includes('/api/save') && r.status() === 200),
-  page.click('#submit'),
-]);
+const respPromise = page.waitForResponse(r => r.url().includes('/api/save') && r.status() === 200);
+await page.getByRole('button', { name: 'Submit' }).click();
+const resp = await respPromise;
 ```
 
-> **Cross-ref:** `e2e-test-stability` and `async-loading-state-testing` enforce the same rule — `networkidle` is banned for SPAs / WebSocket / polling apps. Use `domcontentloaded` + explicit element/response wait instead.
+> **Cross-ref:** `e2e-test-stability` and `async-loading-state-testing` enforce the same rule — `networkidle` (marked DISCOURAGED in the Playwright docs) is banned. Use a web-first assertion on the ready-state element (`await expect(locator).toBeVisible()`) or `waitForResponse` instead — not `page.waitForSelector` (also discouraged).
 
 ---
 
@@ -140,19 +135,9 @@ test.describe('User management', () => {
 
 ---
 
-## Rule 5: Never Share Auth State Between Tests in Parallel
-
-```typescript
-// playwright.config.ts
-use: {
-  storageState: 'tests/.auth/user.json', // shared — RISKY in parallel
-}
-
-// ✅ Better: each test authenticates independently OR use read-only shared state
-// For read-only shared state (safe for parallel):
-// - Log in once in global setup, save to file
-// - Tests only READ auth state, never modify it
-```
+> Auth state: a shared, read-only `storageState` file written by a setup project is the
+> standard, parallel-safe pattern — see `auth-session-testing`. Only tests that MUTATE the
+> session (logout, password change, role change) need their own user/context.
 
 ---
 
