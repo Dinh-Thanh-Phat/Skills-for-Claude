@@ -110,6 +110,9 @@ class TestSaleTour(HttpCase):
         )
 ```
 
+`start_tour` signature (19.0 `odoo/tests/common.py`): `start_tour(url_path, tour_name, step_delay=None, **kwargs)`.
+Useful kwargs: `login=`, `watch=True` (keep a visible browser), `debug=True` (debug mode, pauses on `break`/`pause` steps), `timeout=` (seconds, default 60). `step_delay` (ms between steps) logs a warning — local debugging only, never in CI.
+
 ### JavaScript side — define the tour
 
 ```javascript
@@ -146,19 +149,31 @@ registry.category("web_tour.tours").add("my_module.sale_order_tour", {
 
 ```javascript
 {
-    trigger: "<css-selector>",    // wait until this element is visible + interactive
-    content: "human description", // shown in Tour Recorder UI
-    run: "click",                 // or "fill <text>", "press Tab", or omit to just assert visibility
-    extra_trigger: "<css>",       // optional: additional element that must also be present
-    timeout: 10000,               // ms, default 10000
+    trigger: "<css-selector>",    // REQUIRED — wait until this element is visible + interactive
+    content: "human description", // shown in Tour Recorder UI / tooltip
+    run: "click",                 // or "fill <text>", "press Tab", a function, or omit to just assert visibility
+    timeout: 10000,               // ms, default 10000, max 60000
+    isActive: ["desktop"],        // optional: "enterprise" | "community" | "mobile" | "desktop" | selectors
+    tooltipPosition: "bottom",    // optional: top | bottom | left | right
 }
+```
+
+Allowed keys in Odoo 19 (`StepSchema` in `addons/web_tour/static/src/js/tour_service.js`): `id, content, debugHelp, isActive, run, timeout, tooltipPosition, trigger, expectUnloadPage, pause, break`.
+**`extra_trigger` was removed** — a step that uses it fails schema validation. To require a second element, add a separate assert-only step before it:
+
+```javascript
+// ❌ old: { trigger: "button.o_form_button_save", extra_trigger: ".o_form_dirty", run: "click" }
+// ✅ Odoo 19: one trigger per step
+{ trigger: ".o_form_dirty" },                                    // assert-only (no run)
+{ trigger: "button.o_form_button_save", run: "click" },
 ```
 
 ---
 
 ## HOOT JavaScript Unit Tests (Odoo 19)
 
-HOOT replaces QUnit in Odoo 19. Test files go in `<module>/static/tests/`.
+HOOT is Odoo's JS unit-test framework (replaces QUnit). Test files go in `<module>/static/tests/`.
+UNVERIFIED: the exact version HOOT replaced QUnit (believed to be 17.x/18, not 19) — check before citing a version.
 
 ```javascript
 // my_module/static/tests/utils.test.js

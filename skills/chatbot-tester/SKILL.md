@@ -186,7 +186,7 @@ def run_pipeline(chatbot_url: str, gdrive_link: str, config: dict) -> str:
 
 if __name__ == "__main__":
     import sys
-    config = json.loads(Path(sys.argv[3]).read_text()) if len(sys.argv) > 3 else {}
+    config = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8")) if len(sys.argv) > 3 else {}
     run_pipeline(sys.argv[1], sys.argv[2], config)
 ```
 
