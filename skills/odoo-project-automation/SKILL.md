@@ -382,49 +382,44 @@ Source: https://www.odoo.com/documentation/19.0/developer/reference/external_api
 
 ## Bulk Operations
 
-For large batches (move all tasks in a column, mark all done, etc.) write a Python script directly — faster than calling skill handler one-by-one.
+Bulk work (move a whole column, mark all done) still goes through MCP — `write` accepts many ids in one call:
 
-### Pattern: Bulk move stage
+### Pattern: Bulk move stage (MCP)
+1. `mcp__odoo__search_records` `model="project.task"`, domain `[["project_id","=",76],["stage_id","=",181]]` (181=READY FOR TEST), fields `["id","name"]`, limit 200.
+2. Show the list to the user, confirm.
+3. `validate_write` `model="project.task"`, `operation="write"`, `record_ids=[...]`, `values={"stage_id": 182}` (182=DONE) → `execute_approved_write` (`confirm=true`).
+
+### Pattern: Bulk mark state (circle button, MCP)
+Same flow with domain `[["project_id","=",76],["stage_id","=",182]]` and `values={"state": "1_done"}`.
+
+### Fallback ONLY: Python XML-RPC for binary image attachments
+Use this only when an image must be compressed + attached as binary (`ir.attachment` + `message_post`) and the base64 is too large to pass through MCP cleanly (the Soundwise white-label QA flow). Everything else stays on MCP.
+
 ```python
-import xmlrpc.client
-URL = "https://erp.inapps.net"
-DB = "inapps"
-USERNAME = "phat.dinh@inapps.net"
-TOKEN = "<api_key>"
-uid = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common").authenticate(DB, USERNAME, TOKEN, {})
+import base64, os, xmlrpc.client
+URL, DB, USER = "https://erp.inapps.net", "inapps", "phat.dinh@inapps.net"
+KEY = os.environ["ODOO_API_KEY"]  # or read from the local credentials file — NEVER hardcode / store in this skill
+uid = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common").authenticate(DB, USER, KEY, {})
 models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
 
-# Find tasks in source stage
-tasks = models.execute_kw(DB, uid, TOKEN, "project.task", "search_read",
-    [[["project_id", "=", 76], ["stage_id", "=", 181]]],  # 181=READY FOR TEST
-    {"fields": ["id", "name"], "limit": 200}
-)
-task_ids = [t["id"] for t in tasks]
-
-# Bulk move to target stage
-models.execute_kw(DB, uid, TOKEN, "project.task", "write",
-    [task_ids, {"stage_id": 182}]  # 182=DONE
-)
+# image pre-compressed with PIL: img.thumbnail((900, 1950)); save JPEG quality=80
+with open(img_path, "rb") as f:
+    datas = base64.b64encode(f.read()).decode()
+att_id = models.execute_kw(DB, uid, KEY, "ir.attachment", "create", [{
+    "name": os.path.basename(img_path), "res_model": "project.task",
+    "res_id": task_id, "type": "binary", "datas": datas,   # do NOT pass mimetype
+}])
+# chatter body must be PLAIN TEXT (raw HTML gets escaped)
+models.execute_kw(DB, uid, KEY, "project.task", "message_post", [[task_id]],
+                  {"body": "Screenshot attached", "attachment_ids": [att_id]})
 ```
-
-### Pattern: Bulk mark state (circle button)
-```python
-# Mark all tasks in DONE column as state=Done (green circle)
-tasks = models.execute_kw(DB, uid, TOKEN, "project.task", "search_read",
-    [[["project_id", "=", 76], ["stage_id", "=", 182]]],
-    {"fields": ["id", "name", "state"], "limit": 200}
-)
-task_ids = [t["id"] for t in tasks]
-models.execute_kw(DB, uid, TOKEN, "project.task", "write",
-    [task_ids, {"state": "1_done"}]
-)
-```
+Then embed `<img src="/web/image/ir.attachment/{att_id}/datas" .../>` in the description (see "Screenshots" above). This path uses `/xmlrpc/2` — scheduled for removal in Odoo 22; port to `/json/2` before then.
 
 ### Common gotchas
 - `kanban_state` field does NOT exist in Odoo 19 — use `state` instead
-- List DB names: `xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/db").list()`
 - Find stage IDs: query `project.task.type` with `project_ids in [project_id]`
-- Run script with `python -X utf8` on Windows to avoid emoji encoding errors
+- Assignee field is `user_ids` (many2many) → `[(6, 0, [user_id])]`
+- Run any fallback script with `python -X utf8` on Windows to avoid emoji encoding errors
 
 ---
 
