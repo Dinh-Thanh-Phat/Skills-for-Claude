@@ -136,3 +136,11 @@ PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter
 - [ ] Nếu `expected == 0` và `duration < 5 phút` → auth failed, chạy setup riêng
 - [ ] Chỉ sau khi verify results.json hợp lệ mới chạy script update sheet
 - [ ] Sharding CI: dùng `--reporter=blob` per shard + `merge-reports` step cuối
+
+## Tuỳ chọn mới liên quan (1.62–1.63)
+
+- `omitTags: true` (list/line/dot/github/junit, 1.63) — bỏ tag tự gắn vào title; env `PLAYWRIGHT_LIST_OMIT_TAGS` v.v.
+- `['html', { mergeFiles: true }]` (1.62) — bật grouping "Merge files" từ config.
+- Built-in `perfetto` reporter (1.63) — timeline mỗi worker một lane, mở bằng ui.perfetto.dev.
+
+Sources: https://github.com/microsoft/playwright/blob/main/docs/src/test-cli-js.md (`--add-reporter`), test-reporters-js.md (`PLAYWRIGHT_JSON_OUTPUT_NAME`, `omitTags`), release-notes-js.md 1.62/1.63 — cập nhật 2026-10-02
