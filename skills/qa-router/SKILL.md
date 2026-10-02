@@ -276,6 +276,59 @@ User nói: "đánh giá UX", "trải nghiệm thế nào", "workflow này ổn k
          Report: friction points + severity 0-4 + đề xuất fix
 ```
 
+### "Chatbot / LLM testing"
+
+```
+User nói: "test chatbot", "bot trả lời sai", "sửa instruction/KB", "hallucination",
+          "red-team", "guardrail", "agent eval", "RAG"
+                    ↓
+   Sửa bot (instruction / KB / toggle)?
+     → chatbot-platform-config-audit (inventory toggle TRƯỚC)
+     → chatbot-instruction-authoring / chatbot-kb-file-design
+   Bot InCard gửi ảnh sản phẩm sai/thiếu → incard-agentic-chatbot-images
+                    ↓
+   Đo accuracy theo tài liệu → chatbot-tester (pipeline: gdrive-doc-reader →
+     qa-generator → chatbot-api-caller → response-evaluator → test-reporter)
+   UI chat widget → chatbot-ui-automator
+   Chuyên sâu → llm-hallucination-detection / llm-red-teaming / llm-guardrail-testing /
+     llm-structured-output-testing / llm-agent-trajectory-eval / llm-agent-trace-eval /
+     llm-agent-handoff-testing / llm-golden-dataset-construction / llm-judge-bias /
+     llm-chatbot-ab-testing / llm-load-testing / llm-production-observability /
+     llm-simulation-flywheel / rag-evaluation-ragas / deepeval-llm-cicd /
+     multimodal-chatbot-testing / voice-ai-agent-testing / mcp-server-testing
+```
+
+### "Regression / release / smoke"
+
+```
+User nói: "regression", "smoke test", "sanity", "release được chưa", "pre-deploy"
+                    ↓
+         qa-preflight (env)
+                    ↓
+         qa-regression (git diff → risk → spec cần chạy)
+         + smoke-test-gating (gate nhanh) + test-impact-analysis (chọn test theo thay đổi)
+                    ↓
+         qa-quick-report
+```
+
+### "Exploratory / test tay tìm bug"
+
+```
+User nói: "explore feature này", "test tay", "tìm bug", "what could go wrong"
+                    ↓
+         qa-exploratory (charter + SFDPOT, session-based)
+                    ↓
+         Có bug → nhánh "Bug report"
+```
+
+### "Test plan / estimate"
+
+```
+User nói: "test plan", "test strategy", "ước lượng effort test", "QA plan"
+                    ↓
+         qa-test-plan (risk matrix + entry/exit + estimate)
+```
+
 ### "Không biết bắt đầu"
 
 ```
