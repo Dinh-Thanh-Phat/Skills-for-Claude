@@ -39,8 +39,18 @@ Run against a real page with Playwright; capture is OBSERVED evidence.
      window.__lcp = 0; window.__cls = 0;
      new PerformanceObserver(l => { for (const e of l.getEntries()) window.__lcp = e.startTime; })
        .observe({ type: 'largest-contentful-paint', buffered: true });
-     new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; })
-       .observe({ type: 'layout-shift', buffered: true });
+     // CLS = the LARGEST session window (shifts < 1s apart, window capped at 5s) — NOT the sum of
+     // every shift. Plain summing over-reports on long-lived pages.
+     let win = 0, first = 0, last = 0;
+     new PerformanceObserver(l => {
+       for (const e of l.getEntries()) {
+         if (e.hadRecentInput) continue;
+         if (win && e.startTime - last < 1000 && e.startTime - first < 5000) win += e.value;
+         else { win = e.value; first = e.startTime; }
+         last = e.startTime;
+         window.__cls = Math.max(window.__cls, win);
+       }
+     }).observe({ type: 'layout-shift', buffered: true });
    });
    // after load: const {__lcp,__cls} = await page.evaluate(...); TTFB:
    // performance.getEntriesByType('navigation')[0].responseStart
