@@ -901,6 +901,17 @@ Android, and Web:
 - assertLightMode
 ```
 
+**2.11.0 tightened the value:** `setDarkMode` and `setAirplaneMode` accept **only** `enabled` /
+`disabled` — `true`/`false`/`on`/`off` that older flows might carry now fail validation. They also
+finally honour `optional: true` (before 2.11.0 the flag was ignored and a platform that couldn't
+switch theme failed the whole flow):
+
+```yaml
+- setDarkMode:
+    value: enabled
+    optional: true     # 2.11.0+: skip instead of fail where the platform can't switch
+```
+
 Use this instead of the old workaround of duplicating a flow per theme or pre-setting device
 appearance outside Maestro (`adb shell cmd uimode night yes` / simulator defaults) — those still
 work but can't switch *within* a running flow to catch state that only breaks on the transition
