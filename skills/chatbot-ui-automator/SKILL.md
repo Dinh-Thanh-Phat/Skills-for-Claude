@@ -117,6 +117,52 @@ async def find_response_area(page: Page, custom_selector: str = None):
     return loc
 
 
+# Same selectors as RESPONSE_STRATEGIES but WITHOUT .last — used to COUNT bubbles.
+RESPONSE_GROUP_CSS = [
+    '[data-role="assistant"]',
+    '.assistant-message, .bot-message, .chat-message',
+    '.message',
+]
+
+
+async def response_group(page: Page, custom_selector: str = None):
+    """Locator matching ALL response bubbles (for counting before/after send)."""
+    if custom_selector:
+        return page.locator(custom_selector)
+    for css in RESPONSE_GROUP_CSS:
+        loc = page.locator(css)
+        if await loc.count() > 0:
+            return loc
+    return page.locator(", ".join(RESPONSE_GROUP_CSS))  # nothing rendered yet
+
+
+def _is_own_question(text: str, question: str) -> bool:
+    norm = lambda s: re.sub(r"\s+", " ", s).strip().lower()
+    t, q = norm(text), norm(question)
+    return bool(t) and (t == q or t.startswith(q[:40]))
+
+
+async def wait_for_new_bot_bubble(group, before: int, question: str, timeout_s: int = 30):
+    """Wait until a NEW bubble exists AND the last bubble is not our own question.
+
+    Bot and user bubbles often share a CSS class (e.g. `.message`) — then `.last` right
+    after send is the question we just typed; it is "stable" and would be recorded as the
+    answer. Count-before + not-own-question avoids that.
+    """
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        n = await group.count()
+        if n > before:
+            try:
+                last_txt = (await group.last.inner_text()).strip()
+            except Exception:
+                last_txt = ""
+            if last_txt and not _is_own_question(last_txt, question):
+                return group.last
+        await asyncio.sleep(0.25)
+    raise RuntimeError("No new bot bubble appeared (only our own question?) — check custom_selectors.response")
+
+
 # ── 2. RESPONSE STABILITY DETECTION ─────────────────────────────────────────
 # networkidle is discouraged for SPAs (streaming chatbots never reach idle).
 # Instead, poll for text stability — response is "done" when text stops changing.
