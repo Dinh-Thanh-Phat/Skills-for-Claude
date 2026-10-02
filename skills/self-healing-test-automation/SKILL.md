@@ -121,7 +121,7 @@ Test action throws ──► DETECT (catch ActionError)
          ▼
   Apply category fix ──► REMEDIATE
   - Selector: fallback chain → AI regeneration
-  - Timing:   insert polling / increase timeout
+  - Timing:   do NOT heal — wait on the real signal (waitForResponse / web-first assertion); see `timeout-discipline`
   - Runtime:  retry with reset
   - Data:     re-seed
          │
