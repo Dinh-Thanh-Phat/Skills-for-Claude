@@ -22,7 +22,7 @@ Task Name: "Implement user authentication"
 Task Type: "task"
 Description: "Add JWT-based login system"
 Assignee: "Phat Dinh"
-Tags: ["backend", "security"]
+Tags: ["Task"]
 ```
 
 **What Happens:**
