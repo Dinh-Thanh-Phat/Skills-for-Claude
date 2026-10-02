@@ -57,8 +57,8 @@ For credit/quota/real-publish/irreversible ops:
 ### 3. Gate it and warn+consent every time
 - Keep these tests behind an env flag (`test.skip(!process.env.RUN_GEN, ...)`).
 - Before the first run, state plainly: **what it costs, what it publishes, and that
-  it is irreversible** — get explicit consent (this combines with
-  `warn-environment-factors`). Consent for one run is not consent for a retry loop.
+  it is irreversible** — get explicit consent (this combines with the environment warning
+  in `qa-preflight` / memory `feedback_warn-environment-factors.md`). Consent for one run is not consent for a retry loop.
 
 ## Decision gate (run this before executing)
 
