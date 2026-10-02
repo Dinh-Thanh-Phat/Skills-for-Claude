@@ -210,12 +210,13 @@ async function crawlSite(page: any) {
           queue.push(normalized);
         }
       }
-    } catch {
-      // Skip timeouts silently — crawl continues
+    } catch (e) {
+      // Crawl continues, but the failure is recorded and surfaced in the final report
+      crawlErrors.push(`${url}: ${(e as Error).message.split('\n')[0]}`);
     }
   }
 
-  return { visited, sourceMap };
+  return { visited, sourceMap, crawlErrors };
 }
 ```
 
