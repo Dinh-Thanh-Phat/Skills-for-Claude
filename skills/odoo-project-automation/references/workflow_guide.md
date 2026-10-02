@@ -75,7 +75,7 @@ Summary: "✅ Completed implementation with edit, upload photo, and delete accou
 1. Validates project exists
 2. Shows confirmation with task details and summary
 3. ⏳ **WAITS FOR YOUR CONFIRMATION**
-4. ✅ Marks task as Done with timestamp
+4. ✅ Moves task to DONE and/or sets `state = "1_done"` (circle), posts the summary to chatter
 
 ### 4. Update Task Details
 

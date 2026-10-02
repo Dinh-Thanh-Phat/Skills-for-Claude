@@ -252,7 +252,7 @@ Apply it on Page Object query methods that build multi-step locator chains (`.fi
 
 | Anti-Pattern | Problem | Fix |
 |---|---|---|
-| `readonly btn = this.page.locator(...)` as property | Stale reference if DOM changes | Use getter: `get btn() { return ... }` |
+| Storing an `ElementHandle` (`await page.$(...)`) as a property | Handle goes stale when DOM re-renders | Store a `Locator` (readonly property or getter — both lazy) |
 | Assertions inside action methods | Test can't control assertion behavior | Move to `expectX()` methods |
 | One giant 300-line Page Object | Hard to maintain | Split by feature section |
 | POM for every single test | Over-engineering | Only when 3+ tests reuse the flow |
