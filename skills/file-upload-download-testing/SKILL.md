@@ -37,9 +37,13 @@ await expect(page.getByText('document.pdf')).toBeVisible();
 
 ### 3. Drag-and-drop dropzone (React Dropzone, custom)
 ```typescript
-// ✅ Use locator.drop() for external file drag-and-drop (Playwright v1.44+)
+// ✅ Use locator.drop() for external file drag-and-drop (Playwright v1.60+, cross-browser)
+// Payload is an OBJECT: files = path | path[] | {name,mimeType,buffer} | array of those
 const dropzone = page.getByTestId('upload-dropzone');
-await dropzone.drop('tests/fixtures/image.png');
+await dropzone.drop({ files: 'tests/fixtures/image.png' });
+// virtual file:
+// await dropzone.drop({ files: { name: 'note.txt', mimeType: 'text/plain', buffer: Buffer.from('hello') } });
+// clipboard-like data: await dropzone.drop({ data: { 'text/plain': 'hello' } });
 
 // Verify upload succeeded
 await expect(page.getByText('image.png')).toBeVisible();
