@@ -82,7 +82,9 @@ Trigger: user wants a deck from a word list or a topic ("tạo flashcard cho 20 
    python "<skill-dir>/scripts/vocab_tools.py" build-deck --input <words.json> --out <deck.csv>
    ```
 
-   The script writes an Anki-ready CSV (also imports fine into Quizlet). See `scripts/vocab_tools.py` for the exact JSON input shape and the Anki import instructions it prints.
+   The script writes an Anki-ready CSV with Anki 2.1.54+ file headers
+   (`#separator:Comma`, `#html:true`, `#columns:Front,Back` — https://docs.ankiweb.net/importing/text-files.html);
+   for Quizlet or older Anki, delete those 3 `#` lines first. See `scripts/vocab_tools.py` for the exact JSON input shape and the Anki import instructions it prints.
 4. Save decks under the learner's vocab workspace (see below), and tell the user the file path + the one-line "how to import into Anki" steps the script prints.
 
 Do NOT hand-format CSV in chat and ask the user to paste it — comma/quote escaping breaks Anki imports. Always go through the script.
