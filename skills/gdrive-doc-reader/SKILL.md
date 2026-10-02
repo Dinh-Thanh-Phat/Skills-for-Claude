@@ -102,7 +102,9 @@ class GDriveReader:
             response = self.service.files().list(
                 q=f"'{folder_id}' in parents and trashed=false",
                 fields="nextPageToken, files(id, name, mimeType)",
-                pageToken=page_token
+                pageToken=page_token,
+                supportsAllDrives=True,            # else shared-drive folders return empty
+                includeItemsFromAllDrives=True,
             ).execute()
             files.extend(response.get('files', []))
             page_token = response.get('nextPageToken')
