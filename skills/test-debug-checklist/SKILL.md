@@ -76,13 +76,13 @@ Element not found?
 ## Phase 4: Apply Fix (ONLY if TEST BUG confirmed)
 
 ✅ Fix these:
-- [ ] Add `await btn.waitFor({ state: 'visible', timeout: 10_000 })`
+- [ ] Wait for the real precondition with a web-first assertion (`await expect(modal).toBeVisible()`) — actions already auto-wait for their own target
 - [ ] Improve selector (add filter, use context)
 - [ ] Fix test logic (assertion or setup)
 
 ❌ Don't fix these:
 - [ ] Element never appears → SYSTEM BUG
-- [ ] Assertion fails on valid action → SYSTEM BUG
+- [ ] Assertion fails on valid action → SYSTEM BUG (lock with `test.fail(true, 'BUG-xxx')`, see `skip-vs-fail`)
 - [ ] Data not persisting → SYSTEM BUG
 
 ## Phase 5: Verify Fix
