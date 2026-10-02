@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-10-02 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.63.0, next 1.64.0-alpha only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still topmost, Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.123.1 and DeepEval 4.2.7 unchanged).
+
+- No changes — nothing new shipped since yesterday's run; unshipped alphas not documented.
+
 ## 2026-10-01 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.63.0, next 1.64.0-alpha only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still topmost, Unreleased empty, already documented), AI chatbot/LLM testing (Promptfoo 0.123.1 and DeepEval 4.2.7 unchanged since 2026-09-30).
