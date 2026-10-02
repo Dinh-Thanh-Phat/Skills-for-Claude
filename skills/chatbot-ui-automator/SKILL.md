@@ -1,14 +1,6 @@
 ---
 name: chatbot-ui-automator
-description: >-
-  Automate chatbot testing through browser UI using Playwright — sends questions, waits for
-  stable responses, measures response time, and captures screenshots. Use as a drop-in
-  replacement for chatbot-api-caller when the chatbot has a web interface instead of (or in
-  addition to) an API. No API keys needed. Triggers on: "test chatbot via browser", "automate
-  chatbot UI", "send questions to chatbot web interface", "test chatbot without API", "chatbot UI
-  automation", "Playwright chatbot testing". Outputs raw_responses.json in the same format as
-  chatbot-api-caller so all downstream skills (response-evaluator, performance-analyzer,
-  test-reporter) work unchanged.
+description: Automate chatbot testing through browser UI using Playwright — sends questions, waits for stable responses, measures response time, and captures screenshots. Use as a drop-in replacement for chatbot-api-caller when the chatbot has a web interface instead of (or in addition to) an API. No API keys needed. Triggers on: "test chatbot via browser", "automate chatbot UI", "send questions to chatbot web interface", "test chatbot without API", "chatbot UI automation", "Playwright chatbot testing". Outputs raw_responses.json in the same format as chatbot-api-caller so all downstream skills (response-evaluator, performance-analyzer, test-reporter) work unchanged.
 ---
 
 # Chatbot UI Automator
@@ -144,10 +136,12 @@ async def wait_for_stable_response(
     previous_text = ""
     stable_count = 0
 
-    # First: wait for any response to appear (up to 15s)
+    # First: wait for the LAST matching bubble to have text (up to 15s).
+    # querySelectorAll(...).pop() — querySelector() returns the FIRST (oldest) bubble,
+    # which already has text after question 1, so the wait would pass instantly.
     try:
         await page.wait_for_function(
-            "(sel) => { const el = document.querySelector(sel); return el && el.innerText.trim().length > 5; }",
+            "(sel) => { const els = document.querySelectorAll(sel); const el = els[els.length - 1]; return el && el.innerText.trim().length > 5; }",
             arg=await response_selector.evaluate("el => el.tagName.toLowerCase() + (el.id ? '#'+el.id : '') + (el.className ? '.'+el.className.split(' ')[0] : '')"),
             timeout=15_000,
         )
