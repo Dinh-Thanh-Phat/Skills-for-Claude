@@ -81,7 +81,7 @@ test('checkout flow with annotated recording', async ({ page }) => {
 |--------|---------|
 | `cast.start({ path, onFrame, size })` | Begin recording; `onFrame` callback for live streaming |
 | `cast.stop()` | End recording, flush file |
-| `cast.showActions({ position, duration, fontSize })` | Overlay action annotations (clicks, fills) |
+| `cast.showActions({ position, duration, fontSize, cursor })` | Overlay action annotations (clicks, fills); returns a disposable; `cursor: 'pointer'\|'none'` since 1.61 |
 | `cast.hideActions()` | Remove action annotations |
 | `cast.showChapter(title, { description, duration })` | Add a chapter title overlay |
 | `cast.showOverlay(html)` | Inject custom HTML overlay |
