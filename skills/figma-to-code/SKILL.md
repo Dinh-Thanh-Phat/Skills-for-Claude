@@ -5,7 +5,7 @@ description: Use when implementing UI from a Figma file, Figma screenshot, or an
 
 # Figma to Code
 
-Translate a visual design into React + Tailwind systematically — extract first, build second.
+Translate a visual design into React code systematically — extract first, build second. Examples below use Tailwind classes; if the project has no Tailwind (e.g. Homerun), apply the same layout rules with plain CSS.
 
 ## The Rule
 

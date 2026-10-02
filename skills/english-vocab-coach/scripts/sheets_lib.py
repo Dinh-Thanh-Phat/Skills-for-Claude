@@ -11,6 +11,7 @@ Public helpers:
   ensure_tab(sheets, sid, tab_title)     -> ensures a sheet/tab exists
   append_rows(sheets, sid, tab, rows)    -> append 2D list of values
   write_header(sheets, sid, tab, header) -> put header in row 1 if empty
+  has_rows_for_date(sheets, sid, tab, d) -> True if column A already has date d
 """
 
 import os
@@ -84,6 +85,14 @@ def write_header(sheets, sid, tab, header):
         valueInputOption="RAW",
         body={"values": [header]},
     ).execute()
+
+
+def has_rows_for_date(sheets, sid, tab, date_str):
+    """True if column A of `tab` already contains `date_str` (idempotency guard)."""
+    got = sheets.spreadsheets().values().get(
+        spreadsheetId=sid, range=f"'{tab}'!A:A"
+    ).execute()
+    return any(row and row[0] == date_str for row in got.get("values", []))
 
 
 def append_rows(sheets, sid, tab, rows):
