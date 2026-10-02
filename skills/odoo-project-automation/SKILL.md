@@ -273,12 +273,12 @@ Available: Phuc Do, Phat Dinh, Anh Hoang, ...
 ```
 **Fix:** Use exact assignee name from list
 
-### Invalid Status Transition
+### Stage Not Found
 ```
-❌ ERROR: Cannot move from 'Done' to 'In Progress'
-Done is terminal (final state)
+❌ ERROR: Stage 'Develop' not found in project
+Available: BackLog, TODO, INPROGRESS, DEVELOPED, READY FOR TEST, DONE
 ```
-**Fix:** Create new task instead
+**Fix:** Use the real stage name (`ilike`). Odoo allows moving between any stages — there is no "terminal" stage rule.
 
 ### Task Not Found
 ```

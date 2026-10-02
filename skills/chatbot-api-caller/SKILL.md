@@ -223,19 +223,32 @@ Create this file before running for custom chatbot APIs:
 
 LLM chatbots often stream tokens as Server-Sent Events. Aggregate the stream until "done":
 
+Add as a method of `ChatbotAPICaller` and call it from `_call_with_retry` instead of
+`_call_rest` when `config["stream"]` is true. Delta path below is the OpenAI-compatible
+shape (`choices[0].delta.content`) — adjust for other providers.
+
 ```python
-async def _call_sse(session, question, qid):
+async def _call_sse(self, session: aiohttp.ClientSession, question: str, qid: str) -> tuple:
     body = self._build_request(question, qid)
-    async with session.post(endpoint, json=body, headers=headers) as resp:
-        full = ""
-        async for line in resp.content:
-            line = line.decode().strip()
-            if line.startswith("data: "):
-                chunk = line[6:]
-                if chunk == "[DONE]":
-                    break
-                full += json.loads(chunk).get("delta", {}).get("content", "")
-        return full
+    headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
+    auth = self.config.get("auth", {})
+    if auth.get("type") == "bearer":
+        headers["Authorization"] = f"Bearer {auth['token']}"
+    start = time.monotonic()
+    full = ""
+    async with session.post(self.config["endpoint"], json=body, headers=headers,
+                            timeout=aiohttp.ClientTimeout(total=self.timeout_s)) as resp:
+        resp.raise_for_status()
+        async for raw in resp.content:
+            line = raw.decode("utf-8", errors="replace").strip()
+            if not line.startswith("data: "):
+                continue
+            chunk = line[6:]
+            if chunk == "[DONE]":
+                break
+            choices = json.loads(chunk).get("choices") or [{}]
+            full += (choices[0].get("delta") or {}).get("content") or ""
+    return full, int((time.monotonic() - start) * 1000)
 ```
 
 ## Multi-Turn Context (Conversation History)
