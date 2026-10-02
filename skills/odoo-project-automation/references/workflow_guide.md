@@ -84,7 +84,7 @@ Summary: "✅ Completed implementation with edit, upload photo, and delete accou
 Project: "Soundwise"
 Task Name: "API rate limiting"
 Assignee: "Huong Nguyen"  # Change from current
-Tags: ["backend", "performance", "security"]
+Tags: ["Task"]
 ```
 
 **What Happens:**
