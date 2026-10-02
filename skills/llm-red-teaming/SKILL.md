@@ -291,25 +291,34 @@ DeepTeam (`pip install deepteam`) covers vulnerability categories that Garak/PyR
 
 ```python
 from deepteam import red_team
-from deepteam.attacks import PromptInjection, Jailbreak, MultiTurn
-from deepteam.vulnerabilities import Bias, Toxicity, PIILeakage, HarmfulContent
+from deepteam.attacks.single_turn import PromptInjection
+from deepteam.attacks.multi_turn import LinearJailbreaking, CrescendoJailbreaking
+from deepteam.vulnerabilities import Bias, Toxicity, PIILeakage, IllegalActivity, GraphicContent
 
-async def my_chatbot(input: str) -> str:
+async def model_callback(input: str) -> str:
     return await call_your_llm(input)
 
-results = await red_team(
-    target=my_chatbot,
-    attacks=[PromptInjection(), Jailbreak(), MultiTurn(max_turns=5)],
+risk_assessment = red_team(
+    model_callback=model_callback,
+    attacks=[PromptInjection(), LinearJailbreaking(), CrescendoJailbreaking()],
     vulnerabilities=[
-        Bias(categories=["gender", "race", "religion", "socioeconomic"]),
-        Toxicity(threshold=0.1),
+        Bias(types=["gender", "race", "religion", "politics"]),   # valid BiasTypes only
+        Toxicity(types=["profanity", "insults", "threats", "mockery"]),
         PIILeakage(),
-        HarmfulContent(),
+        IllegalActivity(),
+        GraphicContent(),
     ],
-    num_simulations=50,
+    attacks_per_vulnerability_type=5,
 )
-print(results.summary())
 ```
+
+> deepteam 1.0.9 API (verified against its README/source): the target is `model_callback=` (not
+> `target=`), vulnerabilities take `types=[...]` (not `categories=`/`threshold=`), there is no
+> `Jailbreak`/`MultiTurn`/`HarmfulContent` class, Bias types are `race|gender|religion|politics`
+> (no "socioeconomic" — probe that dimension manually per the matrix below), and volume is
+> `attacks_per_vulnerability_type` (not `num_simulations`). Each output is scored 0/1 by the
+> vulnerability's metric. For framework sweeps pass `framework=OWASPTop10()` or `OWASP_ASI_2026()`
+> from `deepteam.frameworks` instead of hand-picking.
 
 **Bias coverage matrix** — probe each dimension with parallel prompts and compare responses:
 
