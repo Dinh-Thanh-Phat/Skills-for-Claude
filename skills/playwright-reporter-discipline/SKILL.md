@@ -122,7 +122,8 @@ npx playwright test --shard=2/3 --reporter=blob
 npx playwright test --shard=3/3 --reporter=blob
 
 # Sau đó merge thành HTML + JSON
-npx playwright merge-reports --reporter html,json ./blob-report
+# ⚠️ json reporter qua CLI in ra stdout → set env để ghi file
+PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter html,json ./blob-report
 ```
 
 `blob-report/` upload làm CI artifact; merge step tải về gộp lại.
