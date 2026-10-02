@@ -262,7 +262,7 @@ Other names seen in older notes (`enhance`, `refactor`, `docs`, `backend`, `fron
 ### Project Not Found
 ```
 ❌ ERROR: Project 'InvalidName' not found
-Available: Soundwise, TRS, Olivia - CRM App
+Available: Soundwise, TRS, Olivia - CRM App, Website InApps, FCCX, ...
 ```
 **Fix:** Use exact project name
 
