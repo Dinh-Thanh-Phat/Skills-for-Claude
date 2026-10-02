@@ -248,7 +248,7 @@ npx playwright test delete-operations.spec.ts -g "DEL-001" --workers=1 --repeat-
 npx playwright test delete-operations.spec.ts -g "DEL-001" --trace=on
 
 # Open trace viewer
-npx playwright show-trace trace/delete-operations-DEL-001-chromium/trace.zip
+npx playwright show-trace test-results/<test-dir>/trace.zip
 ```
 
 ### Step 3: Add Debug Logs
