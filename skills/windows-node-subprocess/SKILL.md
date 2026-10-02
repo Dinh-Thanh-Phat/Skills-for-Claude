@@ -52,9 +52,17 @@ def node_cmd(cmd: str | list, **kwargs):
 
 | Scenario | Cách dùng |
 |----------|-----------|
-| Command đơn giản (không pipe) | `['npx.cmd', ...]` — an toàn hơn |
+| Command đơn giản (không pipe), args cố định | `[shutil.which('npx'), ...]` hoặc `['npx.cmd', ...]` |
 | Command có pipe hoặc redirect | `shell=True` — cần thiết |
-| User input trong command | Tuyệt đối KHÔNG dùng shell=True — injection risk |
+| User/external input trong args | ⚠️ List KHÔNG an toàn với `.cmd`/`.bat` — xem dưới |
+
+> **`.cmd` luôn chạy qua cmd.exe, kể cả khi truyền list.** Python docs: batch files "may be
+> launched by the operating system in a system shell regardless of the arguments passed …
+> without any escaping added by Python" (gh-114539, lớp lỗi "BatBadBut"). Vì vậy
+> `['npx.cmd', 'test', user_input]` vẫn bị cmd.exe injection. Cách đúng:
+> 1. Validate input bằng allow-list chặt (vd `^[\w./:@-]+$`) trước khi đưa vào bất kỳ `.cmd` nào.
+> 2. Ưu tiên gọi thẳng `node.exe` + file JS của CLI: `['node', r'<project>\node_modules\@playwright\test\cli.js', 'test', arg]` — không qua cmd.exe.
+> 3. Nếu bắt buộc chạy `.cmd` với input ngoài, Python docs gợi ý `shell=True` để Python escape ký tự đặc biệt — vẫn phải validate.
 
 ### 3. Luôn set cwd
 
