@@ -104,11 +104,12 @@ Trước khi bắt đầu, tôi cần biết thêm:
 ```
 User nói: "viết test cases", "test cases cho X", "generate tests"
                     ↓
-          Có Figma hoặc screenshot?
+   Có Figma / screenshot / spec / PRD / scope doc?
          /                        \
-        YES                        NO
+        YES                        NO (chỉ có UI đang chạy)
          ↓                          ↓
   qa-test-coverage-max      behavioral-coverage-matrix
+  (Có CẢ spec lẫn UI live → chạy cả hai: coverage-max trước, inventory từ UI để đối chiếu)
          ↓                          ↓
               qa-test-generation (viết MANUAL test cases)
                     ↓

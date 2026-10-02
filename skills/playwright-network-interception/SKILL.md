@@ -71,18 +71,21 @@ test.afterEach(async () => {
 
 ### Mock specific endpoint, pass through everything else
 ```ts
-await page.route('**/*', route => {
+await page.route('**/*', async route => {
   if (route.request().url().includes('/api/users')) {
-    route.fulfill({ json: mockUsers })
+    await route.fulfill({ json: mockUsers })
   } else {
-    route.continue()
+    await route.continue()
   }
 })
 ```
 
 ### Block analytics / third-party noise
 ```ts
-await page.route('**/(analytics|tracking|hotjar)/**', route => route.abort())
+// Globs support only *, **, {a,b} and \ escapes — NOT (a|b) alternation (network.md "Glob URL patterns")
+await page.route('**/{analytics,tracking,hotjar}/**', route => route.abort())
+// or a RegExp for anything more complex:
+await page.route(/analytics|tracking|hotjar/, route => route.abort())
 ```
 
 ### Simulate slow API (skeleton loading test)
