@@ -61,6 +61,9 @@ Tôi có thể hỗ trợ các mảng QA sau. Chỉ cần nói tự nhiên — k
 |---|---|
 | Test chatbot accuracy | "Test chatbot này với 50 câu hỏi từ file docs" |
 | OCR PDF scan | "Đọc text từ PDF scan / ảnh" |
+| Sửa instruction / KB của bot | "Bot trả lời sai, sửa prompt giúp" / "Bot gửi sai ảnh sản phẩm" |
+| Hallucination / red-team / guardrail | "Bot có bịa thông tin không?" / "Thử tấn công prompt injection" |
+| Đánh giá AI agent | "Agent gọi tool có đúng thứ tự không?" / "Eval RAG pipeline" |
 
 ---
 
