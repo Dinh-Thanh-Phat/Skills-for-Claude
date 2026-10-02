@@ -116,10 +116,12 @@ Playwright has 4 separate timeouts. Increasing the wrong one wastes time:
 
 | Scope | Where set | Default | When to tune |
 |---|---|---|---|
-| **Test** | `test.setTimeout(N)` or config `timeout` | 30s | Total budget for ONE test (incl. all retries within it) |
+| **Test** | `test.setTimeout(N)` or config `timeout` | 30s | Budget for ONE attempt: test body + fixture setup + `beforeEach`. Each retry gets a fresh budget; `afterEach` + fixture teardown get a separate budget of the same size |
 | **Action** | `actionTimeout` in `use: {}` | 0 (no cap) | `click()`, `fill()` — per single action |
 | **Expect** | `expect.timeout` in config | 5s | `await expect(...)` — per single assertion |
-| **Navigation** | `navigationTimeout` in `use: {}` | 30s | `goto()`, `waitForURL()` — cold-start envs need bigger |
+| **Navigation** | `navigationTimeout` in `use: {}` | 0 (no cap — bounded only by the test timeout) | `goto()`, `waitForURL()` — set it explicitly for cold-start envs so failures say "navigation" not "test timeout" |
+
+Source: playwright.dev/docs/test-timeouts and `TestOptions.navigationTimeout` ("Defaults to 0 (no timeout)").
 
 ```typescript
 // Per-test override — only the test that needs it, not the whole suite
