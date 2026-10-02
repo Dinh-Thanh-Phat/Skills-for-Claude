@@ -116,7 +116,7 @@ await page.addStyleTag({
 
 ### 2. Mask dynamic content
 ```typescript
-await expect(page).toMatchSnapshot('dashboard.png', {
+await expect(page).toHaveScreenshot('dashboard.png', {
   mask: [
     page.locator('[data-testid="current-time"]'),
     page.locator('[data-testid="live-counter"]'),

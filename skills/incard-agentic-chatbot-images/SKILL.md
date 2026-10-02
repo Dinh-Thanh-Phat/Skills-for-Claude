@@ -208,7 +208,9 @@ dashboard (cookies are sent automatically).
 `scripts/drive_media.py` (uses the local Google token, auto-refreshes) does the
 repetitive Drive lookups you'll otherwise rewrite every session:
 - `id2name <fileId>…` — resolve S3/Drive file ids to filenames (verifying preview output)
-- `list <folderId>` — recursive listing of a Drive image folder (name + id + mime)
+- `list <folderId>` — recursive listing of a Drive image folder (name + id + mime).
+  Limitation: one `files.list` call per folder (pageSize 1000), `nextPageToken` is not
+  followed — a folder with >1000 items is silently truncated.
 - `rename <fileId> "<new name>"` — fix a colliding filename on Drive (then delete
   record → rescan → train, per above)
 
