@@ -1,13 +1,6 @@
----
+﻿---
 name: playwright-page-object-model
-description: >-
-  Playwright Page Object Model patterns — organizing locators, actions, and assertions into
-  reusable classes, plus naming complex locator chains with locator.describe() for readable
-  traces/reports. Use when structuring any Playwright test suite, creating new test files, or
-  when the same UI interactions appear in 3+ tests. Triggers on: "page object model", "POM",
-  "page object", "locator encapsulation", "reusable page", "test organization", "action method",
-  "page class", "component object", "locator.describe", "name a locator", "trace shows raw
-  selector".
+description: Playwright Page Object Model patterns — organizing locators, actions, and assertions into reusable classes, plus naming complex locator chains with locator.describe() for readable traces/reports. Use when structuring any Playwright test suite, creating new test files, or when the same UI interactions appear in 3+ tests. Triggers on: "page object model", "POM", "page object", "locator encapsulation", "reusable page", "test organization", "action method", "page class", "component object", "locator.describe", "name a locator", "trace shows raw selector".
 origin: research
 scope: testing, playwright, pom, code-organization
 triggers:
@@ -65,7 +58,8 @@ import { Page, Locator, expect } from '@playwright/test';
 export class TemplatePage {
   readonly page: Page;
 
-  // ✅ Locators as GETTERS — always fresh, no stale references
+  // Locators as getters (style choice). Locators are LAZY — re-resolved on every action — so
+  // `readonly createBtn: Locator` assigned in the constructor (official pom.md style) is equally safe.
   get createBtn()    { return this.page.getByRole('button', { name: 'Create Template' }); }
   get nameInput()    { return this.page.getByLabel('Template Name'); }
   get saveBtn()      { return this.page.getByRole('button', { name: 'Save' }); }
