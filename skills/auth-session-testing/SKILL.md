@@ -300,8 +300,8 @@ await page.fill('#email', 'admin@example.com');
 | Gotcha | Fix |
 |---|---|
 | Saving storageState before final redirect | Wait for `page.waitForURL('/dashboard')` first |
-| Parallel workers sharing same state file | Use `workerStorageState` per-worker or read-only shared file |
-| sessionStorage not in storageState | Inject via `page.evaluate()` in test setup |
+| Parallel workers sharing same state file | Read-only shared file; tests that mutate the session need a per-worker account via a worker-scoped fixture (the docs call their example fixture `workerStorageState` — it's not built-in) keyed on `parallelIndex` |
+| sessionStorage not in storageState | Inject via `page.sessionStorage.setItem()` (1.61+) after navigating |
 | "Remember me" changes cookie expiry | Test explicitly: check `cookie.expires` value with/without |
 | .auth/ committed to git | Add to .gitignore — contains live session tokens |
 
