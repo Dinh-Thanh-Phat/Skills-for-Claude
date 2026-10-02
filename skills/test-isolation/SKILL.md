@@ -145,8 +145,9 @@ test.afterEach(async () => {
 });
 ```
 
-For global JS state (jest mock state, module singletons):
+For global JS state in **unit tests** (Vitest mock state, module singletons — not Playwright):
 ```typescript
+// vitest
 afterEach(() => {
   vi.restoreAllMocks();   // reset mocks
   // reset any module-level state your code accumulates
