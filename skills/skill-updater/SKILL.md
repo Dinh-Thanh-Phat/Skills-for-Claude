@@ -119,6 +119,27 @@ Sửa file ở đúng convention đã detect ở Bước 3:
 Cho business skills (PT — chỉ máy maintainer, bỏ qua nếu không có), backup vào: `D:\HK8\Learning\DQ\PT\skills\[skill-name].md`
 (QA skills không cần backup — chỉ lưu ở `~/.claude/skills/`.)
 
+### Bước 5b — Gate "người khác pull về dùng được ngay" (áp cho CẢ sửa lẫn tạo mới)
+
+Skill dùng chung được hook đồng bộ đẩy lên repo Skills-for-Claude, nơi người khác cài bằng `setup.ps1`/`setup.sh`.
+Lỗi máy maintainer KHÔNG thấy (Windows không phân biệt hoa/thường, đường dẫn của mình luôn tồn tại), nên
+phải kiểm chủ động trước khi coi là xong:
+
+| Kiểm | Vì sao (đã xảy ra 2026-10-05) |
+|---|---|
+| File tên đúng `SKILL.md` (hoa) | 4 skill tên `skill.md` → Mac/Linux không load |
+| UTF-8 **không BOM**, dòng 1 là `---` | 19 skill có BOM → front-matter hỏng, KHÔNG load kể cả trên máy mình suốt nhiều tháng |
+| Front-matter có `name` + `description` | description là thứ Claude dùng để chọn skill |
+| Không đường dẫn cứng `C:\Users\<me>`, `D:\HK8...` | dùng `~/...`, `os.path.expanduser`, hoặc biến môi trường |
+| Không nhắc skill cá nhân như thể bắt buộc | ghi "(nếu đã cài)" — máy người khác không có odoo-*/incard-* |
+| Skill gắn tài khoản/dự án riêng | thêm tên vào `PERSONAL` trong `~/.claude/hooks/sync-skills-repo.py`, nếu không sẽ bị đẩy lên |
+| Cần công cụ/API key mới | thêm dòng vào `docs/REQUIREMENTS.md` của repo |
+
+Chạy trong repo: `python tools/check_skills.py --catalog` → phải `0 problem(s)`, commit cả `SKILLS.md`.
+**Sửa bằng Bash/Python script KHÔNG kích hoạt hook** → sau đó phải `diff -rq --strip-trailing-cr` rồi sync + push tay
+(chỉ skill testing/QA; skill không chắc → hỏi user). Đổi cấu trúc repo/installer → cài thử vào HOME giả
+(`HOME=<tmp> USERPROFILE=<tmp> python install.py --skip-plugins`) từ một bản clone mới trước khi báo xong.
+
 ---
 
 ## Bước 6 — Ghi Log
