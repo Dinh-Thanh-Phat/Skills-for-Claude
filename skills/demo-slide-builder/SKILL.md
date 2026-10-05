@@ -134,7 +134,7 @@ mcp__plugin_playwright_playwright__browser_take_screenshot
   → filename: "slides_screenshots/<NN>_<feature_slug>.png"
 ```
 
-> ⚠️ **Path constraint:** Playwright can only save inside the project directory. Always use a **relative path** (`slides_screenshots/...`). The JSON `image_path` must be the **absolute path**, e.g. `d:\HK8\Learning\DQ\phat\phat\slides_screenshots\01_cards_list.png`.
+> ⚠️ **Path constraint:** Playwright can only save inside the project directory. Always use a **relative path** (`slides_screenshots/...`). The JSON `image_path` must be the **absolute path**, e.g. `D:\my-project\slides_screenshots\01_cards_list.png`.
 
 Ensure the output directory exists before the first screenshot:
 ```powershell
@@ -196,7 +196,7 @@ Construct this structure. Every field is a string or array of strings.
       "name": "Slide Title",
       "description": "One-sentence context shown under title",
       "bullets": ["Outcome-focused point 1", "Point 2", "Point 3", "Point 4"],
-      "image_path": "d:\\HK8\\Learning\\DQ\\phat\\phat\\slides_screenshots\\sNN_feature.png"
+      "image_path": "D:\\my-project\\slides_screenshots\\sNN_feature.png"
     }
   ],
   "next_steps": ["Action item 1", "Action item 2"]
@@ -220,7 +220,7 @@ Rules:
 Save the JSON to `C:\tmp\slide_data.json`, then run via PowerShell:
 
 ```powershell
-python "C:\Users\wi\.claude\skills\demo-slide-builder\generate_slide.py" `
+python "$HOME\.claude\skills\demo-slide-builder\generate_slide.py" `
   --input "C:\tmp\slide_data.json" `
   --output "C:\tmp\demo_slides.pptx"
 ```

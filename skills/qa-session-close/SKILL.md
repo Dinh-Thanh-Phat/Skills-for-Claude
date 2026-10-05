@@ -146,7 +146,7 @@ git pull --rebase && git push   # CLAUDE.md: session chưa xong khi git push ch�
 
 **3e. Cập nhật project knowledge** (để `qa-session-start` Bước 0 đọc được trạng thái mới):
 
-Sửa `C:\Users\wi\.claude\shared-context\knowledge\<slug>.md` (slug theo bảng trong `qa-session-start`):
+Sửa `~/.claude/shared-context/knowledge/<slug>.md` (slug theo bảng trong `qa-session-start`):
 ```markdown
 **Last session:** [DATE] — [1 câu: đã test gì, kết quả X pass / Y fail]
 **Left off at:** [trạng thái / spec hoặc flow đang dở]

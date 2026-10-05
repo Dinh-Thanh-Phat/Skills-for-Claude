@@ -44,10 +44,10 @@ Hai chế độ:
 
 ```bash
 # 1. Danh sách skill LOADABLE (dạng thư mục)
-ls C:/Users/wi/.claude/skills
+ls ~/.claude/skills
 # 2. Tìm theo keyword của task trong name/description/triggers
-grep -il "<keyword>" C:/Users/wi/.claude/skills/*/SKILL.md
-grep -i -A1 "^description:" C:/Users/wi/.claude/skills/*/SKILL.md | grep -i "<keyword>"
+grep -il "<keyword>" ~/.claude/skills/*/SKILL.md
+grep -i -A1 "^description:" ~/.claude/skills/*/SKILL.md | grep -i "<keyword>"
 ```
 
 Ưu tiên skill có `description`/`triggers` khớp nhất với task vừa làm. Với task QA, đối chiếu thêm bảng route trong `qa-router` (entry point).
@@ -81,9 +81,9 @@ Phân tích feedback của user để xác định loại lỗi:
 
 ## Bước 3 — Đọc Skill Hiện Tại
 
-**Convention loadable duy nhất:** `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` (+ `references/` tuỳ chọn).
+**Convention loadable duy nhất:** `~/.claude/skills/[skill-name]\SKILL.md` (+ `references/` tuỳ chọn).
 
-File phẳng `C:\Users\wi\.claude\skills\[skill-name].md` (13 file business cũ) vẫn đọc/sửa được, nhưng **không được
+File phẳng `~/.claude/skills/[skill-name].md` (13 file business cũ) vẫn đọc/sửa được, nhưng **không được
 Claude Code load** — sửa chúng không thay đổi hành vi. Khi sửa một file phẳng, nhắc user điều này.
 
 Thử folder trước (`[name]/SKILL.md`); nếu không có thì thử file (`[name].md`).
@@ -113,17 +113,17 @@ Sửa theo feedback này không?
 ## Bước 5 — Update File Sau Khi User Xác Nhận
 
 Sửa file ở đúng convention đã detect ở Bước 3:
-- Folder skill: `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md`
-- Single-file skill: `C:\Users\wi\.claude\skills\[skill-name].md`
+- Folder skill: `~/.claude/skills/[skill-name]\SKILL.md`
+- Single-file skill: `~/.claude/skills/[skill-name].md`
 
-Cho business skills (PT), backup vào: `D:\HK8\Learning\DQ\PT\skills\[skill-name].md`
+Cho business skills (PT — chỉ máy maintainer, bỏ qua nếu không có), backup vào: `D:\HK8\Learning\DQ\PT\skills\[skill-name].md`
 (QA skills không cần backup — chỉ lưu ở `~/.claude/skills/`.)
 
 ---
 
 ## Bước 6 — Ghi Log
 
-Append vào `C:\Users\wi\.claude\skills\_update-log.md`:
+Append vào `~/.claude/skills/_update-log.md`:
 
 ```markdown
 ## [skill-name] — [ngày]
@@ -175,10 +175,10 @@ Nếu mô tả còn chung chung, hỏi thêm:
 So sánh mô tả của user với **toàn bộ** skill hiện có — discover, không dùng danh sách gõ cứng:
 
 ```bash
-ls C:/Users/wi/.claude/skills                                   # tên thư mục = skill loadable
-ls C:/Users/wi/.claude/skills/*.md                              # file phẳng (KHÔNG loadable, xem cảnh báo ở Bước 1)
-grep -il "<keyword>" C:/Users/wi/.claude/skills/*/SKILL.md      # skill có nhắc keyword
-grep -h "^description:" C:/Users/wi/.claude/skills/*/SKILL.md | grep -i "<keyword>"   # overlap description/trigger
+ls ~/.claude/skills                                   # tên thư mục = skill loadable
+ls ~/.claude/skills/*.md                              # file phẳng (KHÔNG loadable, xem cảnh báo ở Bước 1)
+grep -il "<keyword>" ~/.claude/skills/*/SKILL.md      # skill có nhắc keyword
+grep -h "^description:" ~/.claude/skills/*/SKILL.md | grep -i "<keyword>"   # overlap description/trigger
 ```
 
 Dùng 2-3 keyword chính từ yêu cầu (cả tiếng Việt lẫn tiếng Anh). Skill nào khớp → đọc `SKILL.md` để ước lượng overlap.
@@ -190,7 +190,7 @@ Dùng 2-3 keyword chính từ yêu cầu (cả tiếng Việt lẫn tiếng Anh)
 
 ### Bước 2 — Đặt Tên Skill
 
-Tên **thư mục** kebab-case: `C:\Users\wi\.claude\skills\<kebab-name>\SKILL.md`  
+Tên **thư mục** kebab-case: `~/.claude/skills/<kebab-name>\SKILL.md`  
 Ví dụ: `timesheet-processor/SKILL.md`, `supplier-payable/SKILL.md`, `inventory-tracker/SKILL.md`
 
 > ⚠️ **KHÔNG tạo file `.md` phẳng ở gốc `skills/`** (vd `timesheet-processor.md`). Claude Code chỉ load skill dạng
@@ -233,8 +233,8 @@ tools: [tools MCP cần dùng — chỉ ghi nếu thật sự dùng]
 
 ### Bước 4 — Lưu Vào 2 Nơi
 
-- `C:\Users\wi\.claude\skills\[skill-name]\SKILL.md` — để Claude dùng ngay (dạng thư mục, loadable)
-- `D:\HK8\Learning\DQ\PT\skills\[skill-name]\SKILL.md` — bản backup
+- `~/.claude/skills/[skill-name]/SKILL.md` — để Claude dùng ngay (dạng thư mục, loadable)
+- `D:\HK8\Learning\DQ\PT\skills\[skill-name]\SKILL.md` — bản backup (chỉ máy maintainer)
 
 Sau khi tạo: cập nhật `capabilities.md` (theo CLAUDE.md Self-Update), và nếu là skill QA → thêm 1 dòng route vào `qa-router`.
 

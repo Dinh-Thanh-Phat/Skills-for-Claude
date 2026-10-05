@@ -16,11 +16,12 @@ Reads files from Google Drive and extracts text content for downstream processin
 
 ## Setup: Google Drive API Authentication
 
-**On this workstation use the existing OAuth token** (shared with `gsheet-formatter` and
+**Use the existing OAuth token** (`~/.google-docs-token.json`; first-time setup: see the
+repo `docs/REQUIREMENTS.md` → Google APIs) (shared with `gsheet-formatter` and
 `gsheet-safe-write`):
 
 ```
-C:\Users\wi\.google-docs-token.json
+~/.google-docs-token.json
 ```
 
 Scopes UNVERIFIED: this file used to say `drive.readonly` + `spreadsheets`, but
@@ -30,8 +31,8 @@ may carry broader scopes. Don't rely on either claim; check if it matters. Prefe
 instead of re-prompting OAuth:
 
 ```python
-import json, google.oauth2.credentials
-tok = json.loads(open(r'C:\Users\wi\.google-docs-token.json').read())
+import json, os, google.oauth2.credentials
+tok = json.loads(open(os.path.expanduser('~/.google-docs-token.json')).read())
 creds = google.oauth2.credentials.Credentials(
     token=None, refresh_token=tok["refresh_token"],
     client_id=tok["client_id"], client_secret=tok["client_secret"],

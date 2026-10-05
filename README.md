@@ -1,238 +1,76 @@
 # Skills-for-Claude
 
-Personal Claude Code skill library — 85+ custom skills for QA automation, testing, and development workflows.
+166 Claude Code skills for QA automation — Playwright E2E, Maestro mobile, LLM/chatbot evaluation,
+test design and debugging discipline. Clone, run one command, restart Claude Code.
 
-## Quick Setup (New Machine)
-
-### Windows (PowerShell)
-
-```powershell
-git clone https://github.com/Dinh-Thanh-Phat/Skills-for-Claude.git
-cd Skills-for-Claude
-.\setup.ps1
-```
-
-### Mac / Linux / Git Bash
+## Install (2 minutes)
 
 ```bash
 git clone https://github.com/Dinh-Thanh-Phat/Skills-for-Claude.git
 cd Skills-for-Claude
-bash setup.sh
 ```
 
-After setup, **restart Claude Code** to activate skills and hooks.
+| OS | Command |
+|---|---|
+| Windows (PowerShell) | `.\setup.ps1` |
+| macOS / Linux / Git Bash | `bash setup.sh` |
 
----
+Then **restart Claude Code**. Only requirement: Python 3.8+ (the wrappers tell you if it's missing).
 
-## What Gets Installed
+What it does — nothing is overwritten without a backup in `~/.claude/backups/<timestamp>/`:
 
-| Source | Destination | Description |
-|--------|-------------|-------------|
-| `skills/` | `~/.claude/skills/` | 85+ custom skills |
-| `hooks/fix-flat-skill.py` | `~/.claude/hooks/` | Auto-converts flat skill .md to dir format |
-| `shared-context/memories/_shared.md` | `~/.claude/shared-context/memories/` | Global behaviour rules |
-| `config/settings.template.json` | `~/.claude/settings.json` | Hooks + plugins config (if no settings.json exists) |
+1. Copies `skills/*` → `~/.claude/skills/` (unchanged skills are skipped)
+2. Installs one hook, `fix-flat-skill.py` (turns a stray `skills/foo.md` into `skills/foo/SKILL.md` so it loads)
+3. **Merges** hooks/plugins into `~/.claude/settings.json` — your existing settings are kept
+4. Installs the Claude Code plugins the skills hand off to (`superpowers`, `playwright`, …)
+5. Creates `~/.claude/shared-context/` templates if missing, then lists optional tools it found
 
----
+Options (pass to `setup.ps1` / `setup.sh` or `python install.py`):
 
-## Manual Settings Merge
+| Flag | Effect |
+|---|---|
+| `--dry-run` | show what would change, touch nothing |
+| `--with-qa-gates` | add hooks that remind/enforce full test coverage when a prompt mentions testing ([docs](docs/QA-HOOKS.md)) |
+| `--with-beads` | run `bd prime` at session start (needs [beads](https://github.com/gastownhall/beads)) |
+| `--project <dir>` | also copy the project-level skills in `project-example/` into `<dir>/.claude/skills` |
+| `--skip-settings` / `--skip-plugins` | leave settings.json / plugins alone |
 
-If you already have `~/.claude/settings.json`, merge the following sections from `config/settings.template.json`:
+## Use
 
-1. **`hooks`** — critical for skill structure and `bd prime` on session start
-2. **`enabledPlugins`** — official Claude Code plugins
-3. **`extraKnownMarketplaces`** — adds `playwright-skill` marketplace
+You don't call skills by name — describe the task and Claude loads the matching one:
 
----
+- *"test the checkout form"* → `qa-router` picks coverage, locator, assertion and data skills
+- *"this Playwright test is flaky in CI"* → `e2e-test-stability`, `flaky-test-prevention`
+- *"write a Maestro flow for login"* → `maestro-mobile`
+- *"evaluate our chatbot answers"* → `chatbot-tester` pipeline
 
-## Post-Install: Additional Tools
+Full list by category: **[SKILLS.md](SKILLS.md)**. Tools/API keys some skills need: **[docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)**.
 
-Some skills depend on external tools. Install as needed:
+## Update
 
-### beads (bd) — issue tracker
-
-```bash
-npm install -g beads-cli
-```
-
-Windows: ensure `bd.exe` is in PATH:
-```
-C:/Users/<user>/AppData/Roaming/npm/bd.exe
-```
-
-### Dolt — version-controlled database (used by beads)
-
-Download from https://github.com/dolthub/dolt/releases or:
-```powershell
-winget install DoltHub.Dolt
-```
-
-Add to PATH: `C:/Program Files/dolt/bin`
-
-### Playwright
-
-```bash
-npm install -D @playwright/test
-npx playwright install chromium
-```
-
-### Python dependencies (for chatbot testing pipeline)
-
-```bash
-pip install playwright pdfplumber openpyxl requests python-dotenv
-python -m playwright install chromium
-```
-
-### OCR (for ocr-processor skill)
-
-- **Tesseract**: https://github.com/UB-Mannheim/tesseract/wiki
-- After install, add Vietnamese language pack:
-  ```
-  C:/Program Files/Tesseract-OCR/tessdata/vie.traineddata
-  ```
-  Download from: https://github.com/tesseract-ocr/tessdata
-
----
-
-## Skill Categories
-
-### QA & Testing Orchestration
-- `qa-router` — entry point for all QA tasks (routes to right skill)
-- `qa-session-start` / `qa-session-close` — session lifecycle
-- `qa-preflight` — environment check before running tests
-- `qa-test-generation` — generate test cases from requirements
-- `qa-test-coverage-max` — maximum coverage from multi-source inputs
-- `qa-e2e-complete` — full E2E test suites
-- `qa-bug-report` — professional bug reports
-- `qa-regression` — regression test management
-- `behavioral-coverage-matrix` — behavior inventory before test writing
-
-### Playwright E2E
-- `playwright-diagnosis-first` — diagnose before fixing
-- `playwright-snapshot-parser` — parse aria snapshots for selectors
-- `playwright-test-workflow` — complete test creation workflow
-- `playwright-page-object-model` — POM pattern enforcement
-- `playwright-network-interception` — mock APIs, intercept requests
-- `playwright-flaky-test-detection` — detect and fix flaky tests
-- `playwright-link-audit` — broken link checker
-- `playwright-artifact-cleanup` — prevent disk overflow
-- `playwright-reporter-discipline` — correct reporter usage
-
-### Mobile Testing
-- `maestro-mobile` — Maestro YAML flows for iOS + Android
-- `android-adb` — ADB device management
-- `ios-xcrun` — iOS simulator management
-
-### Assertions & Test Quality
-- `fail-loud` — enforce hard assertions
-- `outcome-verification` — verify business outcomes not just UI
-- `cross-module-verify` — multi-module workflow testing
-- `soft-assertion-ban` — ban `expect(A || B)` patterns
-- `skip-vs-fail` — when to skip vs fail tests
-- `test-isolation` — prevent test interdependencies
-- `flaky-test-prevention` — systematic flakiness prevention
-
-### Test Data & Lifecycle
-- `test-data-lifecycle` / `test-data-lifecycle-strategy` — cleanup strategies
-- `otp-untestable-flows` — OTP/email verification strategy
-- `test-auth-strategy` — authentication test patterns
-- `auth-session-testing` — session management testing
-
-### Diagnosis & Debugging
-- `ask-when-stuck` — stop and ask after 1-2 failures
-- `test-diagnosis-before-code` — diagnose before writing tests
-- `playwright-diagnosis-first` — full diagnosis workflow
-- `test-failure-triage` — quick failure categorization
-- `test-debug-checklist` — quick reference for debugging
-- `systematic-debugging` (via superpowers)
-
-### Chatbot Testing Pipeline
-- `chatbot-tester` — main orchestrator
-- `gdrive-doc-reader` — read docs from Google Drive
-- `qa-generator` — generate test questions from docs
-- `chatbot-api-caller` — call chatbot API with questions
-- `chatbot-ui-automator` — test via browser UI
-- `response-evaluator` — evaluate chatbot answers
-- `performance-analyzer` — p50/p95/p99 metrics
-- `ocr-processor` — OCR for scanned PDFs
-
-### Frontend & UI
-- `fe-component-builder` — React components from descriptions
-- `figma-to-code` — implement UI from Figma designs
-- `accessibility-testing` — WCAG / axe-core testing
-- `visual-regression-testing` — screenshot comparison
-- `responsive-viewport-testing` — multi-viewport testing
-- `ui-error-classification` — classify UI errors
-
-### Data & Files
-- `file-aggregation-comparison` — compare/merge Excel/CSV files
-- `gsheet-formatter` — format Google Sheets via API
-- `gsheet-safe-write` — safe Google Sheets write protocol
-- `demo-slide-builder` — build .pptx presentations
-
-### Project Management
-- `beads` — Dolt-powered issue tracker
-- `openspec-explore/propose/apply/archive` — spec management
-- `odoo-project-automation` — Odoo task/bug management
-
-### Skill Management
-- `skill-creator` — create new skills
-- `skill-updater` — update existing skills
-- `skill-discovery` — find skills for a task
-- `using-superpowers` (via superpowers plugin)
-
----
-
-## Directory Structure
-
-```
-Skills-for-Claude/
-├── README.md
-├── setup.ps1                    # Windows setup
-├── setup.sh                     # Mac/Linux/Git Bash setup
-├── skills/                      # All skills (→ ~/.claude/skills/)
-│   ├── accessibility-testing/
-│   │   └── SKILL.md
-│   └── ... (85+ skills)
-├── hooks/                       # Claude hooks (→ ~/.claude/hooks/)
-│   └── fix-flat-skill.py
-├── shared-context/              # Global context (→ ~/.claude/shared-context/)
-│   └── memories/
-│       └── _shared.md
-├── config/
-│   └── settings.template.json  # Settings template
-└── project-example/            # Example project .claude/ structure
-    └── .claude/
-        └── skills/
-            ├── fe-component-builder/
-            ├── figma-to-code/
-            └── openspec-*/
-```
-
----
-
-## Project-Level Skills
-
-Skills in `project-example/.claude/skills/` are intended for specific projects:
-
-| Skill | Purpose |
-|-------|---------|
-| `fe-component-builder` | React component generation |
-| `figma-to-code` | Figma design → React code |
-| `openspec-explore` | Explore API specs |
-| `openspec-propose` | Propose spec changes |
-| `openspec-apply-change` | Apply spec changes |
-| `openspec-archive-change` | Archive spec changes |
-
-Copy to `<your-project>/.claude/skills/` as needed.
-
----
-
-## Updating Skills
-
-After pulling changes:
 ```bash
 git pull
-.\setup.ps1 --force    # Windows
-bash setup.sh --force  # Mac/Linux
+.\setup.ps1        # or: bash setup.sh
 ```
+
+Changed skills are replaced (old copy backed up); your own extra skills in `~/.claude/skills` are never touched.
+
+## Repo layout
+
+```
+skills/            installed skills, one folder each: <name>/SKILL.md (+ references/, scripts/)
+hooks/             hook scripts the installer can copy to ~/.claude/hooks
+config/            settings.base.json (plugins), hooks.json (hook sets), shared-context templates
+project-example/   project-level skills (React/Figma/OpenSpec) — opt-in via --project
+docs/              REQUIREMENTS.md, QA-HOOKS.md
+tools/             check_skills.py (lint + regenerate SKILLS.md), google_auth.py (Drive/Sheets token)
+install.py         the installer; setup.ps1 / setup.sh just find Python and call it
+personal/          maintainer-only skills, notes and sync hook — NOT installed
+```
+
+## Contributing a skill
+
+1. Create `skills/<kebab-name>/SKILL.md` with front-matter `name:` and `description:` (the description is what
+   makes Claude pick it — include trigger phrases). Save as UTF-8 **without BOM**.
+2. No machine-specific paths — use `~/...` or an env var.
+3. `python tools/check_skills.py --catalog` must report 0 problems; commit the regenerated `SKILLS.md`.

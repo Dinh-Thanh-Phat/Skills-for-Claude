@@ -1,4 +1,4 @@
-﻿---
+---
 name: responsive-viewport-testing
 description: Patterns for responsive and viewport testing in Playwright — mobile emulation, breakpoint testing, hamburger menus, touch targets, device descriptors. Use when writing tests for mobile layouts, responsive design breakpoints, or touch interactions. Triggers on: "mobile test", "responsive", "viewport", "hamburger menu", "mobile layout", "breakpoint", "setViewportSize", "mobile emulation", "touch", "tablet", "device".
 triggers:

@@ -1,4 +1,4 @@
-﻿---
+---
 name: dom-inspect-first
 description: Always inspect the real DOM/accessibility tree before writing Playwright selectors — prevents selector mismatch bugs. Use when writing any Playwright locator, selector, getByRole, getByText, or when element is not found. Triggers on: "viết selector", "write locator", "find element", "getByRole", "element không thấy", "element not visible", "can't find element".
 type: qa-practice

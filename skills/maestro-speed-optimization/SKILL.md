@@ -319,8 +319,7 @@ Lý do per-flow tệ hơn:
 
 Maestro gọi adb HÀNG TRĂM lần/test (dump hierarchy, tap, query). Wireless trễ ~2x mỗi call → triệt tiêu mọi tối ưu khác. **Muốn đạt x5 thật: BẮT BUỘC USB.** Nếu user chọn wireless cho tiện, nói rõ trade-off: tiện ≠ nhanh.
 
-Chi tiết 8 pitfall Maestro+ADB trên Windows: `d:/HK8/Learning/DQ/phat/phat/skills/maestro-android-windows-gotchas.md` §1
-(file kiến thức phẳng, **chưa** là skill invoke được — phải đọc thủ công, không tự load).
+Chi tiết 8 pitfall Maestro+ADB trên Windows: [references/android-windows-gotchas.md](references/android-windows-gotchas.md) §1.
 
 ---
 

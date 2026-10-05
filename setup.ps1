@@ -1,114 +1,17 @@
-# Skills-for-Claude - Windows Setup Script
-# Run from repo root: .\setup.ps1
-# Requires: Git Bash or PowerShell 5+
-
-param(
-    [switch]$Force,
-    [switch]$SkipSettings
-)
-
+# Skills-for-Claude — Windows entry point. All logic lives in install.py.
+# Usage: .\setup.ps1 [--with-qa-gates] [--with-beads] [--dry-run] ...   (python install.py --help)
 $ErrorActionPreference = "Stop"
-$RepoRoot = $PSScriptRoot
-$ClaudeDir = "$env:USERPROFILE\.claude"
-
-function Write-Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
-function Write-Ok($msg)   { Write-Host "    [OK] $msg" -ForegroundColor Green }
-function Write-Warn($msg) { Write-Host "    [!!] $msg" -ForegroundColor Yellow }
-
-Write-Host "`nSkills-for-Claude Setup" -ForegroundColor White
-Write-Host "=======================" -ForegroundColor White
-
-# 1. Skills
-Write-Step "Installing skills to $ClaudeDir\skills\"
-$skillsSrc = "$RepoRoot\skills"
-$skillsDst = "$ClaudeDir\skills"
-if (-not (Test-Path $skillsDst)) { New-Item -ItemType Directory -Force $skillsDst | Out-Null }
-# Skills in the repo are the source of truth: always sync when the installed
-# copy differs (NEW / UPDATED), and skip only when identical. This is independent
-# of -Force, which stays scoped to shared-context/settings below.
-function Get-DirHash($path) {
-    if (-not (Test-Path $path)) { return $null }
-    $parts = Get-ChildItem $path -Recurse -File | Sort-Object FullName | ForEach-Object {
-        (Get-FileHash $_.FullName -Algorithm SHA256).Hash
-    }
-    if (-not $parts) { return "" }
-    $joined = [System.Text.Encoding]::UTF8.GetBytes(($parts -join ""))
-    $sha = [System.Security.Cryptography.SHA256]::Create()
-    return [System.BitConverter]::ToString($sha.ComputeHash($joined)) -replace '-', ''
+$py = $null
+foreach ($cand in @(@("py", "-3"), @("python"), @("python3"))) {
+    try {
+        # The Microsoft Store "python" alias exits non-zero instead of running — skip it
+        & $cand[0] $cand[1..9] -c "import sys; sys.exit(0 if sys.version_info >= (3, 8) else 1)" 2>$null
+        if ($LASTEXITCODE -eq 0) { $py = $cand; break }
+    } catch {}
 }
-$skills = Get-ChildItem $skillsSrc -Directory
-$new = 0; $updated = 0; $unchanged = 0
-foreach ($skill in $skills) {
-    $dst = "$skillsDst\$($skill.Name)"
-    $exists = Test-Path $dst
-    if ($exists -and (Get-DirHash $skill.FullName) -eq (Get-DirHash $dst)) {
-        $unchanged++
-    } else {
-        Copy-Item -Recurse -Force $skill.FullName $skillsDst
-        if ($exists) { Write-Ok "$($skill.Name) (updated)"; $updated++ }
-        else         { Write-Ok "$($skill.Name) (new)"; $new++ }
-    }
+if (-not $py) {
+    Write-Host "Python 3.8+ not found. Install it:  winget install Python.Python.3.12  then re-run." -ForegroundColor Yellow
+    exit 1
 }
-Write-Host "    $($skills.Count) skills processed - $new new, $updated updated, $unchanged unchanged" -ForegroundColor Gray
-
-# 2. Hooks
-Write-Step "Installing hooks to $ClaudeDir\hooks\"
-$hooksSrc = "$RepoRoot\hooks"
-$hooksDst = "$ClaudeDir\hooks"
-if (-not (Test-Path $hooksDst)) { New-Item -ItemType Directory -Force $hooksDst | Out-Null }
-Copy-Item -Force "$hooksSrc\fix-flat-skill.py" $hooksDst
-Write-Ok "fix-flat-skill.py"
-
-# 3. Shared context
-Write-Step "Installing shared-context to $ClaudeDir\shared-context\"
-$ctxSrc = "$RepoRoot\shared-context"
-$ctxDst = "$ClaudeDir\shared-context"
-
-# memories/_shared.md - merge if exists, else copy
-$sharedMem = "$ctxDst\memories\_shared.md"
-if (-not (Test-Path "$ctxDst\memories")) { New-Item -ItemType Directory -Force "$ctxDst\memories" | Out-Null }
-if ((Test-Path $sharedMem) -and -not $Force) {
-    Write-Warn "_shared.md already exists - skipping (use -Force to overwrite)"
-} else {
-    Copy-Item -Force "$ctxSrc\memories\_shared.md" "$ctxDst\memories\_shared.md"
-    Write-Ok "memories/_shared.md"
-}
-
-# knowledge/
-if (-not (Test-Path "$ctxDst\knowledge")) { New-Item -ItemType Directory -Force "$ctxDst\knowledge" | Out-Null }
-Get-ChildItem "$ctxSrc\knowledge" -File | ForEach-Object {
-    $dst = "$ctxDst\knowledge\$($_.Name)"
-    if ((Test-Path $dst) -and -not $Force) {
-        Write-Warn "knowledge/$($_.Name) exists - skipping"
-    } else {
-        Copy-Item -Force $_.FullName $dst
-        Write-Ok "knowledge/$($_.Name)"
-    }
-}
-
-# 4. Settings (optional)
-if (-not $SkipSettings) {
-    Write-Step "Settings configuration"
-    $settingsFile = "$ClaudeDir\settings.json"
-    if (Test-Path $settingsFile) {
-        Write-Warn "settings.json exists. Review config\settings.template.json manually."
-        Write-Host "    Key things to add to your settings.json:" -ForegroundColor Gray
-        Write-Host "    - hooks (PostToolUse, PreCompact, SessionStart)" -ForegroundColor Gray
-        Write-Host "    - enabledPlugins" -ForegroundColor Gray
-        Write-Host "    - extraKnownMarketplaces" -ForegroundColor Gray
-    } else {
-        Copy-Item -Force "$RepoRoot\config\settings.template.json" $settingsFile
-        Write-Ok "settings.json created from template"
-    }
-}
-
-# 5. Project example skills
-Write-Step "Project-example skills"
-Write-Host "    project-example\.claude\skills\ contains:" -ForegroundColor Gray
-Get-ChildItem "$RepoRoot\project-example\.claude\skills" -Directory | ForEach-Object {
-    Write-Host "      - $($_.Name)" -ForegroundColor Gray
-}
-Write-Host "    Copy these to your project's .claude\skills\ as needed." -ForegroundColor Gray
-
-Write-Host "`nSetup complete!" -ForegroundColor Green
-Write-Host "Restart Claude Code to activate skills and hooks.`n" -ForegroundColor White
+& $py[0] $py[1..9] "$PSScriptRoot\install.py" @args
+exit $LASTEXITCODE

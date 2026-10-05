@@ -231,7 +231,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 from pathlib import Path
 from groq import Groq
 
-BASE = Path('D:/HK8/Learning/DQ/Agentic')
+BASE = Path(os.environ.get('CHATBOT_BASE', '.')).resolve()   # root that holds pipeline/ + chatbots/
 GENERATION_MODEL  = "openai/gpt-oss-20b"   # llama-3.1-8b-instant shut down 2026-08-16
 ENRICHMENT_MODEL  = "openai/gpt-oss-120b"  # llama-3.3-70b-versatile shut down 2026-08-16
 BATCH_SIZE        = 5

@@ -1,4 +1,4 @@
-﻿---
+---
 name: async-loading-state-testing
 description: Patterns for testing async UI states in Playwright — spinners, skeleton screens, lazy-loaded content, progressive loading. Use when writing tests for features with loading indicators, async data fetching, skeleton UI, or any operation where UI transitions from loading to loaded state. Triggers on: "spinner", "skeleton", "loading state", "lazy load", "async content", "networkidle", "waitForResponse", "loading indicator".
 ---

@@ -1,0 +1,52 @@
+{
+  "core": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{PYTHON} \"{HOOKS}/fix-flat-skill.py\"",
+            "statusMessage": "Checking skill structure..."
+          }
+        ]
+      }
+    ]
+  },
+  "qa-gates": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{PYTHON} \"{HOOKS}/qa-coverage-gate.py\"",
+            "timeout": 10,
+            "statusMessage": "QA coverage gate..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{PYTHON} \"{HOOKS}/qa-coverage-stop-gate.py\"",
+            "timeout": 10,
+            "statusMessage": "QA coverage stop gate..."
+          }
+        ]
+      }
+    ]
+  },
+  "beads": {
+    "SessionStart": [
+      { "matcher": "", "hooks": [ { "type": "command", "command": "bd prime" } ] }
+    ],
+    "PreCompact": [
+      { "matcher": "", "hooks": [ { "type": "command", "command": "bd prime" } ] }
+    ]
+  }
+}

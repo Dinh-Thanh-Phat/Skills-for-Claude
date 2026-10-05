@@ -40,11 +40,11 @@ Hỏi hoặc suy luận từ context:
 ## Step 1 — Khởi tạo Sheets API client
 
 ```python
-import json
+import json, os
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-TOKEN_PATH = r"C:\Users\wi\.google-docs-token.json"
+TOKEN_PATH = os.path.expanduser("~/.google-docs-token.json")
 
 with open(TOKEN_PATH) as f:
     tok = json.load(f)
@@ -292,5 +292,5 @@ if ALT_ROW_COLOR and USE_BANDING:
           for i, _ in enumerate(s.get("conditionalFormats", [])):
               requests.insert(0, {"deleteConditionalFormatRule": {"sheetId": sheet_id, "index": 0}})
   ```
-- Credentials token: `C:\Users\wi\.google-docs-token.json` (OAuth authorized_user format)
+- Credentials token: `~/.google-docs-token.json` (OAuth authorized_user format)
 - Python packages cần: `google-auth`, `google-api-python-client` (đã cài sẵn)

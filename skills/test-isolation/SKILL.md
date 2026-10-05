@@ -1,4 +1,4 @@
-﻿---
+---
 name: test-isolation
 description: Playwright test isolation patterns — prevent shared state, flaky tests from test order dependency, use timestamps for unique data. Use when writing E2E tests that might interfere with each other, when tests fail only in certain orders, or when adding beforeEach/afterEach. Triggers on: "test isolation", "shared state", "test order", "flaky test", "beforeEach", "test data cleanup", "parallel test fail".
 type: qa-practice

@@ -1,4 +1,4 @@
-﻿---
+---
 name: playwright-page-object-model
 description: Playwright Page Object Model patterns — organizing locators, actions, and assertions into reusable classes, plus naming complex locator chains with locator.describe() for readable traces/reports. Use when structuring any Playwright test suite, creating new test files, or when the same UI interactions appear in 3+ tests. Triggers on: "page object model", "POM", "page object", "locator encapsulation", "reusable page", "test organization", "action method", "page class", "component object", "locator.describe", "name a locator", "trace shows raw selector".
 origin: research

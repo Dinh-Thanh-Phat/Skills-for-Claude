@@ -84,12 +84,12 @@ print(f"Total rows (incl header): {len(all_rows)}")
 
 ```python
 """Safe Google Sheet update script."""
-import json
+import json, os
 import google.oauth2.credentials
 import googleapiclient.discovery
 
 SPREADSHEET_ID = "your-id"
-TOKEN_PATH = r"C:\Users\wi\.google-docs-token.json"
+TOKEN_PATH = os.path.expanduser("~/.google-docs-token.json")
 
 def connect():
     with open(TOKEN_PATH) as f:

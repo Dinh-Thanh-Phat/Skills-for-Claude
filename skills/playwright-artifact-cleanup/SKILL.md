@@ -28,7 +28,7 @@ use: {
 },
 
 // Trỏ output ra ngoài project dir (tránh tích lũy trong repo)
-outputDir: 'D:/HK8/Learning/DQ/test/test-results',
+outputDir: '../test-output/test-results',   // any folder OUTSIDE the project, e.g. D:/test-output/test-results
 ```
 
 ### Mức độ artifact theo môi trường:
@@ -47,7 +47,7 @@ Tạo file `scripts/cleanup-artifacts.ps1`:
 
 ```powershell
 # Xóa artifacts cũ hơn N ngày
-$outputDir = "D:\HK8\Learning\DQ\test\test-results"
+$outputDir = "..\test-output\test-results"   # same folder as outputDir in playwright.config
 $keepDays = 3
 
 if (Test-Path $outputDir) {
@@ -88,7 +88,7 @@ playwright-report/
 ## Checklist khi setup project mới
 
 - [ ] `video`, `screenshot`, `trace` đều là `retain-on-failure` (không phải `on`)
-- [ ] `outputDir` trỏ ra ngoài project dir (`D:/HK8/Learning/DQ/test/`)
+- [ ] `outputDir` trỏ ra ngoài project dir (vd `../test-output/`)
 - [ ] `test-results/` và `playwright-report/` trong `.gitignore`
 - [ ] Có script cleanup artifacts cũ
 

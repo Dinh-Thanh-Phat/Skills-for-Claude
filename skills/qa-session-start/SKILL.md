@@ -24,7 +24,7 @@ Skill này pull context từ session trước để Claude không bắt đầu m
 ## Project Name → Knowledge Slug Map
 
 > **Disambiguation — HVS:**
-> "HVS" = Playwright E2E test project tại `D:\HK8\Learning\DQ\HVS` (stack: TypeScript + Playwright).
+> "HVS" = Playwright E2E test project (stack: TypeScript + Playwright).
 > KHÔNG phải Odoo project "HaiVan Ship". Khi user nói "HVS ticket", "HVS test", "HVS check..." → đây là project này, KHÔNG dùng `odoo-project-automation`.
 
 | User mention | Knowledge file |
@@ -45,7 +45,7 @@ Skill này pull context từ session trước để Claude không bắt đầu m
 | Soundwise | `soundwise.md` |
 | TRS, Two Raw Sisters | `trs.md` |
 
-Knowledge dir: `C:\Users\wi\.claude\shared-context\knowledge\`
+Knowledge dir: `~/.claude/shared-context/knowledge/`
 
 ---
 
@@ -56,7 +56,7 @@ Knowledge dir: `C:\Users\wi\.claude\shared-context\knowledge\`
 Nếu trigger là **user mention tên project** (không kèm context):
 
 1. Lookup slug từ bảng trên
-2. Đọc `C:\Users\wi\.claude\shared-context\knowledge\[slug].md`
+2. Đọc `~/.claude/shared-context/knowledge/[slug].md`
 3. Present nhanh:
 
 ```

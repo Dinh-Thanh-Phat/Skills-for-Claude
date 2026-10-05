@@ -25,7 +25,7 @@ Say **"tạo slide"** or **"use demo-slide-builder"** and describe what you want
 ## Run the script directly
 
 ```powershell
-python "C:\Users\wi\.claude\skills\demo-slide-builder\generate_slide.py" `
+python "$HOME\.claude\skills\demo-slide-builder\generate_slide.py" `
   --input "C:\tmp\slide_data.json" `
   --output "C:\tmp\demo_slides.pptx"
 ```

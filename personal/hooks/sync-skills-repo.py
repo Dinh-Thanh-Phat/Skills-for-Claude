@@ -1,6 +1,8 @@
 import json, sys, re, os, subprocess, shutil
 
-REPO = 'C:/Users/wi/Skills-for-Claude'
+# Maintainer-only hook: mirrors edits of ~/.claude/skills into this repo and pushes.
+# Not installed by setup — see personal/README.md.
+REPO = os.environ.get('SKILLS_REPO', 'C:/Users/wi/Skills-for-Claude')
 
 data = json.load(sys.stdin)
 f = data.get('tool_input', {}).get('file_path', '')
@@ -17,10 +19,14 @@ if skill_match:
     # skip PT/sales flat skills
     if re.match(r'^(commission-calculator|contract-tracker|customer-segmentation|delivery-scheduler|order-|price-list|quote-builder|reorder-suggester|returns-processor|sales-pipeline)', rel):
         sys.exit(0)
-    dst = os.path.join(REPO, 'skills', rel)
+    name = rel.split('/')[0]
+    if rel == '_update-log.md' or os.path.isdir(os.path.join(REPO, 'personal', 'skills', name)):
+        dst = os.path.join(REPO, 'personal', 'skills', rel)  # maintainer-only, not installed by setup
+    else:
+        dst = os.path.join(REPO, 'skills', rel)
 elif memory_match:
     rel = memory_match.group(1)
-    dst = os.path.join(REPO, 'shared-context', 'memories', rel)
+    dst = os.path.join(REPO, 'personal', 'shared-context', 'memories', rel)
 else:
     sys.exit(0)
 

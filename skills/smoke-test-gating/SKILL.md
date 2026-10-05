@@ -1,4 +1,4 @@
-﻿---
+---
 name: smoke-test-gating
 description: Run a smoke test project before the full suite — gate the full run on basic health checks passing. Use when setting up any Playwright test suite in CI, configuring playwright.config.ts projects, or when environment issues are causing mass test failures. Triggers on: "smoke test", "test gating", "playwright projects", "CI pipeline tests", "all tests failing environment", "gate full suite", "dependencies between projects".
 type: skill

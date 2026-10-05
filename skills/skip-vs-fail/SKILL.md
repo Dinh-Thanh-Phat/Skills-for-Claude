@@ -1,4 +1,4 @@
-﻿---
+---
 name: skip-vs-fail
 description: When to use test.skip() vs test.fail() vs expect() in Playwright — prevent conditional skip from masking real bugs. Use when deciding whether to skip a test, when a test is flaky, or when adding test.skip() inside test body. Triggers on: "test.skip", "conditional skip", "mask bug", "false negative", "bỏ qua test", "skip test", "skip inside test body".
 type: qa-practice

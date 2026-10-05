@@ -1,4 +1,4 @@
-﻿---
+---
 name: playwright-config
 description: Correct playwright.config.ts structure — where to place baseURL, timeouts, use options, projects, and global setup. Use when creating or editing playwright.config.ts, seeing TypeScript errors in config, or when baseURL is not being applied. Triggers on: "playwright.config.ts", "baseURL not working", "No overload matches this call", "TypeScript error config", "playwright config", "createConfig", "defineConfig".
 type: skill

@@ -1,4 +1,4 @@
-﻿---
+---
 name: e2e-test-stability
 description: Fix and prevent flaky Playwright E2E tests — race conditions, stale element references, networkidle timeouts, CI vs local differences. Use when tests pass locally but fail in CI, when tests are intermittently failing, or when fixing timing-related test failures. Triggers on: "flaky test", "intermittent failure", "race condition", "networkidle timeout", "detached element", "passes locally fails CI", "CI failure", "element timing", "auto-wait".
 origin: research

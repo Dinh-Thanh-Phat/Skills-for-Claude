@@ -103,7 +103,7 @@ Vietnamese folder names like `The Client Bọok` contain Unicode characters (`�
 **Always verify:**
 ```python
 import os
-path = r'D:\HK8\Learning\DQ\The Client Bọok\output.xlsx'
+path = r'D:\Projects\The Client Bọok\output.xlsx'
 assert os.path.exists(os.path.dirname(path)), f"Directory not found: {os.path.dirname(path)}"
 ```
 

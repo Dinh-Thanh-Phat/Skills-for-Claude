@@ -1,4 +1,4 @@
-﻿---
+---
 name: data-grid-testing
 description: Patterns for testing data grids and tables in Playwright — virtual scroll, sort, filter, pagination, infinite scroll, AG Grid column virtualization. Use when writing tests for tables, data grids, or list views that have sort/filter/pagination/infinite scroll, especially with virtual scrolling (AG Grid, TanStack Table, react-virtual). Triggers on: "table", "data grid", "AG Grid", "sort column", "filter table", "pagination", "infinite scroll", "virtual scroll", "row count wrong", "column not found".
 ---
