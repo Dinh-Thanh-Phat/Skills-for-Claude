@@ -258,6 +258,7 @@ tools: [tools MCP cần dùng — chỉ ghi nếu thật sự dùng]
 - `D:\HK8\Learning\DQ\PT\skills\[skill-name]\SKILL.md` — bản backup (chỉ máy maintainer)
 
 Sau khi tạo: cập nhật `capabilities.md` (theo CLAUDE.md Self-Update), và nếu là skill QA → thêm 1 dòng route vào `qa-router`.
+Rồi chạy gate **Bước 5b** (SKILL.md hoa, không BOM, không đường dẫn cứng, skill riêng → `PERSONAL`).
 
 ### Bước 5 — Ghi Log
 
