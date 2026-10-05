@@ -38,7 +38,7 @@ bd --version  # Requires v0.60.0+
 > **Version note (checked 2026-10-02):** local bd is **0.63.3**. Upstream latest is **1.3.1 (2026-09-30)**, which
 > changes `BEADS_DIR` semantics (must point at the `.beads` directory itself, not the project root) and makes
 > batch `bd close` exit non-zero if any ID fails. Read the release notes
-> (https://github.com/steveyegge/beads/releases) before upgrading; run `bd prime` after any upgrade.
+> (https://github.com/gastownhall/beads/releases — repo moved from steveyegge/beads; old URL redirects) before upgrading; run `bd prime` after any upgrade.
 
 - **bd CLI** installed and in PATH
 - **Git repository** (optional — for git-free operation use `--stealth` + `BEADS_DIR=<path>/.beads` on bd 1.x;

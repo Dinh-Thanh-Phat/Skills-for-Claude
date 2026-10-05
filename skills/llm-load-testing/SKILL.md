@@ -31,7 +31,7 @@ LLM API performance differs from standard REST APIs: the response streams token-
 |------|-------------|----------|
 | **Gatling** | Native | Best choice — built-in SSE, Scala/Java DSL, precise percentile reporting |
 | **Locust** | Custom (geventhttpclient) | ML teams in Python; cap at ~500 concurrent for SSE |
-| **k6** | Via `xk6-sse` extension | Go-based, very efficient; needs custom build |
+| **k6** (v2.x) | `k6/x/sse` (xk6-sse ≥ v0.2.0) | Go-based, very efficient; k6 auto-resolves the extension — fall back to `xk6 build --with github.com/phymbert/xk6-sse@v0.2.0` if the registry still serves v0.1.x |
 
 ## Locust — LLM Streaming Load Test
 
@@ -131,9 +131,12 @@ class LLMStreamingSimulation extends Simulation {
 ## k6 with xk6-sse Extension
 
 ```javascript
-// k6-llm-test.js  (requires: xk6 build --with github.com/phymbert/xk6-sse)
+// k6-llm-test.js — k6 v2.x + xk6-sse v0.2.0 (k6 v2 extensions must target go.k6.io/k6/v2)
 import sse from 'k6/x/sse';
 import { check } from 'k6';
+import { Trend } from 'k6/metrics';
+
+const ttft = new Trend('ttft', true);   // threshold below needs this metric to exist
 
 export const options = {
   vus: 50,
@@ -156,12 +159,18 @@ export default function () {
     client.on('event', (event) => {
       if (firstToken === null && event.data !== '[DONE]') {
         firstToken = Date.now() - start;
-        // Record as custom metric
+        ttft.add(firstToken);
       }
     });
   });
 }
 ```
+
+> **k6 2.x (2026):** `k6 login`, `pause`/`resume`/`scale`/`status`, `--no-summary`,
+> `--summary-mode=legacy`, the `externally-controlled` executor and positional `k6 cloud script.js`
+> were removed; the HTTP API only starts with `--address`. Live view: `k6 run --out=web-dashboard`.
+> v2.3.0: `--scenario <name>` runs one named scenario, `--once` runs the script once.
+> Sources: https://github.com/grafana/k6/releases · https://github.com/phymbert/xk6-sse/releases/tag/v0.2.0
 
 ## Load Test Protocol
 

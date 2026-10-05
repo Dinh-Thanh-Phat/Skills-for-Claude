@@ -26,6 +26,10 @@ maestro studio
 
 ## Tool 1 — Element Inspector
 
+> ⚠️ **Xcode 27 (Sep 2026):** Simulator.app was replaced by Device Hub — Studio's iOS preview shows
+> **"Streaming failed"** (Maestro#3606, maestro-studio#86, open as of 2026-09). CLI flow runs still
+> work; inspect with `maestro hierarchy` meanwhile. Details: `ios-27-test-gotchas` §1.
+
 Highlights any UI component on the live device screen and reveals its selectable attributes.
 
 **What you get per element:**
@@ -107,7 +111,7 @@ MaestroGPT reads the live hierarchy, identifies the correct element, and propose
 2. RECORD    → Record the happy path; get baseline YAML
 3. REFINE    → Replace fragile text: selectors with id: from inspector
 4. GENERATE  → Use MaestroGPT for complex logic (conditionals, loops, assertions)
-5. VALIDATE  → maestro validate flows/my-flow.yaml
+5. VALIDATE  → maestro check-syntax flows/my-flow.yaml   # `maestro validate` does not exist
 6. RUN       → maestro test flows/my-flow.yaml
 ```
 

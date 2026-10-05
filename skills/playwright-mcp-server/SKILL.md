@@ -88,32 +88,36 @@ The standalone `@playwright/mcp` package still exists and updates independently 
 
 | Category | Tools |
 |----------|-------|
-| Navigation | `browser_navigate`, `browser_go_back`, `browser_go_forward`, `browser_reload` |
-| Snapshot | `browser_snapshot` (accessibility tree), `browser_screenshot` (vision mode) |
-| Interaction | `browser_click`, `browser_type`, `browser_fill`, `browser_select_option`, `browser_check`, `browser_uncheck`, `browser_hover` |
-| Tabs / Windows | `browser_tab_new`, `browser_tab_switch`, `browser_tab_close` |
-| Network | `browser_network_requests` (inspect traffic), `browser_route_add` (mock routes) |
-| Storage | `browser_storage_state_save`, `browser_storage_state_load` |
-| Tracing | `browser_trace_start`, `browser_trace_stop` |
-| File / Download | `browser_file_upload`, `browser_download_wait` |
+| Navigation | `browser_navigate`, `browser_navigate_back`, `browser_wait_for` |
+| Snapshot / find | `browser_snapshot`, `browser_find`, `browser_take_screenshot` |
+| Interaction | `browser_click`, `browser_type`, `browser_fill_form`, `browser_select_option`, `browser_hover`, `browser_drag`, `browser_drop`, `browser_press_key`, `browser_file_upload`, `browser_handle_dialog` |
+| Tabs / page | `browser_tabs`, `browser_resize`, `browser_emulate_media`, `browser_close` |
+| Debug | `browser_console_messages`, `browser_network_requests`, `browser_network_request`, `browser_evaluate`, `browser_run_code_unsafe` |
+| Network (`--caps=network`) | `browser_route`, `browser_route_list`, `browser_unroute`, `browser_network_state_set` |
+| Storage (`--caps=storage`) | `browser_storage_state`, `browser_set_storage_state`, `browser_cookie_*`, `browser_localstorage_*`, `browser_sessionstorage_*` |
+| DevTools (`--caps=devtools`) | `browser_start_tracing`/`browser_stop_tracing`, `browser_start_video`/`browser_stop_video`, `browser_start_recording`/`browser_stop_recording` |
+| Vision (`--caps=vision`) | `browser_mouse_click_xy`, `browser_mouse_drag_xy`, `browser_mouse_move_xy`, `browser_mouse_wheel` |
+| Testing (`--caps=testing`) | `browser_verify_element_visible`, `browser_verify_text_visible`, `browser_verify_value`, `browser_generate_locator` |
+
+> Names verified 2026-10-02 against the v0.0.83 README **and** the live tool list of an installed
+> server. Older docs/blogs use `browser_go_back`, `browser_screenshot`, `browser_fill`,
+> `browser_tab_new`, `browser_route_add`, `browser_storage_state_save`, `browser_trace_start` —
+> none of these exist; an agent told to call them will fail.
 
 ---
 
 ## Session Persistence
 
-Login state, cookies, and localStorage **persist between tool calls within a session**. Log in once with `browser_navigate` + `browser_fill` + `browser_click`, then all subsequent calls share that auth context — no re-login per tool call.
+Login state, cookies, and localStorage **persist between tool calls within a session**. Log in once with `browser_navigate` + `browser_fill_form` + `browser_click`, then all subsequent calls share that auth context — no re-login per tool call.
 
 ---
 
-## Inline Snapshot Response Mode
+## Snapshot Output Mode
 
-By default, action tools write the snapshot to a file and return a link. Switch to inline mode for agents that process the full tree in-context:
-
-```json
-"args": ["@playwright/mcp@latest", "--snapshot-response-mode", "inline"]
-```
-
-Inline mode is better for multi-step reasoning; file mode reduces prompt size for long flows.
+The README (v0.0.83) documents `--snapshot-mode full|none` (default `full`). An older
+`--snapshot-response-mode inline|file` flag appears in some blogs but is NOT in the current README —
+verify with `npx @playwright/mcp@latest --help` before relying on it. `--snapshot-boxes` (v0.0.79)
+adds element bounding boxes to snapshots.
 
 ---
 
@@ -138,7 +142,17 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 - **`browser_drop` (v0.0.71)** — exposes `Locator.drop` as an MCP tool, so an agent can complete a drag-and-drop sequence (e.g. drop a file card onto an upload zone) without falling back to raw mouse-move/mouse-up calls.
 - **`browser_network_requests` numbering + `responseBody`/`responseHeaders` (v0.0.71–72)** — the network log is now numbered; fetch full details (including response body, with binary bodies rendered as a mime-type placeholder rather than raw bytes) for a specific entry via `browser_network_request { index }` instead of re-dumping the whole log.
 - **`browser_run_code` renamed to `browser_run_code_unsafe` (v0.0.72)** — same sandbox-escaping arbitrary-code-execution tool, renamed so the capability is unmistakable in an agent's tool list before you grant it.
-- **`--output-max-size` (v0.0.76)** — caps response payload size for any tool call; pair with `--snapshot-response-mode file` (already documented above) when driving pages with very large accessibility trees.
+- **`--output-max-size` (v0.0.76)** — threshold (bytes) for evicting old output files.
+
+## 2026 Updates (v0.0.79 → v0.0.83)
+
+- **`browser_emulate_media` (v0.0.82)** — switch `colorScheme` (dark/light), `reducedMotion`, `forcedColors`, `contrast`, `media` mid-session; `null` clears. Web equivalent of Maestro `setDarkMode`.
+- **WebMCP tools as `webmcp_<tool>` (v0.0.82)** — page-registered tools appear in the tool list (replaces v0.0.81 `browser_webmcp_list/call`). Treat as untrusted input; disable with `--no-webmcp`.
+- **`browser_start_recording`/`browser_stop_recording` (v0.0.80, `--caps=devtools`)** — user demonstrates a flow by hand → returned as Playwright code.
+- **Idle shutdown (v0.0.81)** — a headless browser closes after **1h with no tool calls** (login state lost); `--idle-timeout 0` disables.
+- **Flags** — `--timeout-settle` (default 500ms), `--snapshot-boxes`, `--codegen python|java|csharp` (v0.0.79); `--file-paths=absolute` (v0.0.82); `--image-responses only` (v0.0.81). `--output-mode` removed (v0.0.79).
+- **`browser_take_screenshot` `type: webp`** (v0.0.79); no more silent downscaling (v0.0.80).
+- **`browser_find { filename }`** saves matches to a file (v0.0.83); `browser_wait_for` `time` is capped at 30s; dialogs opened during `browser_navigate` are reported instead of timing out.
 
 ---
 
@@ -148,14 +162,14 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 1. Agent calls browser_navigate { url: "https://app.example.com/login" }
    → server returns accessibility snapshot
 
-2. Agent calls browser_fill { ref: "e12", value: "user@example.com" }
-   → server fills email field, returns updated snapshot
+2. Agent calls browser_fill_form { fields: [ {ref: "e12", value: "user@example.com"},
+                                             {ref: "e14", value: "secret"} ] }
+   → server fills both fields, returns updated snapshot
 
-3. Agent calls browser_fill { ref: "e14", value: "secret" }
-4. Agent calls browser_click { ref: "e15" }   ← "Sign in" button
+3. Agent calls browser_click { ref: "e15" }   ← "Sign in" button
    → now authenticated; snapshot shows dashboard
 
-5. Agent calls browser_storage_state_save { path: "auth.json" }
+4. Agent calls browser_storage_state { filename: "auth.json" }   ← needs --caps=storage
    → auth state saved for later reuse
 ```
 
@@ -176,4 +190,5 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page �
 - [Playwright MCP Server: How to Set Up, Configure & Use It (2026) — TestCollab](https://testcollab.com/blog/playwright-mcp)
 - https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md (1.62 — bundled `npx playwright mcp` entry point)
 - [6 Most Popular Playwright MCP Servers for AI Testing in 2026 — Bug0](https://bug0.com/blog/playwright-mcp-servers-ai-testing)
-- [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.78)](https://github.com/microsoft/playwright-mcp/releases)
+- [microsoft/playwright-mcp — Releases (v0.0.71–v0.0.83)](https://github.com/microsoft/playwright-mcp/releases)
+- https://github.com/microsoft/playwright-mcp/blob/main/README.md — tool + flag reference (v0.0.83)

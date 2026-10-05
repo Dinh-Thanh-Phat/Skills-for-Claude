@@ -32,6 +32,19 @@ npm install --save-dev @stryker-mutator/core @stryker-mutator/vitest-runner
 # npm install --save-dev @stryker-mutator/core @stryker-mutator/jest-runner
 ```
 
+### ⚠️ Version compatibility (StrykerJS 10, Aug 2026)
+- StrykerJS 10 requires **Node.js ≥ 22** (Node 20 dropped — the only breaking change in 10.0.0).
+- **Do NOT pair `@stryker-mutator/vitest-runner@10.0.0` with Vitest 5.x.** Vitest 5 joins test names
+  with `" > "`, the runner's per-test filter matches nothing, every covered mutant runs 0 tests and is
+  reported **Survived** — scores collapse toward 0% (reported 92% → 0%). npm gives no warning (peer is
+  `vitest >=2.0.0`). Pin `vitest@^4.1` for mutation runs until a fixed runner ships — track
+  [#6210](https://github.com/stryker-mutator/stryker-js/issues/6210) / fix PR
+  [#6214](https://github.com/stryker-mutator/stryker-js/pull/6214) (open as of 2026-10-02).
+- Sanity check: a score that suddenly drops toward 0 with `testsCompleted: 0` in `mutation.json`
+  = this bug, not bad tests. Don't "fix" tests against it.
+- New in 10: partial incremental report saved if the run crashes; new empty-expression mutator
+  (removes call statements like `foo();`); experimental TypeScript 7 in the typescript-checker; Mocha 12.
+
 ```json
 // stryker.config.json
 {
@@ -184,6 +197,8 @@ Use both: high coverage + low mutation score = tests run the code but don't asse
 
 ## Sources
 
+- [StrykerJS v10.0.0 release notes](https://github.com/stryker-mutator/stryker-js/releases/tag/v10.0.0)
+- [vitest-runner + Vitest 5 issue #6210](https://github.com/stryker-mutator/stryker-js/issues/6210)
 - [StrykerJS — GitHub](https://github.com/stryker-mutator/stryker-js)
 - [Incremental Mode Docs — Stryker Mutator](https://stryker-mutator.io/docs/stryker-js/incremental/)
 - [Announcing Incremental Mode — Stryker Blog](https://stryker-mutator.io/blog/announcing-incremental-mode/)

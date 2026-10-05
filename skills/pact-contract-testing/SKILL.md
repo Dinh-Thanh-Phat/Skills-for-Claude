@@ -105,8 +105,16 @@ npx pact-broker publish ./pacts \
   --broker-base-url $PACT_BROKER_URL \
   --broker-token $PACT_BROKER_TOKEN \
   --consumer-app-version $GIT_SHA \
-  --tag $BRANCH_NAME
+  --branch $BRANCH_NAME          # docs now recommend --branch over the older --tag
 ```
+
+> **pact-js v17 (2026):** Node 20 dropped in v17.0.0 (CI tests Node 26 — use Node ≥ 22; exact floor
+> not stated). v17.1: `MatchersV3` gains `email()`, `iso8601DateTime()`, `iso8601Date()`,
+> `ipv4Address()`, `ipv6Address()`, `hexadecimal()`, `rfc1123Timestamp()` — prefer them over
+> hand-written `regex()` for format-only fields; Verifier supports mTLS client certs. v17.1.3: state
+> handlers may be `{ setup, teardown }` objects (TS types fixed). v16.5: `matchStatus()` for status
+> classes, XML bodies in V4.
+> Source: https://github.com/pact-foundation/pact-js/releases
 
 ```bash
 # Record that a version has been deployed (tell the broker what's in prod/staging)
@@ -175,7 +183,7 @@ Add to your CI/CD pipeline as a gate step after provider tests and before the de
 - [ ] Provider CI: fetch and verify all consumer contracts → publish results to broker
 - [ ] Both pipelines: call `can-i-deploy` before deploy step; fail the build if it returns non-zero
 - [ ] Post-deploy: call `record-deployment` so the broker's environment model stays accurate
-- [ ] Tag contracts with branch names so feature branches don't block main deployments
+- [ ] Publish contracts with `--branch` so feature branches don't block main deployments
 
 ---
 

@@ -278,8 +278,13 @@ an empty cell is not.
 
 ## Related skills
 
+- `android-17-qa-gate` — next gate: targetSdk 37 turns several of these opt-ins into defaults (local-network permission, SMS OTP delay, CT, resizability opt-out removed)
 - `android-adb` — the adb command surface used throughout this gate
 - `responsive-viewport-testing` — rotation / multi-window layout assertions
 - `maestro-mobile` — encoding these checks as repeatable flows
 - `state-ripple-verify` — rotation destroys and recreates the activity; verify downstream state
 - `qa-bug-report` / `bug-repro-isolation` — isolate device API vs targetSdk before blaming a change
+
+## Sources
+- https://developer.android.com/about/versions/16/behavior-changes-16 — behaviour changes for apps targeting API 36: `windowOptOutEdgeToEdgeEnforcement` deprecated+disabled, predictive back default (`onBackPressed()` not called, `KEYCODE_BACK` not dispatched) with temporary `enableOnBackInvokedCallback` opt-out, orientation/resizability/aspect-ratio ignored at ≥600dp with `PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` opt-out expiring at API 37, `BODY_SENSORS` → `READ_HEART_RATE`, `RESTRICT_LOCAL_NETWORK` compat flag, `elegantTextHeight`, `scheduleAtFixedRate()`, MediaStore version, Safer Intents
+- https://developer.android.com/about/versions/16/behavior-changes-all — changes affecting all apps regardless of targetSdk

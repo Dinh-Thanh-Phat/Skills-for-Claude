@@ -93,6 +93,9 @@ route it to the app team, do not attempt to work around it in the test layer.
 > **Report it as a blocker with the environment matrix.** A "flaky test" label here is wrong and
 > costs the team days. This blocks the whole suite on the affected screens.
 
+> **Status 2026-10-02:** not fixed by any later Xcode (26.3–26.5, 27.0 notes mention no fix). The
+> accepted fix is the app-side refactor (remove the attribute-graph cycle) — upgrading Xcode won't help.
+
 ---
 
 ## 2. Navigation-bar accessibility IDs invisible on iOS 26
@@ -113,6 +116,9 @@ breaks. This is high-traffic: nav-bar buttons terminate most edit and detail flo
 > ⚠️ Falling back to label text quietly makes the suite **locale-dependent** and brittle. If you do
 > it, log it as tech debt with the defect reference — do not let it silently become the standard.
 
+> **Status 2026-10-02:** appium#21449 closed as "third party/upstream"; workaround remains
+> `accessibilityLabel`. Unverified on iOS 27.
+
 ---
 
 ## 3. Accessibility Inspector shows an empty hierarchy
@@ -131,6 +137,9 @@ misleading test output there is — it looks like "the screen is empty" when it 
    - Tree empty there too → the instrument is broken → switch tools before concluding anything.
 2. Cross-check with a second tool that reads the same tree — `maestro studio`, Appium Inspector, or
    `xcrun simctl ui`. Agreement across two independent readers is what makes the finding real.
+
+> Xcode 27.0's fix "Accessibility Inspector cannot inspect elements in simulators (179033881)" is a
+> separate 27-beta bug — do NOT read it as fixing this section.
 
 ---
 
@@ -160,6 +169,10 @@ xcrun simctl delete unavailable        # removes runtimes Xcode can no longer us
 > `xcrun simctl erase all` wipes **every** simulator's data, including any signed-in state or
 > fixtures other suites depend on. Prefer erasing a specific UDID. Check what is booted first.
 
+> **Status:** Xcode 26.4 fixed it ("Simulator runtime dyld shared caches are once again being created
+> automatically", 170836966); Xcode 27 runtimes ship a prebuilt dyld cache (179846743). The
+> `dyld_shared_cache update --all` command is only needed on Xcode 26.0–26.3; optional afterwards.
+
 ---
 
 ## 5. Toolchain compatibility constraints
@@ -169,6 +182,7 @@ xcrun simctl delete unavailable        # removes runtimes Xcode can no longer us
 | Xcode 26 requires macOS Sequoia 15.4+ | CI runner images must be upgraded together with Xcode |
 | Xcode 26 supports on-device debugging for iOS 16+ only | Apps built with Xcode 26 will not run on iOS 15 and below — drop those from the device matrix or keep an older Xcode runner |
 | iOS UI tests need macOS + Xcode | No supported way to run them on Linux or Windows hosts — a Windows workstation must use a macOS CI runner or a real-device cloud |
+| Xcode 27 requires macOS Tahoe 26.6+, Apple silicon only; on-device debugging iOS 17+ only | iOS 15/16 devices need an Xcode 26 runner; iOS 27 devices still work with Xcode 26 — see `ios-27-test-gotchas` |
 
 ---
 
@@ -227,9 +241,14 @@ Run this after **any** Xcode or iOS runtime bump, before blaming the test suite:
 
 ## Related skills
 
+- `ios-27-test-gotchas` — Xcode 27 / iOS 27 toolchain breakages (Device Hub, WDA target 15, simctl diagnose)
 - `ios-xcrun` — the `simctl` command surface used here
 - `maestro-real-ios-device` — moving the critical subset onto physical iPhones
 - `maestro-studio` / `maestro-element-harvest` — the second independent tree reader used in §3
 - `playwright-diagnosis-first` — the general diagnose-before-fixing discipline this follows
 - `bug-repro-isolation` — one variable at a time before claiming a cause
 - `ask-when-stuck` — stop after 1–2 failed attempts rather than rewriting locators a third time
+
+## Sources
+- https://developer.apple.com/forums/thread/812307 — UI tests fail only on iOS 26+ under Xcode 26.1/26.2 but pass under 26.0; error `No matches found for Descendants matching type TabBar`; root cause = attribute-graph cycles in custom views (OS-version-conditional TabView/ZStack styling); Accessibility Inspector also shows an empty hierarchy
+- https://github.com/appium/appium/issues/21347 — iOS 26 × Xcode 26: nav-bar `UIBarButtonItem` accessibility IDs not exposed on iOS 26 (work on 18.5), camera-roll alert and Face ID tuning, `xcrun simctl runtime dyld_shared_cache update --all` workaround for simulators failing to boot after a macOS upgrade

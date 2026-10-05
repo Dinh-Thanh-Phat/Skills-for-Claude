@@ -306,3 +306,35 @@ User yêu cầu "check lại xem workflow đã thật sự ổn chưa" — đọ
 - Corrected an earlier wrong guess in tethertails.md ("15 pets = my clutter" — actually pre-existing intentional seed data; only TEST_AUTO_Milo is mine).
 - Added MANDATORY gate #4 to maestro-mobile SKILL.md: never folder-batch `maestro test flows/<dir>` across multiple modules/accounts. Annotated the Quick Start folder-run example with the same warning.
 - Net: full 82-flow suite coverage is STILL not verified. Only canary + check_bell + the 5 clearState+login petmgmt flows (run individually, correct -e) are trustworthy.
+
+---
+
+## 2026-10-02 — Version sweep (Maestro 2.11, maestro-runner 1.1.28, Vitest 5, Stryker 10, DeepEval 4.2, pact-js 17, k6 2.x, playwright-mcp 0.0.83, Android 17, iOS 27)
+
+**New skills:** `android-17-qa-gate`, `ios-27-test-gotchas`
+
+**Skills updated:**
+- `maestro-mobile` — 2.11.0 (setDarkMode/setAirplaneMode only enabled|disabled + optional, start/end rejected in selectors, Android 17 start-device); measured: assertDarkMode only proves the device setting (Soundwise WL ignores theme), wait for real content after theme switch/launch; held swipe = long-press anti-pattern (hit ⋮ on Audiobrary PROD)
+- `maestro-real-ios-device` — official CLI 2.11 rejects physical iPhones; maestro-runner 1.1.28 breaking changes (DeviceLab default driver, whole-value selectors, `-e` parsing), `--team-id`, README install/run syntax
+- `playwright-mcp-server` — tool table had mostly non-existent names (browser_go_back, browser_fill, browser_screenshot…) → fixed to v0.0.83 names; v0.0.79–83 updates (emulate_media, webmcp_*, recording, 1h idle shutdown)
+- `vitest-unit-testing` — Vitest 5 gotchas (Node 22.12/Vite 6.4, clearMocks default, vi.mock top-level only, un-awaited resolves fails)
+- `mutation-testing-stryker` — Stryker 10 Node 22; ⚠️ vitest-runner 10.0.0 + Vitest 5 = false ~0% scores (#6210)
+- `deepeval-llm-cicd`, `llm-hallucination-detection` — DeepEval 4.2 flipped Hallucination/Bias/Toxicity/Misuse to higher-is-better: old `threshold=0.2` now silently passes everything; flaky=True; 4.2.x opt-ins
+- `pact-contract-testing` — pact-js 17 (Node 20 dropped, V3 format matchers), publish with `--branch`
+- `llm-load-testing` — k6 2.x removals, xk6-sse v0.2.0, fixed missing `Trend('ttft')`
+- `ios-26-test-gotchas`, `android-16-qa-gate`, `maestro-studio` — status notes + cross-links to the new skills
+
+---
+
+## 2026-10-02 (đợt 2) — Full audit 174 skills (9 batches, verified against official sources)
+
+~120 skills updated. Highest-impact fixes:
+- test-dialog-pom-pattern: Promise.all(waitForEvent('dialog'), click()) deadlocks (dialogs.md) → page.once / unawaited waitForEvent
+- odoo-project-automation (+refs/README/evals): priority inverted (Odoo 19: 0=Low..3=Urgent), non-existent scripts → mcp__odoo__*, stages/tags fixed
+- qa-generator: Groq llama-3.1-8b / 3.3-70b shut down 2026-08-16 → openai/gpt-oss-20b/120b
+- Known-bug policy unified on skip-vs-fail (test.fail lock) across 6 skills; CI retries:1 + retryStrategy isolated
+- Playwright: page.accessibility removed (1.57), --order→--shuffle, isVisible timeout ignored, toHaveScreenshot, WebSocketRoute API, drop() 1.60, CT → stories/gallery rewrite, playwright-bdd v9 rewrite
+- Maestro: invented --retry-on-failure / maestro validate removed; official MCP tool list; assertScreenshot needs baseline; AI commands are Cloud-backed
+- LLM: llm-agent-trace-eval used non-existent DeepEval APIs; garak/PyRIT/DeepTeam/promptfoo examples fixed; Ragas 0.4 API
+- skill-updater now creates <name>/SKILL.md (flat .md never loads); qa-router gained Chatbot/LLM/Regression branches + Android 17 / iOS 27 gates
+Pending user decisions: merges (see session summary), 13 flat business .md, gdrive TOKEN_PATH, stale README copies.
