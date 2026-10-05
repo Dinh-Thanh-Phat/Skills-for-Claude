@@ -130,7 +130,7 @@ phải kiểm chủ động trước khi coi là xong:
 | File tên đúng `SKILL.md` (hoa) | 4 skill tên `skill.md` → Mac/Linux không load |
 | UTF-8 **không BOM**, dòng 1 là `---` | 19 skill có BOM → front-matter hỏng, KHÔNG load kể cả trên máy mình suốt nhiều tháng |
 | Front-matter có `name` + `description` | description là thứ Claude dùng để chọn skill |
-| Không đường dẫn cứng `C:\Users\<me>`, `D:\HK8...` | dùng `~/...`, `os.path.expanduser`, hoặc biến môi trường |
+| Không đường dẫn cứng tới máy mình (thư mục user, ổ dự án) | dùng `~/...`, `os.path.expanduser`, hoặc biến môi trường |
 | Không nhắc skill cá nhân như thể bắt buộc | ghi "(nếu đã cài)" — máy người khác không có odoo-*/incard-* |
 | Skill gắn tài khoản/dự án riêng | thêm tên vào `PERSONAL` trong `~/.claude/hooks/sync-skills-repo.py`, nếu không sẽ bị đẩy lên |
 | Cần công cụ/API key mới | thêm dòng vào `docs/REQUIREMENTS.md` của repo |
