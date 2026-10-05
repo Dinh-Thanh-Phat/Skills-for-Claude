@@ -1,6 +1,6 @@
 # What each group of skills needs
 
-Skills are plain instructions — **all 166 load without installing anything**. The tools below are only
+Skills are plain instructions — **all 165 load without installing anything**. The tools below are only
 needed when you actually run what a skill describes. `python install.py` prints which ones it found.
 
 | Skills | Needs | Install |

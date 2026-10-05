@@ -1,6 +1,6 @@
 # Skills-for-Claude
 
-166 Claude Code skills for QA automation — Playwright E2E, Maestro mobile, LLM/chatbot evaluation,
+165 Claude Code skills for QA automation — Playwright E2E, Maestro mobile, LLM/chatbot evaluation,
 test design and debugging discipline. Clone, run one command, restart Claude Code.
 
 ## Install (2 minutes)
@@ -65,7 +65,6 @@ project-example/   project-level skills (React/Figma/OpenSpec) — opt-in via --
 docs/              REQUIREMENTS.md, QA-HOOKS.md
 tools/             check_skills.py (lint + regenerate SKILLS.md), google_auth.py (Drive/Sheets token)
 install.py         the installer; setup.ps1 / setup.sh just find Python and call it
-personal/          maintainer-only skills, notes and sync hook — NOT installed
 ```
 
 ## Contributing a skill

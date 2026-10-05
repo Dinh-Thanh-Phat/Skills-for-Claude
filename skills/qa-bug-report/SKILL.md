@@ -216,7 +216,7 @@ Sau khi viết xong bug report, **luôn hỏi:**
 
 ### Cách thực hiện
 
-Khi user confirm log Odoo → delegate sang `odoo-project-automation` skill.  
+Khi user confirm log Odoo → delegate sang `odoo-project-automation` skill (nếu đã cài; không có thì xuất bug report dạng markdown).  
 **Không** gọi MCP `mcp__odoo__*` trực tiếp — luôn qua skill.
 
 Thông tin cần truyền sang skill:

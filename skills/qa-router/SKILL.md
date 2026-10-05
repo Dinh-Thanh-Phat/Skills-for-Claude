@@ -205,7 +205,7 @@ User nói: "viết bug report", "log bug", "tìm ra bug"
                     ↓
          Hỏi: "Log lên Odoo luôn không?"
                     ↓
-         YES → odoo-project-automation
+         YES → odoo-project-automation (skill riêng, chỉ khi đã cài)
 ```
 
 > **Mọi causal claim ("làm X gây Y") + mọi lần gán severity → `bug-repro-isolation` TRƯỚC.**
@@ -285,7 +285,7 @@ User nói: "test chatbot", "bot trả lời sai", "sửa instruction/KB", "hallu
    Sửa bot (instruction / KB / toggle)?
      → chatbot-platform-config-audit (inventory toggle TRƯỚC)
      → chatbot-instruction-authoring / chatbot-kb-file-design
-   Bot InCard gửi ảnh sản phẩm sai/thiếu → incard-agentic-chatbot-images
+   Bot InCard gửi ảnh sản phẩm sai/thiếu → incard-agentic-chatbot-images (skill riêng, chỉ khi đã cài)
                     ↓
    Đo accuracy theo tài liệu → chatbot-tester (pipeline: gdrive-doc-reader →
      qa-generator → chatbot-api-caller → response-evaluator → test-reporter)
@@ -389,5 +389,5 @@ Khi request không rõ, hỏi **1 câu** trước khi route:
 - Debug: `qa-router` → `playwright-diagnosis-first` → `ask-when-stuck` → fix xong → rerun canary-only (`test-rerun-discipline`)
 - Chatbot/LLM: `qa-router` → `chatbot-platform-config-audit` (nếu sửa bot) → `chatbot-tester` / `llm-*` tương ứng
 - Regression/release: `qa-router` → `qa-regression` (+ `smoke-test-gating`, `test-impact-analysis`)
-- Bug report: `qa-router` → `bug-repro-isolation` (cô lập nguyên nhân) → `qa-bug-report` → `odoo-project-automation`
+- Bug report: `qa-router` → `bug-repro-isolation` (cô lập nguyên nhân) → `qa-bug-report` → `odoo-project-automation` (nếu đã cài)
 - Close: `qa-router` → `qa-session-close` → `beads`

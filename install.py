@@ -243,7 +243,6 @@ def main():
     p.add_argument('--skip-settings', action='store_true', help='do not touch settings.json')
     p.add_argument('--skip-plugins', action='store_true', help='do not install Claude Code plugins')
     p.add_argument('--project', metavar='DIR', help='also copy project-example skills into DIR/.claude/skills')
-    p.add_argument('--include-personal', action='store_true', help='maintainer: also install personal/skills')
     p.add_argument('-v', '--verbose', action='store_true')
     args = p.parse_args()
 
@@ -253,8 +252,6 @@ def main():
 
     step('Skills')
     changed = install_tree(os.path.join(REPO, 'skills'), os.path.join(CLAUDE, 'skills'), 'skills')
-    if args.include_personal:
-        changed += install_tree(os.path.join(REPO, 'personal', 'skills'), os.path.join(CLAUDE, 'skills'), 'personal skills')
 
     step('Hooks')
     hook_files = ['fix-flat-skill.py']
