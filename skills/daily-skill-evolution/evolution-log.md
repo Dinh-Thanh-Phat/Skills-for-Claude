@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-10-13 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest now 1.64.0; release-notes-js.md), Maestro/mobile (CHANGELOG — 2.11.0 still latest; Unreleased unchanged), AI chatbot/LLM testing (Promptfoo 0.124.1 up from 0.123.1, no notes verified; DeepEval 4.2.8 unchanged).
+
+- CREATED: skills/playwright-1.64-new-apis — Playwright 1.64: WebMCP (`page.webmcp`), `Locator.within()`, `--shuffle`, `TestProject.default`, describe-level `lock`, WebP screenshots, video fps/CSS styles, 4 breaking changes — https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/release-notes-js.md
+
 ## 2026-10-06 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.63.0, next 1.64.0-alpha only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still latest release; Unreleased now has scroll `speed`/point validation entries, unshipped so not documented), AI chatbot/LLM testing (Promptfoo 0.123.1 unchanged; DeepEval PyPI 4.2.8 unchanged, release notes still unverified).
