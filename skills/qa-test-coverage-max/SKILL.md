@@ -201,9 +201,21 @@ without trying to):**
 
 ---
 
-## PHASE 3 — Gap Analysis Before Declaring Done
+## PHASE 4 — Gap Analysis Before Declaring Done
 
 Run this checklist before saying "coverage is complete":
+
+### Sanity-check ratio (catches silent over-merging)
+
+```
+[ ] total_cases ÷ total_requirements_in_spec ≥ ~1.0
+    If this ratio is well below 1 (e.g. 130 cases for 195 requirements), you merged too
+    aggressively in Phase 1, or skipped the state-transition matrix in Phase 2. Go back —
+    do not "fix" this by adding a few category-filler cases, fix it by un-merging and by
+    filling in missing transition rows.
+[ ] For any module with a state machine: transition_cases ≥ number_of_reachable_transitions
+    in the Phase 2 table (not just ≥1).
+```
 
 ### Coverage by Source
 ```
