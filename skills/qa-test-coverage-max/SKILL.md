@@ -116,7 +116,44 @@ For EACH screen visible in Figma, extract:
 
 ---
 
-## PHASE 2 — 8-Category Coverage Matrix
+## PHASE 2 — State-Transition Matrix (for any module with a state machine)
+
+If a module has a `status`/`state` field with more than 2 values (booking status, order status,
+subscription status, approval status...), **do not settle for "STATE ≥ 1 case" — that single case proves
+nothing about the other N-1 transitions.**
+
+1. List every state the entity can be in (from the spec's enum, DB schema, or state diagram).
+2. List every transition that is actually reachable — both the ones a user triggers (cancel, submit,
+   approve) and the ones a system/cron/trigger causes (expire, auto-timeout, webhook callback).
+3. Build the transition table explicitly:
+
+   | From state | To state | Trigger (who/what) | Case ID |
+   |---|---|---|---|
+   | searching | accepted | tasker accepts offer | BKG-xxx |
+   | searching | expired | cron, no offer accepted within window | BKG-xxx |
+   | searching | cancelled | customer cancels | BKG-xxx |
+   | searching | cancelled | admin cancels | BKG-xxx |
+   | accepted | en_route | tasker marks "on my way" | JOB-xxx |
+   | accepted | cancelled | admin force-cancels non-terminal | BKG-xxx |
+   | ... | ... | ... | ... |
+
+4. **Every row needs its own case.** A row with no Case ID is a gap — this is usually where the richest
+   bugs hide (e.g. two different actors triggering `cancelled` have different authorization rules and
+   different side effects; testing only one proves nothing about the other).
+5. Also write 1 case per **illegal transition** per state machine (e.g. `completed → anything` must be
+   rejected) — these are NEG/SEC cases, but they only exist because you built the matrix first.
+
+This phase is why a module like Booking (a real state machine: searching/accepted/en_route/in_progress/
+completed/cancelled/expired, each reachable from multiple triggers) legitimately needs 30-40 cases, not
+10-17 — the transition table makes that size visible and justified, instead of arbitrary.
+
+---
+
+## PHASE 3 — 8-Category Safety Net (run AFTER Phase 1 and 2, never as the generation target)
+
+> ⚠️ **This phase catches what Phase 1/2 missed — it is not where case-writing starts, and the numbers
+> below are a FLOOR, never a target to stop at.** If your case count per module is close to
+> `8 categories × 1-2 cases`, you generated from this phase instead of from Phase 1/2 — go back.
 
 For EVERY module, ensure ALL 8 **mandatory** categories are covered. Mark any mandatory category with 0 cases as a **gap**.
 
