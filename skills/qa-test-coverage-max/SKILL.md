@@ -52,7 +52,18 @@ Before writing a single test case, catalog EVERY source the user has given you:
 
 ---
 
-## PHASE 1 — Extract Features from Each Source
+## PHASE 1 — Requirement-Level Case Mapping (the PRIMARY counting unit)
+
+> **Hard rule: 1 requirement = 1 case, by default.** A PRD with 195 numbered FR/NFR/AC rows means you
+> start from an expectation of ~195+ cases, not ~130 and not ~10/module. Only merge 2+ requirements into
+> one case when they describe **literally the same user action in the same step** (e.g. "phone typed
+> twice" + "phone normalized to +84" are both asserted by the SAME signup submission — fine to merge).
+> Never merge because it "saves time" or because the category-minimum is already satisfied — that is
+> exactly the shortcut that caused the Antaskly incident above.
+>
+> Before writing any case, produce a literal table: `Requirement ID | 1-line description | Case ID(s)
+> that cover it`. Every row must have at least 1 case ID. A requirement with zero case IDs is a gap, full
+> stop — it does not matter if the module's 8-category counts already look complete.
 
 ### From Scope Document (Google Sheets / Excel)
 
