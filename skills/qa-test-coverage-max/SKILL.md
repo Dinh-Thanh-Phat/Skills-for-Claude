@@ -182,7 +182,9 @@ For EVERY module, ensure ALL 8 **mandatory** categories are covered. Mark any ma
 | **Performance (PERF)** | ⚡ | Load time with large data sets, scroll performance, cold launch time |
 | **Platform/Device** | 📱 | iOS-specific, Android-specific, mobile browser, desktop browser, responsive |
 
-**Minimum per module (mandatory):**
+**Floor per module (NOT a target — these are the numbers below which you have definitely missed
+something; a thorough module built from Phase 1+2 will usually clear every one of these by a wide margin
+without trying to):**
 - POS: ≥ 2 cases (at least 1 happy path, 1 alternate success)
 - NEG: ≥ 2 cases
 - EDGE: ≥ 1 case (special character / empty / many items)
