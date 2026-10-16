@@ -258,7 +258,7 @@ Run this checklist before saying "coverage is complete":
 
 ---
 
-## PHASE 4 — Case Writing Standards
+## PHASE 5 — Case Writing Standards
 
 Each test case MUST have ALL fields populated — no placeholders:
 
