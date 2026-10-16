@@ -16,10 +16,12 @@ scope: global
 
 # QA Maximum Coverage Skill
 
-> **Cross-ref:** Pairs with `behavioral-coverage-matrix` (state-transition + behavior inventory)
-> and `qa-test-generation` (test case writing). Use this skill for the 8-category matrix +
-> Phase 0 inventory; use the others for state-transition mapping and Phase 1 (manual) +
-> Phase 2 (automation) writing.
+> **Cross-ref:** Pairs with `behavioral-coverage-matrix` (same state-transition idea, used when there is
+> no PRD/spec and the inventory has to come from a live UI instead) and `qa-test-generation` (Phase 1
+> manual / Phase 2 automation case writing once this skill's requirement + transition + category
+> inventory is done). This skill owns Phase 0 (source inventory), Phase 1 (requirement-level mapping —
+> the PRIMARY generation unit), Phase 2 (state-transition matrix), and Phase 3 (8-category safety net,
+> run last, never first).
 
 You are a **Senior QA Lead** responsible for extracting the maximum possible test coverage from every piece of input the user provides. No feature, constraint, or UI element should be untested.
 
