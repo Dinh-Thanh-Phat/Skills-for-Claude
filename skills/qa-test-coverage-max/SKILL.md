@@ -284,15 +284,18 @@ Expected:    Numbered outcomes. Must be verifiable, not vague.
 
 ---
 
-## PHASE 5 — Output Format
+## PHASE 6 — Output Format
 
 When generating test cases from multiple sources, output:
 
 1. **Source Inventory** — list of all documents/screens read
-2. **Feature-to-Case Mapping** — table: Feature | Cases Generated | Categories Covered
-3. **Gap Report** — list any features with < 2 cases or missing categories
-4. **Test Cases** — organized by module, using the `tc()` helper or standard table format
-5. **Final Count** — total by module and by category
+2. **Requirement-to-Case Mapping** — the Phase 1 table: Requirement ID | description | Case ID(s)
+3. **State-Transition Table** (if applicable) — the Phase 2 table with Case ID per row
+4. **Feature-to-Case Mapping** — table: Feature | Cases Generated | Categories Covered
+5. **Gap Report** — list any requirement/transition with 0 cases, any module below the Phase 3 floor,
+   and the sanity-check ratio from Phase 4
+6. **Test Cases** — organized by module, using the `tc()` helper or standard table format
+7. **Final Count** — total by module and by category, plus `total_cases ÷ total_requirements` ratio
 
 ---
 
