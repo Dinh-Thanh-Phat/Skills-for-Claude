@@ -308,5 +308,8 @@ When generating test cases from multiple sources, output:
 | Expected output: "No errors" | Can't verify — what does success look like? | Specify exact UI state, data change, message |
 | 0 security cases for a module with user input | SQL injection / XSS can happen in any text field | Add ≥ 1 SEC case per input module |
 | Only happy-path cases | Bugs live in sad paths | Always pair each POS with at least 1 NEG |
-| Declaring done without running gap analysis | Coverage illusion | Always run Phase 3 checklist before stopping |
+| Declaring done without running gap analysis | Coverage illusion | Always run Phase 4 checklist before stopping |
 | Reading only the first sheet of a scope spreadsheet | Features in other sheets are missed | Always read ALL sheets |
+| Merging multiple requirements into one combo case to move faster | Hits the 8-category floor cheaply while destroying requirement-level resolution — exactly the Antaskly incident above | Default to 1 requirement = 1 case (Phase 1); only merge when they're the same user action in the same step |
+| Writing "1 case per category" as the generation loop (`for category in 8_categories: write 1-2 cases`) | Produces ~10-16 cases/module regardless of how big or complex the module actually is — the output size tracks the category list, not the spec | Generate from Phase 1 (requirements) + Phase 2 (state transitions) first; only run the category pass (Phase 3) afterward, as a gap-finder |
+| Module has an obvious state machine (status field with 3+ values) but only 1 STATE case | Only 1 of N reachable transitions got tested — the other N-1 are unverified, and that's usually where the real bugs are | Build the full Phase 2 transition table; 1 case per reachable transition, not "STATE ≥ 1 and move on" |
