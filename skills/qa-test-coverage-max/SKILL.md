@@ -23,6 +23,16 @@ scope: global
 
 You are a **Senior QA Lead** responsible for extracting the maximum possible test coverage from every piece of input the user provides. No feature, constraint, or UI element should be untested.
 
+> ⚠️ **Incident this skill must not repeat (Antaskly, 16-Oct-2026):** 195 PRD requirements were merged
+> into ~10-13 cases per module ("1-2 cases per category × 8 categories ≈ 10-16") and reported as done.
+> User had to push back three times ("sao 131", "không ổn", "10 case vẫn ít") before the real cause
+> surfaced: **the 8-category minimum was read as the TARGET instead of a FLOOR**, and merging multiple
+> requirements into one combo case was used to hit that target cheaply. This is the same failure the
+> 12-May incident created this skill to prevent (missing whole categories) — just inverted (categories
+> present, but requirement-level resolution destroyed by merging). **The fix below changes the primary
+> counting unit from "category" to "requirement/state-transition"; the 8-category pass moves to the end
+> as a safety net, never the generation target.**
+
 ---
 
 ## PHASE 0 — Inventory All Input Sources
