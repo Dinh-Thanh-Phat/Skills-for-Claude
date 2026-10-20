@@ -153,7 +153,7 @@ edge cases are always re-run first.
 
 ## Schemathesis (OpenAPI-driven, Python) — for the "Schema compliance" invariant
 
-If the API has an OpenAPI/GraphQL schema, Schemathesis (current major **4.x**, 4.29 on PyPI)
+If the API has an OpenAPI/GraphQL schema, Schemathesis (current major **4.x**, 4.32.1 on PyPI as of 2026-10-20)
 generates requests from the schema itself (built on Hypothesis) and checks responses for 5xx,
 schema conformance, status-code and content-type mismatches — no hand-written arbitraries.
 
