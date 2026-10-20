@@ -5,7 +5,7 @@ description: Use Playwright 1.63 (September 2026) new APIs including named test 
 
 # Playwright 1.63 New APIs
 
-Released September 4, 2026, ~6 weeks after 1.62. Latest stable as of 2026-10-02 (1.64 exists only as `next` alpha builds — don't rely on 1.64 APIs yet). See §9 for announcements (CT experimental packages frozen, Ubuntu 20.04 dropped).
+Released September 4, 2026, ~6 weeks after 1.62. Superseded as latest stable by 1.64 (2026-10-07) — see `playwright-1.64-new-apis`. See §9 for announcements (CT experimental packages frozen, Ubuntu 20.04 dropped).
 
 ## 1. Test Locks — Serialize Tests on a Shared Resource
 
