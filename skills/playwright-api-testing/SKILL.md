@@ -123,6 +123,10 @@ test("API call inherits browser auth cookies", async ({ page }) => {
 > (api-testing docs, "Context request vs global request").
 >
 > v1.63+: request methods take a response type — `const res = await request.get<User>('/api/users/42'); const user = await res.json(); // typed User`.
+>
+> v1.64+: `request.addCookies([{ name, value, url }])` / `request.cookies(url)` / `request.clearCookies({ name })`
+> seed or drop a cookie without a storageState file (each cookie needs `url` or `domain`+`path`).
+> On `page.request` they write the browser context's jar. Details + measured behaviour: `playwright-1.64-new-apis`.
 
 ## API Setup + UI Validation (Hybrid Pattern)
 
