@@ -579,6 +579,15 @@ def test_indirect_injection(chatbot_fn):
 
 Always supplement automated probes with 30-min manual red-team session before major releases.
 
+## Promptfoo 0.125.0 (2026-10-23) — What Changes for Test Suites
+
+Verified from the project CHANGELOG only (flag/option names beyond those below were not confirmed in docs — check `promptfoo --help` before relying on them):
+
+- **Breaking — Claude Agent SDK and Codex SDK providers are now opt-in.** Configs using those providers after upgrading will fail until the SDK is installed explicitly; pin Promptfoo in CI and read the upgrade notes before bumping. `jks-js` also became an optional peer dependency.
+- **Stability across repeated tests.** Eval summaries now report how consistent results are across repeated runs of the same test (`repeat: N` / `evaluateOptions.repeat`). Use it for nondeterministic chatbots: a test that passes 2 of 3 repeats is a flaky *defect signal*, not a pass.
+- **Safe mode** disables inline JavaScript execution in evals — enable it when running configs from untrusted sources (third-party PRs, shared red-team suites).
+- New assertion types `rouge-l` / `rouge-s`; optional Unicode normalization for `equals` / `contains`; trace-span filtering by attribute; new `arabic-presentation-forms` static encoding strategy for red-team encoding-bypass sweeps.
+
 ## Sources
 - OWASP LLM Top-10 2026 (LLM01: Prompt Injection): https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 - Garak vs PyRIT comparison 2026: https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/
@@ -609,3 +618,4 @@ Always supplement automated probes with 30-min manual red-team session before ma
 - Promptfoo 0.122.1 CHANGELOG (tracing subsystem, multi-turn attacker/grading token accounting): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - Promptfoo 0.123.0 CHANGELOG (`metadata.toolCalls` on MCP-enabled chat providers, PR #10516): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - Promptfoo MCP provider docs, "Asserting on Executed Tool Calls" section (verbatim source for the `metadata.toolCalls` example above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/mcp.md
+- Promptfoo 0.125.0 CHANGELOG (2026-10-23): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md

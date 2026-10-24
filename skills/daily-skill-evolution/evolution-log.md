@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-10-24 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-10-23 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still latest; Unreleased gained scroll `speed`/point validation, breaking, unreleased so not encoded), AI chatbot/LLM testing (Promptfoo 0.125.0 NEW; DeepEval PyPI 4.3.1 unchanged).
+
+- UPDATED: skills/llm-red-teaming — added Promptfoo 0.125.0 section (opt-in Claude Agent/Codex SDK providers breaking change, repeat-stability reporting, safe mode, rouge-l/s, arabic-presentation-forms strategy) — https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
+
 ## 2026-10-23 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-10-22 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still latest; Unreleased unchanged), AI chatbot/LLM testing (Promptfoo 0.124.1 unchanged; DeepEval PyPI 4.3.1 unchanged).
