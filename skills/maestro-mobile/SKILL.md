@@ -754,6 +754,23 @@ maestro hierarchy --compact
 - takeScreenshot: "${MAESTRO_FILENAME}-before-checkout"
 ```
 
+### CLI 2.12.0 — Stricter Scroll Validation + Crash/Launch Fixes (Oct 2026)
+
+- **Breaking — scroll `speed` must be 0–100:** out-of-range values now fail instead of silently
+  falling back to the default. Invalid `index`/`point`/`speed` are reported as test *errors*, so Maestro
+  Cloud no longer retries them pointlessly. Run `maestro check-syntax` after upgrading.
+- **`assertScreenshot` diffs** are now written into the run's artifacts dir, not beside the reference
+  image — collect them from artifacts in CI instead of the repo tree.
+- **Android:** `pressKey: Tab` types the right key; type/tap no longer wait on window animations (fixes
+  "Device server died" on slow splash-screen handoffs); `start-device` boot-wait and `sdkmanager` calls
+  are bounded so CI can't hang forever.
+- **iOS:** simulators start on Xcode 27 (no Simulator.app); crashes are detected from how the app process
+  ended, even when no crash report is written.
+- **Web:** `launchApp` waits for the opened page; Selenium 4.51.0 (Chrome 153-155).
+- **CLI:** `maestro cloud --priority low|normal|high` (MCP `run_on_cloud` gets `priority`); over-long
+  per-flow artifact dir names are shortened instead of failing; `appId` using `${...}` no longer breaks
+  crash-report collection.
+
 ## Parallel Local iOS Simulator Runs (2.6.0)
 
 Before CLI 2.6.0, running multiple `maestro test` processes against different iOS simulators
@@ -811,3 +828,4 @@ simulators at the same time.
 - https://docs.maestro.dev/
 - https://github.com/mobile-dev-inc/maestro/pull/3543 — `--device-os` accepts a full Android system image path (`system-images;<os>;<tag>;<abi>`), overloading the existing flag rather than adding a new one (2.10.0)
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (2.11.0 section) — Android 17 `start-device`, physical-iOS early failure, `start`/`end` selector rejection, `setDarkMode`/`setAirplaneMode` validation, `metadata.startedAtEpochMs`, Windows `maestro cloud` fix
+- https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.0 section) — scroll `speed` 0–100 validation, `assertScreenshot` diff location, Android/iOS/Web fixes, `maestro cloud --priority`

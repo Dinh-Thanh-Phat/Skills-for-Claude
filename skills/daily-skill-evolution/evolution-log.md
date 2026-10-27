@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-10-27 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-10-26 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.12.0 NEW), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.1 unchanged).
+
+- UPDATED: skills/maestro-mobile — added CLI 2.12.0 section (breaking scroll `speed` 0–100 validation, assertScreenshot diff location, Android/iOS/Web fixes, `maestro cloud --priority`) — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-10-26 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-10-25 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.11.0 still latest; Unreleased unchanged), AI chatbot/LLM testing (Promptfoo 0.125.1 — only a Discord invite link fix, not worth encoding).
