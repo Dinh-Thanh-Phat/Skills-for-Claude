@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-10-29 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` next 1.65.0-alpha-2026-10-28 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.12.0 still latest, already encoded; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.2 unchanged since 2026-10-27, release notes still unverified).
+
+- No changes — nothing new and verifiable.
+
 ## 2026-10-28 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-10-27 only; `@playwright/mcp` 0.0.83 unchanged), Maestro/mobile (CHANGELOG — 2.12.0 still latest, already encoded; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.2 NEW, uploaded 2026-10-27, but release notes unreachable — GitHub API blocked in this session — so contents unverified and not encoded).
