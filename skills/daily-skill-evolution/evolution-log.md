@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-03 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-11-02 only; `@playwright/mcp` 0.0.84 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 NEW), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.2 unchanged).
+
+- UPDATED: skills/maestro-mobile — added CLI 2.12.1 section (`tapOn`/`openLink` `${...}` appId fix, OkHttp 4.12.1 rejecting compromised eMudhra CAs) — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-11-02 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-2026-11-01 only; `@playwright/mcp` 0.0.84 unchanged), Maestro/mobile (CHANGELOG — 2.12.0 still latest, already encoded; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.2 unchanged).

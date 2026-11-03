@@ -771,6 +771,14 @@ maestro hierarchy --compact
   per-flow artifact dir names are shortened instead of failing; `appId` using `${...}` no longer breaks
   crash-report collection.
 
+### CLI 2.12.1 — appId Interpolation Fix + OkHttp Security Bump (Nov 2026)
+
+- **`tapOn` / `openLink` with `${...}` appId:** previously the literal `${...}` string was sent to the
+  driver, which slowed element taps on Android. Fixed — if you parameterize `appId` via env, upgrade
+  to 2.12.1 before chasing "slow tap" flakiness in your own flows.
+- **CLI:** OkHttp updated to 4.12.1, which rejects eight compromised eMudhra intermediate CA
+  certificates (relevant if your test backend chains to eMudhra).
+
 ## Parallel Local iOS Simulator Runs (2.6.0)
 
 Before CLI 2.6.0, running multiple `maestro test` processes against different iOS simulators
@@ -828,4 +836,5 @@ simulators at the same time.
 - https://docs.maestro.dev/
 - https://github.com/mobile-dev-inc/maestro/pull/3543 — `--device-os` accepts a full Android system image path (`system-images;<os>;<tag>;<abi>`), overloading the existing flag rather than adding a new one (2.10.0)
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (2.11.0 section) — Android 17 `start-device`, physical-iOS early failure, `start`/`end` selector rejection, `setDarkMode`/`setAirplaneMode` validation, `metadata.startedAtEpochMs`, Windows `maestro cloud` fix
+- https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.1 section — appId interpolation fix, OkHttp 4.12.1)
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.0 section) — scroll `speed` 0–100 validation, `assertScreenshot` diff location, Android/iOS/Web fixes, `maestro cloud --priority`
