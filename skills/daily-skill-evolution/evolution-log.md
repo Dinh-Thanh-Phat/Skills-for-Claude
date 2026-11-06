@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-06 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 NEW, published 2026-11-05), Maestro/mobile (CHANGELOG — 2.12.1 still latest, already encoded), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.3 patch bump, no verified behavior change).
+
+- CREATED: skills/playwright-1.65-new-apis — Bun runner, failures reporter/onlyFailures, `-exclusive-` lock, description-only skip/fixme, 10 breaking changes (inert, empty shard fails, RFC 6265 cookies, proxy creds, aria names) — https://github.com/microsoft/playwright/blob/main/docs/src/release-notes-js.md
+
 ## 2026-11-04 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.64.1, next 1.65.0-alpha-1793732293000 only; `@playwright/mcp` 0.0.84 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest, already encoded; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.2 unchanged).
