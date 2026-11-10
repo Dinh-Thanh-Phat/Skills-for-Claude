@@ -129,7 +129,7 @@ Inline mode is better for multi-step reasoning; file mode reduces prompt size fo
 
 ---
 
-## 2026 Updates (v0.0.71 → v0.0.82)
+## 2026 Updates (v0.0.71 → v0.0.85)
 
 Verified against the official `microsoft/playwright-mcp` GitHub releases page (v0.0.71–v0.0.80, and v0.0.82) and, for v0.0.81 (whose GitHub release page does not render via automated fetch), a direct diff of `config.d.ts` between the `0.0.80` and `0.0.81` npm tarballs — none of these were previously documented here:
 
@@ -152,6 +152,7 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page (v
 - **`browser_network_requests` numbering + `responseBody`/`responseHeaders` (v0.0.71–72)** — the network log is now numbered; fetch full details (including response body, with binary bodies rendered as a mime-type placeholder rather than raw bytes) for a specific entry via `browser_network_request { index }` instead of re-dumping the whole log.
 - **`browser_run_code` renamed to `browser_run_code_unsafe` (v0.0.72)** — same sandbox-escaping arbitrary-code-execution tool, renamed so the capability is unmistakable in an agent's tool list before you grant it.
 - **`--output-max-size` (v0.0.76)** — caps response payload size for any tool call; pair with `--snapshot-response-mode file` (already documented above) when driving pages with very large accessibility trees.
+- **v0.0.85 (npm, published 2026-11-09)** — verified by diffing the `0.0.84` and `0.0.85` npm tarballs (README, `config.d.ts`): (1) extension-mode controls — `--background` / `PLAYWRIGHT_MCP_BACKGROUND` (config `background`, default `false`) stops the server from activating controlled tabs or focusing the browser window, so an agent can drive the user's real Chrome without stealing focus; `--no-tab-group` / `PLAYWRIGHT_MCP_NO_TAB_GROUP` (config `tabGroup`, default `true`) disables grouping controlled tabs. Both apply only with `--extension`. (2) Path-valued config options (output/storage/etc.) now resolve relative to the **config file's directory**, not the CWD — re-check configs launched from a different working directory. (3) `browser_take_screenshot` description changed: with the `vision` capability, screenshot coordinates may drive the coordinate-based mouse tools for elements absent from the accessibility snapshot (snapshot remains the default for actions). Versions 0.0.83–0.0.84 are not itemized here.
 
 ---
 
@@ -193,3 +194,4 @@ Verified against the official `microsoft/playwright-mcp` GitHub releases page (v
 - https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.80
 - https://registry.npmjs.org/@playwright/mcp (v0.0.81 config.d.ts / package.json diff against v0.0.80, verified directly since the v0.0.81 GitHub release page would not render via automated fetch)
 - https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.82
+- https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.85.tgz (v0.0.85 vs v0.0.84 tarball diff, verified directly)

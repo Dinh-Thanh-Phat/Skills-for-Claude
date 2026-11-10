@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-10 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded; `@playwright/mcp` 0.0.85 NEW), Maestro/mobile (CHANGELOG — 2.12.1 unchanged), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.3 unchanged).
+
+- UPDATED: skills/playwright-mcp-server — v0.0.85: extension-mode `--background`/`--no-tab-group`, config-relative path resolution, screenshot/vision description — https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.85.tgz
+
 ## 2026-11-09 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded, next 1.66.0-alpha only; `@playwright/mcp` 0.0.84 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest, already encoded; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.3 unchanged).
