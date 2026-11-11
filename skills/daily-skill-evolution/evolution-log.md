@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-11 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded, next 1.66.0-alpha only — no official 1.66 notes yet; `@playwright/mcp` 0.0.85 already encoded yesterday), Maestro/mobile (CHANGELOG — 2.12.1 unchanged; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.3 unchanged; Nov 2026 web search returned only generic vendor guides — intent-based assertions, scored evals, risk-tiered testing, production monitoring — all already covered by response-evaluator, llm-golden-dataset-construction, llm-production-observability, deepeval-llm-cicd).
+
+- No changes — nothing new and verifiable.
+
 ## 2026-11-10 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded; `@playwright/mcp` 0.0.85 NEW), Maestro/mobile (CHANGELOG — 2.12.1 unchanged), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.3 unchanged).
