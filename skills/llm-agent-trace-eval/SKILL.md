@@ -66,6 +66,17 @@ def run_agent(user_query: str) -> str:
     return call_llm(f"Context: {docs}\nWeb: {web_result}\nQ: {user_query}")
 ```
 
+> **DeepEval ≥ 4.3.4 (Nov 2026): `@observe(metric_collection=...)` is a silent no-op.** In 4.3.3
+> the kwarg was forwarded to the span/trace (Confident AI ran that metric collection on it); 4.3.4
+> keeps it in the signature only for compatibility — "Deprecated, ignored … Don't build on it" —
+> and no longer sends it, so span-level online evals that relied on it stop producing scores
+> **without any error**. Attach metrics locally instead: `@observe(metrics=[...])` still works,
+> as does `evaluate(..., metric_collection="...")` at the end-to-end level (it still rejects
+> combining `metric_collection` with `metrics=`). After upgrading, check that span-level scores
+> are still showing up; an empty metric column is how this regression shows itself. The same
+> release replaced the `deepeval.openai` / `deepeval.anthropic` / framework patchers with an
+> OpenTelemetry bridge (`tracing/otel/setup.py`), so re-check custom span attributes after upgrading.
+
 ## Trace-Level Evaluation (End-to-End)
 
 ```python
@@ -192,6 +203,7 @@ def test_agent_tool_selection(query, expected_tool):
 
 ## Sources
 
+- [DeepEval 4.3.4 wheel on PyPI (diffed against 4.3.3: `deepeval/tracing/tracing.py`, `deepeval/evaluate/utils.py`, `deepeval/anthropic/__init__.py`)](https://pypi.org/project/deepeval/4.3.4/)
 - [LLM Agent Evaluation Metrics 2026 — Confident AI](https://www.confident-ai.com/blog/llm-agent-evaluation-complete-guide)
 - [Component-Level LLM Evaluation — DeepEval](https://deepeval.com/docs/evaluation-component-level-llm-evals)
 - [LLM Tracing — DeepEval](https://deepeval.com/docs/evaluation-llm-tracing)
