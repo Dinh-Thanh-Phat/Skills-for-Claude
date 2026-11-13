@@ -34,7 +34,7 @@ maestro test --env APP_ID=com.example.app login-flow.yaml
 maestro test flows/
 
 # Record a new flow interactively
-maestro record flow.yaml
+maestro record --local flow.yaml   # --local required while remote renderer is offline
 ```
 
 ## YAML Anatomy
@@ -778,6 +778,15 @@ maestro hierarchy --compact
   to 2.12.1 before chasing "slow tap" flakiness in your own flows.
 - **CLI:** OkHttp updated to 4.12.1, which rejects eight compromised eMudhra intermediate CA
   certificates (relevant if your test backend chains to eMudhra).
+
+### `maestro record` — Remote Renderer Offline (Unreleased, noted Nov 2026)
+
+- Per the upstream CHANGELOG "Unreleased" section, the **remote video renderer that `maestro record`
+  used by default is offline**. On ≤ 2.12.1, always pass `--local` (e.g. `maestro record --local
+  flow.yaml`) or the recording step can fail/hang — don't misread that as a flow failure.
+- Next release: local rendering becomes the only path (`--local` still accepted, no effect),
+  renders several times faster with smaller files, and no longer prints ANSI escape codes with
+  `--no-ansi` or non-TTY output (clean CI logs).
 
 ## Parallel Local iOS Simulator Runs (2.6.0)
 

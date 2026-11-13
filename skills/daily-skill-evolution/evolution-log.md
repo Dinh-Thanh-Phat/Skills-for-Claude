@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-13 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded; beta 1.65.0-beta / next 1.66.0-alpha-2026-11-12 only, no release notes; `@playwright/mcp` 0.0.85 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased section NEW), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.4 unchanged since yesterday).
+
+- UPDATED: skills/maestro-mobile — `maestro record` remote renderer is offline: use `--local` on ≤ 2.12.1; next release renders locally only, faster, smaller files, no ANSI codes in non-TTY output; Quick Start example updated — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-11-12 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.0 already encoded, next 1.66.0-alpha-2026-11-11 only; `@playwright/mcp` 0.0.85 already encoded), Maestro/mobile (CHANGELOG — 2.12.1 unchanged; Unreleased empty), AI chatbot/LLM testing (Promptfoo 0.125.1 unchanged; DeepEval PyPI 4.3.4 NEW, published 2026-11-11 — no release notes reachable, so verified by diffing the 4.3.3 vs 4.3.4 wheels).
