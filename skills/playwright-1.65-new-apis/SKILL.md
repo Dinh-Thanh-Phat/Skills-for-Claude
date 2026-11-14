@@ -9,13 +9,25 @@ description: >-
   `params` appended, blob reporter cleans dir). Use when upgrading to 1.65 or triaging CI failures
   right after the upgrade. Triggers on: "playwright 1.65", "bunx --bun playwright", "onlyFailures",
   "failures reporter", "-exclusive- lock", "pass-with-no-tests", "No tests found shard",
-  "useDefineForClassFields", "PLAYWRIGHT_TRANSFORM_CACHE_DIR".
+  "useDefineForClassFields", "PLAYWRIGHT_TRANSFORM_CACHE_DIR", "playwright 1.65.1", "Chromium 159".
 ---
 
 # Playwright 1.65 New APIs
 
 Released 2026-11-05 (Chromium 158, Firefox 159, WebKit 27.2; also tested on Chrome 157 / Edge 156).
 Node.js 20 is no longer tested; Docker images ship Node.js 26. Read the breaking changes first.
+
+## 1.65.1 patch (2026-11-13) — Chromium 159 roll
+
+No release notes published yet; verified by diffing the `playwright-core` 1.65.0 vs 1.65.1 tarballs.
+The only behavior change is the bundled **Chromium 158.0.8127.18 → 159.0.8154.6** (revision 1254 → 1255):
+- Run `npx playwright install chromium` after bumping — the old revision won't be reused, and CI
+  caches keyed on the Playwright version need a new key.
+- Every Chromium-based `devices[...]` descriptor's `userAgent` now says `Chrome/159.0.8154.6`.
+  Tests or snapshots that assert the literal UA string (or server-side UA sniffing) will change.
+- Browser roll in a patch release: expect small screenshot diffs in `toHaveScreenshot` baselines
+  (font/raster changes); re-baseline in one isolated commit, not mixed with feature changes.
+- No test-runner, reporter or API changes.
 
 ## Breaking changes — check before upgrading
 
@@ -75,4 +87,5 @@ console output missing from trace/UI mode. Keep CI on Node unless you have a rea
 
 ## Sources
 - https://github.com/microsoft/playwright/blob/main/docs/src/release-notes-js.md (Version 1.65)
-- https://registry.npmjs.org/@playwright/test (latest 1.65.0, published 2026-11-05)
+- https://registry.npmjs.org/@playwright/test (1.65.0 published 2026-11-05; 1.65.1 published 2026-11-13)
+- https://registry.npmjs.org/playwright-core/-/playwright-core-1.65.1.tgz (`browsers.json` diff vs 1.65.0)
