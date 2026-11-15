@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-15 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-14 only; `@playwright/mcp` 0.0.85 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged since yesterday, `maestro record` items already encoded in maestro-mobile), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.4 unchanged; Nov 2026 agent-eval search returned only older papers/guides already covered by llm-agent-trajectory-eval / llm-simulation-flywheel), QA test design (Nov 2026 search returned generic risk-based/shift-left guides already covered by qa-test-plan, behavioral-coverage-matrix, smoke-test-gating).
+
+- No changes — nothing new and verifiable.
+
 ## 2026-11-14 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 NEW, published 2026-11-13 — no release notes on GitHub/playwright.dev or web search yet, so verified by diffing the `playwright-core` 1.65.0 vs 1.65.1 tarballs; `@playwright/mcp` 0.0.85 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased adds an Android `maestro record` video-truncation fix, a minor bug fix not worth a skill edit), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.4 unchanged).
