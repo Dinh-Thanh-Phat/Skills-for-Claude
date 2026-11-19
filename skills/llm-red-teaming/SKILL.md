@@ -588,6 +588,24 @@ Verified from the project CHANGELOG only (flag/option names beyond those below w
 - **Safe mode** disables inline JavaScript execution in evals — enable it when running configs from untrusted sources (third-party PRs, shared red-team suites).
 - New assertion types `rouge-l` / `rouge-s`; optional Unicode normalization for `equals` / `contains`; trace-span filtering by attribute; new `arabic-presentation-forms` static encoding strategy for red-team encoding-bypass sweeps.
 
+## Promptfoo 0.126.0 (2026-11-18) — What Changes for Test Suites
+
+Verified from the project CHANGELOG and the `expected-outputs` docs ("Creating derived metrics"):
+
+- **Breaking — `derivedMetrics` string formulas are restricted.** Allowed: numeric literals, named assertion scores, `__count`, parentheses, `+ - * /`, comparisons (`< <= > >= == !=`) and `cond ? a : b`; max 1,024 chars. **Rejected:** function calls (e.g. `Math.max(a, b)`), property access, assignments, and chained comparisons (`0 < score < 1`). Unsupported syntax now **stops the eval before any test runs** — rewrite before bumping:
+  ```yaml
+  derivedMetrics:
+    - name: precision            # guard the zero denominator with a ternary, not Math.*
+      value: '(tp + fp) == 0 ? 0 : tp / (tp + fp)'
+    - name: in_range             # was: 0 < score < 1
+      value: 'score > 0 ? (score < 1 ? 1 : 0) : 0'
+  ```
+  Need real logic? Use a function `value` in a trusted **JavaScript** config (`promptfooconfig.js`) instead.
+- **Throwing file assertions now fail instead of erroring.** A `file://` / `package:` JavaScript assertion that throws now marks the row **failed** (previously an *error* row); a throwing Python/Ruby file assertion is applied with **weight 0**. Re-baseline pass/error counts after upgrading, and don't rely on "error" rows to spot broken assertion code — check grader logs.
+- **Tool calls are no longer counted as refusals** by the refusal assertion — agent/tool-using targets that answered via a tool call stop showing false-positive refusals in red-team and guardrail sweeps.
+- **SIGTERM** now ends only CLI evals, after provider drain and OTel flush — CI cancellation keeps traces intact.
+- `redteam` runs isolate live config files, so concurrent red-team runs in the same workspace no longer clobber each other.
+
 ## Sources
 - OWASP LLM Top-10 2026 (LLM01: Prompt Injection): https://genai.owasp.org/llmrisk/llm01-prompt-injection/
 - Garak vs PyRIT comparison 2026: https://aisecurityandsafety.org/en/compare/garak-vs-pyrit/
@@ -619,3 +637,5 @@ Verified from the project CHANGELOG only (flag/option names beyond those below w
 - Promptfoo 0.123.0 CHANGELOG (`metadata.toolCalls` on MCP-enabled chat providers, PR #10516): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - Promptfoo MCP provider docs, "Asserting on Executed Tool Calls" section (verbatim source for the `metadata.toolCalls` example above): https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/providers/mcp.md
 - Promptfoo 0.125.0 CHANGELOG (2026-10-23): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
+- Promptfoo 0.126.0 CHANGELOG (2026-11-18; derived-metric restriction PR #12125, assertion fixes #11939/#12118/#11957): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
+- Promptfoo derived-metrics formula rules: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/configuration/expected-outputs/index.md

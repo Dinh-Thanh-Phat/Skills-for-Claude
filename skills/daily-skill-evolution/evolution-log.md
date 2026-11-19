@@ -5,6 +5,13 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-19 (GMT+7)
+
+Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-18 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 NEW, published 2026-11-18), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded in maestro-mobile), AI chatbot/LLM testing (Promptfoo 0.126.0 NEW, published 2026-11-18 with a breaking change; DeepEval 4.3.4 unchanged).
+
+- UPDATED: skills/llm-red-teaming — Promptfoo 0.126.0: breaking `derivedMetrics` formula restriction (no function calls/property access/chained comparisons; eval aborts before running), throwing JS file assertions now fail (Python/Ruby → weight 0), tool calls no longer counted as refusals, SIGTERM/OTel-flush and concurrent red-team config isolation — https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md, https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/configuration/expected-outputs/index.md
+- UPDATED: skills/playwright-mcp-server — v0.0.86: Node 20+ required, `--session-name`/`--session-color`, `browser_close` closes browser + all tabs, README env-var corrections (several documented env vars never existed; `PLAYWRIGHT_MCP_SANDBOX=false`) — https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.86.tgz
+
 ## 2026-11-18 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-17 only — no 1.66 release notes; `@playwright/mcp` 0.0.85 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged and already encoded in maestro-mobile; Nov 2026 search returned only older 2.5–2.11 items), AI chatbot/LLM testing (Promptfoo 0.125.1, DeepEval 4.3.4 unchanged; Nov 2026 search returned only generic chatbot-eval guides — multi-turn, LLM-as-judge validation, red teaming, CI gating — already covered by response-evaluator, llm-judge-bias, llm-red-teaming, deepeval-llm-cicd).
