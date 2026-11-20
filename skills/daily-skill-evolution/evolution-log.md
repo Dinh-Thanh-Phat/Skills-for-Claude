@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-20 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-19 only — Nov 2026 search found no 1.66 release notes; `@playwright/mcp` 0.0.86 already encoded yesterday), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded in maestro-mobile), QA test design (Nov 2026 search returned only evergreen decision-table/use-case/exploratory guides already covered by behavioral-coverage-matrix, qa-test-generation, qa-exploratory), AI chatbot/LLM testing (Promptfoo 0.126.0 and DeepEval 4.3.4 unchanged; search returned Jan 2026 arXiv 2601.22025 "When Generic Prompt Improvements Hurt" — single-author report whose eval-driven-iteration/golden-set regression advice is already covered by deepeval-llm-cicd, llm-golden-dataset-construction, response-evaluator; user-simulation already in llm-simulation-flywheel).
+
+- No changes — nothing new and verifiable.
+
 ## 2026-11-19 (GMT+7)
 
 Domains researched (pinned first-party sources): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-18 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 NEW, published 2026-11-18), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded in maestro-mobile), AI chatbot/LLM testing (Promptfoo 0.126.0 NEW, published 2026-11-18 with a breaking change; DeepEval 4.3.4 unchanged).
