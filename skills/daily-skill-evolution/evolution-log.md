@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-22 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-21 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded), QA test design (Nov 2026 search returned only evergreen EP/BVA/decision-table/use-case guides already covered by behavioral-coverage-matrix, qa-test-generation, pairwise-combinatorial-testing), AI chatbot/LLM testing (Promptfoo 0.126.0 and DeepEval 4.3.4 unchanged; agent-eval search surfaced Anthropic Engineering "Demystifying evals for AI agents" — multi-trial pass@k/pass^k guidance not encoded anywhere in the repo).
+
+- CREATED: skills/agent-eval-multi-trial — repeated isolated trials with pass@k vs pass^k (unbiased estimators + pytest pass^k gate), capability-vs-regression suite split with graduation, 0%-task = broken-task diagnosis, balanced sets, saturation, grader calibration/hack-resistance. Fills a gap: existing agent-eval skills grade a single run, none aggregate across trials — https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents, https://arxiv.org/abs/2107.03374, https://arxiv.org/abs/2406.12045, https://www.ibm.com/think/topics/ai-agent-testing
+
 ## 2026-11-21 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-20 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged, already encoded 2026-11-19), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded in maestro-mobile; Nov 2026 search returned only older 2.6/Studio/MCP items already covered by maestro-viewer, maestro-studio, maestro-mcp-workflow), AI chatbot/LLM testing (Promptfoo 0.126.0 already encoded 2026-11-19; DeepEval 4.3.4 unchanged; Nov 2026 search returned only older generic guides — use-case-driven eval, human+automated layering, LLM-judge caution, simulated users — already covered by response-evaluator, llm-judge-bias, llm-simulation-flywheel, llm-golden-dataset-construction).
