@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-23 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-22 only — Nov 2026 search returned only evergreen best-practice guides; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded; Nov 2026 mobile-flakiness search returned only vendor guides covered by flaky-test-prevention / e2e-test-stability), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.4 unchanged; multi-turn eval search surfaced the ICLR 2026 "LLMs Get Lost In Multi-Turn Conversation" sharded-instruction method — not encoded anywhere in the repo).
+
+- CREATED: skills/llm-multi-turn-degradation-testing — FULL vs CONCAT vs SHARDED controlled A/B on the same fully-specified task, per-turn answer-attempt grading, N-trial aptitude (best-case) vs unreliability (best–worst spread) metrics with a release gate vs previous release, failure-behavior diagnosis table, RECAP/SNOWBALL mitigation variants. Fills a gap: existing chatbot skills evaluate single-turn or open-ended simulated conversations, none compare identical information delivered single- vs multi-turn — https://arxiv.org/abs/2505.06120, https://iclr.cc/virtual/2026/oral/10009147, https://github.com/microsoft/lost_in_conversation, https://arxiv.org/pdf/2609.36700
+
 ## 2026-11-22 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-21 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded), QA test design (Nov 2026 search returned only evergreen EP/BVA/decision-table/use-case guides already covered by behavioral-coverage-matrix, qa-test-generation, pairwise-combinatorial-testing), AI chatbot/LLM testing (Promptfoo 0.126.0 and DeepEval 4.3.4 unchanged; agent-eval search surfaced Anthropic Engineering "Demystifying evals for AI agents" — multi-trial pass@k/pass^k guidance not encoded anywhere in the repo).
