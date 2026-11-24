@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-24 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-23 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged; Nov 2026 flakiness search returned only Jan–Apr 2026 evergreen guides covered by flaky-test-prevention, playwright-flaky-test-detection, e2e-test-stability), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded; Nov 2026 search returned no dated items), QA test design (Nov 2026 search returned only vendor tutorials on EP/BVA/state-transition already covered; follow-up research search surfaced ICST 2026 DoeFL "Pinpointing Flakiness in Web Tests via DOM Event Analysis and LLM-based Reasoning" — May 2026, abstract-level only, conference page unreachable from sandbox (conf.researchr.org not in network allowlist), no arXiv/artifact found, so not concrete enough to encode), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.4 unchanged).
+
+- No changes — nothing new and verifiable.
+
 ## 2026-11-23 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-22 only — Nov 2026 search returned only evergreen best-practice guides; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded; Nov 2026 mobile-flakiness search returned only vendor guides covered by flaky-test-prevention / e2e-test-stability), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.4 unchanged; multi-turn eval search surfaced the ICLR 2026 "LLMs Get Lost In Multi-Turn Conversation" sharded-instruction method — not encoded anywhere in the repo).
