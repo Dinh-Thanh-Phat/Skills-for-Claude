@@ -24,7 +24,7 @@ description: |
   "deepeval voice connector", "live voice agent simulation deepeval", "WebRTCConnector",
   "deepeval webrtc voice testing", "aiortc voice agent test", "deepeval Jev", "TypeSafe AI",
   "System One model", "deepeval set-typesafe", "TypeSafeModel", "Jev judge model",
-  "deepeval Classifiers", "categorical LLM-as-judge", "deepeval eval_mode", "DEEPEVAL_EVAL_MODE",
+  "deepeval Classifiers", "TopicClassifier", "UseCaseClassifier", "IssueClassifier", "multi_label classifier", "label discovery", "categorical LLM-as-judge", "deepeval eval_mode", "DEEPEVAL_EVAL_MODE",
   "deepeval set-eval-mode", "hybrid eval mode deepeval", "system_one eval mode".
 ---
 
@@ -837,6 +837,67 @@ Pick TypeScript when keeping evals in the same language and test runner as the a
 worth more than those features. The package is still pre-1.0 (`0.1.x`), so pin the version and
 re-check the exported surface on upgrade rather than assuming API stability.
 
+## Classifiers — Categorical Judges (v4.3.5, November 2026)
+
+A **classifier** assigns a *label* (not a 0–1 score) to a single- or multi-turn test case: topic,
+use case, refusal, resolution, escalation, etc. Use it to slice a test run ("which intents fail
+most?") and, when you declare an expected label, to gate on routing/refusal behaviour. Built-ins
+include `RefusalClassifier`, `ResolutionClassifier`, `EscalationClassifier`,
+`ScopeAdherenceClassifier`, `ToneAdherenceClassifier`, `PromptInjectionClassifier`,
+`RequiredDisclosureClassifier`, `ResponseLanguageClassifier`; the generic `Classifier` takes your
+own labels. A label the judge invents that you didn't declare is recorded as an error, not mapped
+to the nearest label.
+
+```python
+from deepeval import evaluate
+from deepeval.classifiers import Classifier, Label, TopicClassifier, ReviewConfig, LabelDiscoveryConfig
+from deepeval.test_case import LLMTestCase
+
+intent = Classifier(
+    name="intent",
+    labels=[Label(name="billing", description="Invoices, charges, refunds"),
+            Label(name="tech_support", description="Device or connection problems")],
+    allow_none=True,
+    review_config=ReviewConfig(min_confidence=0.6),   # second judge pass scores each label
+)
+case = LLMTestCase(input="Why was I charged twice?", actual_output="...",
+                   expected_labels={"intent": "billing"})  # only named classifiers produce pass/fail
+result = evaluate(test_cases=[case], classifiers=[intent])  # metrics= is optional
+for c in result.test_results[0].classifications:
+    print(c.name, c.label, c.success, c.confidence, [e.quote for e in c.evidence])
+```
+
+**New in 4.3.5** (verified by diffing the 4.3.4 vs 4.3.5 wheels; no GitHub release notes yet):
+
+- **`TopicClassifier`, `UseCaseClassifier`, `IssueClassifier`** — new built-ins. Topic = what the
+  interaction is mainly about; UseCase = what the user was trying to get done; Issue = every
+  problem the agent caused, each with cited evidence, reviewed for "real, uninstructed harm".
+  They default `labels=()`, `EvidenceConfig()` and `ReviewConfig()` on, and run in `llm` mode only.
+- **`multi_label=True`** — a classifier may return several labels; `expected_labels` then takes a
+  list and passes only on the **exact** label set.
+- **`evidence_config=EvidenceConfig(max_items=3, max_quote_chars=300)`** — each `Classification`
+  carries `evidence` quotes (field, turn/span index). Labels that rest only on the framework's own
+  `[truncated]` marker are caught — raise `max_content_chars` if long transcripts get clipped.
+- **`review_config=ReviewConfig(min_confidence=0.6)`** — a review pass scores each label; labels
+  below the threshold **or whose review was unreadable are dropped**, and the kept labels are sorted
+  by confidence (top one becomes `classifier.label`). A case can therefore come back `label=None`
+  even though the first pass picked something — check `confidence` before blaming the app.
+- **`label_discovery_config=LabelDiscoveryConfig(candidate_labels=[...], similarity_threshold=0.92,
+  top_k=15, max_new_labels=None)`** — with empty `labels`, the judge proposes new labels, which are
+  merged into a shared pool by embedding similarity (needs an embedding model + numpy). Use it for
+  exploratory taxonomy building on production logs; **cap `max_new_labels`** and freeze the result
+  into explicit `labels=` before using the classifier as a CI gate — a discovered taxonomy changes
+  run to run.
+- **`agent_profile=AgentProfile(description=..., trace_description=...)`** — tells the judge what
+  the agent is for, so in-scope steps aren't mislabeled as issues/topics.
+- **Gotchas:** `multi_label`, evidence, review and discovery raise `ValueError` under the
+  `system_one` eval mode (LLM judge required). `Classification` results are **local-only** — they
+  are never uploaded to Confident AI with the test run, so persist them yourself if you trend them.
+
+QA practice: treat a classifier like any judge — build a small hand-labelled set, measure agreement
+before gating, and when you change the judge model compare the label *distribution* against a
+baseline run (a shift can be a fix, not a regression).
+
 ## Controlling the Judge Model (Cost vs Accuracy)
 
 DeepEval defaults to GPT-4o as judge. Swap models to balance cost and accuracy:
@@ -964,3 +1025,7 @@ release gate, since that mode has zero fallback if Jev errors.
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/test_case/utils.py (`classify_tool_call_types`/`process_mcp_servers`)
 - https://raw.githubusercontent.com/confident-ai/deepeval/main/deepeval/evaluate/evaluate.py (`evaluate()`/`assert_test()` signatures — `mcp_servers` param on `evaluate()` only)
 - https://github.com/confident-ai/deepeval/compare/python-v4.1.9...python-v4.1.10.diff (voice metrics package introduced, 32 commits)
+- https://pypi.org/project/deepeval/4.3.5/ (4.3.5 wheel, published 2026-11-24 — diffed against 4.3.4: `deepeval/classifiers/`, `classifiers/classifier/config.py`, `test_run/api.py` `Classification`/`Evidence`)
+- https://deepeval.com/docs/classifiers-introduction
+- https://deepeval.com/docs/classifiers-custom
+- https://www.microsoft.com/en-us/research/blog/technical-approach-for-classifying-human-ai-interactions-at-scale/ (baseline label-distribution comparison when changing the judge model)

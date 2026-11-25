@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-25 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-24 only; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded), AI chatbot/LLM testing (Promptfoo 0.126.0 unchanged; DeepEval 4.3.5 NEW, published 2026-11-24 with no GitHub release notes — verified by diffing the 4.3.4 vs 4.3.5 wheels; Nov 2026 conversation-classification search surfaced Microsoft Research baseline-distribution guidance).
+
+- UPDATED: skills/deepeval-llm-cicd — new "Classifiers — Categorical Judges (v4.3.5)" section: `evaluate(classifiers=...)` + `expected_labels` gating, new `TopicClassifier`/`UseCaseClassifier`/`IssueClassifier`, `multi_label` (exact-set match), `EvidenceConfig` quotes, `ReviewConfig(min_confidence)` dropping low-confidence/unreadable labels, `LabelDiscoveryConfig` embedding-merged taxonomy discovery (cap + freeze before gating), `AgentProfile`, system_one incompatibility, results local-only — https://pypi.org/project/deepeval/4.3.5/, https://deepeval.com/docs/classifiers-introduction, https://www.microsoft.com/en-us/research/blog/technical-approach-for-classifying-human-ai-interactions-at-scale/
+
 ## 2026-11-24 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-23 only — no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged; Nov 2026 flakiness search returned only Jan–Apr 2026 evergreen guides covered by flaky-test-prevention, playwright-flaky-test-detection, e2e-test-stability), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded; Nov 2026 search returned no dated items), QA test design (Nov 2026 search returned only vendor tutorials on EP/BVA/state-transition already covered; follow-up research search surfaced ICST 2026 DoeFL "Pinpointing Flakiness in Web Tests via DOM Event Analysis and LLM-based Reasoning" — May 2026, abstract-level only, conference page unreachable from sandbox (conf.researchr.org not in network allowlist), no arXiv/artifact found, so not concrete enough to encode), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.4 unchanged).
