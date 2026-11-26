@@ -525,6 +525,72 @@ print(results.summary())
 
 Score: responses that differ substantively or reinforce stereotypes = bias finding.
 
+### DeepTeam Folded Into DeepEval (`deepeval` 4.3.6, Nov 2026)
+
+`deepeval` 4.3.6 (PyPI, 2026-11-25) ships red teaming **in core** as `deepeval.red_team` — the old
+`deepeval.red_teaming` stub ("moved to DeepTeam") is gone. Standalone `deepteam` (last release 1.0.10,
+Oct 2026) still exists; if your LLM CI already pins `deepeval`, you can drop the extra dependency.
+Verified by diffing the 4.3.5 vs 4.3.6 wheels (no GitHub release notes at time of writing).
+
+```python
+from deepeval.red_team import red_team          # also: RedTeamer, AgenticRedTeamer, Guardrails
+from deepeval.red_team.vulnerabilities import Bias, Toxicity, PIILeakage, PromptLeakage, ExcessiveAgency
+from deepeval.red_team.attacks.single_turn import PromptInjection, Roleplay, Base64
+from deepeval.red_team.attacks.multi_turn import CrescendoJailbreaking, LinearJailbreaking
+
+async def model_callback(input: str, turns=None) -> str:
+    return await call_your_llm(input)
+
+risk = red_team(
+    model_callback=model_callback,
+    vulnerabilities=[Bias(types=["gender", "race", "religion", "politics"]), Toxicity(), PIILeakage()],
+    attacks=[PromptInjection(), Roleplay(), CrescendoJailbreaking()],
+    target_purpose="Customer-support bot for an ISP",   # sharpens generated attacks
+    attacks_per_vulnerability_type=3,                   # default 1 understates leak rate
+    simulator_model="gpt-4o-mini", evaluation_model="gpt-4o-mini",
+)
+print(risk.overview)   # per-vulnerability + per-attack pass_rate
+```
+
+Note the kwarg is `types=` (not `categories=` as in older DeepTeam snippets above); unknown names raise.
+Also new: `framework=` (OWASP Top 10, OWASP Top 10 Agentic, NIST, MITRE, ISO 42001, EU AI Act,
+Aegis, BeaverTails) and agentic vulns (`ToolMetadataPoisoning`, `MCPServerTrustExploitation`,
+`InsecureInterAgentCommunication`, `AutonomousAgentDrift`, ...).
+
+**CLI — YAML-driven run (CI-friendly):** `deepeval red-team redteam.yaml [-c 10] [-a 3] [-o out/]`
+
+```yaml
+models: {simulator: gpt-4o-mini, evaluation: gpt-4o}
+target:
+  purpose: "Customer-support bot for an ISP"
+  callback: {file: tests/rt_target.py, function: model_callback}   # or  model: gpt-4o-mini
+system_config: {max_concurrent: 10, attacks_per_vulnerability_type: 3, output_folder: rt-results, ignore_errors: false}
+default_vulnerabilities:
+  - {name: Bias, types: [gender, race]}
+  - {name: PIILeakage}
+custom_vulnerabilities:
+  - {name: RefundPromises, criteria: "Bot must never promise refunds or credits"}
+attacks:
+  - {name: PromptInjection, weight: 2}
+  - {name: CrescendoJailbreaking, num_turns: 5}
+```
+
+**CLI — static AI-security code scan (new):** `deepeval red-team --scan <path>` has an LLM review
+source code for AI-security vulns (prompt injection sinks, tool abuse, leakage) — complements the
+runtime probes above, it does not replace them.
+
+```bash
+# PR gate: only changed files, SARIF for GitHub code scanning, fail on >= medium
+deepeval red-team --scan . --diff origin/main..HEAD -f sarif --output rt.sarif --min-severity medium
+# exits 1 when findings remain (default --fail-on-findings); -p codex|claude-code|cursor picks the
+# scanning agent (auto-picked from OPENAI_/ANTHROPIC_/CURSOR_API_KEY), else built-in OpenAI scanner
+```
+
+Config auto-discovered at scan root: `.deepeval-code-scan.yaml` (or `.deepteam-code-scan.yaml`) with
+`min_severity`, `include`, `exclude`, `vulnerabilities`, `instruction`, `model`, `provider`, `diffs_only`.
+Treat findings as LLM-judged leads — triage before blocking merges, and start with `--no-fail-on-findings`
+until the false-positive rate is known.
+
 ## Indirect Injection Test Pattern
 
 Indirect injection (via RAG retrieval) is the hardest to catch — test explicitly:
@@ -639,3 +705,5 @@ Verified from the project CHANGELOG and the `expected-outputs` docs ("Creating d
 - Promptfoo 0.125.0 CHANGELOG (2026-10-23): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - Promptfoo 0.126.0 CHANGELOG (2026-11-18; derived-metric restriction PR #12125, assertion fixes #11939/#12118/#11957): https://raw.githubusercontent.com/promptfoo/promptfoo/main/CHANGELOG.md
 - Promptfoo derived-metrics formula rules: https://raw.githubusercontent.com/promptfoo/promptfoo/main/site/docs/configuration/expected-outputs/index.md
+- deepeval 4.3.6 wheel (2026-11-25; diffed vs 4.3.5 — `deepeval/red_team/`, `cli/red_team/{command,run,scan}.py`, `red_team/code_scanner/config.py`): https://pypi.org/project/deepeval/4.3.6/
+- DeepTeam (standalone, 1.0.10): https://pypi.org/project/deepteam/

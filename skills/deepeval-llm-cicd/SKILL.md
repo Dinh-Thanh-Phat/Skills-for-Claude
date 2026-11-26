@@ -296,6 +296,42 @@ assert_test(agent_case, [
 ])
 ```
 
+### Multi-Turn Tool Checks — `ConversationToolCorrectnessMetric` (v4.3.6, November 2026)
+
+`ToolCorrectnessMetric` only sees one `LLMTestCase`. For chatbots/agents that call tools across a
+conversation, 4.3.6 adds `ConversationToolCorrectnessMetric` on `ConversationalTestCase`, plus a new
+`expected_tools` field on the test case and a `turn` index on `ToolCall` (verified by diffing the
+4.3.5 vs 4.3.6 wheels). Deterministic — no judge LLM.
+
+```python
+from deepeval.metrics import ConversationToolCorrectnessMetric
+from deepeval.test_case import ConversationalTestCase, Turn, ToolCall
+
+case = ConversationalTestCase(
+    turns=[
+        Turn(role="user", content="What's my data balance?"),
+        Turn(role="assistant", content="You have 3 GB left.", tools_called=[ToolCall(name="get_balance")]),
+        Turn(role="user", content="Top up 5 GB"),
+        Turn(role="assistant", content="Done.", tools_called=[ToolCall(name="top_up")]),
+    ],
+    expected_tools=[
+        ToolCall(name="get_balance", turn=1),   # pinned: must happen on turns[1]
+        ToolCall(name="top_up", turn=3),        # pinned: must happen on turns[3]
+        ToolCall(name="log_interaction"),       # unpinned: any assistant turn is fine
+    ],
+)
+assert_test(case, [ConversationToolCorrectnessMetric(threshold=1.0, should_consider_ordering=True)])
+```
+
+- `turn` is a **0-based index into `turns`** and must point at an `assistant` turn — otherwise
+  `MissingTestCaseParamsError` (fails loudly; good). Simulated conversations shift indices, so pin
+  only on fixed scripted conversations; use unpinned expectations for simulator output.
+- Score = **mean of per-check scores** (one check per pinned turn + one "Any turn" check for unpinned
+  tools against calls not already matched). One missed tool in a 5-check case still scores 0.8 —
+  use `threshold=1.0` or `strict_mode=True` for hard gates.
+- Same knobs as `ToolCorrectnessMetric`: `evaluation_params` (`ToolCallParams` for args/output),
+  `should_exact_match`, `should_consider_ordering`.
+
 ### Tool-Type-Aware Scoring in `ToolCorrectnessMetric` (v4.1.9, August 2026)
 
 `ToolCall` gained a `type: ToolCallType` field back in v4.1.8 (`ToolCallType.FUNCTION` default,
@@ -1029,3 +1065,4 @@ release gate, since that mode has zero fallback if Jev errors.
 - https://deepeval.com/docs/classifiers-introduction
 - https://deepeval.com/docs/classifiers-custom
 - https://www.microsoft.com/en-us/research/blog/technical-approach-for-classifying-human-ai-interactions-at-scale/ (baseline label-distribution comparison when changing the judge model)
+- https://pypi.org/project/deepeval/4.3.6/ (4.3.6 wheel, published 2026-11-25 — diffed against 4.3.5: `metrics/conversation_tool_correctness/`, `test_case/conversational_test_case.py` `expected_tools` + `ToolCall.turn`)

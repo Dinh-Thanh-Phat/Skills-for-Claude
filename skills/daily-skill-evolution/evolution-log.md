@@ -5,6 +5,14 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-26 (GMT+7)
+
+Domains researched (pinned first-party sources): AI chatbot/LLM testing (DeepEval 4.3.6 NEW, published 2026-11-25 with no GitHub release notes — verified by diffing the 4.3.5 vs 4.3.6 wheels; Promptfoo 0.126.0 unchanged; standalone DeepTeam 1.0.10 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased section gained `check-syntax` changes not yet encoded), Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-25 only; `@playwright/mcp` 0.0.86 unchanged).
+
+- UPDATED: skills/llm-red-teaming — new "DeepTeam Folded Into DeepEval (4.3.6)" section: `deepeval.red_team` (`red_team`, `RedTeamer`, `AgenticRedTeamer`, `Guardrails`) with `types=` kwarg, `framework=`, agentic vulns; YAML-driven `deepeval red-team config.yaml` CLI; new `deepeval red-team --scan` static AI-security code scanner (`--diff`, SARIF/JSON, `--min-severity`, codex/claude-code/cursor providers, `.deepeval-code-scan.yaml`, exit 1 on findings) — https://pypi.org/project/deepeval/4.3.6/
+- UPDATED: skills/deepeval-llm-cicd — new `ConversationToolCorrectnessMetric` section: `ConversationalTestCase.expected_tools`, `ToolCall.turn` pinning (0-based, assistant turns only), mean-of-checks scoring and hard-gate advice — https://pypi.org/project/deepeval/4.3.6/
+- UPDATED: skills/maestro-mobile — `check-syntax` next-release note: multi-file, `--format json`, exit codes 0/1/2, breaking summary-instead-of-OK, config-less files rejected, referenced `runFlow`/`runScript`/`addMedia` files must exist, output to stdout — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-11-25 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-24 only; `@playwright/mcp` 0.0.86 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased unchanged, already encoded), AI chatbot/LLM testing (Promptfoo 0.126.0 unchanged; DeepEval 4.3.5 NEW, published 2026-11-24 with no GitHub release notes — verified by diffing the 4.3.4 vs 4.3.5 wheels; Nov 2026 conversation-classification search surfaced Microsoft Research baseline-distribution guidance).

@@ -693,6 +693,20 @@ maestro check-syntax flows/          # whole directory
   run: maestro test flows/
 ```
 
+> **Next release (CHANGELOG "Unreleased", noted 2026-11-26) — `check-syntax` gets stricter, may break
+> lint steps that pass today:**
+> - Takes **any number of files** and reports *every* problem per file with file/line/column plus a
+>   summary line; `--format json` prints one JSON document (parse it in CI instead of grepping).
+> - **Exit codes:** `0` clean, `1` problems found, `2` usage/file error (a missing/unreadable file was
+>   `1` before). Gate on `1` vs `2` if you need to tell "bad flow" from "bad invocation".
+> - **Breaking:** a clean run prints the summary line instead of `OK` (fix any `grep OK` checks); a
+>   file holding only a bare list of commands (no config section) is now an **error** (stdin still
+>   accepts one); files a flow references via `runFlow`, `retry`, `runScript`, `addMedia` **must
+>   exist**, so stale sub-flow paths that used to pass now fail; problems print to **stdout**, not
+>   stderr (update `2>` redirections).
+> Before bumping CI, run the new version once locally over the whole `flows/` tree and fix dangling
+> `runFlow`/`runScript` paths and config-less sub-flow files.
+
 ## More CLI Utility Commands & Flags (1.39–1.40)
 
 Also uncovered by any existing Maestro skill:
@@ -847,3 +861,4 @@ simulators at the same time.
 - https://github.com/mobile-dev-inc/maestro/blob/main/CHANGELOG.md (2.11.0 section) — Android 17 `start-device`, physical-iOS early failure, `start`/`end` selector rejection, `setDarkMode`/`setAirplaneMode` validation, `metadata.startedAtEpochMs`, Windows `maestro cloud` fix
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.1 section — appId interpolation fix, OkHttp 4.12.1)
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.0 section) — scroll `speed` 0–100 validation, `assertScreenshot` diff location, Android/iOS/Web fixes, `maestro cloud --priority`
+- https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (Unreleased section, checked 2026-11-26) — `check-syntax` multi-file/`--format json`/exit codes 0-1-2 and breaking stdout/summary/referenced-file changes
