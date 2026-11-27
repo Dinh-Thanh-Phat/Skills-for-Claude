@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-27 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased gained two items not yet encoded: restored new-version notice + `MAESTRO_DISABLE_UPDATE_CHECK`, Android `maestro record` video-truncation fix), Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-26 only — search found no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged), QA test design (Nov 2026 search returned only evergreen vendor guides on BVA/EP/state-transition and a Dec 2025 SBST reflection preprint — already covered by behavioral-coverage-matrix, qa-test-generation), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.6 unchanged).
+
+- UPDATED: skills/maestro-mobile — new "CLI Update Notice — `MAESTRO_DISABLE_UPDATE_CHECK`" note (notice now calls GitHub releases each run; disable in CI, pin version) + Android `maestro record` truncated-ending fix note under the record section — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-11-26 (GMT+7)
 
 Domains researched (pinned first-party sources): AI chatbot/LLM testing (DeepEval 4.3.6 NEW, published 2026-11-25 with no GitHub release notes — verified by diffing the 4.3.5 vs 4.3.6 wheels; Promptfoo 0.126.0 unchanged; standalone DeepTeam 1.0.10 unchanged), Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased section gained `check-syntax` changes not yet encoded), Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-25 only; `@playwright/mcp` 0.0.86 unchanged).

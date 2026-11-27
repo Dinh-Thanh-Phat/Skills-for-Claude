@@ -801,6 +801,24 @@ maestro hierarchy --compact
 - Next release: local rendering becomes the only path (`--local` still accepted, no effect),
   renders several times faster with smaller files, and no longer prints ANSI escape codes with
   `--no-ansi` or non-TTY output (clean CI logs).
+- Next release (CHANGELOG "Unreleased", noted 2026-11-27): Android `maestro record` videos no longer
+  cut off before the last commands show as completed in the overlay — on ≤ 2.12.1 a truncated
+  ending is a recorder bug, not evidence the final steps didn't run (check the JUnit/console result).
+
+### CLI Update Notice — `MAESTRO_DISABLE_UPDATE_CHECK` (Unreleased, noted 2026-11-27)
+
+- Next release restores the "new version available" notice; the CLI now reads the latest release
+  from GitHub (same source as the install script). That is an extra outbound call to GitHub on
+  every run.
+- In CI / sandboxed runners (restricted egress, rate-limited GitHub, noisy logs), disable it:
+
+```yaml
+# GitHub Actions
+env:
+  MAESTRO_DISABLE_UPDATE_CHECK: "true"
+```
+
+- Pin the Maestro version you install in CI instead of relying on the notice to tell you to upgrade.
 
 ## Parallel Local iOS Simulator Runs (2.6.0)
 
@@ -862,3 +880,4 @@ simulators at the same time.
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.1 section — appId interpolation fix, OkHttp 4.12.1)
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.0 section) — scroll `speed` 0–100 validation, `assertScreenshot` diff location, Android/iOS/Web fixes, `maestro cloud --priority`
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (Unreleased section, checked 2026-11-26) — `check-syntax` multi-file/`--format json`/exit codes 0-1-2 and breaking stdout/summary/referenced-file changes
+- https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (Unreleased section, checked 2026-11-27) — restored new-version notice via GitHub releases + `MAESTRO_DISABLE_UPDATE_CHECK`; Android `maestro record` video truncation fix
