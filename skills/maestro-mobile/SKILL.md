@@ -34,7 +34,7 @@ maestro test --env APP_ID=com.example.app login-flow.yaml
 maestro test flows/
 
 # Record a new flow interactively
-maestro record --local flow.yaml   # --local required while remote renderer is offline
+maestro record flow.yaml          # 2.13.0+: always renders locally (on ≤ 2.12.1 add --local)
 ```
 
 ## YAML Anatomy
@@ -693,8 +693,8 @@ maestro check-syntax flows/          # whole directory
   run: maestro test flows/
 ```
 
-> **Next release (CHANGELOG "Unreleased", noted 2026-11-26) — `check-syntax` gets stricter, may break
-> lint steps that pass today:**
+> **Shipped in CLI 2.13.0 (noted Unreleased 2026-11-26) — `check-syntax` is stricter, may break
+> lint steps that passed on ≤ 2.12.1:**
 > - Takes **any number of files** and reports *every* problem per file with file/line/column plus a
 >   summary line; `--format json` prints one JSON document (parse it in CI instead of grepping).
 > - **Exit codes:** `0` clean, `1` problems found, `2` usage/file error (a missing/unreadable file was
@@ -704,7 +704,7 @@ maestro check-syntax flows/          # whole directory
 >   accepts one); files a flow references via `runFlow`, `retry`, `runScript`, `addMedia` **must
 >   exist**, so stale sub-flow paths that used to pass now fail; problems print to **stdout**, not
 >   stderr (update `2>` redirections).
-> Before bumping CI, run the new version once locally over the whole `flows/` tree and fix dangling
+> Before bumping CI to 2.13.0, run it once locally over the whole `flows/` tree and fix dangling
 > `runFlow`/`runScript` paths and config-less sub-flow files.
 
 ## More CLI Utility Commands & Flags (1.39–1.40)
@@ -793,21 +793,47 @@ maestro hierarchy --compact
 - **CLI:** OkHttp updated to 4.12.1, which rejects eight compromised eMudhra intermediate CA
   certificates (relevant if your test backend chains to eMudhra).
 
-### `maestro record` — Remote Renderer Offline (Unreleased, noted Nov 2026)
+### CLI 2.13.0 — iOS Hierarchy/Permission/Auth Fixes + Stricter `check-syntax` (Nov 2026)
+
+Ships the previously "Unreleased" items below (`check-syntax` breaking changes, local-only
+`maestro record`, Android record truncation fix, restored update notice). New in this release:
+
+- **iOS deep hierarchies:** elements on screens nested **> 60 levels** (e.g. items of an open menu)
+  were missing from the view hierarchy. If `tapOn` "can't find" an element you can see inside a
+  menu/popover on ≤ 2.12.1, upgrade before rewriting selectors or adding coordinate taps.
+- **iOS 26+ system photo pickers:** photos now appear in the hierarchy and can be tapped — drop
+  coordinate-tap workarounds for picker flows after upgrading.
+- **iOS notifications permission:** the auto-tap on the alert (when a flow sets `notifications:
+  allow|deny`) no longer fires while the alert is still animating in — which could double-tap or
+  tap the app underneath. Intermittent "random tap on first screen" flakes in permission flows
+  on ≤ 2.12.1 are this bug.
+- **iOS 27+ `clearState` + HTTPS-callback sign-in (`ASWebAuthenticationSession`):** previously
+  failed with "not associated with domain". `clearState` now re-verifies associated domains by
+  briefly opening a URL on each — **adds ~5 s per `clearState`** for such apps. Budget for it in
+  timeouts and avoid gratuitous `clearState` in loops (see Speed tips).
+- **Xcode 27.1 + physical devices:** the XCTest runner (and `maestro driver-setup`) now targets
+  **iOS 15.0** (Xcode 27.1 rejected 14.0) — devices below iOS 15 can no longer run the driver.
+- **`maestro record`:** creates the output folder if missing (before the flow runs); several
+  times faster, smaller files; `--local` accepted but no-op.
+- **`maestro cloud`:** prints upload warnings from Maestro Cloud (e.g. deprecated device); MCP
+  `run_on_cloud` returns them as `warnings` — surface them in CI logs rather than ignoring.
+- **Security:** log4j bumped to 2.25.5 (2.25.3 was flagged by vulnerability scanners).
+
+### `maestro record` — Remote Renderer Offline (fixed in 2.13.0)
 
 - Per the upstream CHANGELOG "Unreleased" section, the **remote video renderer that `maestro record`
   used by default is offline**. On ≤ 2.12.1, always pass `--local` (e.g. `maestro record --local
   flow.yaml`) or the recording step can fail/hang — don't misread that as a flow failure.
-- Next release: local rendering becomes the only path (`--local` still accepted, no effect),
+- 2.13.0: local rendering is the only path (`--local` still accepted, no effect),
   renders several times faster with smaller files, and no longer prints ANSI escape codes with
   `--no-ansi` or non-TTY output (clean CI logs).
-- Next release (CHANGELOG "Unreleased", noted 2026-11-27): Android `maestro record` videos no longer
+- 2.13.0 (noted Unreleased 2026-11-27): Android `maestro record` videos no longer
   cut off before the last commands show as completed in the overlay — on ≤ 2.12.1 a truncated
   ending is a recorder bug, not evidence the final steps didn't run (check the JUnit/console result).
 
-### CLI Update Notice — `MAESTRO_DISABLE_UPDATE_CHECK` (Unreleased, noted 2026-11-27)
+### CLI Update Notice — `MAESTRO_DISABLE_UPDATE_CHECK` (2.13.0)
 
-- Next release restores the "new version available" notice; the CLI now reads the latest release
+- 2.13.0 restores the "new version available" notice; the CLI now reads the latest release
   from GitHub (same source as the install script). That is an extra outbound call to GitHub on
   every run.
 - In CI / sandboxed runners (restricted egress, rate-limited GitHub, noisy logs), disable it:
@@ -881,3 +907,4 @@ simulators at the same time.
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.12.0 section) — scroll `speed` 0–100 validation, `assertScreenshot` diff location, Android/iOS/Web fixes, `maestro cloud --priority`
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (Unreleased section, checked 2026-11-26) — `check-syntax` multi-file/`--format json`/exit codes 0-1-2 and breaking stdout/summary/referenced-file changes
 - https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (Unreleased section, checked 2026-11-27) — restored new-version notice via GitHub releases + `MAESTRO_DISABLE_UPDATE_CHECK`; Android `maestro record` video truncation fix
+- https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md (2.13.0 section, checked 2026-11-28) — iOS >60-level hierarchy, iOS 26+ photo pickers, notifications-alert auto-tap timing, iOS 27 `clearState` associated-domains re-verify (+~5 s), Xcode 27.1 runner → iOS 15.0, `maestro record` folder creation, `maestro cloud` warnings, log4j 2.25.5

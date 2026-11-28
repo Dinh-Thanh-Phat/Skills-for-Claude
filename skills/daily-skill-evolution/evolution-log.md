@@ -5,6 +5,12 @@ Most recent at top.
 
 <!-- Entries appended below by the routine -->
 
+## 2026-11-28 (GMT+7)
+
+Domains researched (pinned first-party sources + web search): Maestro/mobile (CHANGELOG — **2.13.0 NEW**: previous Unreleased section shipped plus new iOS fixes; GitHub releases page not reachable from sandbox and web search had not yet indexed it, so the upstream CHANGELOG section is the source), Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-27 only; `@playwright/mcp` 0.0.86 unchanged), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.6, DeepTeam 1.0.10 unchanged; Nov 2026 search returned only older/general items — AI testing pyramid, trace-derived evals, arXiv 2601.22025 — already covered by response-evaluator, llm-simulation-flywheel, deepeval-llm-cicd).
+
+- UPDATED: skills/maestro-mobile — new "CLI 2.13.0" section: iOS >60-level hierarchy fix, iOS 26+ photo-picker elements, notifications-alert auto-tap timing fix, iOS 27 `clearState` associated-domains re-verify (+~5 s for `ASWebAuthenticationSession` apps), Xcode 27.1 runner/`driver-setup` now targets iOS 15.0, `maestro record` creates output folder, `maestro cloud` upload warnings, log4j 2.25.5; relabelled the earlier "Unreleased/next release" notes (`check-syntax`, `record`, update check) as shipped in 2.13.0 and dropped the now-unneeded `--local` from the quick-start command — https://raw.githubusercontent.com/mobile-dev-inc/Maestro/main/CHANGELOG.md
+
 ## 2026-11-27 (GMT+7)
 
 Domains researched (pinned first-party sources + web search): Maestro/mobile (CHANGELOG — 2.12.1 still latest; Unreleased gained two items not yet encoded: restored new-version notice + `MAESTRO_DISABLE_UPDATE_CHECK`, Android `maestro record` video-truncation fix), Playwright/web E2E (npm `@playwright/test` latest 1.65.1 already encoded, next 1.66.0-alpha-2026-11-26 only — search found no 1.66 release notes; `@playwright/mcp` 0.0.86 unchanged), QA test design (Nov 2026 search returned only evergreen vendor guides on BVA/EP/state-transition and a Dec 2025 SBST reflection preprint — already covered by behavioral-coverage-matrix, qa-test-generation), AI chatbot/LLM testing (Promptfoo 0.126.0, DeepEval 4.3.6 unchanged).
